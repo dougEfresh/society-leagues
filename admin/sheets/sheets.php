@@ -63,6 +63,26 @@ switch ($row['league_id']) {
 		$game_date_x = 14;
 		$game_date_y = 37;
 		break;
+// 8 Ball Wed
+	case '6':
+		$league_type = '8-Ball-Beginner';
+		$handicap_DB = 'handicap_eight_beginner';
+		$template = 'templates/8Ball_Scoresheet.pdf';
+		$team_home_x = 14;
+		$team_home_y = 56.5;
+		$team_away_x = 110;
+		$team_away_y = 56.5;
+		$team_home_x2 = 14;
+		$team_home_y2 = 52;
+		$team_away_x2 = 110;
+		$team_away_y2 = 52;
+		$players_home_x = 14;
+		$players_home_y = 68;
+		$players_away_x = 110;
+		$players_away_y = 68;
+		$game_date_x = 14;
+		$game_date_y = 37;
+		break;
 	//9 Ball League
 	case '1':
 		$league_type = '9-Ball';
@@ -100,34 +120,68 @@ $pdf = new FPDI();
 
 while ($row = mysql_fetch_assoc($result)) {
 	// get sql of home team players
-	$hp_result = mysql_query("
-		SELECT *, CONCAT('(',handicap_display.hcd_name,') ', player.first_name,' ',player.last_name) player_name 
-		FROM team_player
-		JOIN player ON player.player_id=team_player.tp_player
-		JOIN team ON team.team_id=team_player.tp_team
-		LEFT JOIN handicap_display ON (hcd_league={$league_id} AND hcd_handicap={$handicap_DB})
-		WHERE team_player.tp_team='{$row['home_id']}' AND 
-		team_player.tp_division='{$_GET['division_id']}' AND 
-		NOT player.first_name LIKE '%FORFEIT%' AND
-		NOT player.last_name LIKE '%FORFEIT%' AND
-		NOT player.first_name LIKE '%HANDICAP%' AND
-		NOT player.last_name LIKE '%HANDICAP%'"
-		); 
-		  
+	
+	if ($league_type == "9-Ball") {
+	
+		$hp_result = mysql_query("
+			SELECT *, CONCAT(player.first_name,' ',player.last_name) player_name 
+			FROM team_player
+			JOIN player ON player.player_id=team_player.tp_player
+			JOIN team ON team.team_id=team_player.tp_team
+			LEFT JOIN handicap_display ON (hcd_league={$row['league_id']} AND hcd_handicap={$handicap_DB})
+			WHERE team_player.tp_team='{$row['home_id']}' AND 
+			team_player.tp_division='{$row['division_id']}' AND 
+			NOT player.first_name LIKE '%FORFEIT%' AND
+			NOT player.last_name LIKE '%FORFEIT%' AND
+			NOT player.first_name LIKE '%HANDICAP%' AND
+			NOT player.last_name LIKE '%HANDICAP%'"
+			); 
+			  
+		// get sql of visiting team players
+		$vp_result = mysql_query("
+			SELECT *, CONCAT( player.first_name,' ',player.last_name) player_name 
+			FROM team_player 
+			JOIN player ON player.player_id=team_player.tp_player
+			JOIN team ON team.team_id=team_player.tp_team
+			LEFT JOIN handicap_display ON (hcd_league={$row['league_id']} AND hcd_handicap={$handicap_DB})
+			WHERE team_player.tp_team='{$row['visit_id']}' AND 
+			team_player.tp_division='{$row['division_id']}' AND 
+			NOT player.first_name LIKE '%FORFEIT%' AND
+			NOT player.last_name LIKE '%FORFEIT%' AND
+			NOT player.first_name LIKE '%HANDICAP%' AND
+			NOT player.last_name LIKE '%HANDICAP%'"
+			); 
+	}
+	else {
+		$hp_result = mysql_query("
+			SELECT *, CONCAT(player.first_name,' ',player.last_name) player_name 
+			FROM team_player
+			JOIN player ON player.player_id=team_player.tp_player
+			JOIN team ON team.team_id=team_player.tp_team
+			LEFT JOIN handicap_display ON (hcd_league={$row['league_id']} AND hcd_handicap='player.$handicap_DB')
+			WHERE team_player.tp_team='{$row['home_id']}' AND 
+			team_player.tp_division='{$row['division_id']}' AND 
+			NOT player.first_name LIKE '%FORFEIT%' AND
+			NOT player.last_name LIKE '%FORFEIT%' AND
+			NOT player.first_name LIKE '%HANDICAP%' AND
+			NOT player.last_name LIKE '%HANDICAP%'"
+			); 
+			  
 	// get sql of visiting team players
 	$vp_result = mysql_query("
-		SELECT *, CONCAT('(',handicap_display.hcd_name,') ', player.first_name,' ',player.last_name) player_name 
+		SELECT *, CONCAT( player.first_name,' ',player.last_name) player_name 
 		FROM team_player 
 		JOIN player ON player.player_id=team_player.tp_player
 		JOIN team ON team.team_id=team_player.tp_team
-		LEFT JOIN handicap_display ON (hcd_league={$league_id} AND hcd_handicap={$handicap_DB})
+		LEFT JOIN handicap_display ON (hcd_league={$row['league_id']} AND hcd_handicap='player.$handicap_DB')
 		WHERE team_player.tp_team='{$row['visit_id']}' AND 
-		team_player.tp_division='{$_GET['division_id']}' AND 
+		team_player.tp_division='{$row['division_id']}' AND 
 		NOT player.first_name LIKE '%FORFEIT%' AND
 		NOT player.last_name LIKE '%FORFEIT%' AND
 		NOT player.first_name LIKE '%HANDICAP%' AND
 		NOT player.last_name LIKE '%HANDICAP%'"
 		); 
+	}
 
 	// set the source file
 	$pages= $pdf->setSourceFile($template);
@@ -168,7 +222,7 @@ while ($row = mysql_fetch_assoc($result)) {
 		while ($hp_row = mysql_fetch_assoc($hp_result)) {
 			$pdf->SetFont('Helvetica', '', 10);
 			$pdf->SetXY($players_home_x, $pl_home_y);
-			$pdf->Write(0, $hp_row['player_name']);
+			$pdf->Write(0, '(' . $hp_row[$handicap_DB] . ') ' . $hp_row['player_name'] );
 			$pl_home_y = $pl_home_y + 5; 
 		}
 
@@ -182,7 +236,7 @@ while ($row = mysql_fetch_assoc($result)) {
 		while ($vp_row = mysql_fetch_assoc($vp_result)) {
 			$pdf->SetFont('Helvetica', '', 10);
 			$pdf->SetXY($players_away_x, $vl_home_y);
-			$pdf->Write(0, $vp_row['player_name']);
+			$pdf->Write(0, '(' . $vp_row[$handicap_DB] . ') ' . $vp_row['player_name'] );
 			$vl_home_y = $vl_home_y + 5; 
 		}
 
@@ -210,7 +264,7 @@ while ($row = mysql_fetch_assoc($result)) {
 	}
 
 	// 8-Ball Scoresheet
-	if ($league_type == "8-Ball") {
+	if ($league_type == "8-Ball"  || $league_type == "8-Ball-Beginner") {
 
 		// add a page
 		$pdf->AddPage();
@@ -258,7 +312,7 @@ while ($row = mysql_fetch_assoc($result)) {
 		while ($hp_row = mysql_fetch_assoc($hp_result)) {
 			$pdf->SetFont('Helvetica', '', 10);
 			$pdf->SetXY($players_home_x, $pl_home_y);
-			$pdf->Write(0, $hp_row['player_name']);
+			$pdf->Write(0, '(' . $hp_row[$handicap_DB] . ') ' . $hp_row['player_name'] );
 			$pl_home_y = $pl_home_y + 5; 
 		}
 
@@ -267,12 +321,12 @@ while ($row = mysql_fetch_assoc($result)) {
 		while ($vp_row = mysql_fetch_assoc($vp_result)) {
 			$pdf->SetFont('Helvetica', '', 10);
 			$pdf->SetXY($players_away_x, $vl_home_y);
-			$pdf->Write(0, $vp_row['player_name']);
+			$pdf->Write(0, '(' . $vp_row[$handicap_DB] . ') ' . $vp_row['player_name'] );
 			$vl_home_y = $vl_home_y + 5; 
 		}
 	}
 
-	// Scramble League Scoresheet
+	// 9Ball League Scoresheet
 	if ($league_type == "9-Ball") {
 
 		// import page 1
@@ -297,9 +351,12 @@ while ($row = mysql_fetch_assoc($result)) {
 		// write home team list
 		$pl_home_y = $players_home_y;
 		while ($hp_row = mysql_fetch_assoc($hp_result)) {
+		      	       $hc_home_x = $players_home_x + 63;
 				$pdf->SetFont('Helvetica', '', 10);
 				$pdf->SetXY($players_home_x, $pl_home_y);
 				$pdf->Write(0, $hp_row['player_name']);
+				$pdf->SetXY($hc_home_x, $pl_home_y);
+				$pdf->Write(0, $hp_row['hcd_name']);
 				$pl_home_y = $pl_home_y + 6.6; 
 		}
 	
@@ -311,9 +368,12 @@ while ($row = mysql_fetch_assoc($result)) {
 		// write away team list
 		$vl_home_y = $players_away_y;
 		while ($vp_row = mysql_fetch_assoc($vp_result)) {
+		      	       $hcp_home_x = $players_away_x + 63;
 				$pdf->SetFont('Helvetica', '', 10);
 				$pdf->SetXY($players_away_x, $vl_home_y);
-				$pdf->Write(0, $vp_row['player_name']);
+				$pdf->Write(0, $vp_row['player_name'] );
+				$pdf->SetXY($hcp_home_x, $vl_home_y);
+				$pdf->Write(0, $vp_row['hcd_name']);
 				$vl_home_y = $vl_home_y + 6.7; 
 		}
 		// import page 2
