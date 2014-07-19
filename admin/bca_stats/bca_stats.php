@@ -24,9 +24,10 @@ ORDER BY team.team_id");
 
 $text = '';
 
-$filename = '../../temp/division_' . $_GET['division_id'] . '.csv';
+$filename = 'division_' . $_GET['division_id'] . '.csv';
 
-unlink($filename);
+$fullfile = '../../temp/' . $filename;
+unlink($fullfile);
 
 $text = 
 "TEAM," . 
@@ -38,14 +39,14 @@ $text =
 "PHONE," . 
 "ADDRESS\n";
 
-file_put_contents($filename, $text);
+file_put_contents($fullfile, $text);
 	
 while($row = mysql_fetch_assoc($result))
 {
 	foreach($row as $key => $val)
 		$view->assign($key, $val);
 	
-	$text = file_get_contents($filename);
+	$text = file_get_contents($fullfile);
 	
 	$text .= 
 	$row['team_name'] . "," . 
@@ -61,14 +62,14 @@ while($row = mysql_fetch_assoc($result))
 	$row['state'] . "," . 
 	$row['zip'] . "\n";
 	
-	file_put_contents($filename, $text);
+	file_put_contents($fullfile, $text);
 		
 	$view->parse('main.player');
 }
 
-if (file_exists($filename))
+if (file_exists($fullfile))
 {
-	$view->assign("filename", $_SERVER['HTTP_HOST'].'/temp/'.$filename);
+	$view->assign("filename", 'http://'.$_SERVER['HTTP_HOST'].'/temp/'.$filename);
 	$view->parse('main.links');
 }
 
