@@ -47,20 +47,15 @@ switch($p1['league_id'])
 	case '4':
 		switch($_GET['match_number'])
 		{
-			case '3':
-			case '4':
-			case '9':
-			case '15':
-			case '19':
-			case '22':
-			case '25':
-			case '26':
-			case '31':
+			case '7':
+			case '10':
+			case '13':
+			case '20':
 				$hc = 'handicap_mixed_9';
 			break;
 			
 			default:
-				$hc = 'handicap_mixed_8';
+				$hc = 'handicap_mixed_9';
 			break;	
 		}
 		$team = true;
