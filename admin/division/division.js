@@ -205,8 +205,12 @@ function load_division_team_roster(team_id, division_id)
 		// BUTTON DOES NOT KNOW UNTIL WE WHISPER IN HIS EAR.
 		$("#player_button").attr('team_id', team_id);
 		$("#player_button").attr('division_id', division_id);
+		$("#captain_button").attr('team_id', team_id);
+		$("#captain_button").attr('division_id', division_id);
 		// THERE! IT IS DONE
 		$("#player_button").css('display', '');
+		$("#captain_button").css('display', '');
+
 	});	
 }
 
@@ -269,7 +273,20 @@ function new_player_dialog(the_calling_button)
 	});	
 }
 
-
+function new_captain_dialog(the_calling_button)
+{
+	// THIS WAS SET IN THE load_division_team_roster(team_id, division_id) FUNCTION
+	var team_id     = $(the_calling_button).attr('team_id');
+	var division_id = $(the_calling_button).attr('division_id');
+	
+	$.post("admin/division/captain_dialog.php?team_id=" + team_id + "&division_id=" + division_id, function(data)	
+	{
+		$("#new_captain_dialog").html(data); 
+		$("#new_captain_dialog").css('top', '100');
+		$("#new_captain_dialog").css('left', '100');
+		$("#new_captain_dialog").css('display', '');	
+	});	
+}
 
 
 function new_player_toggle(the_obj)
@@ -321,6 +338,18 @@ function add_players(team_id, division_id)
 		$("#new_player_dialog").css("display", "none");
 		load_division_team_roster(team_id, division_id);
 	});	
+}
+
+
+function add_captain(team_id, division_id)
+{
+	var captain_id = $("#captain_id").val();
+
+	$.post("admin/division/add_captain.php?team_id=" + team_id + '&captain_id=' + captain_id, function(data)	
+	{
+		$("#new_captain_dialog").css("display", "none");
+		load_division_team_roster(team_id, division_id);
+	});
 }
 
 

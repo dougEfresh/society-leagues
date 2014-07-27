@@ -39,8 +39,8 @@ switch($row['league_id'])
 }
 
 $result = mysql_query("
-SELECT CONCAT(player.first_name,' ',player.last_name) player_name, player.player_id,
-team.name,
+SELECT CONCAT(player.first_name,' ',player.last_name) player_name, player.player_id, team.name, 
+IF(player.player_id= team.captain_id, ' (C)', null ) as captain,
 CONCAT('$',FORMAT(IF(dp_id IS NULL,d_amount,d_amount - SUM(dp_payment)),2)) amount,
 COUNT(result_ind.result_id) games,
 SUM(result_ind.is_win) wins, (COUNT(result_ind.result_id) - SUM(result_ind.is_win)) losses,

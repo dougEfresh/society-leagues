@@ -105,6 +105,7 @@ switch ($row['league_id']) {
 		break;
 }
 
+// Get table of matches for division & week
 $result = mysql_query("
 	SELECT *, DATE_FORMAT(match_schedule.match_start_date, '%W - %M %D') week, ht.name home_team, vt.name visit_team, ht.team_id home_id, vt.team_id visit_id, league.league_type
 	FROM match_schedule
@@ -119,12 +120,13 @@ $result = mysql_query("
 $pdf = new FPDI();
 
 while ($row = mysql_fetch_assoc($result)) {
-	// get sql of home team players
 	
+	// get teams for 9 ball
 	if ($league_type == "9-Ball") {
-	
+
+		// get home team players
 		$hp_result = mysql_query("
-			SELECT *, CONCAT(player.first_name,' ',player.last_name) player_name 
+			SELECT *, CONCAT(player.first_name,' ',player.last_name) player_name, IF(player_id = captain_id, '(C)', null ) as captain 
 			FROM team_player
 			JOIN player ON player.player_id=team_player.tp_player
 			JOIN team ON team.team_id=team_player.tp_team
@@ -134,12 +136,13 @@ while ($row = mysql_fetch_assoc($result)) {
 			NOT player.first_name LIKE '%FORFEIT%' AND
 			NOT player.last_name LIKE '%FORFEIT%' AND
 			NOT player.first_name LIKE '%HANDICAP%' AND
-			NOT player.last_name LIKE '%HANDICAP%'"
+			NOT player.last_name LIKE '%HANDICAP%'
+			ORDER BY captain desc, player_name"
 			); 
 			  
-		// get sql of visiting team players
+		// get visiting team players
 		$vp_result = mysql_query("
-			SELECT *, CONCAT( player.first_name,' ',player.last_name) player_name 
+			SELECT *, CONCAT( player.first_name,' ',player.last_name) player_name, IF(player_id = captain_id, '(C)', null ) as captain 
 			FROM team_player 
 			JOIN player ON player.player_id=team_player.tp_player
 			JOIN team ON team.team_id=team_player.tp_team
@@ -149,12 +152,16 @@ while ($row = mysql_fetch_assoc($result)) {
 			NOT player.first_name LIKE '%FORFEIT%' AND
 			NOT player.last_name LIKE '%FORFEIT%' AND
 			NOT player.first_name LIKE '%HANDICAP%' AND
-			NOT player.last_name LIKE '%HANDICAP%'"
+			NOT player.last_name LIKE '%HANDICAP%'
+			ORDER BY captain desc, player_name"
 			); 
 	}
+
+	// get teams for other than 9 ball
 	else {
+		// get home team players
 		$hp_result = mysql_query("
-			SELECT *, CONCAT(player.first_name,' ',player.last_name) player_name 
+			SELECT *, CONCAT(player.first_name,' ',player.last_name) player_name, IF(player_id = captain_id, '(C)', null ) as captain 
 			FROM team_player
 			JOIN player ON player.player_id=team_player.tp_player
 			JOIN team ON team.team_id=team_player.tp_team
@@ -164,12 +171,13 @@ while ($row = mysql_fetch_assoc($result)) {
 			NOT player.first_name LIKE '%FORFEIT%' AND
 			NOT player.last_name LIKE '%FORFEIT%' AND
 			NOT player.first_name LIKE '%HANDICAP%' AND
-			NOT player.last_name LIKE '%HANDICAP%'"
+			NOT player.last_name LIKE '%HANDICAP%'
+			ORDER BY captain desc, player_name"
 			); 
 			  
-	// get sql of visiting team players
+	// get visiting team players
 	$vp_result = mysql_query("
-		SELECT *, CONCAT( player.first_name,' ',player.last_name) player_name 
+		SELECT *, CONCAT( player.first_name,' ',player.last_name) player_name, IF(player_id = captain_id, '(C)', null ) as captain 
 		FROM team_player 
 		JOIN player ON player.player_id=team_player.tp_player
 		JOIN team ON team.team_id=team_player.tp_team
@@ -179,7 +187,8 @@ while ($row = mysql_fetch_assoc($result)) {
 		NOT player.first_name LIKE '%FORFEIT%' AND
 		NOT player.last_name LIKE '%FORFEIT%' AND
 		NOT player.first_name LIKE '%HANDICAP%' AND
-		NOT player.last_name LIKE '%HANDICAP%'"
+		NOT player.last_name LIKE '%HANDICAP%'
+		ORDER BY captain desc, player_name"
 		); 
 	}
 
@@ -222,7 +231,7 @@ while ($row = mysql_fetch_assoc($result)) {
 		while ($hp_row = mysql_fetch_assoc($hp_result)) {
 			$pdf->SetFont('Helvetica', '', 10);
 			$pdf->SetXY($players_home_x, $pl_home_y);
-			$pdf->Write(0, '(' . $hp_row[$handicap_DB] . ') ' . $hp_row['player_name'] );
+			$pdf->Write(0, '(' . $hp_row[$handicap_DB] . ') ' . $hp_row['player_name'] . ' ' . $hp_row['captain']);
 			$pl_home_y = $pl_home_y + 5; 
 		}
 
@@ -236,7 +245,7 @@ while ($row = mysql_fetch_assoc($result)) {
 		while ($vp_row = mysql_fetch_assoc($vp_result)) {
 			$pdf->SetFont('Helvetica', '', 10);
 			$pdf->SetXY($players_away_x, $vl_home_y);
-			$pdf->Write(0, '(' . $vp_row[$handicap_DB] . ') ' . $vp_row['player_name'] );
+			$pdf->Write(0, '(' . $vp_row[$handicap_DB] . ') ' . $vp_row['player_name'] . ' ' . $vp_row['captain']);
 			$vl_home_y = $vl_home_y + 5; 
 		}
 
@@ -312,7 +321,7 @@ while ($row = mysql_fetch_assoc($result)) {
 		while ($hp_row = mysql_fetch_assoc($hp_result)) {
 			$pdf->SetFont('Helvetica', '', 10);
 			$pdf->SetXY($players_home_x, $pl_home_y);
-			$pdf->Write(0, '(' . $hp_row[$handicap_DB] . ') ' . $hp_row['player_name'] );
+			$pdf->Write(0, '(' . $hp_row[$handicap_DB] . ') ' . $hp_row['player_name'] . ' ' . $hp_row['captain']);
 			$pl_home_y = $pl_home_y + 5; 
 		}
 
@@ -321,7 +330,7 @@ while ($row = mysql_fetch_assoc($result)) {
 		while ($vp_row = mysql_fetch_assoc($vp_result)) {
 			$pdf->SetFont('Helvetica', '', 10);
 			$pdf->SetXY($players_away_x, $vl_home_y);
-			$pdf->Write(0, '(' . $vp_row[$handicap_DB] . ') ' . $vp_row['player_name'] );
+			$pdf->Write(0, '(' . $vp_row[$handicap_DB] . ') ' . $vp_row['player_name'] . ' ' . $vp_row['captain']);
 			$vl_home_y = $vl_home_y + 5; 
 		}
 	}
@@ -354,7 +363,7 @@ while ($row = mysql_fetch_assoc($result)) {
 		      	       $hc_home_x = $players_home_x + 63;
 				$pdf->SetFont('Helvetica', '', 10);
 				$pdf->SetXY($players_home_x, $pl_home_y);
-				$pdf->Write(0, $hp_row['player_name']);
+				$pdf->Write(0, $hp_row['player_name'] . ' ' . $hp_row['captain']);
 				$pdf->SetXY($hc_home_x, $pl_home_y);
 				$pdf->Write(0, $hp_row['hcd_name']);
 				$pl_home_y = $pl_home_y + 6.6; 
@@ -371,9 +380,9 @@ while ($row = mysql_fetch_assoc($result)) {
 		      	       $hcp_home_x = $players_away_x + 63;
 				$pdf->SetFont('Helvetica', '', 10);
 				$pdf->SetXY($players_away_x, $vl_home_y);
-				$pdf->Write(0, $vp_row['player_name'] );
+				$pdf->Write(0, $vp_row['player_name'] . ' ' . $vp_row['captain'] );
 				$pdf->SetXY($hcp_home_x, $vl_home_y);
-				$pdf->Write(0, $vp_row['hcd_name']);
+				$pdf->Write(0, $vp_row['hcd_name'] );
 				$vl_home_y = $vl_home_y + 6.7; 
 		}
 		// import page 2
