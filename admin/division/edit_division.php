@@ -75,6 +75,8 @@ $res = mysql_query("SELECT * FROM match_schedule WHERE division_id='{$_GET['divi
 	
 if (mysql_num_rows($res) == 0)
 	$view->parse('main.no_playoffs');
+if (mysql_num_rows($res) > 0) 
+	$view->parse('main.delete_playoffs');
 
 $view->parse('main');
 $view->out('main');

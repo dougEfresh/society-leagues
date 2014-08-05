@@ -18,17 +18,37 @@ function admin_divisions()
 	});	
 }
 
+function add_playoffs_dialog(division_id)
+{
 
+	$.post("admin/division/playoff_dialog.php?&division_id=" + division_id, function(data)	
+	{
+		$("#add_playoff_dialog").html(data); 
+		$("#add_playoff_dialog").css('top', '100');
+		$("#add_playoff_dialog").css('left', '100');
+		$("#add_playoff_dialog").css('display', '');	
+	});	
+}
 
 
 function add_playoffs(division_id)
 {
-	$.post("admin/division/add_playoffs.php?division_id=" + division_id, function(data)	
+	var playoff_id = $("#playoff_id").val();
+	$.post("admin/division/add_playoffs.php?division_id=" + division_id + '&playoff_id=' + playoff_id, function(data)	
 	{
+		$("#add_playoff_dialog").css("display", "none");
 		edit_division(division_id);
 	});
 }
 
+
+function delete_playoffs(division_id)
+{
+	$.post("admin/division/delete_playoffs.php?division_id=" + division_id, function(data)	
+	{
+		edit_division(division_id);
+	});
+}
 
 
 function add_player_search(caller)

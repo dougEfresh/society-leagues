@@ -6,6 +6,7 @@
 <div id="new_player_dialog" class="dialog" style="display:none">&nbsp;</div>
 <div id="new_captain_dialog" class="dialog" style="display:none">&nbsp;</div>
 <div id="week_substitute_dialog" class="dialog" style="display:none">&nbsp;</div>
+<div id="add_playoff_dialog" class="dialog" style="display:none">&nbsp;</div>
 
 
 <div id="results_dialog" class="dialog" style="display:none">&nbsp;</div>
@@ -152,9 +153,13 @@
   <td colspan="3" class="h_divider" style="padding:2px;">
    DIVISION SCHEDULE
    <!-- BEGIN: no_playoffs -->
-   <img src="../../images/b_insert_playoff_week.jpg" class="button_16" style="float:right; margin-right:10px" onClick="add_playoffs('{division_id}');">
+   <img src="../../images/b_insert_playoff_week.jpg" class="button_16" style="float:right; margin-right:10px" onClick="add_playoffs_dialog('{division_id}');">
    <span style="clear:both"></span>
    <!-- END: no_playoffs -->
+   <!-- BEGIN: delete_playoffs -->
+   <img src="../../images/b_delete_playoff_week.jpg" class="button_16" style="float:right; margin-right:10px" onClick="delete_playoffs('{division_id}');">
+   <span style="clear:both"></span>
+   <!-- END: delete_playoffs -->
   </td>
  </tr>
 
