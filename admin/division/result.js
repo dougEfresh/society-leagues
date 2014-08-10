@@ -231,3 +231,20 @@ function insert_game(match_id, mn, type)
 		});	
 	});
 }
+
+
+function update_team_result(match_id)
+{
+	var arg = '';
+	arg += "&match_id=" + match_id;
+	arg += "&ht_id=" + $("#htm").val();
+	arg += "&vt_id=" + $("#vtm").val();
+	arg += "&ht_r=" + $("#home_match_result").val();
+	arg += "&vt_r=" + $("#visit_match_result").val();	
+	
+	$.post("admin/division/update_team_result.php?" + arg, function(data)	
+	{
+		console.log(data + 'matches left');
+
+	});
+}

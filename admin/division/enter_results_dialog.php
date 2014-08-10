@@ -23,32 +23,32 @@ switch($league_id)
 {
 	case '1':
 		$style = 'normal';
-		$hc = "handicap";
+		$hc = "hc_9";
 	break;	
 
 	case '2':
 		$style = 'normal';
-		$hc = "handicap_eight";
+		$hc = "hc_8";
 	break;	
 	
 	case '3':
 		$style = 'individual';
-		$hc = "handicap_straight";
+		$hc = "hc_straight";
 	break;
 	
 	case '4':
 		$style = 'mixed';
-		$hc = "handicap_mixed_9";
+		$hc = "hc_m9";
 	break;
 	
 	case '5':
 		$style = 'individual';
-		$hc = "handicap_10";
+		$hc = "hc_10";
 	break;
 		
 	case '6':
 		$style = 'normal';
-		$hc = "handicap_eight_beginner";
+		$hc = "hc_8Begin";
 	break;
 }
 
@@ -175,11 +175,11 @@ else if (($league_id == '3') || ($league_id == '5'))
 	
 	LEFT JOIN result_ind h1 ON h1.match_id=m.match_id AND h1.player_id=m.home_player_id
 	JOIN player hp1 ON hp1.player_id=m.home_player_id 
-	LEFT JOIN handicap_display hcd_h1 ON (hcd_h1.hcd_league={$league_id} AND hcd_h1.hcd_handicap=hp1.{$hc})
+	LEFT JOIN handicap_display hcd_h1 ON (hcd_h1.hcd_id=hp1.{$hc})
 	
 	LEFT JOIN result_ind v1 ON v1.match_id=h1.match_id AND NOT v1.player_id=h1.player_id AND v1.match_number=h1.match_number
 	JOIN player vp1 ON vp1.player_id=m.visit_player_id 
-	LEFT JOIN handicap_display hcd_v1 ON (hcd_v1.hcd_league={$league_id} AND hcd_v1.hcd_handicap=vp1.{$hc})
+	LEFT JOIN handicap_display hcd_v1 ON (hcd_v1.hcd_id=vp1.{$hc})
 	
 	WHERE m.match_id='{$_GET['match_id']}'
 	GROUP BY h1.match_number ORDER BY match_number");
@@ -206,8 +206,8 @@ else
 	JOIN team ht ON ht.team_id=h1.team_id
 	JOIN team vt ON vt.team_id=v1.team_id
 	
-	LEFT JOIN handicap_display hcd_h1 ON (hcd_h1.hcd_league={$league_id} AND hcd_h1.hcd_handicap=hp1.{$hc})
-	LEFT JOIN handicap_display hcd_v1 ON (hcd_v1.hcd_league={$league_id} AND hcd_v1.hcd_handicap=vp1.{$hc})
+	LEFT JOIN handicap_display hcd_h1 ON (hcd_h1.hcd_id=hp1.{$hc})
+	LEFT JOIN handicap_display hcd_v1 ON (hcd_v1.hcd_id=vp1.{$hc})
 	
 	RIGHT JOIN match_schedule m ON m.match_id=h1.match_id AND m.home_team_id=h1.team_id
 	WHERE h1.match_id='{$_GET['match_id']}' ORDER BY match_number");

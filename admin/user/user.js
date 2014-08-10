@@ -42,13 +42,13 @@ function update_user()
 	arg += "&state="                   + encodeURI($("#edit_state").val());
 	arg += "&zip="                     + encodeURI($("#edit_zip").val());
 	arg += "&phone="                   + encodeURI($("#edit_phone").val());
-	arg += "&handicap="                + encodeURI($("#edit_handicap").val());
-	arg += "&handicap_eight="          + encodeURI($("#edit_handicap_eight").val());
-	arg += "&handicap_straight="       + encodeURI($("#edit_handicap_straight").val());
-	arg += "&handicap_mixed_8="        + encodeURI($("#edit_handicap_mixed_8").val());
-	arg += "&handicap_mixed_9="        + encodeURI($("#edit_handicap_mixed_9").val());
-	arg += "&handicap_eight_beginner=" + encodeURI($("#edit_handicap_eight_beginner").val());
-	arg += "&handicap_10="             + encodeURI($("#edit_handicap_10").val());
+	arg += "&hc_9="					+ encodeURI($("#edit_hc_9").val());
+	arg += "&hc_8="					+ encodeURI($("#edit_hc_8").val());
+	arg += "&hc_straight="			+ encodeURI($("#edit_hc_straight").val());
+	arg += "&hc_m8="				+ encodeURI($("#edit_hc_m8").val());
+	arg += "&hc_m9="				+ encodeURI($("#edit_hc_m9").val());
+	arg += "&hc_8Begin=" 			+ encodeURI($("#edit_hc_8Begin").val());
+	arg += "&hc_10="				+ encodeURI($("#edit_hc_10").val());
 	
 	player_id = $("#edit_player_id").val();
 	

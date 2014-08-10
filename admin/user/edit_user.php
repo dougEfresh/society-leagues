@@ -27,7 +27,7 @@ while($group = mysql_fetch_assoc($result))
 	$view->parse('main.group');	
 }
 
-$result = mysql_query("SELECT * FROM league LEFT JOIN handicap_display ON hcd_league=league_id ORDER BY hcd_handicap");
+$result = mysql_query("SELECT * FROM league LEFT JOIN handicap_display ON hcd_league=league_id ORDER BY hcd_id");
 
 while($row = mysql_fetch_assoc($result))
 {

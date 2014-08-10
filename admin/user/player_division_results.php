@@ -12,33 +12,33 @@ $row = mysql_fetch_assoc($result);
 switch($row['league_id'])
 {
 	case '1':
-		$hc = "(home_hc.hcd_league='{$row['league_id']}' AND home_hc.hcd_handicap=hplayer.handicap)";
-		$vc = "(visit_hc.hcd_league='{$row['league_id']}' AND visit_hc.hcd_handicap=vplayer.handicap)";
+		$hc = "home_hc.hcd_id=hplayer.hc_9";
+		$vc = "visit_hc.hcd_id=vplayer.hc_9";
 	break;
 	
 	case '2':
-		$hc = "(home_hc.hcd_league='{$row['league_id']}' AND home_hc.hcd_handicap=hplayer.handicap_eight)";
-		$vc = "(visit_hc.hcd_league='{$row['league_id']}' AND visit_hc.hcd_handicap=vplayer.handicap_eight)";
+		$hc = "home_hc.hcd_id=hplayer.hc_8";
+		$vc = "visit_hc.hcd_id=vplayer.hc_8)";
 	break;
 	
 	case '3':
-		$hc = "(home_hc.hcd_league='{$row['league_id']}' AND home_hc.hcd_handicap=hplayer.handicap_straight)";
-		$vc = "(visit_hc.hcd_league='{$row['league_id']}' AND visit_hc.hcd_handicap=vplayer.handicap_straight)";
+		$hc = "home_hc.hcd_id=hplayer.hc_straight";
+		$vc = "visit_hc.hcd_id=vplayer.hc_straight";
 	break;
 	
 	case '4':
-		$hc = "(home_hc.hcd_league='{$row['league_id']}' AND home_hc.hcd_handicap=hplayer.handicap_mixed_9)";
-		$vc = "(visit_hc.hcd_league='{$row['league_id']}' AND visit_hc.hcd_handicap=vplayer.handicap_mixed_9)";
+		$hc = "home_hc.hcd_id=hplayer.hc_m9";
+		$vc = "visit_hc.hcd_id=vplayer.hc_m9";
 	break;
 
 	case '5':
-		$hc = "(home_hc.hcd_league='{$row['league_id']}' AND home_hc.hcd_handicap=hplayer.handicap_10)";
-		$vc = "(visit_hc.hcd_league='{$row['league_id']}' AND visit_hc.hcd_handicap=vplayer.handicap_10)";
+		$hc = "home_hc.hcd_id=hplayer.hc_10";
+		$vc = "visit_hc.hcd_id=vplayer.hc_10";
 	break;
 		
 	case '6':
-		$hc = "(home_hc.hcd_league='{$row['league_id']}' AND home_hc.hcd_handicap=hplayer.handicap_eight_beginner)";
-		$vc = "(visit_hc.hcd_league='{$row['league_id']}' AND visit_hc.hcd_handicap=vplayer.handicap_eight_beginner)";
+		$hc = "home_hc.hcd_id=hplayer.hc_8Begin";
+		$vc = "visit_hc.hcd_id=vplayer.hc_8Begin";
 	break;	
 }
 

@@ -37,33 +37,33 @@ while($row = mysql_fetch_assoc($result))
 switch($league)
 {
 	case '1':
-		$hc = "(home_hc.hcd_league='{$row['league_id']}' AND home_hc.hcd_handicap=home_player.handicap)";
-		$vc = "(visit_hc.hcd_league='{$row['league_id']}' AND visit_hc.hcd_handicap=visit_player.handicap)";
+		$hc = "home_hc.hcd_id=home_player.hc_9";
+		$vc = "visit_hc.hcd_id=visit_player.hc_9";
 	break;
 	
 	case '2':
-		$hc = "(home_hc.hcd_league='{$row['league_id']}' AND home_hc.hcd_handicap=home_player.handicap_eight)";
-		$vc = "(visit_hc.hcd_league='{$row['league_id']}' AND visit_hc.hcd_handicap=visit_player.handicap_eight)";
+		$hc = "home_hc.hcd_id=home_player.hc_8";
+		$vc = "visit_hc.hcd_id=visit_player.hc_8";
 	break;
 	
 	case '3':
-		$hc = "(home_hc.hcd_league='{$row['league_id']}' AND home_hc.hcd_handicap=home_player.handicap_straight)";
-		$vc = "(visit_hc.hcd_league='{$row['league_id']}' AND visit_hc.hcd_handicap=visit_player.handicap_straight)";
+		$hc = "home_hc.hcd_id=home_player.hc_straight";
+		$vc = "visit_hc.hcd_id=visit_player.hc_straight";
 	break;
 	
 	case '4':
-		$hc = "(home_hc.hcd_league='{$row['league_id']}' AND home_hc.hcd_handicap=home_player.handicap_mixed_9)";
-		$vc = "(visit_hc.hcd_league='{$row['league_id']}' AND visit_hc.hcd_handicap=visit_player.handicap_mixed_9)";
+		$hc = "home_hc.hcd_id=home_player.hc_m9";
+		$vc = "visit_hc.hcd_id=visit_player.hc_m9";
 	break;
 
 	case '5':
-		$hc = "(home_hc.hcd_league='{$row['league_id']}' AND home_hc.hcd_handicap=home_player.handicap_10)";
-		$vc = "(visit_hc.hcd_league='{$row['league_id']}' AND visit_hc.hcd_handicap=visit_player.handicap_10)";
+		$hc = "home_hc.hcd_id=home_player.hc_10";
+		$vc = "visit_hc.hcd_id=visit_player.hc_10";
 	break;
 		
 	case '6':
-		$hc = "(home_hc.hcd_league='{$row['league_id']}' AND home_hc.hcd_handicap=home_player.handicap_eight_beginner)";
-		$vc = "(visit_hc.hcd_league='{$row['league_id']}' AND visit_hc.hcd_handicap=visit_player.handicap_eight_beginner)";
+		$hc = "home_hc.hcd_id=home_player.hc_8Begin";
+		$vc = "visit_hc.hcd_handicap=visit_player.hc_8Begin";
 	break;	
 }
 

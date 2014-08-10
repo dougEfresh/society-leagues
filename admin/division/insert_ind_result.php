@@ -29,18 +29,18 @@ $v1 = mysql_fetch_assoc($result);
 switch($p1['league_id'])
 {
 	case '1':
-		$hc = 'handicap';
+		$hc = 'hc_9';
 		$team = true;
 	break;
 	
 	case '2':
-		$hc = 'handicap_eight';
+		$hc = 'hc_8';
 		$team = true;
 	break;
 	
 	case '3':
 	case '5':
-		$hc = 'handicap_straight';
+		$hc = 'hc_straight';
 		$team = false;
 	break;
 	
@@ -56,18 +56,18 @@ switch($p1['league_id'])
 			case '25':
 			case '26':
 			case '31':
-				$hc = 'handicap_mixed_9';
+				$hc = 'hc_m9';
 			break;
 			
 			default:
-				$hc = 'handicap_mixed_9';
+				$hc = 'hc_m9';
 			break;	
 		}
 		$team = true;
 	break;
 	
 	case '6':
-		$hc = 'handicap_eight_beginner';
+		$hc = 'hc_8Begin';
 		$team = true;
 	break;
 }

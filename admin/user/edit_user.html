@@ -105,34 +105,34 @@
         <tr>
          <td class="table_label">
           8 Ball Thu:
-           <select style="width:60px" id="edit_handicap_eight">
+           <select style="width:60px" id="edit_hc_8">
            <!-- BEGIN:2 -->
-           <option value="{hcd_handicap}">{hcd_name}</option>  
+           <option value="{hcd_id}">{hcd_name}</option>  
            <!-- END:2 -->
           </select>     
          </td>
          <td class="table_label">
           8 Ball Wed:
-           <select style="width:60px" id="edit_handicap_eight_beginner">
+           <select style="width:60px" id="edit_hc_8Begin">
            <!-- BEGIN:6 -->
-           <option value="{hcd_handicap}">{hcd_name}</option>  
+           <option value="{hcd_id}">{hcd_name}</option>  
            <!-- END:6 -->
           </select>
          </td>
         </tr>
         <td class="table_label">
           Mixed 8:
-           <select style="width:60px" id="edit_handicap_mixed_8">
+           <select style="width:60px" id="edit_hc_m8">
            <!-- BEGIN:4 -->
-           <option value="{hcd_handicap}">{hcd_name}</option>  
+           <option value="{hcd_id}">{hcd_name}</option>  
            <!-- END:4 -->
           </select>
          </td>
          <td class="table_label">
           Mixed 9:
-           <select style="width:60px" id="edit_handicap_mixed_9">
+           <select style="width:60px" id="edit_hc_m9">
            <!-- BEGIN:4 -->
-           <option value="{hcd_handicap}">{hcd_name}</option>  
+           <option value="{hcd_id}">{hcd_name}</option>  
            <!-- END:4 -->
           </select>
          </td>
@@ -140,17 +140,17 @@
         <tr>
          <td class="table_label">
           9 Ball:
-          <select style="width:60px" id="edit_handicap">
+          <select style="width:60px" id="edit_hc_9">
            <!-- BEGIN:1 -->
-           <option value="{hcd_handicap}">{hcd_name}</option>  
+           <option value="{hcd_id}">{hcd_name}</option>  
            <!-- END:1 -->
           </select>
          </td>
          <td class="table_label">
           10 Ball:
-          <select style="width:60px" id="edit_handicap_10">
+          <select style="width:60px" id="edit_hc_10">
            <!-- BEGIN:5 -->
-           <option value="{hcd_handicap}">{hcd_name}</option>  
+           <option value="{hcd_id}">{hcd_name}</option>  
            <!-- END:5 -->
           </select>
          </td>
@@ -158,9 +158,9 @@
         <tr>
          <td class="table_label">
           Straight:
-           <select style="width:60px" id="edit_handicap_straight">
+           <select style="width:60px" id="edit_hc_straight">
            <!-- BEGIN:3 -->
-           <option value="{hcd_handicap}">{hcd_name}</option>  
+           <option value="{hcd_id}">{hcd_name}</option>  
            <!-- END:3 -->
           </select>
          </td>
@@ -168,13 +168,13 @@
        </table>
        <!-- END:hc -->
        <script language="javascript" type="text/javascript">
-	    $("#edit_handicap_10").val('{handicap_10}');
-		$("#edit_handicap").val('{handicap}');
-		$("#edit_handicap_eight").val('{handicap_eight}');
-		$("#edit_handicap_eight_beginner").val('{handicap_eight_beginner}');
-		$("#edit_handicap_straight").val('{handicap_straight}');
-		$("#edit_handicap_mixed_9").val('{handicap_mixed_9}');
-		$("#edit_handicap_mixed_8").val('{handicap_mixed_8}');
+	    $("#edit_hc_10").val('{hc_10}');
+		$("#edit_hc_9").val('{hc_9}');
+		$("#edit_hc_8").val('{hc_8}');
+		$("#edit_hc_8Begin").val('{hc_8Begin}');
+		$("#edit_hc_straight").val('{hc_straight}');
+		$("#edit_hc_m9").val('{hc_m9}');
+		$("#edit_hc_m8").val('{hc_m8}');
 	   </script>
       </div>
      </td>

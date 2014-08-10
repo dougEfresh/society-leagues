@@ -6,15 +6,21 @@ include '../include/xtemplate.class.php';
 $view = new xtemplate('account.html');
 
 $result = mysql_query("SELECT *,
-						hcb.hcd_name hcb, hct.hcd_name hct, hcm.hcd_name hcm, 
-						hcs.hcd_name hcs, hc8.hcd_name hc8, hc9.hcd_name hc9
+						hc_8B.hcd_name hc8B, 
+						hc_8.hcd_name hc8, 
+						hc_10.hcd_name hc10,
+						hc_m8.hcd_name hcm8, 
+						hc_s.hcd_name hcs, 
+						hc_9.hcd_name hc9, 
+						hc_m9.hcd_name hcm9
 						FROM player 
-						JOIN handicap_display hc9 ON hc9.hcd_league='1' AND hc9.hcd_handicap=player.handicap
-						JOIN handicap_display hc8 ON hc8.hcd_league='2' AND hc8.hcd_handicap=player.handicap_eight
-						JOIN handicap_display hcs ON hcs.hcd_league='3' AND hcs.hcd_handicap=player.handicap_straight
-						JOIN handicap_display hcm ON hcm.hcd_league='4' AND hcm.hcd_handicap=player.handicap_mixed_9
-						JOIN handicap_display hct ON hct.hcd_league='5' AND hct.hcd_handicap=player.handicap_10
-						JOIN handicap_display hcb ON hcb.hcd_league='6' AND hcb.hcd_handicap=player.handicap_eight_beginner
+						LEFT JOIN handicap_display hc_8B ON hc_8B.hcd_id=player.hc_8Begin
+						LEFT JOIN handicap_display hc_8 ON hc_8.hcd_id=player.hc_8
+						LEFT JOIN handicap_display hc_9 ON hc_9.hcd_id=player.hc_9
+						LEFT JOIN handicap_display hc_s ON hc_s.hcd_id=player.hc_straight
+						LEFT JOIN handicap_display hc_m9 ON hc_m9.hcd_id=player.hc_m9
+						LEFT JOIN handicap_display hc_m8 ON hc_m8.hcd_id=player.hc_m8
+						LEFT JOIN handicap_display hc_10 ON hc_10.hcd_id=player.hc_10
 						WHERE player_id='{$_GET['player_id']}'");
 
 $row = mysql_fetch_assoc($result);

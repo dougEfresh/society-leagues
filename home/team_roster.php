@@ -14,27 +14,27 @@ $row = mysql_fetch_assoc($result);
 switch($row['league_id'])
 {
 	case '1':
-		$hc = "(hcd_league='{$row['league_id']}' AND hcd_handicap=player.handicap)";
+		$hc = "hcd_id=player.hc_9";
 	break;
 	
 	case '2':
-		$hc = "(hcd_league='{$row['league_id']}' AND hcd_handicap=player.handicap_eight)";
+		$hc = "hcd_id=player.hc_8";
 	break;
 	
 	case '3':
-		$hc = "(hcd_league='{$row['league_id']}' AND hcd_handicap=player.handicap_straight)";
+		$hc = "hcd_id=player.hc_straight";
 	break;
 	
 	case '4':
-		$hc = "(hcd_league='{$row['league_id']}' AND hcd_handicap=player.handicap_mixed_9)";
+		$hc = "hcd_id=player.hc_m9";
 	break;
 
 	case '5':
-		$hc = "(hcd_league='{$row['league_id']}' AND hcd_handicap=player.handicap_10)";
+		$hc = "hcd_id=player.hc_10";
 	break;
 		
 	case '6':
-		$hc = "(hcd_league='{$row['league_id']}' AND hcd_handicap=player.handicap_eight_beginner)";
+		$hc = "hcd_id=player.hc_8Begin";
 	break;	
 }
 

@@ -14,27 +14,27 @@ $row = mysql_fetch_assoc($result);
 switch($row['league_id'])
 {
 	case '1':
-		$hc = "handicap";
+		$hc = "hc_9";
 	break;
 	
 	case '2':
-		$hc = "handicap_eight";
+		$hc = "hc_8";
 	break;
 	
 	case '3':
-		$hc = "handicap_straight";
+		$hc = "hc_straight";
 	break;
 	
 	case '4':
-		$hc = "handicap_mixed_9";
+		$hc = "hc_m9";
 	break;
 	
 	case '5':
-		$hc = "handicap_10";
+		$hc = "hc_10";
 	break;
 	
 	case '6':
-		$hc = "handicap_eight_beginner";
+		$hc = "hc_8Begin";
 	break;
 }
 
@@ -50,7 +50,7 @@ FROM team_player
 RIGHT JOIN player ON player.player_id=team_player.tp_player
 RIGHT JOIN team ON team.team_id=team_player.tp_team
 LEFT JOIN division ON division.division_id='{$_GET['division_id']}'
-LEFT JOIN handicap_display ON (hcd_league=division.league_id AND hcd_handicap={$hc})
+LEFT JOIN handicap_display ON (hcd_id={$hc})
 LEFT JOIN match_schedule ON (match_schedule.division_id=division.division_id AND 
 (match_schedule.home_team_id=team_player.tp_team OR match_schedule.visit_team_id=team_player.tp_team))
 LEFT JOIN result_ind ON result_ind.match_id=match_schedule.match_id AND result_ind.player_id=player.player_id
