@@ -18,7 +18,7 @@ switch($row['league_id'])
 	
 	case '2':
 		$hc = "home_hc.hcd_id=hplayer.hc_8";
-		$vc = "visit_hc.hcd_id=vplayer.hc_8)";
+		$vc = "visit_hc.hcd_id=vplayer.hc_8";
 	break;
 	
 	case '3':
