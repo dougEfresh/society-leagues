@@ -42,8 +42,6 @@ switch($row['league_id'])
 	break;	
 }
 
-echo $hc;
-
 $result = mysql_query(
 "SELECT
 
