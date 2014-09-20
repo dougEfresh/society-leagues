@@ -11,7 +11,7 @@ if ( (isset($_SESSION['user_filter'])) && (strlen($_SESSION['user_filter']) > 0)
 else
 	$where = '';
 	
-$result = mysql_query("SELECT * FROM player {$where} ORDER BY first_name");
+$result = mysql_query("SELECT * FROM player {$where} ORDER BY first_name, last_name");
 
 while ($row = mysql_fetch_assoc($result))
 {
