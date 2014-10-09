@@ -83,7 +83,37 @@ function substitute_week_matches(division_id, match_number)
 	});
 }
 
+function change_scramble_dialog(match_id)
+{	
+	$.post("admin/division/change_scramble_dialog.php?match_id=" + match_id, function(data)	
+	{
+		$("#change_scramble_dialog").html(data);
+		$("#change_scramble_dialog").css('top', '100');
+		$("#change_scramble_dialog").css('left', '100');
+		$("#change_scramble_dialog").css('display', '');	
+	});
+}
 
+function change_scramble(match_id)
+{
+	var scramble9= $("#scramble9").val();
+
+	$.post("admin/division/change_scramble.php?match_id=" + match_id + '&scramble9=' + scramble9, function(data)	
+	{
+		$("#change_scramble_dialog").css("display", "none");
+		edit_division(division_id);
+	});
+}
+
+function add_playoffs(division_id)
+{
+	var playoff_id = $("#playoff_id").val();
+	$.post("admin/division/add_playoffs.php?division_id=" + division_id + '&playoff_id=' + playoff_id, function(data)	
+	{
+		$("#add_playoff_dialog").css("display", "none");
+		edit_division(division_id);
+	});
+}
 
 function substitute_team(caller)
 {

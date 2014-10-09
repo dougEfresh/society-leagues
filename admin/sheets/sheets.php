@@ -26,7 +26,16 @@ switch ($row['league_id']) {
 	// Scramble Leagues
 	case '4':
 		$league_type = 'Scramble';
-		$handicap_DB = 'hc_m9';
+		switch ($row['scramble9']) {
+			case '1':
+				$handicap_DB = 'hc_m9';
+				$mixedmode = '9 Ball';
+				break;
+			case '0':
+				$handicap_DB = 'hc_m8';
+				$mixedmode = '8 Ball';
+				break;
+		}
 		$template = 'templates/Scramble_Scoresheet.pdf';
 		$team_home_x = 14;
 		$team_home_y = 56;
@@ -224,7 +233,7 @@ while ($row = mysql_fetch_assoc($result)) {
 		// write 8 or 9 ball
 		$pdf->SetFont('Helvetica', 'B', 23);
 		$pdf->SetXY(178, 9.5);
-		$pdf->Cell(50, 30, 'BALL');
+		$pdf->Cell(48, 30, $mixedmode);
 		
 		// write home team list
 		$pl_home_y = $players_home_y;
