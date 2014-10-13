@@ -268,7 +268,7 @@ while ($row = mysql_fetch_assoc($result)) {
 		// write 8 or 9 ball
 		$pdf->SetFont('Helvetica', 'B', 23);
 		$pdf->SetXY(178, 9.5);
-		$pdf->Cell(50, 30, 'BALL');
+		$pdf->Cell(50, 30, $mixedmode);
 
 		// write home team
 		$pdf->SetFont('Helvetica', 'B', 12);
