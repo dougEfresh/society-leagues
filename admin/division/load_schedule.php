@@ -21,7 +21,10 @@ if (mysql_num_rows($result) > 0)
 		foreach($row as $key => $val)
 			$view->assign($key, $val);
 		if ($row['league_id'] == 4 and $row['result_count'] == 0)  {
-			$view->parse("main.week.scramble"); }
+			$view->parse("main.week.scramble"); 
+			if ($row['scramble9'] == 1) { $view->parse("main.week.matchtype9"); }
+			else { $view->parse("main.week.matchtype8"); }
+			}
 		else { 
 			if ($row['scramble9'] == 1) { $view->parse("main.week.matchtype9"); }
 			else { $view->parse("main.week.matchtype8"); }
