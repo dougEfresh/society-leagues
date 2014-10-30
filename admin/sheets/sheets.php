@@ -36,7 +36,7 @@ switch ($row['league_id']) {
 				$mixedmode = '8 Ball';
 				break;
 		}
-		$template = 'templates/Scramble_Scoresheet.pdf';
+		$template = 'templates/Scramble_Scoresheet_Copy.pdf';
 		$team_home_x = 14;
 		$team_home_y = 56;
 		$team_away_x = 110;
@@ -261,9 +261,15 @@ while ($row = mysql_fetch_assoc($result)) {
 		// add a page
 		$pdf->AddPage();
 
-		// import page 2
-		$tplIdx2 = $pdf->importPage(2);
-		$pdf->useTemplate($tplIdx2, 0, 0, 216);
+		// import page 2 for 8 page 3 for 9
+		if ($mixedmode  == "8 Ball") {
+			$tplIdx2 = $pdf->importPage(2);
+			$pdf->useTemplate($tplIdx2, 0, 0, 216);
+		}
+		else {
+			$tplIdx2 = $pdf->importPage(3);
+			$pdf->useTemplate($tplIdx2, 0, 0, 216);
+		}
 
 		// write 8 or 9 ball
 		$pdf->SetFont('Helvetica', 'B', 23);
@@ -279,6 +285,8 @@ while ($row = mysql_fetch_assoc($result)) {
 		$pdf->SetFont('Helvetica', 'B', 12);
 		$pdf->SetXY($team_away_x2, $team_away_y2);
 		$pdf->Write(0, $row['visit_team']);
+		
+		
 	}
 
 	// 8-Ball Scoresheet
