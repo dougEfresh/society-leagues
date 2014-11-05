@@ -31,6 +31,7 @@ SUM(result_team.is_win) team_wins, SUM(IF(result_team.is_win=1,0,1)) team_losses
 (SELECT SUM(games_won) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN({$schedule_cache['cache']})) player_games_won,
 (SELECT SUM(games_lost) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN({$schedule_cache['cache']})) player_games_lost,
 
+
 TRIM(LEADING '0' FROM
 FORMAT((SELECT SUM(games_won) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN({$schedule_cache['cache']})) /
 ((SELECT SUM(games_won) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN({$schedule_cache['cache']})) +
@@ -44,6 +45,31 @@ WHERE division_member.division_id='{$_GET['division_id']}'
 GROUP BY division_member.team_id
 ORDER BY team_wins DESC, player_match_wins DESC, player_match_losses ASC, pct DESC");
 }
+elseif ($league['league_id'] == '4'){
+
+$result = mysql_query("SELECT team.name, team.team_id,
+SUM(result_team.is_win) team_wins, SUM(IF(result_team.is_win=1,0,1)) team_losses,
+(SELECT SUM(is_win) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN({$schedule_cache['cache']})) player_match_wins,
+(SELECT SUM(IF(is_win=1,0,1)) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN({$schedule_cache['cache']})) player_match_losses,
+(SELECT SUM(games_won) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN({$schedule_cache['cache']})) player_games_won,
+(SELECT SUM(games_lost) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN({$schedule_cache['cache']})) player_games_lost,
+
+TRIM(LEADING '0' FROM
+FORMAT((SELECT SUM(games_won) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN({$schedule_cache['cache']})) /
+((SELECT SUM(games_won) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN({$schedule_cache['cache']})) +
+(SELECT SUM(games_lost) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN({$schedule_cache['cache']}))),3)) pct
+
+FROM division_member 
+JOIN team ON team.team_id=division_member.team_id
+JOIN match_schedule ON match_schedule.division_id=division_member.division_id AND (match_schedule.home_team_id=division_member.team_id OR match_schedule.visit_team_id=division_member.team_id)
+JOIN result_team ON result_team.team_id=division_member.team_id AND result_team.match_id=match_schedule.match_id
+WHERE division_member.division_id='{$_GET['division_id']}'
+GROUP BY division_member.team_id
+ORDER BY team_wins DESC, pct DESC, player_match_wins DESC, player_games_won DESC");
+
+
+}
+	
 else {
 
 $result = mysql_query("SELECT team.name, team.team_id,

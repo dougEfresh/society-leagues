@@ -19,6 +19,8 @@ if (mysql_num_rows($result) > 0)
 	{
 		foreach($row as $key => $val)
 			$view->assign($key, $val);
+		if ($row['scramble9'] == 1) { $view->parse("main.week.matchtype9"); }
+		else { $view->parse("main.week.matchtype8"); }		
 		
 		$view->parse("main.week");
 	}
