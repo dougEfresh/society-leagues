@@ -48,13 +48,21 @@ team.name,
 COUNT(result_ind.result_id) games,
 (ROUND(SUM(result_ind.is_win) / COUNT(result_ind.result_id),3)) AS percentage,
 SUM(IF (match_schedule.scramble9 = 1 AND result_ind.is_win AND result_ind.match_number NOT IN (3,4,9,16,19,21,25,26,31), 1, 0)) AS wins9ball,
+
 SUM(IF (match_schedule.scramble9 = 1 AND NOT result_ind.is_win AND result_ind.match_number NOT IN (3,4,9,16,19,21,25,26,31), 1, 0)) AS loss9ball,
+
 ROUND((SUM(IF (match_schedule.scramble9 = 1 AND result_ind.is_win AND result_ind.match_number NOT IN (3,4,9,16,19,21,25,26,31), 1, 0))) / SUM(IF (match_schedule.scramble9 = 1 AND result_ind.match_number NOT IN (3,4,9,16,19,21,25,26,31), 1, 0)) ,2)  AS pct9ball,
+
 SUM(IF (match_schedule.scramble9 = 0 AND result_ind.is_win AND result_ind.match_number NOT IN (3,4,9,16,19,21,25,26,31), 1, 0)) AS wins8ball,
+
 SUM(IF (match_schedule.scramble9 = 0 AND NOT result_ind.is_win AND result_ind.match_number NOT IN (3,4,9,16,19,21,25,26,31), 1, 0)) AS loss8ball,
+
 ROUND((SUM(IF (match_schedule.scramble9 = 0 AND result_ind.is_win AND result_ind.match_number NOT IN (3,4,9,16,19,21,25,26,31), 1, 0))) / SUM(IF (match_schedule.scramble9 = 0 AND result_ind.match_number NOT IN (3,4,9,16,19,21,25,26,31), 1, 0)) ,2)  AS pct8ball,
+
 SUM(IF (result_ind.is_win AND result_ind.match_number IN (3,4,9,16,19,21,25,26,31), 1, 0)) AS winsscotch,
+
 SUM(IF (NOT result_ind.is_win AND result_ind.match_number IN (3,4,9,16,19,21,25,26,31), 1, 0)) AS lossscotch,
+
 ROUND((SUM(IF (result_ind.is_win AND result_ind.match_number IN (3,4,9,16,19,21,25,26,31), 1, 0))) / SUM(IF (result_ind.match_number IN (3,4,9,16,19,21,25,26,31), 1, 0)),2 ) AS pctscotch,
 SUM(result_ind.is_win) wins,
 (COUNT(result_ind.result_id) - SUM(result_ind.is_win)) losses

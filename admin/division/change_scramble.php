@@ -8,7 +8,7 @@ ini_set('display_errors',1);
 
 $result = mysql_query("
 UPDATE match_schedule SET scramble9={$_GET['scramble9']}
-WHERE match_id ={$_GET['match_id']}");
+WHERE division_id ={$_GET['division_id']} AND match_number = {$_GET['match_number']}");
 
 /*
 

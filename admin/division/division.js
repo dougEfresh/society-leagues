@@ -83,9 +83,9 @@ function substitute_week_matches(division_id, match_number)
 	});
 }
 
-function change_scramble_dialog(match_id)
+function change_scramble_dialog(division_id, match_number)
 {	
-	$.post("admin/division/change_scramble_dialog.php?match_id=" + match_id, function(data)	
+	$.post("admin/division/change_scramble_dialog.php?division_id=" + division_id + "&match_number=" + match_number, function(data)	
 	{
 		$("#change_scramble_dialog").html(data);
 		$("#change_scramble_dialog").css('top', '100');
@@ -94,11 +94,11 @@ function change_scramble_dialog(match_id)
 	});
 }
 
-function change_scramble(match_id)
+function change_scramble(division_id, match_number)
 {
 	var scramble9= $("#scramble9").val();
 
-	$.post("admin/division/change_scramble.php?match_id=" + match_id + '&scramble9=' + scramble9, function(data)	
+	$.post("admin/division/change_scramble.php?division_id=" + division_id + "&match_number=" + match_number + '&scramble9=' + scramble9, function(data)	
 	{
 		$("#change_scramble_dialog").css("display", "none");
 		edit_division(division_id);
