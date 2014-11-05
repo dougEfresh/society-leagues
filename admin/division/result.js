@@ -98,7 +98,7 @@ function modify_doubles_game(the_obj)
 
 function is_mixed_doubles(mn)
 {
-	if ( (mn == 3) || (mn == 4) || (mn == 9) || (mn == 16) || (mn == 19) || (mn == 21) || (mn == 25) || (mn == 26
+	if ( (mn == 3) || (mn == 4) || (mn == 9) || (mn == 15) || (mn == 19) || (mn == 22) || (mn == 25) || (mn == 26
 ) || (mn == 31) )
 		return true;
 	else

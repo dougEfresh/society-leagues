@@ -50,9 +50,9 @@ switch($p1['league_id'])
 			case '3':
 			case '4':
 			case '9':
-			case '16':
+			case '15':
 			case '19':
-			case '21':
+			case '22':
 			case '25':
 			case '26':
 			case '31':
