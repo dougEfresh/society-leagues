@@ -29,6 +29,7 @@ switch($leagueID)
 	
 	case '4':
 		$hc = "hcd_id=player.hc_m9";
+		$hc8 = "hcm8.hcd_id=player.hc_m8";
 		$scramble = 1; 
 	break;
 
@@ -43,34 +44,34 @@ switch($leagueID)
 
 if ($scramble == 1	 ){
 $result = mysql_query("
-SELECT CONCAT(player.first_name,' ',player.last_name) player_name, player.player_id, handicap_display.*,
+SELECT CONCAT(player.first_name,' ',player.last_name) player_name, player.player_id, handicap_display.*, hcm8.hcd_name as hcd_name8,
 team.name,
 COUNT(result_ind.result_id) games,
 (ROUND(SUM(result_ind.is_win) / COUNT(result_ind.result_id),3)) AS percentage,
-SUM(IF (match_schedule.scramble9 = 1 AND result_ind.is_win AND result_ind.match_number NOT IN (3,4,9,16,19,21,25,26,31), 1, 0)) AS wins9ball,
+SUM(IF (match_schedule.scramble9 = 1 AND result_ind.is_win AND result_ind.scotch = 0, 1, 0)) AS wins9ball,
 
-SUM(IF (match_schedule.scramble9 = 1 AND NOT result_ind.is_win AND result_ind.match_number NOT IN (3,4,9,16,19,21,25,26,31), 1, 0)) AS loss9ball,
+SUM(IF (match_schedule.scramble9 = 1 AND NOT result_ind.is_win AND result_ind.scotch = 0, 1, 0)) AS loss9ball,
 
-ROUND((SUM(IF (match_schedule.scramble9 = 1 AND result_ind.is_win AND result_ind.match_number NOT IN (3,4,9,16,19,21,25,26,31), 1, 0))) / SUM(IF (match_schedule.scramble9 = 1 AND result_ind.match_number NOT IN (3,4,9,16,19,21,25,26,31), 1, 0)) ,2)  AS pct9ball,
+ROUND((SUM(IF (match_schedule.scramble9 = 1 AND result_ind.is_win AND result_ind.scotch = 0, 1, 0))) / SUM(IF (match_schedule.scramble9 = 1 AND result_ind.scotch = 0, 1, 0)) ,2)  AS pct9ball,
 
-SUM(IF (match_schedule.scramble9 = 0 AND result_ind.is_win AND result_ind.match_number NOT IN (3,4,9,16,19,21,25,26,31), 1, 0)) AS wins8ball,
+SUM(IF (match_schedule.scramble9 = 0 AND result_ind.is_win AND result_ind.scotch = 0, 1, 0)) AS wins8ball,
 
-SUM(IF (match_schedule.scramble9 = 0 AND NOT result_ind.is_win AND result_ind.match_number NOT IN (3,4,9,16,19,21,25,26,31), 1, 0)) AS loss8ball,
+SUM(IF (match_schedule.scramble9 = 0 AND NOT result_ind.is_win AND result_ind.scotch = 0, 1, 0)) AS loss8ball,
 
-ROUND((SUM(IF (match_schedule.scramble9 = 0 AND result_ind.is_win AND result_ind.match_number NOT IN (3,4,9,16,19,21,25,26,31), 1, 0))) / SUM(IF (match_schedule.scramble9 = 0 AND result_ind.match_number NOT IN (3,4,9,16,19,21,25,26,31), 1, 0)) ,2)  AS pct8ball,
+ROUND((SUM(IF (match_schedule.scramble9 = 0 AND result_ind.is_win AND result_ind.scotch = 0, 1, 0))) / SUM(IF (match_schedule.scramble9 = 0 AND result_ind.scotch = 0, 1, 0)) ,2)  AS pct8ball,
 
-SUM(IF (result_ind.is_win AND result_ind.match_number IN (3,4,9,16,19,21,25,26,31), 1, 0)) AS winsscotch,
+SUM(IF (result_ind.is_win AND result_ind.scotch = 1, 1, 0)) AS winsscotch,
 
-SUM(IF (NOT result_ind.is_win AND result_ind.match_number IN (3,4,9,16,19,21,25,26,31), 1, 0)) AS lossscotch,
+SUM(IF (NOT result_ind.is_win AND result_ind.scotch = 1, 1, 0)) AS lossscotch,
 
-ROUND((SUM(IF (result_ind.is_win AND result_ind.match_number IN (3,4,9,16,19,21,25,26,31), 1, 0))) / SUM(IF (result_ind.match_number IN (3,4,9,16,19,21,25,26,31), 1, 0)),2 ) AS pctscotch,
+ROUND((SUM(IF (result_ind.is_win AND result_ind.scotch = 1, 1, 0))) / SUM(IF (result_ind.scotch = 1, 1, 0)),2 ) AS pctscotch,
 SUM(result_ind.is_win) wins,
 (COUNT(result_ind.result_id) - SUM(result_ind.is_win)) losses
 
-
 FROM team_player
 RIGHT JOIN player ON player.player_id=team_player.tp_player
-LEFT JOIN handicap_display ON {$hc}
+LEFT JOIN handicap_display ON {$hc} 
+LEFT JOIN handicap_display AS hcm8 ON {$hc8}
 RIGHT JOIN team ON team.team_id=team_player.tp_team
 LEFT JOIN division ON division.division_id='{$_GET['division_id']}'
 LEFT JOIN match_schedule ON (match_schedule.division_id=division.division_id AND 

@@ -31,17 +31,20 @@ switch($p1['league_id'])
 	case '1':
 		$hc = 'hc_9';
 		$team = true;
+		$scotch = 0;
 	break;
 	
 	case '2':
 		$hc = 'hc_8';
 		$team = true;
+		$scotch = 0;
 	break;
 	
 	case '3':
 	case '5':
 		$hc = 'hc_straight';
 		$team = false;
+		$scotch = 0;
 	break;
 	
 	case '4':
@@ -57,10 +60,12 @@ switch($p1['league_id'])
 			case '26':
 			case '31':
 				$hc = 'hc_m9';
+				$scotch = 1;
 			break;
 			
 			default:
 				$hc = 'hc_m9';
+				$scotch = 0;
 			break;	
 		}
 		$team = true;
@@ -69,16 +74,17 @@ switch($p1['league_id'])
 	case '6':
 		$hc = 'hc_8Begin';
 		$team = true;
+		$scotch = 0;
 	break;
 }
 
 //echo $_GET['dbl'];
 		
 mysql_query("INSERT INTO result_ind SET player_id='{$hp1}', team_id='{$htm}', games_won='{$hs1}', player_handicap='". $p1[$hc] ."',
-			games_lost='{$vs1}', is_win='{$hr1}', match_id='{$_GET['match_id']}', match_number='{$_GET['match_number']}'");
+			games_lost='{$vs1}', is_win='{$hr1}', match_id='{$_GET['match_id']}', match_number='{$_GET['match_number']}', scotch='{$scotch}'");
 			
 mysql_query("INSERT INTO result_ind SET player_id='{$vp1}', team_id='{$vtm}', games_won='{$vs1}', player_handicap='". $v1[$hc] ."',
-			games_lost='{$hs1}', is_win='{$vr1}', match_id='{$_GET['match_id']}', match_number='{$_GET['match_number']}'");
+			games_lost='{$hs1}', is_win='{$vr1}', match_id='{$_GET['match_id']}', match_number='{$_GET['match_number']}', scotch='{$scotch}'");
 	
 if ($_GET['dbl'] == 'DOUBLES')
 {
@@ -89,10 +95,10 @@ if ($_GET['dbl'] == 'DOUBLES')
 	$v2 = mysql_fetch_assoc($result);
 	
 	mysql_query("INSERT INTO result_ind SET player_id='{$hp2}', team_id='{$htm}', games_won='{$hs1}', player_handicap='". $p2[$hc] ."',
-			games_lost='{$vs1}', is_win='{$hr1}', match_id='{$_GET['match_id']}', match_number='{$_GET['match_number']}'");
+			games_lost='{$vs1}', is_win='{$hr1}', match_id='{$_GET['match_id']}', match_number='{$_GET['match_number']}', scotch='{$scotch}'");
 
 	mysql_query("INSERT INTO result_ind SET player_id='{$vp2}', team_id='{$vtm}', games_won='{$vs1}', player_handicap='". $v2[$hc] ."',
-			games_lost='{$hs1}', is_win='{$vr1}', match_id='{$_GET['match_id']}', match_number='{$_GET['match_number']}'");
+			games_lost='{$hs1}', is_win='{$vr1}', match_id='{$_GET['match_id']}', match_number='{$_GET['match_number']}', scotch='{$scotch}'");
 
 }
 
