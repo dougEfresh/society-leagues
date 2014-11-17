@@ -36,7 +36,7 @@ switch ($row['league_id']) {
 				$mixedmode = '8 Ball';
 				break;
 		}
-		$template = 'templates/Scramble_Scoresheet_Copy.pdf';
+		$template = 'templates/Scramble_Scoresheet.pdf';
 		$team_home_x = 14;
 		$team_home_y = 56;
 		$team_away_x = 110;
