@@ -1,9 +1,5 @@
 <?php
-#$conn = mysql_connect('localhost', 'daleegdbuser', 'pr3dat0r');
-#mysql_select_db('league', $conn);
-
-$conn = mysql_connect('localhost:8889', 'root', 'root');
+$conn = mysql_connect('localhost', 'league');
 mysql_select_db('league', $conn);
-
 
 ?>
