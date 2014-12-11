@@ -1,2 +1,3 @@
 [ -d build ] || mkdir build 
-git archive --format=tar.gz -o build/league.tar.gz ${1:?}
+branch=`git rev-parse --abbrev-ref HEAD`
+git archive --format=tar.gz -o build/league.tar.gz $branch
