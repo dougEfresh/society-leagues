@@ -13,8 +13,8 @@ buildscript {
 apply plugin: 'spring-boot'
 apply plugin: 'java'
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.11'
@@ -34,6 +34,15 @@ task leaguesWeb(type: Tar) {
 
 assemble.dependsOn 'leaguesWeb'
 
+bootRun {
+    def port = '5005'
+    if (project.hasProperty('debugPort')) {
+       port=project.debugPort
+    }
+
+   jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=' + port
+}
+
 repositories {
     jcenter()
     maven { url "http://repo.spring.io/snapshot" }
@@ -45,6 +54,8 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-actuator'
     compile 'org.springframework.boot:spring-boot-starter-jdbc'
+    compile 'org.springframework.boot:spring-boot-starter-security'
+
     compile 'mysql:mysql-connector-java:5.1.32'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
