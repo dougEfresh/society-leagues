@@ -13,18 +13,27 @@ buildscript {
 apply plugin: 'spring-boot'
 apply plugin: 'java'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.11'
 }
 
 jar {
-    baseName = 'society-league'
+    baseName = 'society-leagues'
+    archiveName = 'society-leagues.jar'
     version = '1.0.0'
 }
+
+task leaguesWeb(type: Tar) {
+     from 'web'
+     archiveName 'leagues.tar.gz'
+     compression 'GZIP'
+}
+
+assemble.dependsOn 'leaguesWeb'
+
 repositories {
     jcenter()
     maven { url "http://repo.spring.io/snapshot" }
