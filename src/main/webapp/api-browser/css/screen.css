@@ -1183,7 +1183,7 @@
   float: left;
   margin: 0 10px 0 0;
 }
-.swagger-section #header form#api_selector .input input#input_apiKey {
+.swagger-section #header form#api_selector .input input#input_apiToken {
   width: 200px;
 }
 .swagger-section #header form#api_selector .input input#input_baseUrl {

@@ -54,7 +54,7 @@ $(function() {
 });
 
 function clippyCopiedCallback(a) {
-  $('#api_key_copied').fadeIn().delay(1000).fadeOut();
+  $('#x_auth_token_copied').fadeIn().delay(1000).fadeOut();
 
   // var b = $("#clippy_tooltip_" + a);
   // b.length != 0 && (b.attr("title", "copied!").trigger("tipsy.reload"), setTimeout(function() {
@@ -1382,7 +1382,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       'click #show-wordnik-dev-icon': 'showWordnikDev',
       'click #explore': 'showCustom',
       'keyup #input_baseUrl': 'showCustomOnKeyup',
-      'keyup #input_apiKey': 'showCustomOnKeyup'
+      'keyup #input_apiToken': 'showCustomOnKeyup'
     };
 
     HeaderView.prototype.initialize = function() {};
@@ -1411,11 +1411,11 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
       }
       return this.trigger('update-swagger-ui', {
         url: $('#input_baseUrl').val(),
-        apiKey: $('#input_apiKey').val()
+        apiToken: $('#input_apiToken').val()
       });
     };
 
-    HeaderView.prototype.update = function(url, apiKey, trigger) {
+    HeaderView.prototype.update = function(url, apiToken, trigger) {
       if (trigger == null) {
         trigger = false;
       }

@@ -19,6 +19,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -40,15 +41,11 @@ public class AuthenticationFilter extends GenericFilterBean {
         logger.info("Got request: " + request + "\n\nFilter Chain: " + chain);
         HttpServletRequest httpRequest = asHttp(request);
         HttpServletResponse httpResponse = asHttp(response);
-        httpResponse.setHeader("Access-Control-Allow-Origin",  "*");
-        httpResponse.setHeader("Access-Control-Allow-Headers", httpRequest.getHeader("Access-Control-Request-Headers"));
-        httpResponse.setHeader("Access-Control-Allow-Methods", httpRequest.getHeader("Access-Control-Request-Methods"));
-        httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
+        setHeaders(httpRequest, httpResponse);
 
-
-        Optional<String> username = Optional.ofNullable(httpRequest.getHeader("X-Auth-Username"));
-        Optional<String> password = Optional.ofNullable(httpRequest.getHeader("X-Auth-Password"));
-        Optional<String> token = Optional.ofNullable(httpRequest.getHeader("X-Auth-Token"));
+        Optional<String> username = getUserName(httpRequest);
+        Optional<String> password = getPassword(httpRequest);
+        Optional<String> token = getToken(httpRequest);
 
         String resourcePath = new UrlPathHelper().getPathWithinApplication(httpRequest);
 
@@ -80,6 +77,59 @@ public class AuthenticationFilter extends GenericFilterBean {
         }
     }
 
+    private Optional<String> getUserName(HttpServletRequest request) {
+        return getAuthField("X-Auth-Username", request);
+    }
+
+    private Optional<String> getPassword(HttpServletRequest request) {
+        return getAuthField("X-Auth-Password", request);
+    }
+
+    private Optional<String> getToken(HttpServletRequest request) {
+        return getAuthField("X-Auth-Token", request);
+    }
+
+    /**
+     * Find the auth fields, X-Auth-* in this order
+     * 1) Parameters
+     * 2) Header
+     * 3) Cookie
+     *
+     * @param name
+     * @param request
+     * @return value if found
+     */
+    private Optional<String> getAuthField(String name, HttpServletRequest request) {
+        Optional<String> value = Optional.ofNullable(request.getParameter(name));
+        if (value.isPresent()) {
+            logger.debug(String.format("Found %s in parameter", name));
+            return value;
+        }
+
+        value = Optional.ofNullable(request.getHeader(name));
+        if (value.isPresent()) {
+            logger.debug(String.format("Found %s in header", name));
+            return value;
+        }
+
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (cookie.getName().equals(name)) {
+                    logger.debug(String.format("Found %s in cookie", name));
+                    return Optional.of(cookie.getValue());
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    private void setHeaders(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+        httpResponse.setHeader("Access-Control-Allow-Origin", "*");
+        httpResponse.setHeader("Access-Control-Allow-Headers", httpRequest.getHeader("Access-Control-Request-Headers"));
+        httpResponse.setHeader("Access-Control-Allow-Methods", httpRequest.getHeader("Access-Control-Request-Methods"));
+        httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
+    }
+
     private void addSessionContextToLogging() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String tokenValue = "EMPTY";
@@ -92,9 +142,9 @@ public class AuthenticationFilter extends GenericFilterBean {
         String userValue = "EMPTY";
         //if (authentication != null && !Strings.isNullOrEmpty(authentication.getPrincipal().toString())) {
         if (authentication != null && authentication.getPrincipal() != null
-                    && authentication.getPrincipal().toString() != null
-                    && !authentication.getPrincipal().toString().isEmpty()
-                )  {
+                && authentication.getPrincipal().toString() != null
+                && !authentication.getPrincipal().toString().isEmpty()
+                ) {
             userValue = authentication.getPrincipal().toString();
         }
         MDC.put(USER_SESSION_KEY, userValue);
@@ -142,7 +192,7 @@ public class AuthenticationFilter extends GenericFilterBean {
         if (responseAuthentication == null || !responseAuthentication.isAuthenticated()) {
             throw new InternalAuthenticationServiceException("Unable to authenticate Domain User for provided credentials");
         }
-        logger.info(requestAuthentication.getPrincipal() + " Successful Auth" );
+        logger.info(requestAuthentication.getPrincipal() + " Successful Auth");
         return responseAuthentication;
     }
 }

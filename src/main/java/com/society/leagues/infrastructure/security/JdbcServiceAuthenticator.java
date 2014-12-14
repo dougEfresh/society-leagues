@@ -43,8 +43,9 @@ public class JdbcServiceAuthenticator implements ExternalServiceAuthenticator {
             throw new BadCredentialsException("Unable to verify username " + username);
         }
 
-        AuthenticatedExternalWebService authenticatedExternalWebService = new AuthenticatedExternalWebService(new DomainUser(player), null,
-                                                                                                              AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_DOMAIN_USER")
+        AuthenticatedExternalWebService authenticatedExternalWebService = new AuthenticatedExternalWebService(
+                new DomainUser(player), null,
+                AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_DOMAIN_USER")
         );
 
         authenticatedExternalWebService.setExternalServiceAuthenticator(this);
