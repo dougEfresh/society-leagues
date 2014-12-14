@@ -1,8 +1,8 @@
 package com.society.leagues.infrastructure.security;
 
 import com.society.leagues.domain.DomainUser;
-import com.society.leagues.domain.PlayerDb;
-import com.society.leagues.domain.objects.Player;
+import com.society.leagues.domain.player.PlayerDb;
+import com.society.leagues.domain.interfaces.Player;
 import com.society.leagues.infrastructure.AuthenticatedExternalWebService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

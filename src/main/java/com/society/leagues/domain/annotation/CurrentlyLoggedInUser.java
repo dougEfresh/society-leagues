@@ -1,4 +1,4 @@
-package com.society.leagues.domain;
+package com.society.leagues.domain.annotation;
 
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 

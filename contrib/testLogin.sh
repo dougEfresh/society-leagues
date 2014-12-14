@@ -1,2 +1,2 @@
 #docker run -p 8888:80 -d 
-curl -d login=email_608@domain.com -d password=password_608 -v http://localhost:8888/system/do_login.php
+curl -X POST --header "X-Auth-Username: email_608@domain.com" --header "X-Auth-Password: password_608" -v http://localhost:8080//api/v1/auth/login

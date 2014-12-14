@@ -1,19 +1,14 @@
 package com.society.leagues.domain;
 
-import com.society.leagues.domain.objects.Player;
+import com.society.leagues.domain.interfaces.Player;
 
 public class DomainUser {
     private String username;
-    private int playerId;
-
-    public DomainUser(String username, int playerId) {
-        this.playerId = playerId;
-        this.username = username;
-    }
+    private Player player;
 
     public DomainUser(Player player) {
         this.username = player.getLogin();
-        this.playerId = player.getId();
+        this.player = player;
     }
 
     public String getUsername() {
@@ -21,7 +16,7 @@ public class DomainUser {
     }
 
     public int getId() {
-        return playerId;
+        return player.getId();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.society.leagues.domain.objects;
+package com.society.leagues.domain.interfaces;
 
 public interface Player {
 

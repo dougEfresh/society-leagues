@@ -40,6 +40,11 @@ public class AuthenticationFilter extends GenericFilterBean {
         logger.info("Got request: " + request + "\n\nFilter Chain: " + chain);
         HttpServletRequest httpRequest = asHttp(request);
         HttpServletResponse httpResponse = asHttp(response);
+        httpResponse.setHeader("Access-Control-Allow-Origin",  "*");
+        httpResponse.setHeader("Access-Control-Allow-Headers", httpRequest.getHeader("Access-Control-Request-Headers"));
+        httpResponse.setHeader("Access-Control-Allow-Methods", httpRequest.getHeader("Access-Control-Request-Methods"));
+        httpResponse.setHeader("Access-Control-Allow-Credentials", "true");
+
 
         Optional<String> username = Optional.ofNullable(httpRequest.getHeader("X-Auth-Username"));
         Optional<String> password = Optional.ofNullable(httpRequest.getHeader("X-Auth-Password"));
@@ -87,6 +92,7 @@ public class AuthenticationFilter extends GenericFilterBean {
         String userValue = "EMPTY";
         //if (authentication != null && !Strings.isNullOrEmpty(authentication.getPrincipal().toString())) {
         if (authentication != null && authentication.getPrincipal() != null
+                    && authentication.getPrincipal().toString() != null
                     && !authentication.getPrincipal().toString().isEmpty()
                 )  {
             userValue = authentication.getPrincipal().toString();
@@ -103,7 +109,7 @@ public class AuthenticationFilter extends GenericFilterBean {
     }
 
     private boolean postToAuthenticate(HttpServletRequest httpRequest, String resourcePath) {
-        return resourcePath.contains("authenticate") && httpRequest.getMethod().equals("POST");
+        return resourcePath.contains("/auth/login") && httpRequest.getMethod().equals("POST");
     }
 
     private void processUsernamePasswordAuthentication(HttpServletResponse httpResponse, Optional<String> username, Optional<String> password) throws IOException {
@@ -136,7 +142,7 @@ public class AuthenticationFilter extends GenericFilterBean {
         if (responseAuthentication == null || !responseAuthentication.isAuthenticated()) {
             throw new InternalAuthenticationServiceException("Unable to authenticate Domain User for provided credentials");
         }
-        logger.info("User successfully authenticated");
+        logger.info(requestAuthentication.getPrincipal() + " Successful Auth" );
         return responseAuthentication;
     }
 }

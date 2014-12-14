@@ -1,5 +1,6 @@
-package com.society.leagues.api.Account;
+package com.society.leagues.api.acount;
 
+import com.society.leagues.domain.SocietyDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,7 @@ import java.util.Collections;
 import java.util.Map;
 
 @Component
-public class AccountDao {
-    private final static Logger logger = LoggerFactory.getLogger(AccountDao.class);
-
-    @Autowired JdbcTemplate jdbcTemplate;
+public class AccountDao extends SocietyDao {
     final static String  ACCT_INFO = "SELECT *," +
                                 "hc_8B.hcd_name hc8B, "+
                                 "hc_8.hcd_name hc8, "+
@@ -33,11 +31,6 @@ public class AccountDao {
                                 "WHERE player_id=?";
 
     public Map<String,Object> getAcctInfo(int id) {
-        try {
-            return jdbcTemplate.queryForMap(ACCT_INFO,id);
-        } catch (Exception e) {
-            logger.error(e.getMessage(),e);
-        }
-        return Collections.emptyMap();
+        return queryForMap(ACCT_INFO,id);
     }
 }

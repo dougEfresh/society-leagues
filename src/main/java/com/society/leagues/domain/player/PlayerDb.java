@@ -1,6 +1,6 @@
-package com.society.leagues.domain;
+package com.society.leagues.domain.player;
 
-import com.society.leagues.domain.objects.Player;
+import com.society.leagues.domain.interfaces.Player;
 
 import java.util.Map;
 
