@@ -77,16 +77,6 @@ public class SecurityTest {
         public AuthenticationProvider testAuthenticationProvider() {
             return mock(AuthenticationProvider.class);
         }
-
-
-    /*
-    @Bean
-    @Primary
-    public ServiceGateway serviceGateway() {
-        return mock(ServiceGateway.class);
-    }
-    */
-
     }
 
     @Before
@@ -97,10 +87,11 @@ public class SecurityTest {
     }
 
     @Test
-    public void healthEndpoint_isAvailableToEveryone() {
-        when().get("/health").
-                then().statusCode(HttpStatus.OK.value()).body("status", equalTo("UP"));
-
+    public void apiDocs_isAvailableToEveryone() {
+        when().get("/api-test/index.html").
+	    then().statusCode(HttpStatus.OK.value());
+        when().get("/api-browser/index.html").
+	    then().statusCode(HttpStatus.OK.value());
         when().get("/index.html").
                 then().statusCode(HttpStatus.OK.value());
     }
