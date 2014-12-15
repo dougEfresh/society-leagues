@@ -4,6 +4,7 @@ import com.society.leagues.api.ApiController;
 import com.society.leagues.domain.annotation.CurrentlyLoggedInUser;
 import com.society.leagues.domain.DomainUser;
 import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,14 +18,16 @@ import java.util.Map;
         description = "Account Information and Changes ",
         basePath = "/api/vi",
         position = 2
+
 )
 @PreAuthorize("hasAuthority('ROLE_DOMAIN_USER')")
 public class AccountController extends ApiController {
 
     @Autowired AccountDao dao;
 
-    @RequestMapping(value = "/info",method = RequestMethod.POST)
-    public Map<String,Object> getAccount(@ApiParam() @CurrentlyLoggedInUser DomainUser domainUser) {
+    @RequestMapping(value = "/info", method = RequestMethod.POST)
+    @ApiOperation(value = "/info", notes = "Returns account data for a league player")
+    public Map<String,Object> getAccount(@ApiParam(access = "internal") @CurrentlyLoggedInUser DomainUser domainUser) {
         return dao.getAcctInfo(domainUser.getId());
     }
 }

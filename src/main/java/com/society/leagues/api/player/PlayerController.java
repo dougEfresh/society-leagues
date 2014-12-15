@@ -5,6 +5,8 @@ import com.society.leagues.domain.annotation.CurrentlyLoggedInUser;
 import com.society.leagues.domain.DomainUser;
 
 import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @Api( value = "/player" ,
-      description = "Player Stats",
+      description = "Player Management & Info",
       basePath = "/api/vi"
 )
 @RequestMapping("/api/v1/player")
@@ -24,7 +26,8 @@ public class PlayerController extends ApiController {
     @Autowired PlayerDao dao;
 
     @RequestMapping(value = "/teamHistory",method = RequestMethod.POST)
-    public Map<String,Object> teamHistory(@CurrentlyLoggedInUser DomainUser user) {
+    @ApiOperation(value = "/teamHistory" , notes = "Get players stats for all teams")
+    public Map<String,Object> teamHistory(@ApiParam(access = "internal") @CurrentlyLoggedInUser DomainUser user) {
         return dao.getTeamHistory(user.getId());
     }
 }

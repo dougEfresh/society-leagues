@@ -4,7 +4,9 @@ import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.ValidatableResponse;
 import com.society.leagues.api.ApiController;
 import com.society.leagues.api.account.AccountDao;
+import com.society.leagues.api.division.DivisionDao;
 import com.society.leagues.api.player.PlayerDao;
+import com.society.leagues.api.scheduler.SchedulerDao;
 import com.society.leagues.domain.DomainUser;
 import com.society.leagues.domain.interfaces.Player;
 import com.society.leagues.domain.player.PlayerDb;
@@ -38,12 +40,14 @@ public abstract class TestBase {
 
     @Autowired public PlayerDao mockPlayerDao;
     @Autowired public AccountDao mockAccountDao;
+    @Autowired public SchedulerDao mockSchedulerDao;
+    @Autowired public DivisionDao mockDivisionDao;
 
     @Before
     public void setup() {
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = port;
-        Mockito.reset(mockAccountDao,mockPlayerDao);
+        Mockito.reset(mockAccountDao,mockPlayerDao,mockSchedulerDao,mockDivisionDao);
         Mockito.reset(mockedExternalServiceAuthenticator);
     }
 

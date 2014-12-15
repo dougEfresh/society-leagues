@@ -1,7 +1,9 @@
 package com.society.test;
 
 import com.society.leagues.api.account.AccountDao;
+import com.society.leagues.api.division.DivisionDao;
 import com.society.leagues.api.player.PlayerDao;
+import com.society.leagues.api.scheduler.SchedulerDao;
 import com.society.leagues.infrastructure.security.ExternalServiceAuthenticator;
 import com.society.leagues.infrastructure.security.TokenService;
 import com.society.leagues.infrastructure.security.TokenServiceMemory;
@@ -23,6 +25,18 @@ public class TestConfig {
     @Primary
     public AccountDao getAccountDao() {
         return mock(AccountDao.class);
+    }
+
+    @Bean
+    @Primary
+      public SchedulerDao getSchedulerDao() {
+        return mock(SchedulerDao.class);
+    }
+
+    @Bean
+    @Primary
+    public DivisionDao getDivisionDao() {
+        return mock(DivisionDao.class);
     }
 
     @Bean
