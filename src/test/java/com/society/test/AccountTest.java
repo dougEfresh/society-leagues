@@ -1,21 +1,11 @@
 package com.society.test;
 
-import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.response.ResponseBodyExtractionOptions;
-import com.jayway.restassured.response.ValidatableResponse;
 import com.society.leagues.Application;
 import com.society.leagues.api.ApiController;
-import com.society.leagues.api.player.PlayerDao;
-import com.society.leagues.domain.DomainUser;
-import com.society.leagues.domain.interfaces.Player;
-import com.society.leagues.domain.player.PlayerDb;
-import com.society.leagues.infrastructure.AuthenticatedExternalWebService;
-import com.society.leagues.infrastructure.security.ExternalServiceAuthenticator;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.HttpStatus;
@@ -35,27 +25,30 @@ import static org.mockito.Mockito.when;
 @SpringApplicationConfiguration(classes = {Application.class, TestConfig.class})
 @WebAppConfiguration
 @IntegrationTest(value = {"server.port:0"})
-public class PlayerTest extends TestBase {
+public class AccountTest extends TestBase {
 
     @Test
-    public void testPlayerTeamHistory() {
+    public void testInfo() {
         String generatedToken = authenticate();
         Map<String,Object> playerInfo = new HashMap<>();
         playerInfo.put("player_id",1);
-        playerInfo.put("league_name","some league name");
-        when(mockPlayerDao.getTeamHistory(anyInt())).thenReturn(playerInfo);
+        playerInfo.put("first_name","jesus");
+        playerInfo.put("last_name","god");
+
+        when(mockAccountDao.getAcctInfo(anyInt())).thenReturn(playerInfo);
 
         given().header(X_AUTH_TOKEN, generatedToken).
-                when().post(ApiController.PLAYER_URL + "/teamHistory").
+                when().post(ApiController.ACCOUNT_URL + "/info").
                 then().statusCode(HttpStatus.OK.value());
+
         ResponseBodyExtractionOptions body =  given().header(X_AUTH_TOKEN, generatedToken).
-                when().post(ApiController.PLAYER_URL + "/teamHistory").then().extract().body();
+                when().post(ApiController.ACCOUNT_URL + "/info").then().extract().body();
+
         assertNotNull(body);
         assertNotNull(body.jsonPath());
         JsonPath json = body.jsonPath();
         assertEquals(json.getInt("player_id"),playerInfo.get("player_id"));
-        assertEquals(json.getString("league_name"),playerInfo.get("league_name"));
+        assertEquals(json.getString("first_name"),playerInfo.get("first_name"));
+        assertEquals(json.getString("last_name"),playerInfo.get("last_name"));
     }
-
-
 }

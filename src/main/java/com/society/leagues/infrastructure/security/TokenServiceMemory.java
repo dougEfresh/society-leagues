@@ -14,7 +14,7 @@ public class TokenServiceMemory implements TokenService {
     @Override
     @Scheduled(fixedRate = HALF_AN_HOUR_IN_MILLISECONDS)
     public void evictExpiredTokens() {
-        //restApiAuthTokenCache.evictExpiredElements();
+
     }
 
     @Override
@@ -24,7 +24,6 @@ public class TokenServiceMemory implements TokenService {
 
     @Override
     public void store(String token, Authentication authentication) {
-        //restApiAuthTokenCache.put(new Element(token, authentication));
         restApiAuthTokenCache.put(token,authentication);
     }
 
@@ -35,7 +34,6 @@ public class TokenServiceMemory implements TokenService {
 
     @Override
     public Authentication retrieve(String token) {
-        //return (Authentication) restApiAuthTokenCache.get(token).getObjectValue();
         return restApiAuthTokenCache.get(token);
     }
 }

@@ -1,4 +1,4 @@
-package com.society.leagues.api.acount;
+package com.society.leagues.api.account;
 
 import com.society.leagues.api.ApiController;
 import com.society.leagues.domain.annotation.CurrentlyLoggedInUser;

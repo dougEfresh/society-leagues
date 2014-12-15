@@ -36,11 +36,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 domainUsernamePasswordAuthenticationProvider()).
                 authenticationProvider(tokenAuthenticationProvider());
     }
-    @Autowired
-    JdbcServiceAuthenticator serviceAuthenticator;
 
-    @Autowired(required = false) @Value("${auth.provider:}")
-    String authProvider;
+    @Autowired ExternalServiceAuthenticator serviceAuthenticator;
+    @Autowired TokenService tokenService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -67,60 +65,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-    @Bean
-    public TokenService tokenService() {
-        if (authProvider != null && !authProvider.isEmpty())
-            return new TokenServiceMemory();
-        else
-            return new TokenServiceJdbc();
-    }
-
     @Bean(name = "tokenAuthenticationProvider")
     public AuthenticationProvider tokenAuthenticationProvider() {
-        return new TokenAuthenticationProvider(tokenService());
-    }
-
-    @Bean
-    public AuthenticationProvider noAuthenticationProvider() {
-        Player player = new Player() {
-                @Override
-                public int getId() {
-                    return 100;
-                }
-
-                @Override
-                public String getLogin() {
-                    return "test@domain.com";
-                }
-
-                @Override
-                public String getFirstName() {
-                    return "tester";
-                }
-
-                @Override
-                public String getLastName() {
-                    return "tester";
-                }
-            };
-        return new DomainUsernamePasswordAuthenticationProvider(tokenService(), new ExternalServiceAuthenticator() {
-            @Override
-            public AuthenticationWithToken authenticate(String username, String password) {
-                if (username.contains("INVALID"))
-                    throw new BadCredentialsException("Invalid user found");
-
-                return new AuthenticatedExternalWebService(new DomainUser(player),null,
-                        AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_DOMAIN_USER"));
-            }
-        });
+        return new TokenAuthenticationProvider();
     }
 
     @Bean
     public AuthenticationProvider domainUsernamePasswordAuthenticationProvider() {
-        if (authProvider == null || authProvider.isEmpty())
-            return new DomainUsernamePasswordAuthenticationProvider(tokenService(), serviceAuthenticator);
-        else
-            return noAuthenticationProvider();
+        return new DomainUsernamePasswordAuthenticationProvider(tokenService, serviceAuthenticator);
     }
 
     @Bean

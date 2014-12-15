@@ -38,8 +38,8 @@ public class AuthenticationFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        logger.info("Got request: " + request + "\n\nFilter Chain: " + chain);
         HttpServletRequest httpRequest = asHttp(request);
+        //logger.debug("Got request: " + httpRequest + "\n\nFilter Chain: " + chain);
         HttpServletResponse httpResponse = asHttp(response);
         setHeaders(httpRequest, httpResponse);
 

@@ -9,10 +9,6 @@ import java.util.Map;
 @Component
 public class PlayerDao extends SocietyDao {
 
-    public Map<String,Object> getTeamHistory(Player player) {
-        return getTeamHistory(player.getId());
-    }
-
     public Map<String,Object> getTeamHistory(int id) {
         return queryForMap(TEAM_HISTORY,id);
     }
