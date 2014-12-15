@@ -150,7 +150,13 @@ public class SecurityTest {
     }
 
     /*
-    @Test
+    @Test @Before
+    public void setup() {
+        RestAssured.baseURI = "http://localhost";
+        RestAssured.port = port;
+        Mockito.reset(mockedExternalServiceAuthenticator);
+    }
+
     public void gettingStuff_withoutToken_returnsUnauthorized() {
         when().get(ApiController.STUFF_URL).
                 then().statusCode(HttpStatus.UNAUTHORIZED.value());
