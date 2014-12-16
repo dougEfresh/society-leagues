@@ -6,6 +6,7 @@ import com.society.leagues.domain.annotation.CurrentlyLoggedInUser;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+import org.neo4j.cypher.internal.compiler.v2_1.ast.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,14 +33,18 @@ public class DivisionController extends ApiController {
     @RequestMapping(value = "/info", method = RequestMethod.POST)
     @ApiOperation(value = "/info", notes = "Returns Division Info (type,day..etc)")
     public List<Map<String,Object>> getInfo(@ApiParam(access = "internal") @CurrentlyLoggedInUser DomainUser domainUser,
-                                      @RequestParam int divisionId) {
+                                            @ApiParam(required = false) @RequestParam(required = false) Integer divisionId) {
+
+        if (divisionId == null || divisionId < 0) {
+            return dao.getInfo(domainUser.getPlayer());
+        }
         return dao.getInfo(divisionId);
     }
 
     @RequestMapping(value = "/standings", method = RequestMethod.POST)
     @ApiOperation(value = "/standings", notes = "Get Current Standings")
     public List<Map<String,Object>> getStandings(@ApiParam(access = "internal") @CurrentlyLoggedInUser DomainUser domainUser,
-                                           @RequestParam int divisionId) {
+                                           @RequestParam Integer divisionId) {
         return dao.getStandings(divisionId);
     }
 
@@ -52,8 +57,8 @@ public class DivisionController extends ApiController {
     @RequestMapping(value = "/standingsWeek", method = RequestMethod.POST)
     @ApiOperation(value = "/standingsWeek", notes = "Display Results for a Week")
     public List<Map<String,Object>> getList(@ApiParam(access = "internal") @CurrentlyLoggedInUser DomainUser domainUser,
-                                      @RequestParam int divisionId,
-                                      @RequestParam int weekId) {
+                                      @RequestParam Integer divisionId,
+                                      @RequestParam Integer weekId) {
         return dao.getStandingsWeek(divisionId,weekId);
     }
 

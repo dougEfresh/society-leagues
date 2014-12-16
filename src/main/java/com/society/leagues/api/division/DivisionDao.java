@@ -1,6 +1,7 @@
 package com.society.leagues.api.division;
 
 import com.society.leagues.domain.SocietyDao;
+import com.society.leagues.domain.interfaces.Player;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
@@ -10,8 +11,12 @@ import java.util.Map;
 public class DivisionDao extends SocietyDao {
 
     public List<Map<String, Object>> getInfo(int id) {
-        return queryForListMap(DIV_LIST + " WHERE division.division_id=?"
+        return queryForListMap(DIV_LIST + " WHERE division.division_id=? "
                 ,id);
+    }
+
+    public List<Map<String, Object>> getInfo(Player player) {
+        return queryForListMap(DIV_LIST_PLAYER, player.getId());
     }
 
     public List<Map<String,Object>> getStandings(int id) {
@@ -31,7 +36,7 @@ public class DivisionDao extends SocietyDao {
         return queryForListMap(DIV_LIST);
     }
 
-    public List<Map<String,Object>> getStandingsWeek(int id,int week) {
+    public List<Map<String,Object>> getStandingsWeek(int id, int week) {
         return queryForListMap(DIV_WEEK_STANDINGS,id,week);
     }
 
@@ -66,6 +71,13 @@ public class DivisionDao extends SocietyDao {
             " RIGHT JOIN days ON  d_id=division.division_day\n" +
             " RIGHT JOIN season_name ON season_name.sn_id=season.season_number\n";
 
+   static String DIV_LIST_PLAYER = "SELECT *,division.start_date jq_start, division.end_date jq_end \n" +
+            " FROM division d\n" +
+            " RIGHT JOIN league ON league.league_id=division.league_id\n" +
+            " RIGHT JOIN season ON season.season_id=division.season_id\n" +
+            " RIGHT JOIN days ON  d_id=division.division_day\n" +
+            " RIGHT JOIN season_name ON season_name.sn_id=season.season_number\n" +
+           "  JOIN team_player tp on d.division_id = tp.to_division where tp_player = ?";
 
     static String DIV_MATCH_IDS = "SELECT distinct match_id cache FROM match_schedule WHERE division_id=?";
 

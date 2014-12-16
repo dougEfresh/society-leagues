@@ -19,6 +19,10 @@ public class DomainUser {
         return player.getId();
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
     @Override
     public String toString() {
         return username;
