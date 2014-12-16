@@ -12,7 +12,7 @@ function postRequest($,divId,url,dataHandler) {
     $.ajax({
         timeout: 1000,
         type: 'POST',
-        url: 'http://localhost/api/v1/' + url,
+        url: '/api/v1/' + url,
         headers: h,
          async:   false
     }).done(function (data, textStatus, jqXHR) {
