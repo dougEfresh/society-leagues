@@ -19,7 +19,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/scheduler")
 @RestController
 @Api( value = "/scheduler" ,
-        description = "Schedule Info and Management",
+        description = "Schedule Info & Management",
         basePath = "/api/vi",
         position = 4
 

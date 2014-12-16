@@ -19,7 +19,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/division")
 @RestController
 @Api( value = "/division" ,
-        description = "Division Stats and Info",
+        description = "Division Stats & Info",
         basePath = "/api/vi",
         position = 4
 

@@ -53,8 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 hasAuthority("ROLE_DOMAIN_USER");
 
         http.authorizeRequests().antMatchers(
-                "/api-browser",
-                "/api-test",
+                "/api-browser/**",
+                "/api-test/**",
                 "/index.html",
                 "/heath").permitAll();
 

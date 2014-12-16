@@ -11,11 +11,23 @@
 	<script src="/api-test/js/society-api/login.js"></script>
 	<script src="/api-test/js/society-api/accountApi.js"></script>
 	<script src="/api-test/js/society-api/playerApi.js"></script>
-	<script src="/api-test/js/api-calls.js"></script>
+	<script src="/api-test/js/api-calls.js" ></script>
 </head>
 <body>
+
+
 <div class="dataSample" id="loginResponse"></div>
 <div class="dataSample" id="accountInfo"></div>
 <div class="dataSample" id="playerInfo"></div>
+
 </body>
+<script>
+	jQuery(document).ready(function ($) {
+		jQuery.ajaxSetup({async: false});
+		login($);
+		accountInfo($);
+		teamHistory($);
+	}
+	);
+</script>
 </html>

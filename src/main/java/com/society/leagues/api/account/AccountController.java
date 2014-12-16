@@ -15,7 +15,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/account")
 @RestController
 @Api( value = "/account" ,
-        description = "Account Information and Changes ",
+        description = "Account Information & Changes ",
         basePath = "/api/vi",
         position = 2
 

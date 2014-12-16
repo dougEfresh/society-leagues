@@ -1,6 +1,6 @@
 function createTokenHeader() {
     return {
-            "X-Auth-Token": readCookie("X-Auth-Token")
+            "X-Auth-Token": window.XauthToken
         };
 }
 
@@ -12,8 +12,9 @@ function postRequest($,divId,url,dataHandler) {
     $.ajax({
         timeout: 1000,
         type: 'POST',
-        url: 'http://localhost:8080/api/v1/' + url,
-        headers: h
+        url: 'http://localhost/api/v1/' + url,
+        headers: h,
+         async:   false
     }).done(function (data, textStatus, jqXHR) {
         $(divId).html(dataHandler(data));
     }).fail(function (jqXHR, textStatus, errorThrown) {
