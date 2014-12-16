@@ -11,23 +11,43 @@
 	<script src="/api-test/js/society-api/login.js"></script>
 	<script src="/api-test/js/society-api/accountApi.js"></script>
 	<script src="/api-test/js/society-api/playerApi.js"></script>
-	<script src="/api-test/js/api-calls.js" ></script>
+	<script src="/api-test/js/society-api/divisionApi.js"></script>
 </head>
 <body>
 
+<div class="dataSample" id="loginSection">
+	<h3>Login Response</h3>
+	<div class="dataSample" id="loginResponse"></div>
+	<hr/>
+</div>
 
-<div class="dataSample" id="loginResponse"></div>
-<div class="dataSample" id="accountInfo"></div>
-<div class="dataSample" id="playerInfo"></div>
+<div class="dataSample" id="accountSection">
+	<h3>Account Response</h3>
+	<div class="dataSample" id="accountInfo"></div>
+	<hr/>
+</div>
+
+<div class="dataSample" id="playerSection">
+	<h3>Player Response</h3>
+	<div class="dataSample" id="playerInfo"></div>
+	<hr/>
+</div>
+
+<div class="dataSample" id="divisionSection">
+	<h3>Division Response</h3>
+	<div class="dataSample" id="divisionInfo"></div>
+	<hr/>
+</div>
 
 </body>
 <script>
 	jQuery(document).ready(function ($) {
-		jQuery.ajaxSetup({async: false});
-		login($);
-		accountInfo($);
-		teamHistory($);
-	}
+				jQuery.ajaxSetup({async: false});
+				login($);
+				accountInfo($);
+				teamHistory($);
+				divisionInfo($);
+			}
 	);
 </script>
 </html>

@@ -71,13 +71,13 @@ public class DivisionDao extends SocietyDao {
             " RIGHT JOIN days ON  d_id=division.division_day\n" +
             " RIGHT JOIN season_name ON season_name.sn_id=season.season_number\n";
 
-   static String DIV_LIST_PLAYER = "SELECT *,division.start_date jq_start, division.end_date jq_end \n" +
-            " FROM division d\n" +
-            " RIGHT JOIN league ON league.league_id=division.league_id\n" +
-            " RIGHT JOIN season ON season.season_id=division.season_id\n" +
-            " RIGHT JOIN days ON  d_id=division.division_day\n" +
-            " RIGHT JOIN season_name ON season_name.sn_id=season.season_number\n" +
-           "  JOIN team_player tp on d.division_id = tp.to_division where tp_player = ?";
+   static String DIV_LIST_PLAYER = "SELECT d.*,l.*,s.*,sn.*  \n" +
+           " FROM division d\n" +
+           " RIGHT JOIN league l ON l.league_id=d.league_id\n" +
+           " RIGHT JOIN season s ON s.season_id=d.season_id\n" +
+           " RIGHT JOIN days ON  d_id=d.division_day\n" +
+           " RIGHT JOIN season_name sn ON sn.sn_id=s.season_number\n" +
+           " JOIN team_player tp on d.division_id = tp.tp_division where tp_player = ?";
 
     static String DIV_MATCH_IDS = "SELECT distinct match_id cache FROM match_schedule WHERE division_id=?";
 
