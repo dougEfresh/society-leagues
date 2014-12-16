@@ -16,6 +16,8 @@ public class WebMvcConfig extends WebMvcAutoConfiguration.WebMvcAutoConfiguratio
     public void addResourceHandlers(ResourceHandlerRegistry registry)
     {
         logger.info("Creating static content handles");
+        registry.addResourceHandler("/index.html")
+                .addResourceLocations("classpath:/public/");
         super.addResourceHandlers(registry);
     }
 }

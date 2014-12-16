@@ -16,7 +16,8 @@
     </root>
 
     <logger name="com.society" level="DEBUG" />
-    <!--<logger name="org.springframework.boot.actuate.audit.listener" level="ERROR" />
+<!--
+    <logger name="org.springframework" level="DEBUG" />
     <logger name="org.apache.http.client.protocol.RequestTargetAuthentication" level="ERROR" />
     -->
 </configuration>

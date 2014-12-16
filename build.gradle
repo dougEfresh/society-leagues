@@ -12,7 +12,6 @@ buildscript {
 
 apply plugin: 'spring-boot'
 apply plugin: 'java'
-//apply plugin: 'war'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -26,11 +25,6 @@ jar {
     archiveName = 'society-leagues.jar'
     version = '1.0.0'
 }
-/*
-war {
-    archiveName = 'society-leagues.jar'
-}
-*/
 
 task leaguesWeb(type: Tar) {
      from 'web'
@@ -48,6 +42,16 @@ bootRun {
 
    jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=' + port
 }
+
+task integrationTest(type: Test) {
+    testClassesDir = sourceSets.integration.output.classesDir
+    classpath = sourceSets.integration.runtimeClasspath
+
+    def serviceUrl = project.hasProperty('service.url') ? project.property('service.url') : 'http://localhost:8080'
+    jvmArgs = ['-Dservice.url=' + serviceUrl]
+}
+
+
 
 repositories {
     jcenter()
