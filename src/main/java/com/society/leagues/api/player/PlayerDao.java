@@ -14,15 +14,14 @@ public class PlayerDao extends SocietyDao {
     }
 
     public static String TEAM_HISTORY = " SELECT " +
-                                                "team.name, team.team_id,\n" +
-                                                "division.division_id,\n" +
-                                                "CONCAT(league.league_type,' ',league.league_game,' - ',days.d_name) league_name,\n" +
-                                                "season.season_number, season.season_year,\n" +
-                                                "COUNT(result_ind.is_win) match_count,\n" +
-                                                "SUM(result_ind.is_win) match_wins,\n" +
-                                                "(COUNT(result_ind.is_win)-SUM(result_ind.is_win)) match_losses,\n" +
+                                                "team.name, team.team_id," +
+                                                "division.division_id," +
+                                                "CONCAT(league.league_type,' ',league.league_game,' - ',days.d_name) league_name," +
+                                                "season.season_number, season.season_year," +
+                                                "COUNT(result_ind.is_win) match_count," +
+                                                "SUM(result_ind.is_win) match_wins," +
+                                                "(COUNT(result_ind.is_win)-SUM(result_ind.is_win)) match_losses," +
                                                 "(ROUND(SUM(result_ind.is_win) / COUNT(result_ind.is_win),3)) percentage" +
-                                                "\n" +
                                                 " FROM result_ind " +
                                                 " RIGHT JOIN match_schedule ON match_schedule.match_id=result_ind.match_id" +
                                                 " RIGHT JOIN division ON division.division_id=match_schedule.division_id" +

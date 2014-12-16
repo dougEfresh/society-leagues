@@ -67,19 +67,19 @@ public class DivisionDao extends SocietyDao {
             " RIGHT JOIN season_name ON season_name.sn_id=season.season_number\n";
 
 
-    static String DIV_MATCH_IDS = "SELECT distinct match_id cache FROM match_schedule WHERE division_id='?'";
+    static String DIV_MATCH_IDS = "SELECT distinct match_id cache FROM match_schedule WHERE division_id=?";
 
     static String DIV_STANDINGS = "SELECT team.name, team.team_id,\n" +
             "SUM(result_team.is_win) team_wins, SUM(IF(result_team.is_win=1,0,1)) team_losses,\n" +
-            "(SELECT SUM(is_win) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN(" + DIV_MATCH_IDS + ") player_match_wins,\n" +
-            "(SELECT SUM(IF(is_win=1,0,1)) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN(" + DIV_MATCH_IDS + ") player_match_losses,\n" +
-            "(SELECT SUM(games_won) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN(" + DIV_MATCH_IDS + ") player_games_won,\n" +
-            "(SELECT SUM(games_lost) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN(" + DIV_MATCH_IDS + ") player_games_lost,\n" +
-            "\n" +
-            "TRIM(LEADING '0' FROM\n" +
-            "FORMAT((SELECT SUM(games_won) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN(" + DIV_MATCH_IDS + ") /\n" +
-            "((SELECT SUM(games_won) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN(" + DIV_MATCH_IDS + ") +\n" +
-            "(SELECT SUM(games_lost) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN(" + DIV_MATCH_IDS + ")),3)) pct\n" +
+            "(SELECT SUM(is_win) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN ( " + DIV_MATCH_IDS + ") ) player_match_wins,\n" +
+            "(SELECT SUM(IF(is_win=1,0,1)) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN (" + DIV_MATCH_IDS + ") ) player_match_losses,\n" +
+            "(SELECT SUM(games_won) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN (" + DIV_MATCH_IDS + ") ) player_games_won,\n" +
+            "(SELECT SUM(games_lost) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN (" + DIV_MATCH_IDS + ") ) player_games_lost,\n" +
+            "\nTRIM(LEADING '0' FROM\n" +
+            "FORMAT((SELECT SUM(games_won) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN ("+ DIV_MATCH_IDS +")) /\n" +
+            "((SELECT SUM(games_won) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN (" + DIV_MATCH_IDS + ")) +\n" +
+            "(SELECT SUM(games_lost) FROM result_ind WHERE result_ind.team_id=division_member.team_id AND result_ind.match_id IN (" + DIV_MATCH_IDS + "))),3)) pct" +
+            "" +
             "\n" +
             "FROM division_member \n" +
             "JOIN team ON team.team_id=division_member.team_id\n" +
