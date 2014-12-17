@@ -4,13 +4,14 @@ import com.society.leagues.domain.SocietyDao;
 import com.society.leagues.domain.interfaces.Player;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 
 @Component
 public class PlayerDao extends SocietyDao {
 
-    public Map<String,Object> getTeamHistory(int id) {
-        return queryForMap(TEAM_HISTORY,id);
+    public List<Map<String,Object>> getTeamHistory(int id) {
+        return queryForListMap(TEAM_HISTORY,id);
     }
 
     public static String TEAM_HISTORY = " SELECT " +

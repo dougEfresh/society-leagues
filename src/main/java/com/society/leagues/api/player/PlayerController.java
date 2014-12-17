@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 @Api( value = "/player" ,
@@ -27,7 +28,7 @@ public class PlayerController extends ApiController {
 
     @RequestMapping(value = "/teamHistory",method = RequestMethod.POST)
     @ApiOperation(value = "/teamHistory" , notes = "Get players stats for all teams")
-    public Map<String,Object> teamHistory(@ApiParam(access = "internal") @CurrentlyLoggedInUser DomainUser user) {
+    public List<Map<String,Object>> teamHistory(@ApiParam(access = "internal") @CurrentlyLoggedInUser DomainUser user) {
         return dao.getTeamHistory(user.getId());
     }
 }

@@ -1,4 +1,4 @@
-package com.society.leagues;
+package com.society.leagues.conf;
 
 import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
 import com.mangofactory.swagger.plugin.EnableSwagger;

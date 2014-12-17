@@ -17,8 +17,10 @@ import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +33,8 @@ public abstract class TestBase {
     public static final String X_AUTH_USERNAME = "X-Auth-Username";
     public static final String X_AUTH_PASSWORD = "X-Auth-Password";
     public static final String X_AUTH_TOKEN = "X-Auth-Token";
+
+    private RestTemplate restTemplate = new TestRestTemplate();
 
     @Autowired
     public ExternalServiceAuthenticator mockedExternalServiceAuthenticator;
