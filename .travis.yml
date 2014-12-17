@@ -5,7 +5,7 @@ install:
   - sudo apt-get update -qq
   - sudo apt-get install docker
 
-script: bash -x contrib/linux/runDevDb.sh
+script: sudo contrib/linux/runDevDb.sh
 
-after_script: docker stop $(docker ps -a -q)
+after_script: sudo docker stop $(docker ps -a -q)
 
