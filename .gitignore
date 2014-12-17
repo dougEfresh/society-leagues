@@ -1,1 +1,6 @@
+*.iml
 temp/*
+build/
+*~
+.idea/
+.gradle/
