@@ -4,7 +4,7 @@ jdk:
 install:
   - sudo apt-get update -qq
   - sudo apt-get remove docker
-  - sudo apt-get install docker.io
+  - sudo apt-cache search docker
 
 script: sudo contrib/linux/runDevDb.sh
 
