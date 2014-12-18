@@ -25,7 +25,9 @@ public class DomainUser {
 
     @Override
     public String toString() {
-        return username;
+        return String.format("playerId: %s username: %s",
+                player == null ? "" : player.getId(),
+                username);
     }
 
 }

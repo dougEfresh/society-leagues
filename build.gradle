@@ -83,7 +83,9 @@ dependencies {
 
     compile 'mysql:mysql-connector-java:5.1.32'
     compile('org.apache.tomcat:tomcat-dbcp:8.0.15')
+
     compile('org.codehaus.groovy:groovy-all:2.3.8')
+    compile('com.owlike:genson:1.1');
 
     // Hystrix & Metrics
     /*

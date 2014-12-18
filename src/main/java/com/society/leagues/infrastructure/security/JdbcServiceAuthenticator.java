@@ -44,7 +44,8 @@ public class JdbcServiceAuthenticator implements ExternalServiceAuthenticator {
         }
 
         AuthenticatedExternalWebService authenticatedExternalWebService = new AuthenticatedExternalWebService(
-                new DomainUser(player), null,
+                new DomainUser(player),
+                null,
                 AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_DOMAIN_USER")
         );
 
