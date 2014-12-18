@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.servlet.configuration.
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @SpringBootApplication
+//@EnableAutoConfiguration(exclude = {GroovyTemplateAutoConfiguration.class})
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,GroovyTemplateAutoConfiguration.class})
 @EnableWebMvcSecurity
 @EnableConfigurationProperties
