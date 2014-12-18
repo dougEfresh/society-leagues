@@ -34,9 +34,7 @@ public class SecurityTest extends TestBase {
 
     @Test
     public void apiDocs_isAvailableToEveryone() {
-        when().get("/api-test/index.html").
-	    then().statusCode(HttpStatus.OK.value());
-        when().get("/api-browser/index.html").
+        when().get("/api-docs").
 	    then().statusCode(HttpStatus.OK.value());
         when().get("/index.html").
                 then().statusCode(HttpStatus.OK.value());
@@ -85,37 +83,6 @@ public class SecurityTest extends TestBase {
                 when().post(ApiController.AUTHENTICATE_URL).
                 then().statusCode(HttpStatus.UNAUTHORIZED.value());
     }
-
-    /*
-    @Test @Before
-    public void setup() {
-        RestAssured.baseURI = "http://localhost";
-        RestAssured.port = port;
-        Mockito.reset(mockedExternalServiceAuthenticator);
-    }
-
-    public void gettingStuff_withoutToken_returnsUnauthorized() {
-        when().get(ApiController.STUFF_URL).
-                then().statusCode(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    @Test
-    public void gettingStuff_withInvalidToken_returnsUnathorized() {
-        given().header(X_AUTH_TOKEN, "InvalidToken").
-                when().get(ApiController.STUFF_URL).
-                then().statusCode(HttpStatus.UNAUTHORIZED.value());
-    }
-
-
-    @Test
-    public void gettingStuff_withValidToken_returnsData() {
-        String generatedToken = authenticateByUsernameAndPasswordAndGetToken();
-
-        given().header(X_AUTH_TOKEN, generatedToken).
-                when().get(ApiController.STUFF_URL).
-                then().statusCode(HttpStatus.OK.value());
-    }
-    */
 
     private String authenticateByUsernameAndPasswordAndGetToken() {
         String username = "email_608@domain.com";

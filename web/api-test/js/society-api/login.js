@@ -6,7 +6,7 @@ function login($) {
     $.ajax({
         timeout: 1000,
         type: 'POST',
-        url: 'http://localhost:8080/api/v1/auth/login',
+        url: 'http://localhost/api/v1/auth/login',
         headers: {
             "X-Auth-Username": "email_608@domain.com",
             "X-Auth-Password": "password_608"

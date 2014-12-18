@@ -15,6 +15,8 @@ public class DaoConfig {
     String dbhost;
     @Value("${db-username:league}")
     String username;
+    @Value("${db-password:}")
+    String password;
     @Value("${db:league}")
     String db;
 
@@ -23,6 +25,9 @@ public class DaoConfig {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setUrl(String.format("jdbc:mysql://%s/%s",dbhost,db));
         dataSource.setUsername(username);
+        if (password != null && !password.isEmpty())
+            dataSource.setPassword(password);
+
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
         return dataSource;
     }
