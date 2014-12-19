@@ -13,10 +13,10 @@ appender("FILE", RollingFileAppender) {
  def rootDir = new File("/data/logs");
   
   if (!rootDir.exists()) {
-     rootDir = "build/logs"
+     rootDir = new File("build/logs");
   }
 
-  file = rootDir + "/society-league.log"
+  file = rootDir.getAbsolutePath() + "/society-league.log";
   encoder(PatternLayoutEncoder) {
     pattern = "%-5p %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %m%n"
   }
@@ -24,7 +24,7 @@ appender("FILE", RollingFileAppender) {
   	level = DEBUG
   }
   rollingPolicy(TimeBasedRollingPolicy) {
-    fileNamePattern = rootDir + "/society-league.log.%d.gz"
+    fileNamePattern = rootDir.getAbsolutePath()+ "/society-league.log.%d.gz"
   }
 }
 
