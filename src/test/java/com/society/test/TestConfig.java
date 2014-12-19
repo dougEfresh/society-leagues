@@ -15,6 +15,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
+import javax.sql.DataSource;
+
 import static org.mockito.Mockito.mock;
 
 @Configuration
@@ -62,5 +64,11 @@ public class TestConfig {
     public JdbcTemplate getJdbcTemplate() {
           return mock(JdbcTemplate.class);
       }
+
+    @Bean
+    @Primary
+    DataSource getDataSource() {
+        return mock(DataSource.class);
+    }
 
 }

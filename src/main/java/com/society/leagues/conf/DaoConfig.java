@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 
 @Configuration
-@Profile(value = "!test")
 public class DaoConfig {
 
     @Value("${db-host:localhost}")
@@ -22,10 +21,7 @@ public class DaoConfig {
     @Value("${db:league}")
     String db;
 
-
-
     @Bean
-    @Profile(value = "!test")
     DataSource getDataSource() {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setUrl(String.format("jdbc:mysql://%s/%s",dbhost,db));
@@ -38,7 +34,6 @@ public class DaoConfig {
     }
 
     @Bean
-    @Profile(value = "!test")
     JdbcTemplate getJdbcTemplate() {
         return new JdbcTemplate(getDataSource());
     }
