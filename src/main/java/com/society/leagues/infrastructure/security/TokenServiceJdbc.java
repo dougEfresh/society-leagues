@@ -2,6 +2,9 @@ package com.society.leagues.infrastructure.security;
 
 import com.owlike.genson.Genson;
 import com.society.leagues.domain.DomainUser;
+import com.society.leagues.domain.interfaces.Player;
+import com.society.leagues.domain.player.PlayerDb;
+import com.society.leagues.infrastructure.AuthenticatedExternalWebService;
 import org.omg.SendingContext.RunTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,13 +14,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Store tokens in a DB
@@ -27,6 +28,8 @@ import java.util.UUID;
 public class TokenServiceJdbc implements TokenService {
     private static final Logger logger = LoggerFactory.getLogger(TokenServiceJdbc.class);
     @Autowired JdbcTemplate jdbcTemplate;
+    @Autowired JdbcServiceAuthenticator serviceAuth;
+
     //private static final Cache restApiAuthTokenCache = CacheManager.getInstance().getCache("restApiAuthTokenCache");
     //TODO use ecache?
     private static final HashMap<String,Authentication> restApiAuthTokenCache = new HashMap<>();
@@ -91,8 +94,7 @@ public class TokenServiceJdbc implements TokenService {
             if (player == null || player.isEmpty())
                 return false;
 
-            AuthenticationWithToken auth = new Genson().deserialize(player, AuthenticationWithToken.class);
-            restApiAuthTokenCache.put(token, auth);
+            deserialize(player);
             return true;
         } catch (EmptyResultDataAccessException e) {
 
@@ -112,9 +114,22 @@ public class TokenServiceJdbc implements TokenService {
             //TODO: Just throw NULL back?
             throw new RuntimeException("Could not authorized " + token);
         }
-
-        AuthenticationWithToken auth = new Genson().deserialize(player,AuthenticationWithToken.class);
-        return restApiAuthTokenCache.put(token,auth);
+        return restApiAuthTokenCache.put(token,deserialize(player));
     }
 
+    public AuthenticationWithToken deserialize(String player) {
+        HashMap<String,Object> json = new Genson().deserialize(player, HashMap.class);
+        Player principal = new PlayerDb((HashMap) json.get("principal"));
+        ArrayList<GrantedAuthority> authorities = new ArrayList<>();
+        for (HashMap<String,String> authority : (List<HashMap<String,String>>) json.get("authorities")) {
+            authorities.add(new SimpleGrantedAuthority(authority.get("authority")));
+        }
+
+        AuthenticatedExternalWebService auth  = new AuthenticatedExternalWebService(principal,null,authorities);
+        auth.setToken((String) json.get("token"));
+        auth.setAuthenticated((Boolean) json.get("authenticated"));
+        auth.setExternalServiceAuthenticator(serviceAuth);
+        auth.setDetails(json.get("token"));
+        return auth;
+    }
 }

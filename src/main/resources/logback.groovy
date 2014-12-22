@@ -7,6 +7,7 @@ import ch.qos.logback.core.FileAppender
 
 import static ch.qos.logback.classic.Level.DEBUG
 import static ch.qos.logback.classic.Level.ERROR
+import static ch.qos.logback.classic.Level.TRACE
 import static ch.qos.logback.classic.Level.WARN
 
 appender("FILE", RollingFileAppender) {
@@ -20,9 +21,7 @@ appender("FILE", RollingFileAppender) {
   encoder(PatternLayoutEncoder) {
     pattern = "%-5p %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %m%n"
   }
-  filter(ThresholdFilter) {
-  	level = DEBUG
-  }
+  filter(ThresholdFilter) { level = TRACE  }
   rollingPolicy(TimeBasedRollingPolicy) {
     fileNamePattern = rootDir.getAbsolutePath()+ "/society-league.log.%d.gz"
   }
@@ -30,12 +29,13 @@ appender("FILE", RollingFileAppender) {
 
 appender("CONSOLE", ch.qos.logback.core.ConsoleAppender) {
   encoder(PatternLayoutEncoder) {
-    pattern = ".%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg %n"
+    pattern = "%-5p %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %m%n"
   }
   filter(ThresholdFilter) {
-  	level = DEBUG
-  }
+  	level = TRACE  }
 }
 
 logger("com.society", DEBUG)
+logger("org.springframework.security",DEBUG)
+logger("org.springframework.boot.actuate.trace",TRACE)
 root(INFO, ["FILE", "CONSOLE"])

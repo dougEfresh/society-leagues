@@ -48,6 +48,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 sessionManagement().
                 sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+        //http.authorizeRequests().
+//                antMatchers("/api/v**/admin/**").
+//                hasAuthority("ROLE_DOMAIN_ADMIN");
+
         http.authorizeRequests().
                 antMatchers("/api/v**").
                 hasAuthority("ROLE_DOMAIN_USER");

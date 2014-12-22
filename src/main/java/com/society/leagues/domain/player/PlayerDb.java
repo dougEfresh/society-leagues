@@ -1,5 +1,6 @@
 package com.society.leagues.domain.player;
 
+import com.society.leagues.domain.Role;
 import com.society.leagues.domain.interfaces.Player;
 
 import java.util.Map;
@@ -36,5 +37,19 @@ public class PlayerDb implements Player {
     @Override
     public String getLastName() {
         return null;
+    }
+
+    public boolean isAdmin() {
+        if (data == null)
+            return false;
+
+        String r = (String) data.get("role");
+        Role role;
+        if (r == null)
+            role = Role.PLAYER;
+        else
+            role = Role.fromString(r);
+
+        return Role.isAdmin(role);
     }
 }

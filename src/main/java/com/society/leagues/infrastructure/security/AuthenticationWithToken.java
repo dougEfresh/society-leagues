@@ -7,6 +7,10 @@ import java.util.Collection;
 
 public class AuthenticationWithToken extends PreAuthenticatedAuthenticationToken {
 
+    public AuthenticationWithToken() {
+        super(null,null);
+    }
+
     public AuthenticationWithToken(Object aPrincipal, Object aCredentials) {
         super(aPrincipal, aCredentials);
     }

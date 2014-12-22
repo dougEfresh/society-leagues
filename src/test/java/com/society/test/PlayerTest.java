@@ -4,6 +4,7 @@ import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.response.ResponseBodyExtractionOptions;
 import com.society.leagues.Application;
 import com.society.leagues.api.ApiController;
+import com.society.leagues.domain.player.PlayerDb;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.IntegrationTest;
@@ -18,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.jayway.restassured.RestAssured.given;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyInt;
@@ -30,12 +33,30 @@ import static org.mockito.Mockito.when;
 public class PlayerTest extends TestBase {
 
     @Test
+    public void testPlayerDb() {
+        Map<String,Object> playerInfo = new HashMap<>();
+        playerInfo.put("player_id",1);
+        playerInfo.put("league_name","some league name");
+        playerInfo.put("role","Player");
+        PlayerDb playerDb = new PlayerDb(playerInfo);
+        assertFalse(playerDb.isAdmin());
+
+        playerInfo.put("role","Root");
+        playerDb = new PlayerDb(playerInfo);
+        assertTrue(playerDb.isAdmin());
+
+        playerInfo.put("role","Operator");
+        assertTrue(playerDb.isAdmin());
+    }
+
+    @Test
     public void testPlayerTeamHistory() {
         String generatedToken = authenticate();
         List<Map<String,Object>> results = new ArrayList<>();
         Map<String,Object> playerInfo = new HashMap<>();
         playerInfo.put("player_id",1);
         playerInfo.put("league_name","some league name");
+        playerInfo.put("role","player");
         results.add(playerInfo);
 
         when(mockPlayerDao.getTeamHistory(anyInt())).thenReturn(results);

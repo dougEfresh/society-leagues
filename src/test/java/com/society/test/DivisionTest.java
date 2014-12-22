@@ -110,14 +110,10 @@ public class DivisionTest extends TestBase {
 
         when(mockDivisionDao.getStandingsWeek(anyInt(),anyInt())).thenReturn(results);
 
-        given().header(X_AUTH_TOKEN, generatedToken).
+        ResponseBodyExtractionOptions body = given().header(X_AUTH_TOKEN, generatedToken).
                 param("divisionId",new Integer(1)).param("weekId",new Integer(1)).
                 when().post(ApiController.DIVISION_URL + endpoint ).
-                then().statusCode(HttpStatus.OK.value());
-
-        ResponseBodyExtractionOptions body =  given().header(X_AUTH_TOKEN, generatedToken).
-                param("divisionId",new Integer(1)).param("weekId",new Integer(1)).
-                when().post(ApiController.DIVISION_URL + endpoint).then().extract().body();
+                then().statusCode(HttpStatus.OK.value()).and().extract().body();
 
         assertNotNull(body);
         assertNotNull(body.jsonPath());

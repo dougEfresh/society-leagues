@@ -6,4 +6,5 @@ public interface Player {
     String getLogin();
     String getFirstName();
     String getLastName();
+    boolean isAdmin();
 }

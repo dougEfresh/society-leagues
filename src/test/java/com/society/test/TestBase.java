@@ -17,10 +17,8 @@ import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +32,10 @@ public abstract class TestBase {
     public static final String X_AUTH_PASSWORD = "X-Auth-Password";
     public static final String X_AUTH_TOKEN = "X-Auth-Token";
 
-    private RestTemplate restTemplate = new TestRestTemplate();
+    public static final String NORMAL_USER="email_608@domain.com";
+    public static final String NORMAL_PASS="password_608";
+    public static final String ADMIN_USER="email_46@domain.com";
+    public static final String ADMIN_PASS ="password_46";
 
     @Autowired
     public ExternalServiceAuthenticator mockedExternalServiceAuthenticator;
@@ -66,10 +67,33 @@ public abstract class TestBase {
 
         BDDMockito.when(mockedExternalServiceAuthenticator.authenticate(eq(username), eq(password))).thenReturn(authenticatedPlayer);
 
-        ValidatableResponse validatableResponse = given().header(X_AUTH_USERNAME, username).
-                                                                                                   header(X_AUTH_PASSWORD, password).
-                                                                                                                                            when().post(ApiController.AUTHENTICATE_URL).
+        ValidatableResponse validatableResponse = given().
+                header(X_AUTH_USERNAME, NORMAL_USER).
+                header(X_AUTH_PASSWORD, NORMAL_PASS).
+                when().post(ApiController.AUTHENTICATE_URL).
                                                                                                                                                                                                then().statusCode(HttpStatus.OK.value());
+
+        HashMap<String,String> body = validatableResponse.extract().body().jsonPath().get();
+        assertTrue("No X-Auth-Token",body.containsKey("X-Auth-Token"));
+        return body.get("X-Auth-Token");
+    }
+
+    public String authenticateAdmin() {
+
+        AuthenticatedExternalWebService authenticatedPlayer =
+                new AuthenticatedExternalWebService(new DomainUser(getTestPlayer()),null,
+                                                    AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_DOMAIN_USER,ROLE_DOMAIN_ADMIN")
+                );
+
+        BDDMockito.when(mockedExternalServiceAuthenticator.
+                authenticate(eq(ADMIN_USER), eq(ADMIN_PASS))).
+                thenReturn(authenticatedPlayer);
+
+        ValidatableResponse validatableResponse = given().
+                header(X_AUTH_USERNAME, ADMIN_USER).
+                header(X_AUTH_PASSWORD, ADMIN_PASS).
+                when().post(ApiController.AUTHENTICATE_URL).
+                then().statusCode(HttpStatus.OK.value());
 
         HashMap<String,String> body = validatableResponse.extract().body().jsonPath().get();
         assertTrue("No X-Auth-Token",body.containsKey("X-Auth-Token"));
