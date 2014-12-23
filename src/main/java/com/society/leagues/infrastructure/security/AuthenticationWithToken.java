@@ -7,23 +7,9 @@ import java.util.Collection;
 
 public class AuthenticationWithToken extends PreAuthenticatedAuthenticationToken {
 
-    public AuthenticationWithToken() {
-        super(null,null);
-    }
-
-    public AuthenticationWithToken(Object aPrincipal, Object aCredentials) {
-        super(aPrincipal, aCredentials);
-    }
-
-    public AuthenticationWithToken(Object aPrincipal, Object aCredentials, Collection<? extends GrantedAuthority> anAuthorities) {
+    public AuthenticationWithToken(Object aPrincipal,
+                                   Object aCredentials,
+                                   Collection<? extends GrantedAuthority> anAuthorities) {
         super(aPrincipal, aCredentials, anAuthorities);
-    }
-
-    public void setToken(String token) {
-        setDetails(token);
-    }
-
-    public String getToken() {
-        return (String)getDetails();
     }
 }

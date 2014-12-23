@@ -47,9 +47,10 @@ public class JdbcServiceAuthenticator implements ExternalServiceAuthenticator {
         //if (player.isAdmin())
           //  authorityList += authorityList + ",ROLE_DOMAIN_ADMIN";
 
-        AuthenticatedExternalWebService authenticatedExternalWebService = new AuthenticatedExternalWebService(
+        AuthenticatedExternalWebService authenticatedExternalWebService =
+                new AuthenticatedExternalWebService(
                 new DomainUser(player),
-                null,
+                password,
                 AuthorityUtils.commaSeparatedStringToAuthorityList(authorityList)
         );
 

@@ -37,5 +37,6 @@ appender("CONSOLE", ch.qos.logback.core.ConsoleAppender) {
 
 logger("com.society", DEBUG)
 logger("org.springframework.security",DEBUG)
+logger("org.springframework.web",TRACE)
 logger("org.springframework.boot.actuate.trace",TRACE)
 root(INFO, ["FILE", "CONSOLE"])

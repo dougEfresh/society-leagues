@@ -91,13 +91,14 @@ public class TokenServiceJdbc implements TokenService {
 
         try {
             String player = jdbcTemplate.queryForObject("SELECT player FROM token_cache WHERE token = ?", String.class, token);
-            if (player == null || player.isEmpty())
+            if (player == null || player.isEmpty()) {
+                logger.debug("Could not find player for token: " + token);
                 return false;
-
-            deserialize(player);
+            }
+            restApiAuthTokenCache.put(token,deserialize(player));
             return true;
         } catch (EmptyResultDataAccessException e) {
-
+            logger.debug("Could not find player for token: " + token);
         }
         return false;
     }
@@ -125,11 +126,11 @@ public class TokenServiceJdbc implements TokenService {
             authorities.add(new SimpleGrantedAuthority(authority.get("authority")));
         }
 
-        AuthenticatedExternalWebService auth  = new AuthenticatedExternalWebService(principal,null,authorities);
-        auth.setToken((String) json.get("token"));
+        AuthenticatedExternalWebService auth  =
+                new AuthenticatedExternalWebService(principal,"",authorities);
+        auth.setDetails(json.get("token"));
         auth.setAuthenticated((Boolean) json.get("authenticated"));
         auth.setExternalServiceAuthenticator(serviceAuth);
-        auth.setDetails(json.get("token"));
         return auth;
     }
 }

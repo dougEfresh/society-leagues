@@ -13,10 +13,6 @@ public class AuthenticatedExternalWebService extends AuthenticationWithToken {
         super(aPrincipal, aCredentials, anAuthorities);
     }
 
-    public ExternalServiceAuthenticator getExternalServiceAuthenticator() {
-        return externalServiceAuthenticator;
-    }
-
     public void setExternalServiceAuthenticator(ExternalServiceAuthenticator externalServiceAuthenticator) {
         this.externalServiceAuthenticator = externalServiceAuthenticator;
     }

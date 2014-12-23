@@ -10,27 +10,24 @@ import java.util.Optional;
 
 public class DomainUsernamePasswordAuthenticationProvider implements AuthenticationProvider {
 
-    private TokenService tokenService;
     private ExternalServiceAuthenticator externalServiceAuthenticator;
 
     public DomainUsernamePasswordAuthenticationProvider(TokenService tokenService, ExternalServiceAuthenticator externalServiceAuthenticator) {
-        this.tokenService = tokenService;
         this.externalServiceAuthenticator = externalServiceAuthenticator;
     }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        Optional<String> username = (Optional) authentication.getPrincipal();
-        Optional<String> password = (Optional) authentication.getCredentials();
+        Optional<Object> username = Optional.ofNullable(authentication.getPrincipal());
+        Optional<Object> password = Optional.ofNullable(authentication.getCredentials());
 
         if (!username.isPresent() || !password.isPresent()) {
             throw new BadCredentialsException("Invalid Domain User Credentials");
         }
 
-        AuthenticationWithToken resultOfAuthentication = externalServiceAuthenticator.authenticate(username.get(), password.get());
-        String newToken = tokenService.generateNewToken();
-        resultOfAuthentication.setToken(newToken);
-        tokenService.store(newToken, resultOfAuthentication);
+        AuthenticationWithToken resultOfAuthentication = externalServiceAuthenticator.authenticate(
+                username.get().toString(),
+                password.get().toString());
 
         return resultOfAuthentication;
     }

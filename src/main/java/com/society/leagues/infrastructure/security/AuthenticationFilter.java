@@ -1,19 +1,16 @@
 package com.society.leagues.infrastructure.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.encoding.MessageDigestPasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.web.filter.GenericFilterBean;
-import org.springframework.web.util.UrlPathHelper;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -39,23 +36,11 @@ public class AuthenticationFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = asHttp(request);
-        //logger.debug("Got request: " + httpRequest + "\n\nFilter Chain: " + chain);
         HttpServletResponse httpResponse = asHttp(response);
         setHeaders(httpRequest, httpResponse);
-
-        Optional<String> username = getUserName(httpRequest);
-        Optional<String> password = getPassword(httpRequest);
         Optional<String> token = getToken(httpRequest);
 
-        String resourcePath = new UrlPathHelper().getPathWithinApplication(httpRequest);
-
         try {
-            if (postToAuthenticate(httpRequest, resourcePath)) {
-                logger.info("Trying to authenticate user {} by X-Auth-Username method", username);
-                processUsernamePasswordAuthentication(httpResponse, username, password);
-                return;
-            }
-
             if (token.isPresent()) {
                 logger.info("Trying to authenticate user by X-Auth-Token method. Token: {}", token);
                 processTokenAuthentication(token);
@@ -75,14 +60,6 @@ public class AuthenticationFilter extends GenericFilterBean {
             MDC.remove(TOKEN_SESSION_KEY);
             MDC.remove(USER_SESSION_KEY);
         }
-    }
-
-    private Optional<String> getUserName(HttpServletRequest request) {
-        return getAuthField("X-Auth-Username", request);
-    }
-
-    private Optional<String> getPassword(HttpServletRequest request) {
-        return getAuthField("X-Auth-Password", request);
     }
 
     private Optional<String> getToken(HttpServletRequest request) {
@@ -156,25 +133,6 @@ public class AuthenticationFilter extends GenericFilterBean {
 
     private HttpServletResponse asHttp(ServletResponse response) {
         return (HttpServletResponse) response;
-    }
-
-    private boolean postToAuthenticate(HttpServletRequest httpRequest, String resourcePath) {
-        return resourcePath.contains("/auth/login") && httpRequest.getMethod().equals("POST");
-    }
-
-    private void processUsernamePasswordAuthentication(HttpServletResponse httpResponse, Optional<String> username, Optional<String> password) throws IOException {
-        Authentication resultOfAuthentication = tryToAuthenticateWithUsernameAndPassword(username, password);
-        SecurityContextHolder.getContext().setAuthentication(resultOfAuthentication);
-        httpResponse.setStatus(HttpServletResponse.SC_OK);
-        TokenResponse tokenResponse = new TokenResponse(resultOfAuthentication.getDetails().toString());
-        String tokenJsonResponse = new ObjectMapper().writeValueAsString(tokenResponse);
-        httpResponse.addHeader("Content-Type", "application/json");
-        httpResponse.getWriter().print(tokenJsonResponse);
-    }
-
-    private Authentication tryToAuthenticateWithUsernameAndPassword(Optional<String> username, Optional<String> password) {
-        UsernamePasswordAuthenticationToken requestAuthentication = new UsernamePasswordAuthenticationToken(username, password);
-        return tryToAuthenticate(requestAuthentication);
     }
 
     private void processTokenAuthentication(Optional<String> token) {
