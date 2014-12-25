@@ -89,9 +89,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 loginPage(ApiController.AUTHENTICATE_URL).successHandler(successHandler).
                 failureUrl(ApiController.AUTHENTICATE_URL + "?error").
                 permitAll().and().
-                sessionManagement().
-                sessionAuthenticationStrategy(sessionAuthenticationStrategy()).
-                and().
+//                sessionManagement().
+  //              sessionAuthenticationStrategy(sessionAuthenticationStrategy()).
+    //            and().
                 addFilterBefore(
                        new AuthenticationFilter(authenticationManager()),
                        BasicAuthenticationFilter.class

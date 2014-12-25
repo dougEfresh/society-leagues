@@ -71,7 +71,7 @@ public abstract class TestBase {
                 header(X_AUTH_USERNAME, NORMAL_USER).
                 header(X_AUTH_PASSWORD, NORMAL_PASS).
                 when().post(ApiController.AUTHENTICATE_URL).
-                                                                                                                                                                                               then().statusCode(HttpStatus.OK.value());
+                then().statusCode(HttpStatus.FOUND.value());
 
         HashMap<String,String> body = validatableResponse.extract().body().jsonPath().get();
         assertTrue("No X-Auth-Token",body.containsKey("X-Auth-Token"));
