@@ -1,55 +1,59 @@
 package com.society.leagues.domain.player;
 
-import com.society.leagues.domain.Role;
 import com.society.leagues.domain.interfaces.Player;
-
-import java.util.Map;
 
 public class PlayerDb implements Player {
 
-    Map<String,Object> data;
+    int id;
+    String login;
+    String firstName;
+    String lastName;
+    boolean admin;
 
     public PlayerDb() {
     }
 
-    public PlayerDb(Map<String, Object> data) {
-        this.data = data;
-    }
-
     @Override
     public int getId() {
-        if (data == null || data.isEmpty() || data.get("player_id") == null)
-            return -1;
-
-        return  Integer.parseInt(data.get("player_id").toString());
+        return id;
     }
 
     @Override
     public String getLogin() {
-        return null;
+        return login;
     }
 
     @Override
     public String getFirstName() {
-        return null;
+        return firstName;
     }
 
     @Override
     public String getLastName() {
-        return null;
+        return lastName;
     }
 
     public boolean isAdmin() {
-        if (data == null)
-            return false;
+      return admin;
+    }
 
-        String r = (String) data.get("role");
-        Role role;
-        if (r == null)
-            role = Role.PLAYER;
-        else
-            role = Role.fromString(r);
+    public void setId(int id) {
+        this.id = id;
+    }
 
-        return Role.isAdmin(role);
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 }

@@ -1,11 +1,10 @@
-package com.society.leagues.infrastructure.security;
+package com.society.leagues.infrastructure.token;
 
 import com.owlike.genson.Genson;
 import com.society.leagues.domain.DomainUser;
-import com.society.leagues.domain.interfaces.Player;
-import com.society.leagues.domain.player.PlayerDb;
 import com.society.leagues.infrastructure.AuthenticatedExternalWebService;
-import org.omg.SendingContext.RunTime;
+import com.society.leagues.infrastructure.security.AuthenticationWithToken;
+import com.society.leagues.infrastructure.security.JdbcServiceAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -72,8 +71,16 @@ public class TokenServiceJdbc implements TokenService {
 
         restApiAuthTokenCache.put(token,authentication);
 
-        //String json = new Genson().serialize( ((DomainUser) authentication.getPrincipal()).getPlayer());
-        String json = new Genson().serialize(authentication);
+        DomainUser user = (DomainUser) authentication.getPrincipal();
+        user.setAuthenticated(true);
+        String commaListAuthorities = "";
+        for(GrantedAuthority authority: authentication.getAuthorities()) {
+            commaListAuthorities += authority.getAuthority() + ",";
+        }
+
+        user.setAuthorities(commaListAuthorities.substring(0,commaListAuthorities.length()-1));
+        user.setToken(token);
+        String json = new Genson().serialize(user);
 
         logger.debug("Storing " + json + " to db");
         //TODO Check for existing token?
@@ -118,19 +125,20 @@ public class TokenServiceJdbc implements TokenService {
         return restApiAuthTokenCache.put(token,deserialize(player));
     }
 
-    public AuthenticationWithToken deserialize(String player) {
-        HashMap<String,Object> json = new Genson().deserialize(player, HashMap.class);
-        Player principal = new PlayerDb((HashMap) json.get("principal"));
-        ArrayList<GrantedAuthority> authorities = new ArrayList<>();
-        for (HashMap<String,String> authority : (List<HashMap<String,String>>) json.get("authorities")) {
-            authorities.add(new SimpleGrantedAuthority(authority.get("authority")));
-        }
-
+    @SuppressWarnings("unchecked")
+    public AuthenticationWithToken deserialize(String user) {
+        logger.info("Deserialize player: " + user);
+        DomainUser domainUser = new Genson().deserialize(user, DomainUser.class);
         AuthenticatedExternalWebService auth  =
-                new AuthenticatedExternalWebService(principal,"",authorities);
-        auth.setDetails(json.get("token"));
-        auth.setAuthenticated((Boolean) json.get("authenticated"));
+                new AuthenticatedExternalWebService(domainUser,
+                        null,
+                        AuthorityUtils.commaSeparatedStringToAuthorityList(domainUser.getAuthorities())
+                );
+
+        auth.setDetails(domainUser.getToken());
+        auth.setAuthenticated(domainUser.isAuthenticated());
         auth.setExternalServiceAuthenticator(serviceAuth);
+
         return auth;
     }
 }

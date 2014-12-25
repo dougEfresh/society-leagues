@@ -1,7 +1,7 @@
 package com.society.test;
 
 import com.society.leagues.Application;
-import com.society.leagues.infrastructure.security.TokenService;
+import com.society.leagues.infrastructure.token.TokenService;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.junit.Test;

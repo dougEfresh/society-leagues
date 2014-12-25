@@ -90,7 +90,7 @@ public class SecurityTest extends TestBase {
 
         AuthenticatedExternalWebService authenticationWithToken = new AuthenticatedExternalWebService(username, null,
                 AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_DOMAIN_USER"));
-        authenticationWithToken.setToken("TEST-TOKEN");
+        authenticationWithToken.setDetails("TEST-TOKEN");
 
         BDDMockito.when(mockedExternalServiceAuthenticator.authenticate(eq(username), eq(password))).
                 thenReturn(authenticationWithToken);

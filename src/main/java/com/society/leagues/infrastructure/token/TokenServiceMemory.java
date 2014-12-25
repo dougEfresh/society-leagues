@@ -1,4 +1,4 @@
-package com.society.leagues.infrastructure.security;
+package com.society.leagues.infrastructure.token;
 
 
 import org.springframework.scheduling.annotation.Scheduled;

@@ -1,5 +1,6 @@
 package com.society.leagues.infrastructure.security;
 
+import com.society.leagues.api.player.PlayerDao;
 import com.society.leagues.domain.DomainUser;
 import com.society.leagues.domain.player.PlayerDb;
 import com.society.leagues.domain.interfaces.Player;
@@ -18,23 +19,15 @@ import java.util.Map;
 @Component
 public class JdbcServiceAuthenticator implements ExternalServiceAuthenticator {
     private final static Logger logger = LoggerFactory.getLogger(JdbcServiceAuthenticator.class);
-
-    @Autowired JdbcTemplate jdbcTemplate;
-    Map<String, Object> data;
-    Player player;
+    @Autowired
+    PlayerDao playerDao;
 
     @Override
     public AuthenticationWithToken authenticate(String username, String password) {
-        //TODO Salt password and use SHA-1
+        Player player;
         try {
-            data = jdbcTemplate.queryForMap("SELECT * FROM player" +
-                                                    " WHERE player_login = ? " +
-                                                    "AND `password` = ?",
-                                            username,
-                                            password
-                                           );
-            player = new PlayerDb(data);
-            logger.info("Successfully logged player_id: " + data.get("player_id"));
+            player = playerDao.getPlayer(username,password);
+            logger.info("Successfully logged player_id: " + player.getId());
         } catch (EmptyResultDataAccessException e) {
             logger.error("No such user: " + username);
             throw new BadCredentialsException("No such user: " + username);
@@ -44,8 +37,8 @@ public class JdbcServiceAuthenticator implements ExternalServiceAuthenticator {
         }
 
         String authorityList = "ROLE_DOMAIN_USER";
-        //if (player.isAdmin())
-          //  authorityList += authorityList + ",ROLE_DOMAIN_ADMIN";
+        if (player.isAdmin())
+            authorityList += authorityList + ",ROLE_DOMAIN_ADMIN";
 
         AuthenticatedExternalWebService authenticatedExternalWebService =
                 new AuthenticatedExternalWebService(

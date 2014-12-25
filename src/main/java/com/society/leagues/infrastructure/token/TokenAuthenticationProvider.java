@@ -1,4 +1,4 @@
-package com.society.leagues.infrastructure.security;
+package com.society.leagues.infrastructure.token;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;

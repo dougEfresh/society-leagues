@@ -101,9 +101,12 @@ public abstract class TestBase {
     }
 
     public Player getTestPlayer() {
-        Map<String,Object> playerInfo = new HashMap<>();
-        playerInfo.put("player_id",1);
-        playerInfo.put("league_name","some league name");
-        return new PlayerDb(playerInfo);
+        Map<String, Object> playerInfo = new HashMap<>();
+        playerInfo.put("player_id", 1);
+        playerInfo.put("league_name", "some league name");
+        PlayerDb playerDb = new PlayerDb();
+        playerDb.setLogin("player_login");
+        playerDb.setId(1);
+        return playerDb;
     }
 }

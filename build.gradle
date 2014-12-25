@@ -40,7 +40,8 @@ bootRun {
        port=project.debugPort
     }
 
-   jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=' + port
+    //jvmArgs ' -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=' + port  + '-Dlog4jdbc.spylogdelegator.name=net.sf.log4jdbc.log.slf4j.Slf4jSpyLogDelegator'
+    jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=' + port
 }
 
 sourceSets {
@@ -62,15 +63,9 @@ repositories {
     mavenLocal()
 }
 
-/*
-configurations {
-    all*.exclude(group: 'org.slf4j', module: 'slf4j-log4j12')
-    all*.exclude(group: 'org.slf4j', module: 'slf4j-simple')
-    all*.exclude(group: 'org.slf4j', module: 'log4j-over-slf4j')
-}
-*/
-
 dependencies {
+    compile 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-actuator'
     compile 'org.springframework.boot:spring-boot-starter-jdbc'

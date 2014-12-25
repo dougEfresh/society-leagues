@@ -7,6 +7,7 @@ import ch.qos.logback.core.FileAppender
 
 import static ch.qos.logback.classic.Level.DEBUG
 import static ch.qos.logback.classic.Level.ERROR
+import static ch.qos.logback.classic.Level.INFO
 import static ch.qos.logback.classic.Level.TRACE
 import static ch.qos.logback.classic.Level.WARN
 
@@ -29,14 +30,17 @@ appender("FILE", RollingFileAppender) {
 
 appender("CONSOLE", ch.qos.logback.core.ConsoleAppender) {
   encoder(PatternLayoutEncoder) {
-    pattern = "%-5p %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %m%n"
+    pattern = "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p  [%t] %c{1}:%M:%L - %m%n"
   }
   filter(ThresholdFilter) {
   	level = TRACE  }
 }
 
 logger("com.society", DEBUG)
-logger("org.springframework.security",DEBUG)
-logger("org.springframework.web",TRACE)
-logger("org.springframework.boot.actuate.trace",TRACE)
+logger("org.springframework.security",INFO)
+logger("org.springframework.aop",INFO)
+logger("org.springframework.cglib",INFO)
+logger("org.springframework.web",INFO)
+logger("org.springframework.boot.actuate.trace",INFO)
+logger("log4jdbc.log4j2",DEBUG)
 root(INFO, ["FILE", "CONSOLE"])
