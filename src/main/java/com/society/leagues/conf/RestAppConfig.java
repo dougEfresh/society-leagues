@@ -1,4 +1,4 @@
-package com.society.leagues;
+package com.society.leagues.conf;
 
 import com.society.leagues.infrastructure.security.SecurityFilter;
 import com.society.leagues.resource.AccountResource;

@@ -1,5 +1,6 @@
 package com.society.leagues;
 
+import com.society.leagues.conf.RestAppConfig;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,8 @@ import java.net.URI;
 @ComponentScan("com.society.leagues")
 public class Main implements CommandLineRunner {
 
-    @Autowired RestAppConfig app;
+    @Autowired
+    RestAppConfig app;
     @Value("${daemon:false}")
     boolean daemon;
     @Value("${server.port:8080}")

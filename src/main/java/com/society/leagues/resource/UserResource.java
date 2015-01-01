@@ -1,6 +1,6 @@
 package com.society.leagues.resource;
 
-import com.society.leagues.api.domain.User;
+import com.society.leagues.client.api.domain.User;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;

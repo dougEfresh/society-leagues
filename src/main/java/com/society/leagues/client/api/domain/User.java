@@ -1,4 +1,4 @@
-package com.society.leagues.api.domain;
+package com.society.leagues.client.api.domain;
 
 public class User {
     String username;
