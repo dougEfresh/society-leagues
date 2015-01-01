@@ -1,4 +1,4 @@
-package com.society.leagues.api.scheduler;
+package com.society.leagues.dao;
 
 import com.society.leagues.domain.SocietyDao;
 import org.springframework.context.annotation.Configuration;

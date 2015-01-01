@@ -2,7 +2,7 @@ package com.society.test;
 
 import com.jayway.restassured.response.ValidatableResponse;
 import com.society.leagues.Application;
-import com.society.leagues.api.ApiController;
+import com.society.leagues.controller.ApiController;
 import com.society.leagues.infrastructure.AuthenticatedExternalWebService;
 import org.junit.Test;
 import org.junit.runner.RunWith;

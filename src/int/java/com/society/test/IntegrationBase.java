@@ -1,6 +1,6 @@
 package com.society.test;
 
-import com.society.leagues.api.ApiController;
+import com.society.leagues.controller.ApiController;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.TestRestTemplate;
@@ -11,7 +11,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -1,10 +1,10 @@
 package com.society.test;
 
 import com.society.leagues.Application;
-import com.society.leagues.api.account.AccountDao;
-import com.society.leagues.api.division.DivisionDao;
-import com.society.leagues.api.player.PlayerDao;
-import com.society.leagues.api.scheduler.SchedulerDao;
+import com.society.leagues.dao.AccountDao;
+import com.society.leagues.dao.DivisionDao;
+import com.society.leagues.dao.PlayerDao;
+import com.society.leagues.dao.SchedulerDao;
 import com.society.leagues.infrastructure.security.ExternalServiceAuthenticator;
 import com.society.leagues.infrastructure.token.TokenService;
 import com.society.leagues.infrastructure.token.TokenServiceMemory;

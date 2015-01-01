@@ -1,4 +1,4 @@
-package com.society.leagues.api;
+package com.society.leagues.controller;
 
 
 public abstract class ApiController {

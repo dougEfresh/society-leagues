@@ -2,11 +2,11 @@ package com.society.test;
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.ValidatableResponse;
-import com.society.leagues.api.ApiController;
-import com.society.leagues.api.account.AccountDao;
-import com.society.leagues.api.division.DivisionDao;
-import com.society.leagues.api.player.PlayerDao;
-import com.society.leagues.api.scheduler.SchedulerDao;
+import com.society.leagues.controller.ApiController;
+import com.society.leagues.dao.AccountDao;
+import com.society.leagues.dao.DivisionDao;
+import com.society.leagues.dao.PlayerDao;
+import com.society.leagues.dao.SchedulerDao;
 import com.society.leagues.domain.DomainUser;
 import com.society.leagues.domain.interfaces.Player;
 import com.society.leagues.domain.player.PlayerDb;

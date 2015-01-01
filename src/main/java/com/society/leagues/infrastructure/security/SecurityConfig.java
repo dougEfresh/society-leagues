@@ -1,6 +1,5 @@
 package com.society.leagues.infrastructure.security;
 
-import com.society.leagues.api.ApiController;
 import com.society.leagues.infrastructure.token.TokenAuthenticationProvider;
 import com.society.leagues.infrastructure.token.TokenService;
 import org.slf4j.Logger;
@@ -20,7 +19,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -78,26 +76,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 authorizeRequests().antMatchers(
                 "/api-browser",
                 "/api-test",
-                "/index.html",
-                "/heath").permitAll().and().
-                authorizeRequests().
-                antMatchers("/api/v**").
-                hasRole("DOMAIN_USER").anyRequest().authenticated().
+                "/index.html","/api/**",
+                "/heath").permitAll();
+                //and().
+                //authorizeRequests().
+                //antMatchers("/api/v**").
+                //hasRole("DOMAIN_USER").anyRequest().authenticated().
                 //hasAuthority("ROLE_DOMAIN_USER").
-                and().
-                formLogin().usernameParameter("X-Auth-Username").passwordParameter("X-Auth-Password").
-                loginPage(ApiController.AUTHENTICATE_URL).successHandler(successHandler).
-                failureUrl(ApiController.AUTHENTICATE_URL + "?error").
-                permitAll().and().
+                //and().
+                //formLogin().usernameParameter("X-Auth-Username").passwordParameter("X-Auth-Password").
+                //loginPage(ApiController.AUTHENTICATE_URL).successHandler(successHandler).
+                //failureUrl(ApiController.AUTHENTICATE_URL + "?error").
+                //permitAll().and().
 //                sessionManagement().
   //              sessionAuthenticationStrategy(sessionAuthenticationStrategy()).
     //            and().
-                addFilterBefore(
-                       new AuthenticationFilter(authenticationManager()),
-                       BasicAuthenticationFilter.class
-                );
+                //addFilterBefore(
+                  //     new AuthenticationFilter(authenticationManager()),
+                    //   BasicAuthenticationFilter.class
+               // );
     }
-
 
     @Bean
     SessionAuthenticationStrategy sessionAuthenticationStrategy() {

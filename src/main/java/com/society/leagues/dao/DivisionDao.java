@@ -1,4 +1,4 @@
-package com.society.leagues.api.division;
+package com.society.leagues.dao;
 
 import com.society.leagues.domain.SocietyDao;
 import com.society.leagues.domain.interfaces.Player;

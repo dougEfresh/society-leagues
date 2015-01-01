@@ -1,20 +1,16 @@
 package com.society.leagues.infrastructure.security;
 
-import com.society.leagues.api.player.PlayerDao;
+import com.society.leagues.dao.PlayerDao;
 import com.society.leagues.domain.DomainUser;
-import com.society.leagues.domain.player.PlayerDb;
 import com.society.leagues.domain.interfaces.Player;
 import com.society.leagues.infrastructure.AuthenticatedExternalWebService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 @Component
 public class JdbcServiceAuthenticator implements ExternalServiceAuthenticator {

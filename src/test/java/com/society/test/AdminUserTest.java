@@ -3,7 +3,7 @@ package com.society.test;
 import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.response.ResponseBodyExtractionOptions;
 import com.society.leagues.Application;
-import com.society.leagues.api.ApiController;
+import com.society.leagues.controller.ApiController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.IntegrationTest;
