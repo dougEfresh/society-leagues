@@ -11,10 +11,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-@Configuration
-@EnableWebMvc
-@EnableSwagger
+//@Configuration
+//@EnableWebMvc
+//@EnableSwagger
 public class SwaggerConfig {
+
     @Autowired
     SpringSwaggerConfig springSwaggerConfig;
 

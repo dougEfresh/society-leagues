@@ -1,6 +1,6 @@
 package com.society.test;
 
-import com.society.leagues.controller.ApiController;
+import com.society.leagues.resource.ApiResource;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.TestRestTemplate;
@@ -43,7 +43,7 @@ public class IntegrationBase {
 
     public String getToken() throws URISyntaxException {
         String url = String.format("%s:%s/%s?%s=%s&%s=%s",
-                baseURI,port, ApiController.AUTHENTICATE_URL,
+                baseURI,port, ApiResource.AUTHENTICATE_URL,
                 X_AUTH_USERNAME,"email_608@domain.com",
                 X_AUTH_PASSWORD,"password_608");
 

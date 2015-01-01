@@ -1,6 +1,6 @@
 package com.society.test;
 
-import com.society.leagues.Application;
+import com.society.leagues.Main;
 import com.society.leagues.infrastructure.token.TokenService;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Application.class})
+@SpringApplicationConfiguration(classes = {Main.class})
 @WebAppConfiguration
 @IntegrationTest(value = {"server.port:0"})
 public class TokenServiceIntegrationTest extends IntegrationBase {

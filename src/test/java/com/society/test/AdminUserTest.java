@@ -2,8 +2,8 @@ package com.society.test;
 
 import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.response.ResponseBodyExtractionOptions;
-import com.society.leagues.Application;
-import com.society.leagues.controller.ApiController;
+import com.society.leagues.Main;
+import com.society.leagues.resource.ApiResource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.IntegrationTest;
@@ -16,7 +16,7 @@ import static com.jayway.restassured.RestAssured.given;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Application.class, TestConfig.class})
+@SpringApplicationConfiguration(classes = {Main.class, TestConfig.class})
 @WebAppConfiguration
 @IntegrationTest(value = {"server.port:0"})
 public class AdminUserTest extends TestBase {
@@ -32,7 +32,7 @@ public class AdminUserTest extends TestBase {
                 param("login", "testUser@domain.com").
                 param("email", "testUser@domain.com").
                 param("password", "test").
-                when().post(ApiController.ADMIN_USER_URL + "/create").
+                when().post(ApiResource.ADMIN_USER_URL + "/create").
                 then().statusCode(HttpStatus.OK.value()).and().
                 extract().body();
 
@@ -49,7 +49,7 @@ public class AdminUserTest extends TestBase {
                 param("login", "testUser@domain.com").
                 param("email", "testUser@domain.com").
                 param("password", "test").
-                when().post(ApiController.ADMIN_USER_URL + "/create").
+                when().post(ApiResource.ADMIN_USER_URL + "/create").
                 then().statusCode(HttpStatus.FORBIDDEN.value());
     }
 }

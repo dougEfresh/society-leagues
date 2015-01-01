@@ -1,8 +1,8 @@
 package com.society.test;
 
 
-import com.society.leagues.Application;
-import com.society.leagues.controller.ApiController;
+import com.society.leagues.Main;
+import com.society.leagues.resource.ApiResource;
 import org.junit.Test;
 import org.junit.runner.RunWith;;
 import org.springframework.boot.test.IntegrationTest;
@@ -17,7 +17,7 @@ import java.util.Map;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Application.class})
+@SpringApplicationConfiguration(classes = {Main.class})
 @WebAppConfiguration
 @IntegrationTest(value = {"server.port:0"})
 public class PlayerIntegrationTest extends IntegrationBase {
@@ -25,7 +25,7 @@ public class PlayerIntegrationTest extends IntegrationBase {
     @Test
     public void testPlayerTeamHistory() throws URISyntaxException {
 
-        List<Map<String,Object>> results = getRequestList(ApiController.PLAYER_URL + "/teamHistory");
+        List<Map<String,Object>> results = getRequestList(ApiResource.PLAYER_URL + "/teamHistory");
         for (String key : new String[]{"match_count","name","division_id","percentage","team_id"}) {
             for (Map<String, Object> result : results) {
                 assertTrue(result.containsKey(key));

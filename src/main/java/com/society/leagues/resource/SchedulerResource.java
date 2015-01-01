@@ -1,4 +1,4 @@
-package com.society.leagues.controller;
+package com.society.leagues.resource;
 
 import com.society.leagues.dao.SchedulerDao;
 import com.wordnik.swagger.annotations.Api;
@@ -20,7 +20,7 @@ import java.util.Map;
         position = 4
 
 )
-public class SchedulerController extends ApiController {
+public class SchedulerResource extends ApiResource {
 
     @Autowired SchedulerDao dao;
 

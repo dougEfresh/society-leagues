@@ -1,6 +1,6 @@
 package com.society.test;
 
-import com.society.leagues.Application;
+import com.society.leagues.Main;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.IntegrationTest;
@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Application.class, TestConfig.class})
+@SpringApplicationConfiguration(classes = {Main.class, TestConfig.class})
 @WebAppConfiguration
 @IntegrationTest(value = {"server.port:0"})
 public class TokenTest {

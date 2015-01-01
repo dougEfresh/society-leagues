@@ -1,6 +1,6 @@
 package com.society.test;
 
-import com.society.leagues.Application;
+import com.society.leagues.Main;
 import com.society.leagues.dao.AccountDao;
 import com.society.leagues.dao.DivisionDao;
 import com.society.leagues.dao.PlayerDao;
@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 import static org.mockito.Mockito.mock;
 
 @Configuration
-@ContextConfiguration(classes = Application.class)
+@ContextConfiguration(classes = Main.class)
 @ActiveProfiles(profiles = "test")
 public class TestConfig {
     @Bean

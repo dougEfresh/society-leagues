@@ -1,7 +1,7 @@
-package com.society.leagues.controller;
+package com.society.leagues.resource;
 
 
-public abstract class ApiController {
+public abstract class ApiResource {
     private static final String API_PATH = "/api/v1";
 
     public static final String AUTHENTICATE_URL = API_PATH + "/auth/login";

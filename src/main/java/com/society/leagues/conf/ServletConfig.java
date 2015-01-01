@@ -1,18 +1,14 @@
 package com.society.leagues.conf;
 
-import com.society.leagues.controller.AccountController;
-import com.society.leagues.controller.ApiController;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ServerProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.glassfish.jersey.server.ResourceConfig;
-import org.springframework.web.filter.RequestContextFilter;
 
 import javax.annotation.PostConstruct;
 
-@Component
+//@Component
 public class ServletConfig extends ResourceConfig {
 
     @PostConstruct

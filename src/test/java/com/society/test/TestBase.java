@@ -2,7 +2,7 @@ package com.society.test;
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.ValidatableResponse;
-import com.society.leagues.controller.ApiController;
+import com.society.leagues.resource.ApiResource;
 import com.society.leagues.dao.AccountDao;
 import com.society.leagues.dao.DivisionDao;
 import com.society.leagues.dao.PlayerDao;
@@ -70,7 +70,7 @@ public abstract class TestBase {
         ValidatableResponse validatableResponse = given().
                 header(X_AUTH_USERNAME, NORMAL_USER).
                 header(X_AUTH_PASSWORD, NORMAL_PASS).
-                when().post(ApiController.AUTHENTICATE_URL).
+                when().post(ApiResource.AUTHENTICATE_URL).
                 then().statusCode(HttpStatus.FOUND.value());
 
         HashMap<String,String> body = validatableResponse.extract().body().jsonPath().get();
@@ -92,7 +92,7 @@ public abstract class TestBase {
         ValidatableResponse validatableResponse = given().
                 header(X_AUTH_USERNAME, ADMIN_USER).
                 header(X_AUTH_PASSWORD, ADMIN_PASS).
-                when().post(ApiController.AUTHENTICATE_URL).
+                when().post(ApiResource.AUTHENTICATE_URL).
                 then().statusCode(HttpStatus.OK.value());
 
         HashMap<String,String> body = validatableResponse.extract().body().jsonPath().get();

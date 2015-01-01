@@ -1,4 +1,4 @@
-package com.society.leagues.controller;
+package com.society.leagues.resource;
 
 import com.society.leagues.api.domain.User;
 import com.wordnik.swagger.annotations.Api;
@@ -13,7 +13,7 @@ import javax.ws.rs.Path;
         basePath = "/api/vi"
 )
 @Path("/api/admin/user")
-public class UserController extends ApiController {
+public class UserResource extends ApiResource {
 
     @Path(value = "/create")
     @POST

@@ -1,14 +1,12 @@
-package com.society.leagues.controller;
+package com.society.leagues.resource;
 
 import com.society.leagues.dao.DivisionDao;
-import com.society.leagues.domain.DomainUser;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import java.util.List;
@@ -21,7 +19,7 @@ import java.util.Map;
         position = 4
 
 )
-public class DivisionController extends ApiController {
+public class DivisionResource extends ApiResource {
 
     @Autowired DivisionDao dao;
 

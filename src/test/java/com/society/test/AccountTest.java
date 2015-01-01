@@ -2,8 +2,8 @@ package com.society.test;
 
 import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.response.ResponseBodyExtractionOptions;
-import com.society.leagues.Application;
-import com.society.leagues.controller.ApiController;
+import com.society.leagues.Main;
+import com.society.leagues.resource.ApiResource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.IntegrationTest;
@@ -22,7 +22,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Application.class, TestConfig.class})
+@SpringApplicationConfiguration(classes = {Main.class, TestConfig.class})
 @WebAppConfiguration
 @IntegrationTest(value = {"server.port:0"})
 public class AccountTest extends TestBase {
@@ -38,11 +38,11 @@ public class AccountTest extends TestBase {
         when(mockAccountDao.getAcctInfo(anyInt())).thenReturn(playerInfo);
 
         given().header(X_AUTH_TOKEN, generatedToken).
-                when().post(ApiController.ACCOUNT_URL + "/info").
+                when().post(ApiResource.ACCOUNT_URL + "/info").
                 then().statusCode(HttpStatus.OK.value());
 
         ResponseBodyExtractionOptions body =  given().header(X_AUTH_TOKEN, generatedToken).
-                when().post(ApiController.ACCOUNT_URL + "/info").then().extract().body();
+                when().post(ApiResource.ACCOUNT_URL + "/info").then().extract().body();
 
         assertNotNull(body);
         assertNotNull(body.jsonPath());

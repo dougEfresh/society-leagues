@@ -3,8 +3,8 @@ package com.society.test;
 
 import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.response.ResponseBodyExtractionOptions;
-import com.society.leagues.Application;
-import com.society.leagues.controller.ApiController;
+import com.society.leagues.Main;
+import com.society.leagues.resource.ApiResource;
 import com.society.leagues.domain.interfaces.Player;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +26,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Application.class, TestConfig.class})
+@SpringApplicationConfiguration(classes = {Main.class, TestConfig.class})
 @WebAppConfiguration
 @IntegrationTest(value = {"server.port:0"})
 public class DivisionTest extends TestBase {
@@ -46,11 +46,11 @@ public class DivisionTest extends TestBase {
         when(mockDivisionDao.getInfo(any(Player.class))).thenReturn(results);
 
         given().header(X_AUTH_TOKEN, generatedToken).
-                when().post(ApiController.DIVISION_URL + endpoint ).
+                when().post(ApiResource.DIVISION_URL + endpoint ).
                 then().statusCode(HttpStatus.OK.value());
 
         ResponseBodyExtractionOptions body =  given().header(X_AUTH_TOKEN, generatedToken).
-                when().post(ApiController.DIVISION_URL + endpoint).then().extract().body();
+                when().post(ApiResource.DIVISION_URL + endpoint).then().extract().body();
 
         assertNotNull(body);
         assertNotNull(body.jsonPath());
@@ -81,12 +81,12 @@ public class DivisionTest extends TestBase {
 
         given().header(X_AUTH_TOKEN, generatedToken).
                 param("divisionId",new Integer(1)).
-                when().post(ApiController.DIVISION_URL + endpoint ).
+                when().post(ApiResource.DIVISION_URL + endpoint ).
                 then().statusCode(HttpStatus.OK.value());
 
         ResponseBodyExtractionOptions body =  given().header(X_AUTH_TOKEN, generatedToken).
                 param("divisionId", new Integer(1)).
-                when().post(ApiController.DIVISION_URL + endpoint).then().extract().body();
+                when().post(ApiResource.DIVISION_URL + endpoint).then().extract().body();
 
         assertNotNull(body);
         assertNotNull(body.jsonPath());
@@ -112,7 +112,7 @@ public class DivisionTest extends TestBase {
 
         ResponseBodyExtractionOptions body = given().header(X_AUTH_TOKEN, generatedToken).
                 param("divisionId",new Integer(1)).param("weekId",new Integer(1)).
-                when().post(ApiController.DIVISION_URL + endpoint ).
+                when().post(ApiResource.DIVISION_URL + endpoint ).
                 then().statusCode(HttpStatus.OK.value()).and().extract().body();
 
         assertNotNull(body);
@@ -137,12 +137,12 @@ public class DivisionTest extends TestBase {
         when(mockDivisionDao.getStandings(anyInt())).thenReturn(results);
 
         given().header(X_AUTH_TOKEN, generatedToken).param("divisionId",new Integer(1)).
-                when().post(ApiController.DIVISION_URL + endpoint ).
+                when().post(ApiResource.DIVISION_URL + endpoint ).
                 then().statusCode(HttpStatus.OK.value());
 
         ResponseBodyExtractionOptions body =  given().header(X_AUTH_TOKEN, generatedToken).
                 param("divisionId", new Integer(1)).
-                when().post(ApiController.DIVISION_URL + endpoint).then().extract().body();
+                when().post(ApiResource.DIVISION_URL + endpoint).then().extract().body();
 
         assertNotNull(body);
         assertNotNull(body.jsonPath());

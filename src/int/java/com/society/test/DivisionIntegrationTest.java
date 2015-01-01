@@ -1,7 +1,7 @@
 package com.society.test;
 
-import com.society.leagues.Application;
-import com.society.leagues.controller.ApiController;
+import com.society.leagues.Main;
+import com.society.leagues.resource.ApiResource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -16,14 +16,14 @@ import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Application.class})
+@SpringApplicationConfiguration(classes = {Main.class})
 @WebAppConfiguration
 @IntegrationTest(value = {"server.port:0"})
 public class DivisionIntegrationTest extends IntegrationBase {
     Logger logger = LoggerFactory.getLogger(DivisionIntegrationTest.class);
     @Test
     public void divisionInfo() throws URISyntaxException {
-        List<Map<String,Object>> results = getRequestList(ApiController.DIVISION_URL + "/info");
+        List<Map<String,Object>> results = getRequestList(ApiResource.DIVISION_URL + "/info");
             for (Map<String, Object> result : results) {
                 result.keySet().forEach(logger::info);
             }

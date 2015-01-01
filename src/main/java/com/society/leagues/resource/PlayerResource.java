@@ -1,7 +1,6 @@
-package com.society.leagues.controller;
+package com.society.leagues.resource;
 
 import com.society.leagues.dao.PlayerDao;
-import com.society.leagues.domain.DomainUser;
 
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -20,7 +19,7 @@ import java.util.Map;
 )
 @Path("/api/v1/player")
 @PreAuthorize("hasAuthority('ROLE_DOMAIN_USER')")
-public class PlayerController extends ApiController {
+public class PlayerResource extends ApiResource {
     @Autowired PlayerDao dao;
 
     @Path(value = "/teamHistory/{id:[0-9].+}")

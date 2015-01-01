@@ -1,4 +1,4 @@
-package com.society.leagues.controller;
+package com.society.leagues.resource;
 
 import com.wordnik.swagger.annotations.*;
 
@@ -11,7 +11,7 @@ import javax.ws.rs.QueryParam;
         description = "Login to get token",
         position = 1,
         produces = "application/json")
-public class AuthController extends ApiController {
+public class AuthResource extends ApiResource {
 
     @Path(value = "/login")
     @ApiOperation(value = "login",

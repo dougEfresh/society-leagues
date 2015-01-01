@@ -82,7 +82,11 @@ dependencies {
     compile 'org.glassfish.jersey.media:jersey-media-json-jackson:2.14'
     compile 'org.glassfish.jersey.core:jersey-common:2.14'
     compile 'org.glassfish.jersey.core:jersey-client:2.14'
-    compile 'org.glassfish.jersey.ext:jersey-spring3:2.14'
+
+    //compile 'org.glassfish.jersey.ext:jersey-spring3:2.14'
+    compile 'org.glassfish.jersey.ext:jersey-entity-filtering:2.14'
+    compile 'org.glassfish.jersey.containers:jersey-container-jdk-http:2.14'
+    compile 'org.glassfish.jersey.containers:jersey-container-grizzly2-http:2.14'
 
     //Test
     testCompile 'org.springframework.boot:spring-boot-starter-test'

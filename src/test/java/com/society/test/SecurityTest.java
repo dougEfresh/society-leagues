@@ -1,8 +1,8 @@
 package com.society.test;
 
 import com.jayway.restassured.response.ValidatableResponse;
-import com.society.leagues.Application;
-import com.society.leagues.controller.ApiController;
+import com.society.leagues.Main;
+import com.society.leagues.resource.ApiResource;
 import com.society.leagues.infrastructure.AuthenticatedExternalWebService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +25,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Application.class, TestConfig.class})
+@SpringApplicationConfiguration(classes = {Main.class, TestConfig.class})
 @WebAppConfiguration
 @IntegrationTest(value = {"server.port:0"})
 public class SecurityTest extends TestBase {
@@ -43,7 +43,7 @@ public class SecurityTest extends TestBase {
     @Test
     public void authenticate_withoutPassword_returnsUnauthorized() {
         given().header(X_AUTH_USERNAME, "SomeUser").
-                when().post(ApiController.AUTHENTICATE_URL).
+                when().post(ApiResource.AUTHENTICATE_URL).
                 then().statusCode(HttpStatus.UNAUTHORIZED.value());
 
         BDDMockito.verifyNoMoreInteractions(mockedExternalServiceAuthenticator);
@@ -52,7 +52,7 @@ public class SecurityTest extends TestBase {
     @Test
     public void authenticate_withoutUsername_returnsUnauthorized() {
         given().header(X_AUTH_PASSWORD, "SomePassword").
-                when().post(ApiController.AUTHENTICATE_URL).
+                when().post(ApiResource.AUTHENTICATE_URL).
                 then().statusCode(HttpStatus.UNAUTHORIZED.value());
 
         BDDMockito.verifyNoMoreInteractions(mockedExternalServiceAuthenticator);
@@ -60,7 +60,7 @@ public class SecurityTest extends TestBase {
 
     @Test
     public void authenticate_withoutUsernameAndPassword_returnsUnauthorized() {
-        when().post(ApiController.AUTHENTICATE_URL).
+        when().post(ApiResource.AUTHENTICATE_URL).
                 then().statusCode(HttpStatus.UNAUTHORIZED.value());
 
         BDDMockito.verifyNoMoreInteractions(mockedExternalServiceAuthenticator);
@@ -80,7 +80,7 @@ public class SecurityTest extends TestBase {
                 thenThrow(new BadCredentialsException("Invalid Credentials"));
 
         given().header(X_AUTH_USERNAME, username).header(X_AUTH_PASSWORD, password).
-                when().post(ApiController.AUTHENTICATE_URL).
+                when().post(ApiResource.AUTHENTICATE_URL).
                 then().statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
@@ -97,7 +97,7 @@ public class SecurityTest extends TestBase {
 
         ValidatableResponse validatableResponse = given().header(X_AUTH_USERNAME, username).
                 header(X_AUTH_PASSWORD, password).
-                when().post(ApiController.AUTHENTICATE_URL).
+                when().post(ApiResource.AUTHENTICATE_URL).
                 then().statusCode(HttpStatus.OK.value());
 
         HashMap<String,String> body = validatableResponse.extract().body().jsonPath().get();
