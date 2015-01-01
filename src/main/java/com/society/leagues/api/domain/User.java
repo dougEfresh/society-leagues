@@ -1,18 +1,27 @@
 package com.society.leagues.api.domain;
 
 public class User {
-    String login;
+    String username;
     String firstName;
     String lastName;
     String email;
     String password;
 
-    public String getLogin() {
-        return login;
+    public User(String username, String email) {
+        this.username = username;
+        this.email = email;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public User() {
+
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getFirstName() {

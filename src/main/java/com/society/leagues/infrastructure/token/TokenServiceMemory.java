@@ -2,13 +2,12 @@ package com.society.leagues.infrastructure.token;
 
 
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.Authentication;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 public class TokenServiceMemory implements TokenService {
-    private static final HashMap<String,Authentication> restApiAuthTokenCache = new HashMap<>();
+    private static final HashMap<String,String> restApiAuthTokenCache = new HashMap<>();
     public static final int HALF_AN_HOUR_IN_MILLISECONDS = 30 * 60 * 1000;
 
     @Override
@@ -23,7 +22,7 @@ public class TokenServiceMemory implements TokenService {
     }
 
     @Override
-    public void store(String token, Authentication authentication) {
+    public void store(String token, String authentication) {
         restApiAuthTokenCache.put(token,authentication);
     }
 
@@ -33,7 +32,7 @@ public class TokenServiceMemory implements TokenService {
     }
 
     @Override
-    public Authentication retrieve(String token) {
+    public String  retrieve(String token) {
         return restApiAuthTokenCache.get(token);
     }
 }

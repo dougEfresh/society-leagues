@@ -1,8 +1,6 @@
 package com.society.leagues.dao;
 
-import com.society.leagues.domain.SocietyDao;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;

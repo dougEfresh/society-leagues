@@ -2,8 +2,7 @@ package com.society.leagues.infrastructure.token;
 
 import com.owlike.genson.Genson;
 import com.society.leagues.domain.DomainUser;
-import com.society.leagues.infrastructure.AuthenticatedExternalWebService;
-import com.society.leagues.infrastructure.security.AuthenticationWithToken;
+
 import com.society.leagues.infrastructure.security.JdbcServiceAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -31,7 +27,7 @@ public class TokenServiceJdbc implements TokenService {
 
     //private static final Cache restApiAuthTokenCache = CacheManager.getInstance().getCache("restApiAuthTokenCache");
     //TODO use ecache?
-    private static final HashMap<String,Authentication> restApiAuthTokenCache = new HashMap<>();
+    private static final HashMap<String,String> restApiAuthTokenCache = new HashMap<>();
     public static final int HALF_AN_HOUR_IN_MILLISECONDS = 30 * 60 * 1000;
 
     @PostConstruct
@@ -62,17 +58,17 @@ public class TokenServiceJdbc implements TokenService {
     }
 
     @Override
-    public void store(String token, Authentication authentication) {
-        if (authentication.getPrincipal() == null)
-            throw new RuntimeException("Principal is null");
+    public void store(String token, String authentication) {
+        //if (authentication.getPrincipal() == null)
+          ///  throw new RuntimeException("Principal is null");
 
-        logger.debug(String.format("Store token: %s user: %s", token,
-                authentication.getPrincipal().toString()));
+        //logger.debug(String.format("Store token: %s user: %s", token,
+          //      authentication.getPrincipal().toString()));
 
         restApiAuthTokenCache.put(token,authentication);
 
-        DomainUser user = (DomainUser) authentication.getPrincipal();
-        user.setAuthenticated(true);
+        //DomainUser user = (DomainUser) authentication.getPrincipal();
+        /*user.setAuthenticated(true);
         String commaListAuthorities = "";
         for(GrantedAuthority authority: authentication.getAuthorities()) {
             commaListAuthorities += authority.getAuthority() + ",";
@@ -87,6 +83,7 @@ public class TokenServiceJdbc implements TokenService {
         jdbcTemplate.update("insert into token_cache (token,player) VALUES (?,?)",
                 token,
                 json);
+                */
     }
 
     @Override
@@ -102,7 +99,7 @@ public class TokenServiceJdbc implements TokenService {
                 logger.debug("Could not find player for token: " + token);
                 return false;
             }
-            restApiAuthTokenCache.put(token,deserialize(player));
+            restApiAuthTokenCache.put(token,"");
             return true;
         } catch (EmptyResultDataAccessException e) {
             logger.debug("Could not find player for token: " + token);
@@ -111,7 +108,9 @@ public class TokenServiceJdbc implements TokenService {
     }
 
     @Override
-    public Authentication retrieve(String token) {
+    public String retrieve(String token) {
+        return token;
+        /*
         if (restApiAuthTokenCache.containsKey(token))
             return restApiAuthTokenCache.get(token);
 
@@ -123,8 +122,10 @@ public class TokenServiceJdbc implements TokenService {
             throw new RuntimeException("Could not authorized " + token);
         }
         return restApiAuthTokenCache.put(token,deserialize(player));
+        */
     }
 
+    /*
     @SuppressWarnings("unchecked")
     public AuthenticationWithToken deserialize(String user) {
         logger.info("Deserialize player: " + user);
@@ -141,4 +142,5 @@ public class TokenServiceJdbc implements TokenService {
 
         return auth;
     }
+    */
 }

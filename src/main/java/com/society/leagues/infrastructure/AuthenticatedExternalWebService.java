@@ -1,19 +1,18 @@
 package com.society.leagues.infrastructure;
 
-import com.society.leagues.infrastructure.security.AuthenticationWithToken;
-import com.society.leagues.infrastructure.security.ExternalServiceAuthenticator;
-import org.springframework.security.core.GrantedAuthority;
+import com.society.leagues.infrastructure.security.JdbcServiceAuthenticator;
 
-import java.util.Collection;
 
-public class AuthenticatedExternalWebService extends AuthenticationWithToken {
-    private ExternalServiceAuthenticator externalServiceAuthenticator;
+public class AuthenticatedExternalWebService  {
+    /*
+    private JdbcServiceAuthenticator externalServiceAuthenticator;
 
     public AuthenticatedExternalWebService(Object aPrincipal, Object aCredentials, Collection<? extends GrantedAuthority> anAuthorities) {
         super(aPrincipal, aCredentials, anAuthorities);
     }
 
-    public void setExternalServiceAuthenticator(ExternalServiceAuthenticator externalServiceAuthenticator) {
+    public void setExternalServiceAuthenticator(JdbcServiceAuthenticator externalServiceAuthenticator) {
         this.externalServiceAuthenticator = externalServiceAuthenticator;
     }
+    */
 }

@@ -1,7 +1,5 @@
 package com.society.leagues.dao;
 
-import com.society.leagues.domain.SocietyDao;
-import org.jvnet.hk2.annotations.Service;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;

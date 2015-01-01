@@ -1,18 +1,12 @@
 package com.society.leagues.infrastructure.token;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
+
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @Component
-public class TokenAuthenticationProvider implements AuthenticationProvider {
+public class TokenAuthenticationProvider  {
 
+    /*
     @Autowired
     private TokenService tokenService;
 
@@ -32,5 +26,6 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
     public boolean supports(Class<?> authentication) {
         return authentication.equals(PreAuthenticatedAuthenticationToken.class);
     }
+*/
 
 }

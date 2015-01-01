@@ -12,6 +12,7 @@ import java.security.Principal;
 public class SecurityFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
+        requestContext.getHeaders();
          requestContext.setSecurityContext(new SecurityContext() {
             @Override
             public Principal getUserPrincipal() {

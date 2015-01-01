@@ -27,9 +27,7 @@ public class RestAppConfig extends ResourceConfig {
         property(ServerProperties.MONITORING_STATISTICS_ENABLED,true);
         register(LoggingFilter.class);
         register(JacksonFeature.class);
-        for (ApiResource resource : resources) {
-            register(resource);
-        }
+        resources.forEach(this::register);
         register(SecurityFilter.class);
         //packages("com.society.leagues.resource");
     }

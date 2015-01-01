@@ -4,10 +4,12 @@ import com.society.leagues.api.domain.User;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+import org.springframework.stereotype.Component;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
+@Component
 @Api( value = "/admin/user" ,
         description = "Player Management & Info",
         basePath = "/api/vi"

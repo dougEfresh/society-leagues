@@ -5,7 +5,7 @@ import com.society.leagues.dao.PlayerDao;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -13,12 +13,12 @@ import javax.ws.rs.PathParam;
 import java.util.List;
 import java.util.Map;
 
+@Component
 @Api( value = "/player" ,
       description = "Player Management & Info",
       basePath = "/api/vi"
 )
 @Path("/api/v1/player")
-@PreAuthorize("hasAuthority('ROLE_DOMAIN_USER')")
 public class PlayerResource extends ApiResource {
     @Autowired PlayerDao dao;
 
