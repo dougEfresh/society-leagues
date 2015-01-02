@@ -84,6 +84,8 @@ dependencies {
     compile 'org.glassfish.jersey.ext:jersey-entity-filtering:2.14'
     compile 'org.glassfish.jersey.containers:jersey-container-grizzly2-http:2.14'
 
+    compile files('libs/rest-proxy-client.jar')
+
     //Test
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'junit:junit'

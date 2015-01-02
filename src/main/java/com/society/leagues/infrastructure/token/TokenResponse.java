@@ -12,4 +12,8 @@ public class TokenResponse {
     public TokenResponse(String token) {
         this.token = token;
     }
+
+    public String getToken() {
+        return token;
+    }
 }

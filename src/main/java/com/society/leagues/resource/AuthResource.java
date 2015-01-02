@@ -21,18 +21,21 @@ import javax.ws.rs.core.MediaType;
 public class AuthResource extends ApiResource implements AuthApi {
     @Autowired ServiceAuthenticator authenticator;
 
+
     @ApiOperation(value = "login",
             notes = "These fields can also be in the Header or Cookie of the request",
             response = String.class)
-    @Override
-    public TokenResponse authenticate(
+    @Path(value = "authenticate")
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public TokenResponse authenticate (
             @ApiParam(required = true, defaultValue = "email_608@domain.com")
-            String username,
+            @FormParam(value = "username") String username,
             @ApiParam(required = true, defaultValue = "password_608")
-            String password) {
+            @FormParam(value = "password") String password) {
         return auth(new User(username,password));
     }
-
 
     @Path(value = "authenticate")
     @POST
@@ -41,6 +44,7 @@ public class AuthResource extends ApiResource implements AuthApi {
             response = String.class)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Override
     public TokenResponse authenticate(
             @ApiParam(required = true) User user) {
          return auth(user);

@@ -10,6 +10,7 @@ import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
@@ -23,11 +24,8 @@ import static org.mockito.Matchers.eq;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class, TestConfig.class})
-@WebAppConfiguration
-@IntegrationTest(value = {"server.port:0"})
+@IntegrationTest(value = {"server.port:0","daemon:true","debug:true"})
 public class SecurityTest extends TestBase {
-    @Value("${local.server.port}")
-    int port;
 
     @Test
     public void testAuth() {
