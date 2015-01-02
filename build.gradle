@@ -89,9 +89,7 @@ dependencies {
     //Test
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'junit:junit'
-    testCompile 'org.assertj:assertj-core:1.7.0'
     testCompile 'org.mockito:mockito-core:1.10.8'
-    testCompile 'com.jayway.restassured:rest-assured:2.3.4'
 }
 
 task wrapper(type: Wrapper) {
