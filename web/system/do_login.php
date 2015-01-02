@@ -1,19 +1,4 @@
 <?php
-require_once('../include/session/sessionHandler.php');
-$session = new MySqlSessionHandler();
-
-// add db data
-$session->setDbDetails('localhost', 'league', null, 'league');
-$session->setDbTable('session_handler');
-session_set_save_handler(array($session, 'open'),
-                         array($session, 'close'),
-                         array($session, 'read'),
-                         array($session, 'write'),
-                         array($session, 'destroy'),
-                         array($session, 'gc'));
-// The following prevents unexpected effects when using objects as save handlers.
-register_shutdown_function('session_write_close');
-
 session_start();
 
 include '../include/mysql.php';
@@ -27,14 +12,11 @@ if (mysql_num_rows($result) > 0)
 	$_SESSION['full_name'] = $user['first_name'].' '.$user['last_name'];
 	$_SESSION['first_name'] = $user['first_name'];
 	$_SESSION['last_name'] = $user['last_name'];
-	$sql = sprintf("REPLACE INTO session_map VALUES ('%s','%s')",
-				    $user['player_id'] ,
-				    session_id());
-	if (!(mysql_query($sql))) {
-		   error_log("Could not exec : "  + $sql);
-           throw new Exception(mysql_error());
-    }
 
+	setcookie('player_id', $_SESSION['player_id'], time() + (86400 * 14));
+	setcookie('full_name', $_SESSION['full_name'], time() + (86400 * 14));
+	setcookie('first_name', $_SESSION['first_name'], time() + (86400 * 14));
+	setcookie('last_name', $_SESSION['last_name'], time() + (86400 * 14));
 	header('Location:../index.php?v=1');
 }
 else
