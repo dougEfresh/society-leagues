@@ -1,9 +1,6 @@
-package com.society.leagues.infrastructure.token;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package com.society.leagues.client.api.domain;
 
 public class TokenResponse {
-    @JsonProperty(value = "X-Auth-Token")
     private String token;
     boolean success;
 

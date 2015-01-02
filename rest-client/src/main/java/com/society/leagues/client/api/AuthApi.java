@@ -1,7 +1,6 @@
 package com.society.leagues.client.api;
 
-import com.society.leagues.client.api.domain.User;
-import com.society.leagues.infrastructure.token.TokenResponse;
+import com.society.leagues.client.api.domain.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

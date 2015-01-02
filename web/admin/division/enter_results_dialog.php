@@ -130,11 +130,11 @@ $view->assign('match_id', $_GET['match_id']);
 if ($league_id == '4')
 {
 	$result = mysql_query("
-	SELECT 
-	h1.player_id hp1_id, CONCAT(hp1.first_name,' ',hp1.last_name) hp1_name, h1.player_handicap hp1_handicap, ht.team_id ht_id,
-	h2.player_id hp2_id, CONCAT(hp2.first_name,' ',hp2.last_name) hp2_name, h2.player_handicap hp2_handicap, 
-	v1.player_id vp1_id, CONCAT(vp1.first_name,' ',vp1.last_name) vp1_name, v1.player_handicap vp1_handicap, vt.team_id vt_id,
-	v2.player_id vp2_id, CONCAT(vp2.first_name,' ',vp2.last_name) vp2_name, v2.player_handicap vp2_handicap, 
+		SELECT 
+	hp1.player_id hp1_id, CONCAT(hp1.first_name,' ',hp1.last_name) hp1_name, h1.player_handicap hp1_handicap, ht.team_id ht_id,
+	hp2.player_id hp2_id, CONCAT(hp2.first_name,' ',hp2.last_name) hp2_name, h2.player_handicap hp2_handicap, 
+	vp1.player_id vp1_id, CONCAT(vp1.first_name,' ',vp1.last_name) vp1_name, v1.player_handicap vp1_handicap, vt.team_id vt_id,
+	vp2.player_id vp2_id, CONCAT(vp2.first_name,' ',vp2.last_name) vp2_name, v2.player_handicap vp2_handicap, 
 	h1.result_id h1_result_id, h2.result_id h2_result_id, v1.result_id v1_result_id, v2.result_id v2_result_id, 
 	h1.match_id match_id, h1.match_number match_number,
 	IF(h2.player_id IS NULL,'SINGLE','DOUBLE') is_double,
@@ -145,18 +145,31 @@ if ($league_id == '4')
 	IF(h1.result_id IS NULL,0,1) result_exists,
 	h1.games_won h1_score, h2.games_won h2_score, v1.games_won v1_score, v2.games_won v2_score,
 	ht.name ht_name, vt.name vt_name, ht.team_id ht_id, vt.team_id vt_id
-	FROM result_ind h1
+
+        FROM match_schedule m
+
+	join result_ind h1 on h1.match_id=m.match_id and h1.team_id=m.home_team_id
 	JOIN player hp1 ON hp1.player_id=h1.player_id 
 	JOIN team ht ON ht.team_id=h1.team_id
-	LEFT JOIN result_ind h2 ON h2.match_id=h1.match_id AND h2.match_number=h1.match_number AND NOT h2.player_id=h1.player_id AND h2.team_id=h1.team_id
-	LEFT JOIN player hp2 ON hp2.player_id=h2.player_id
-	JOIN result_ind v1 ON v1.match_id=h1.match_id AND v1.match_number=h1.match_number AND NOT v1.team_id=h1.team_id
+
+	LEFT JOIN result_ind h2 on h2.match_id=m.match_id and h2.team_id=m.home_team_id 
+                  AND NOT h2.player_id = h1.player_id AND h1.match_number=h2.match_number
+	LEFT JOIN player hp2 ON hp2.player_id=h2.player_id 
+	LEFT JOIN team ht2 ON ht2.team_id=h2.team_id
+	
+	JOIN result_ind v1 on v1.match_id=m.match_id and v1.team_id=m.visit_team_id 
+             AND v1.match_number=h1.match_number 
 	JOIN player vp1 ON vp1.player_id=v1.player_id 
 	JOIN team vt ON vt.team_id=v1.team_id
-	LEFT JOIN result_ind v2 ON v2.match_id=h1.match_id AND v2.match_number=h1.match_number AND NOT v2.player_id=v1.player_id AND v2.team_id=v1.team_id
-	LEFT JOIN player vp2 ON vp2.player_id=v2.player_id
-	WHERE h1.match_id='{$_GET['match_id']}'
+	
+	LEFT JOIN result_ind v2 on v2.match_id=m.match_id and v2.team_id=m.visit_team_id 
+                AND NOT v2.player_id=v1.player_id AND v1.match_number=v2.match_number
+	LEFT JOIN player vp2 ON vp2.player_id=v2.player_id 
+	LEFT JOIN team vt2 ON vt2.team_id=v2.team_id
+
+	WHERE m.match_id='{$_GET['match_id']}'
 	GROUP BY h1.match_number ORDER BY match_number");
+
 }
 else if (($league_id == '3') || ($league_id == '5'))
 {	
