@@ -1,1 +1,1 @@
-include 'rest-client'
+include 'rest-client', 'rest-server'

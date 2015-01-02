@@ -2,7 +2,9 @@ package com.society.test;
 
 import com.society.leagues.ServerControl;
 import com.society.leagues.client.api.AccountApi;
+import com.society.leagues.client.api.ApiFactory;
 import com.society.leagues.client.api.AuthApi;
+import com.society.leagues.client.filter.TokenFilter;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.dao.AccountDao;
 import com.society.leagues.dao.DivisionDao;
@@ -11,7 +13,7 @@ import com.society.leagues.dao.SchedulerDao;
 import com.society.leagues.domain.interfaces.Player;
 import com.society.leagues.domain.player.PlayerDb;
 import com.society.leagues.infrastructure.security.ServiceAuthenticator;
-import com.society.leagues.infrastructure.token.TokenResponse;
+import com.society.leagues.client.api.domain.TokenResponse;
 import org.glassfish.jersey.client.ClientConfig;
 import org.junit.Before;
 import org.mockito.Mockito;
@@ -48,26 +50,14 @@ public abstract class TestBase {
     AuthApi authApi;
     AccountApi accountApi;
     String baseURL;
-    ClientConfig config;
     Client client;
 
     @Before
     public void setup() throws Exception {
-        config = new ClientConfig().
-                register(DeprecatedResponseHandler.class).
-                register(MethodCallFilter.class).
-                register(new VersionFilter(AuthApi.class)).
-                register(TokenFilter.class);
-
         Mockito.reset(mockAccountDao,mockPlayerDao,mockSchedulerDao,mockDivisionDao);
         Mockito.reset(mockedServiceAuthenticator);
         baseURL = "http://localhost:" + app.getPort();
-        client = ClientBuilder.newClient(config);
-        authApi = RestProxyFactory.getRestClientApi(
-                AuthApi.class,
-                baseURL,
-                client);
-
+        authApi = ApiFactory.createApi(AuthApi.class,null,baseURL,true);
     }
 
     public String authenticate() {

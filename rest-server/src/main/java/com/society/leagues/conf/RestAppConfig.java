@@ -7,6 +7,7 @@ import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
+import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,10 +26,10 @@ public class RestAppConfig extends ResourceConfig {
         property(ServerProperties.MOXY_JSON_FEATURE_DISABLE, true);
         property(ServerProperties.WADL_FEATURE_DISABLE, true);
         property(ServerProperties.MONITORING_STATISTICS_ENABLED,true);
+        register(RolesAllowedDynamicFeature.class);
         register(LoggingFilter.class);
         register(JacksonFeature.class);
         resources.forEach(this::register);
         register(SecurityFilter.class);
-        //packages("com.society.leagues.resource");
     }
 }

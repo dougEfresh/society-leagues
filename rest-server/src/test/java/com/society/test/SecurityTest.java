@@ -2,15 +2,21 @@ package com.society.test;
 
 import com.society.leagues.Main;
 
+import com.society.leagues.client.api.AccountApi;
+import com.society.leagues.client.api.ApiFactory;
 import com.society.leagues.client.api.domain.User;
+import com.society.leagues.client.exception.Unauthorized;
 import com.society.leagues.infrastructure.security.PrincipalToken;
-import com.society.leagues.infrastructure.token.TokenResponse;
+import com.society.leagues.client.api.domain.TokenResponse;
+import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.ws.rs.ProcessingException;
 
 import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertFalse;
@@ -58,8 +64,16 @@ public class SecurityTest extends TestBase {
         assertNotNull(response);
         assertFalse(response.isSuccess());
         assertNull(response.getToken());
-
     }
 
+    @Test
+    public void testDenied() {
+        try {
+            AccountApi accountApi = ApiFactory.createApi(AccountApi.class, null, baseURL, true);
+            accountApi.getAccount(0);
+        } catch (ProcessingException e) {
+            assertTrue(e.getCause() instanceof Unauthorized);
+        }
+    }
 
 }

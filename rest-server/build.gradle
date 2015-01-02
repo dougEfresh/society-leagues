@@ -18,17 +18,9 @@ targetCompatibility = 1.8
 
 jar {
     baseName = 'society-leagues'
-    archiveName = 'society-leagues.jar'
+    archiveName = 'society-leagues-server.jar'
     version = '1.0.0'
 }
-
-task leaguesWeb(type: Tar) {
-     from 'web'
-     archiveName 'leagues.tar.gz'
-     compression 'GZIP'
-}
-
-assemble.dependsOn 'leaguesWeb'
 
 bootRun {
     def port = '5005'
@@ -59,6 +51,7 @@ repositories {
 }
 
 dependencies {
+    compile(project(':rest-client'))
     compile 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
     compile 'org.springframework.boot:spring-boot-actuator'

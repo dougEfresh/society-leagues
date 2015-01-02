@@ -4,14 +4,10 @@ import com.society.leagues.client.api.AuthApi;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.infrastructure.security.PrincipalToken;
 import com.society.leagues.infrastructure.security.ServiceAuthenticator;
-import com.society.leagues.infrastructure.token.TokenResponse;
+import com.society.leagues.client.api.domain.TokenResponse;
 import com.wordnik.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-
 
 @Api(value = "/auth",
         description = "Login to get token",
