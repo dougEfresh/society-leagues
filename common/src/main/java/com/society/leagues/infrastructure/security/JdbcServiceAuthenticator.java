@@ -16,7 +16,7 @@ public class JdbcServiceAuthenticator implements ServiceAuthenticator {
     @Autowired TokenService tokenService;
 
     @Override
-    public PrincipalToken authenticate(String username, String password) {
+    public User authenticate(String username, String password) {
         User user;
         try {
             user = dao.getUser(username, password);
@@ -28,15 +28,10 @@ public class JdbcServiceAuthenticator implements ServiceAuthenticator {
             logger.error(t.getMessage(),t);
             throw new RuntimeException("Unable to verify username " + username);
         }
-        PrincipalToken principalToken = new PrincipalToken(
-                tokenService.generateNewToken(),
-                user.getId() + ""
-                );
 
-        principalToken.addRole("USER");
-        //if (player.isAdmin())
-            //principalToken.addRole("ADMIN");
-
-        return principalToken;
+        String token = tokenService.generateNewToken();
+        user.setToken(token);
+        tokenService.store(token,new UserSecurityContext(user));
+        return user;
     }
 }

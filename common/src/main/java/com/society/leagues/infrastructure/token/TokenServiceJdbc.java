@@ -1,6 +1,7 @@
 package com.society.leagues.infrastructure.token;
 
 import com.society.leagues.infrastructure.security.JdbcServiceAuthenticator;
+import com.society.leagues.infrastructure.security.UserSecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,11 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Store tokens in a DB
- * TODO: Need to implement cache!
+ * TODO: Need to implement cache
  */
 @Component
 public class TokenServiceJdbc implements TokenService {
@@ -22,9 +24,8 @@ public class TokenServiceJdbc implements TokenService {
     @Autowired JdbcTemplate jdbcTemplate;
     @Autowired JdbcServiceAuthenticator serviceAuth;
 
-    //private static final Cache restApiAuthTokenCache = CacheManager.getInstance().getCache("restApiAuthTokenCache");
-    //TODO use ecache?
-    private static final HashMap<String,String> restApiAuthTokenCache = new HashMap<>();
+    private static final AtomicReference<HashMap<String,UserSecurityContext>>
+            cache = new AtomicReference<>(new HashMap<>());
     public static final int HALF_AN_HOUR_IN_MILLISECONDS = 30 * 60 * 1000;
 
     @PostConstruct
@@ -43,7 +44,7 @@ public class TokenServiceJdbc implements TokenService {
         List<String> oldTokens = jdbcTemplate.queryForList("select token from token_cache where created_date  < ADDDATE(now(),-30)",
                 String.class);
         for (String oldToken : oldTokens) {
-            restApiAuthTokenCache.remove(oldToken);
+            cache.get().remove(oldToken);
         }
         int dropped = jdbcTemplate.update("delete from token_cache where created_date  < ADDDATE(now(),-30)" );
         logger.info("Dropped " + dropped + " tokens");
@@ -55,14 +56,14 @@ public class TokenServiceJdbc implements TokenService {
     }
 
     @Override
-    public void store(String token, String authentication) {
+    public void store(String token, UserSecurityContext securityContext) {
         //if (authentication.getPrincipal() == null)
           ///  throw new RuntimeException("Principal is null");
 
         //logger.debug(String.format("Store token: %s user: %s", token,
           //      authentication.getPrincipal().toString()));
 
-        restApiAuthTokenCache.put(token,authentication);
+        cache.get().put(token,securityContext);
 
         //DomainUser user = (DomainUser) authentication.getPrincipal();
         /*user.setAuthenticated(true);
@@ -87,38 +88,42 @@ public class TokenServiceJdbc implements TokenService {
     public boolean contains(String token) {
         logger.debug("Checking token: " + token);
 
-        if (restApiAuthTokenCache.containsKey(token))
-            return true;
 
+        if (cache.get().containsKey(token))
+            return true;
+        return false;
+/*
         try {
             String player = jdbcTemplate.queryForObject("SELECT player FROM token_cache WHERE token = ?", String.class, token);
             if (player == null || player.isEmpty()) {
                 logger.debug("Could not find player for token: " + token);
                 return false;
             }
-            restApiAuthTokenCache.put(token,"");
+            cache.put(token, "");
             return true;
         } catch (EmptyResultDataAccessException e) {
             logger.debug("Could not find player for token: " + token);
         }
         return false;
+        */
     }
 
     @Override
-    public String retrieve(String token) {
-        return token;
-        /*
-        if (restApiAuthTokenCache.containsKey(token))
-            return restApiAuthTokenCache.get(token);
+    public UserSecurityContext retrieve(String token) {
 
+        if (cache.get().containsKey(token))
+            return cache.get().get(token);
+
+        return null;
+        /*
         String player;
         try {
             player = jdbcTemplate.queryForObject("SELECT player FROM token_cache WHERE token = ?", String.class, token);
         } catch (EmptyResultDataAccessException e) {
             //TODO: Just throw NULL back?
-            throw new RuntimeException("Could not authorized " + token);
+            throw new RuntimeException("Could not aurestApiAuthTokenCachethorized " + token);
         }
-        return restApiAuthTokenCache.put(token,deserialize(player));
+        return cache.put(token,deserialize(player));
         */
     }
 

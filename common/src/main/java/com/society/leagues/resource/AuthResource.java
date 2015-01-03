@@ -2,7 +2,6 @@ package com.society.leagues.resource;
 
 import com.society.leagues.client.api.AuthApi;
 import com.society.leagues.client.api.domain.User;
-import com.society.leagues.infrastructure.security.PrincipalToken;
 import com.society.leagues.infrastructure.security.ServiceAuthenticator;
 import com.society.leagues.client.api.domain.TokenResponse;
 import com.wordnik.swagger.annotations.*;
@@ -41,11 +40,11 @@ public class AuthResource extends ApiResource implements AuthApi {
         TokenResponse response = new TokenResponse();
         response.setSuccess(false);
         try {
-            PrincipalToken principalToken = authenticator.authenticate(user.getUsername(),user.getPassword());
-            if (principalToken == null || principalToken.getToken() == null)
+            User authUser = authenticator.authenticate(user.getUsername(),user.getPassword());
+            if (authUser == null || authUser.getToken() == null)
                 return response;
 
-            response.setToken(principalToken.getToken());
+            response.setToken(authUser.getToken());
             response.setSuccess(true);
         } catch (Throwable ignore) {
 

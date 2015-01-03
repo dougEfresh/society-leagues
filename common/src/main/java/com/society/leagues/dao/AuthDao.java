@@ -1,5 +1,6 @@
 package com.society.leagues.dao;
 
+import com.society.leagues.client.api.Role;
 import com.society.leagues.client.api.domain.User;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +25,11 @@ public class AuthDao extends SocietyDao {
         user.setLastName((String) data.get("last_name"));
         user.setLogin((String) data.get("player_login"));
         user.setId((Integer) data.get("player_id"));
+        user.addRole(Role.USER);
+
+        if ((Integer) data.get("admin") > 0)
+            user.addRole(Role.ADMIN);
+
         return user;
     }
 }

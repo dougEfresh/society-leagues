@@ -2,6 +2,10 @@ package com.society.leagues.client.api.domain;
 
 import com.society.leagues.client.api.Role;
 
+import javax.annotation.security.DenyAll;
+import java.util.*;
+
+@SuppressWarnings("unused")
 public class User {
     String username;
     String firstName;
@@ -9,8 +13,9 @@ public class User {
     String email;
     String password;
     String login;
+    String token;
     int id;
-    Role role;
+    Set<Role> roles = new TreeSet<>();
 
     public User(String username, String password) {
         this.username = username;
@@ -21,6 +26,13 @@ public class User {
 
     }
 
+     public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
     public String getUsername() {
         return username;
     }
@@ -53,6 +65,7 @@ public class User {
         this.email = email;
     }
 
+    @DenyAll
     public String getPassword() {
         return password;
     }
@@ -77,11 +90,28 @@ public class User {
         this.id = id;
     }
 
-    public Role getRole() {
-        return role;
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        roles.addAll(roles);
     }
 
     public void setRole(Role role) {
-        this.role = role;
+        roles.add(role);
     }
+
+     public void addRole(Role role) {
+        roles.add(role);
+    }
+
+    public boolean isAdmin() {
+        for (Role role : roles) {
+            if (role == Role.ADMIN || role == Role.OPERATOR)
+                return true;
+        }
+        return false;
+    }
+
 }

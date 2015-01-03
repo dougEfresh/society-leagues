@@ -3,13 +3,11 @@ package com.society.test;
 import com.society.leagues.Main;
 
 import com.society.leagues.client.admin.api.MatchResultApi;
-import com.society.leagues.client.api.AccountApi;
 import com.society.leagues.client.ApiFactory;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.client.exception.Unauthorized;
-import com.society.leagues.infrastructure.security.PrincipalToken;
 import com.society.leagues.client.api.domain.TokenResponse;
-import com.society.leagues.resource.MatchResultResource;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -31,8 +29,10 @@ public class SecurityTest extends TestBase {
 
     @Test
     public void testAuth() {
+        User user = new User();
+        user.setToken("token");
         Mockito.when(mockedServiceAuthenticator.authenticate(NORMAL_USER,NORMAL_PASS)).
-                thenReturn(new PrincipalToken("token", NORMAL_USER));
+                thenReturn(user);
 
         TokenResponse response = authApi.authenticate(new User(NORMAL_USER, NORMAL_PASS));
         assertNotNull(response);
@@ -49,9 +49,9 @@ public class SecurityTest extends TestBase {
         assertNotNull(response);
         assertFalse(response.isSuccess());
         assertNull(response.getToken());
-        PrincipalToken principalToken = new PrincipalToken(null,NORMAL_USER);
+        User user = new User();
         Mockito.reset(mockedServiceAuthenticator);
-        Mockito.when(mockedServiceAuthenticator.authenticate(NORMAL_USER, NORMAL_PASS)).thenReturn(principalToken);
+        Mockito.when(mockedServiceAuthenticator.authenticate(NORMAL_USER, NORMAL_PASS)).thenReturn(user);
 
         response = authApi.authenticate(new User(NORMAL_USER, NORMAL_PASS));
         assertNotNull(response);

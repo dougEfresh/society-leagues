@@ -1,17 +1,29 @@
 package com.society.leagues.infrastructure.security;
 import com.society.leagues.infrastructure.NotAuthorizedResponse;
+import com.society.leagues.infrastructure.token.TokenService;
 import com.society.leagues.resource.ApiResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
+import java.security.Principal;
 
 
 @Provider
 @PreMatching
+@Component
 public class SecurityFilter implements ContainerRequestFilter {
+    static Logger logger = LoggerFactory.getLogger(SecurityFilter.class);
+
+    @Autowired TokenService tokenService;
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -24,6 +36,7 @@ public class SecurityFilter implements ContainerRequestFilter {
             );
             return;
         }
+        requestContext.setSecurityContext(getSecurityContext(requestContext));
     }
 
     public boolean isLoginRequest(ContainerRequestContext requestContext) {
@@ -31,6 +44,32 @@ public class SecurityFilter implements ContainerRequestFilter {
     }
 
     public boolean noToken(ContainerRequestContext requestContext) {
-        return requestContext.getHeaderString(ApiResource.X_AUTH_TOKEN) == null;
+        return requestContext.getHeaderString(ApiResource.X_AUTH_TOKEN) == null &&
+                !requestContext.getCookies().containsKey(ApiResource.X_AUTH_TOKEN);
+    }
+
+    public SecurityContext getSecurityContext(ContainerRequestContext requestContext) {
+        String token = findToken(requestContext);
+        logger.debug("Getting security context for: " + token);
+        UserSecurityContext securityContext = tokenService.retrieve(token);
+        if (securityContext == null) {
+            logger.error("Could not find token in headers or cookies: " + requestContext.getUriInfo());
+            logger.error("Token: " + token);
+            requestContext.abortWith(new NotAuthorizedResponse(requestContext).getResponse());
+            return null;
+        }
+        return securityContext;
+    }
+
+    public String findToken(ContainerRequestContext requestContext) {
+        String token = requestContext.getHeaderString(ApiResource.X_AUTH_TOKEN);
+        if (token != null)
+            return token;
+
+        Cookie c = requestContext.getCookies().get(ApiResource.X_AUTH_TOKEN);
+        if (c == null)
+            return null;
+
+        return c.getValue();
     }
 }

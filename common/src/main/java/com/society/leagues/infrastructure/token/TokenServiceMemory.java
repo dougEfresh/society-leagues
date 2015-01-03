@@ -1,13 +1,16 @@
 package com.society.leagues.infrastructure.token;
 
 
+import com.society.leagues.infrastructure.security.UserSecurityContext;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import javax.ws.rs.core.SecurityContext;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class TokenServiceMemory implements TokenService {
-    private static final HashMap<String,String> restApiAuthTokenCache = new HashMap<>();
+    private static final AtomicReference<HashMap<String,UserSecurityContext>> cache = new AtomicReference<>(new HashMap<>());
     public static final int HALF_AN_HOUR_IN_MILLISECONDS = 30 * 60 * 1000;
 
     @Override
@@ -22,17 +25,17 @@ public class TokenServiceMemory implements TokenService {
     }
 
     @Override
-    public void store(String token, String authentication) {
-        restApiAuthTokenCache.put(token,authentication);
+    public void store(String token, UserSecurityContext userSecurityContext) {
+        cache.get().put(token, userSecurityContext);
     }
 
     @Override
     public boolean contains(String token) {
-        return restApiAuthTokenCache.get(token) != null;
+        return cache.get().containsKey(token);
     }
 
     @Override
-    public String  retrieve(String token) {
-        return restApiAuthTokenCache.get(token);
+    public UserSecurityContext retrieve(String token) {
+        return cache.get().get(token);
     }
 }

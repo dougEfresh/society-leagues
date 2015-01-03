@@ -3,7 +3,8 @@ package com.society.leagues.client.api;
 public enum Role {
     ADMIN("Root"),
     OPERATOR("Operator"),
-    PLAYER("Player");
+    USER("Player"),
+    ANON("Anon");
 
     final String role;
     Role(String role) {
@@ -17,7 +18,10 @@ public enum Role {
         if (OPERATOR.role.equals(role))
             return OPERATOR;
 
-        return PLAYER;
+          if (USER.role.equals(role))
+            return USER;
+
+        return ANON;
     }
 
     public static boolean isAdmin(Role r) {

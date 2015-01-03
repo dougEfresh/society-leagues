@@ -1,6 +1,9 @@
 package com.society.leagues.infrastructure.security;
 
+
+import com.society.leagues.client.api.domain.User;
+
 public interface ServiceAuthenticator {
 
-    PrincipalToken authenticate(String username, String password);
+    User authenticate(String username, String password);
 }
