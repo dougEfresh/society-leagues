@@ -17,21 +17,17 @@ public class JdbcServiceAuthenticator implements ServiceAuthenticator {
 
     @Override
     public User authenticate(String username, String password) {
-        User user;
+        User user = null;
         try {
             user = dao.getUser(username, password);
             logger.info("Successfully logged player_id: " +user.getId());
         } catch (EmptyResultDataAccessException e) {
             logger.error("No such user: " + username);
-            throw new RuntimeException("No such user: " + username);
+            return user;
         } catch (Throwable t) {
             logger.error(t.getMessage(),t);
-            throw new RuntimeException("Unable to verify username " + username);
+            return user;
         }
-
-        String token = tokenService.generateNewToken();
-        user.setToken(token);
-        tokenService.store(token,new UserSecurityContext(user));
         return user;
     }
 }

@@ -7,10 +7,14 @@ import javax.ws.rs.client.ClientRequestFilter;
 import java.io.IOException;
 
 public class TokenFilter implements ClientRequestFilter {
+    final String token;
+
+    public TokenFilter(String token) {
+        this.token = token;
+    }
 
     @Override
     public void filter(ClientRequestContext requestContext) throws IOException {
-        String token = (String) requestContext.getProperty(TokenHeader.NAME);
         if (token == null || token.isEmpty())
             return;
         requestContext.getHeaders().add(TokenHeader.NAME,token);

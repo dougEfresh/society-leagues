@@ -38,9 +38,9 @@ public abstract class TestBase {
     }
 
     public String authenticate() {
-        String username = "email_608@domain.com";
-        String password = "password_608";
-        TokenResponse response = authApi.authenticate(new User(username, password));
+        TokenResponse response = authApi.authenticate(
+                new User(ADMIN_USER, ADMIN_PASS)
+        );
         assertNotNull(response);
         assertNotNull(response.getToken());
 

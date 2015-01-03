@@ -29,17 +29,13 @@ public class ApiFactory {
                 register(DeprecatedResponseHandler.class).
                 register(MethodCallFilter.class).
                 register(new VersionFilter(api)).
-                register(TokenFilter.class).
+                register(new TokenFilter(token)).
                 register(ExceptionFilter.class);
 
         if (debug)
             config = config.register(LoggingFilter.class);
 
         Client client = ClientBuilder.newClient(config);
-
-        if (token != null)
-            client = client.property(TokenHeader.NAME,token);
-
         return RestProxyFactory.getRestClientApi(api,url,client);
     }
 }

@@ -4,6 +4,7 @@ import com.society.leagues.Main;
 
 import com.society.leagues.client.admin.api.MatchResultApi;
 import com.society.leagues.client.ApiFactory;
+import com.society.leagues.client.api.Role;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.client.exception.Unauthorized;
 import com.society.leagues.client.api.domain.TokenResponse;
@@ -30,7 +31,6 @@ public class SecurityTest extends TestBase {
     @Test
     public void testAuth() {
         User user = new User();
-        user.setToken("token");
         Mockito.when(mockedServiceAuthenticator.authenticate(NORMAL_USER,NORMAL_PASS)).
                 thenReturn(user);
 
@@ -46,14 +46,6 @@ public class SecurityTest extends TestBase {
                 thenThrow(new RuntimeException());
 
         TokenResponse response = authApi.authenticate(new User(NORMAL_USER, NORMAL_PASS));
-        assertNotNull(response);
-        assertFalse(response.isSuccess());
-        assertNull(response.getToken());
-        User user = new User();
-        Mockito.reset(mockedServiceAuthenticator);
-        Mockito.when(mockedServiceAuthenticator.authenticate(NORMAL_USER, NORMAL_PASS)).thenReturn(user);
-
-        response = authApi.authenticate(new User(NORMAL_USER, NORMAL_PASS));
         assertNotNull(response);
         assertFalse(response.isSuccess());
         assertNull(response.getToken());
@@ -77,4 +69,15 @@ public class SecurityTest extends TestBase {
         }
     }
 
+    @Test
+    public void testAccess() {
+        User user = new User();
+        Mockito.when(mockedServiceAuthenticator.authenticate(
+                ADMIN_USER,ADMIN_PASS))
+                .thenReturn(user);
+
+        String token = authenticate();
+        MatchResultApi matchResultApi = ApiFactory.createApi(MatchResultApi.class, token, baseURL, true);
+        assertNotNull(matchResultApi.delete(0));
+    }
 }

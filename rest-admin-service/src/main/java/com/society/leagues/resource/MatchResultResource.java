@@ -15,7 +15,7 @@ public class MatchResultResource extends ApiResource implements MatchResultApi {
 
     @Override
     public Boolean delete(Integer id) {
-        return null;
+        return true;
     }
 
     @Override

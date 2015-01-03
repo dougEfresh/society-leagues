@@ -13,7 +13,6 @@ public class User {
     String email;
     String password;
     String login;
-    String token;
     int id;
     Set<Role> roles = new TreeSet<>();
 
@@ -26,13 +25,6 @@ public class User {
 
     }
 
-     public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
     public String getUsername() {
         return username;
     }
