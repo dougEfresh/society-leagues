@@ -1,11 +1,16 @@
 package com.society.leagues.client.api.domain;
 
+import com.society.leagues.client.api.Role;
+
 public class User {
     String username;
     String firstName;
     String lastName;
     String email;
     String password;
+    String login;
+    int id;
+    Role role;
 
     public User(String username, String password) {
         this.username = username;
@@ -54,5 +59,29 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }
