@@ -2,12 +2,14 @@ package com.society.test;
 
 import com.society.leagues.Main;
 
+import com.society.leagues.client.admin.api.MatchResultApi;
 import com.society.leagues.client.api.AccountApi;
 import com.society.leagues.client.ApiFactory;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.client.exception.Unauthorized;
 import com.society.leagues.infrastructure.security.PrincipalToken;
 import com.society.leagues.client.api.domain.TokenResponse;
+import com.society.leagues.resource.MatchResultResource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -68,8 +70,8 @@ public class SecurityTest extends TestBase {
     @Test
     public void testDenied() {
         try {
-            AccountApi accountApi = ApiFactory.createApi(AccountApi.class, null, baseURL, true);
-            accountApi.getAccount(0);
+            MatchResultApi matchResultApi = ApiFactory.createApi(MatchResultApi.class, null, baseURL, true);
+            matchResultApi.delete(0);
         } catch (ProcessingException e) {
             assertTrue(e.getCause() instanceof Unauthorized);
         }

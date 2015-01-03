@@ -27,7 +27,6 @@ public abstract class TestBase {
     @Autowired ServerControl app;
 
     AuthApi authApi;
-    AccountApi accountApi;
     String baseURL;
     Client client;
 
