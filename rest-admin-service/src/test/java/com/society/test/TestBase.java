@@ -1,14 +1,11 @@
 package com.society.test;
 
 import com.society.leagues.ServerControl;
-import com.society.leagues.client.api.AccountApi;
 import com.society.leagues.client.ApiFactory;
 import com.society.leagues.client.api.AuthApi;
-import com.society.leagues.client.api.domain.User;
-
-import com.society.leagues.client.api.domain.Player;
-import com.society.leagues.infrastructure.security.ServiceAuthenticator;
 import com.society.leagues.client.api.domain.TokenResponse;
+import com.society.leagues.client.api.domain.User;
+import com.society.leagues.infrastructure.security.ServiceAuthenticator;
 import org.junit.Before;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -4,7 +4,6 @@ package com.society.leagues.infrastructure.token;
 import com.society.leagues.infrastructure.security.UserSecurityContext;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import javax.ws.rs.core.SecurityContext;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;

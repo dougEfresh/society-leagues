@@ -3,7 +3,8 @@ package com.society.leagues.client.api.domain;
 import com.society.leagues.client.api.Role;
 
 import javax.annotation.security.DenyAll;
-import java.util.*;
+import java.util.Set;
+import java.util.TreeSet;
 
 @SuppressWarnings("unused")
 public class User {

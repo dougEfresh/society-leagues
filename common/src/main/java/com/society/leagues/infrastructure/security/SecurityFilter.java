@@ -1,4 +1,5 @@
 package com.society.leagues.infrastructure.security;
+
 import com.society.leagues.infrastructure.NotAuthorizedResponse;
 import com.society.leagues.infrastructure.token.TokenService;
 import com.society.leagues.resource.ApiResource;
@@ -14,7 +15,6 @@ import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
-import java.security.Principal;
 
 
 @Provider

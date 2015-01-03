@@ -1,6 +1,5 @@
 package com.society.leagues.client;
 
-import com.society.leagues.client.api.domain.TokenHeader;
 import com.society.leagues.client.filter.ExceptionFilter;
 import com.society.leagues.client.filter.TokenFilter;
 import org.glassfish.jersey.client.ClientConfig;

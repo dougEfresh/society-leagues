@@ -1,7 +1,6 @@
 package com.society.leagues.resource;
 
 import com.society.leagues.dao.PlayerDao;
-
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

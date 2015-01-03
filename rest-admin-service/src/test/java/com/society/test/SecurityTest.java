@@ -1,14 +1,11 @@
 package com.society.test;
 
 import com.society.leagues.Main;
-
-import com.society.leagues.client.admin.api.MatchResultApi;
 import com.society.leagues.client.ApiFactory;
-import com.society.leagues.client.api.Role;
+import com.society.leagues.client.admin.api.MatchResultApi;
+import com.society.leagues.client.api.domain.TokenResponse;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.client.exception.Unauthorized;
-import com.society.leagues.client.api.domain.TokenResponse;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -19,9 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import javax.ws.rs.ProcessingException;
 
 import static junit.framework.TestCase.assertNull;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class, TestConfig.class})

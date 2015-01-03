@@ -1,12 +1,14 @@
 package com.society.leagues.resource;
 
 import com.society.leagues.client.api.AuthApi;
+import com.society.leagues.client.api.domain.TokenResponse;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.infrastructure.security.ServiceAuthenticator;
-import com.society.leagues.client.api.domain.TokenResponse;
 import com.society.leagues.infrastructure.security.UserSecurityContext;
 import com.society.leagues.infrastructure.token.TokenService;
-import com.wordnik.swagger.annotations.*;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

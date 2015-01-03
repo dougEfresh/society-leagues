@@ -1,15 +1,9 @@
-
-import ch.qos.logback.core.rolling.RollingFileAppender
-import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.classic.filter.ThresholdFilter
-import ch.qos.logback.core.FileAppender
+import ch.qos.logback.core.rolling.RollingFileAppender
+import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 
-import static ch.qos.logback.classic.Level.DEBUG
-import static ch.qos.logback.classic.Level.ERROR
-import static ch.qos.logback.classic.Level.INFO
-import static ch.qos.logback.classic.Level.TRACE
-import static ch.qos.logback.classic.Level.WARN
+import static ch.qos.logback.classic.Level.*
 
 appender("FILE", RollingFileAppender) {
  def rootDir = new File("/data/logs");
