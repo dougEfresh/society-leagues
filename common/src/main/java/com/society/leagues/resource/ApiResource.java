@@ -4,7 +4,6 @@ package com.society.leagues.resource;
 public abstract class ApiResource {
     public static final String API_PATH = "/api";
     public static final String API_ADMIN_PATH = "/api/admin";
-    public static final String X_AUTH_TOKEN = "X-Auth-Token";
     public static final String AUTHENTICATE_URL = API_PATH + "/auth/authenticate";
     public static final String ACCOUNT_URL = API_PATH + "/account";
     public static final String PLAYER_URL = API_PATH + "/player";

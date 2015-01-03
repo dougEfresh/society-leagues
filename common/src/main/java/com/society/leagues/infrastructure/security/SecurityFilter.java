@@ -1,5 +1,6 @@
 package com.society.leagues.infrastructure.security;
 
+import com.society.leagues.client.api.domain.TokenHeader;
 import com.society.leagues.infrastructure.NotAuthorizedResponse;
 import com.society.leagues.infrastructure.token.TokenService;
 import com.society.leagues.resource.ApiResource;
@@ -44,8 +45,8 @@ public class SecurityFilter implements ContainerRequestFilter {
     }
 
     public boolean noToken(ContainerRequestContext requestContext) {
-        return requestContext.getHeaderString(ApiResource.X_AUTH_TOKEN) == null &&
-                !requestContext.getCookies().containsKey(ApiResource.X_AUTH_TOKEN);
+        return requestContext.getHeaderString(TokenHeader.NAME) == null &&
+                !requestContext.getCookies().containsKey(TokenHeader.NAME);
     }
 
     public SecurityContext getSecurityContext(ContainerRequestContext requestContext) {
@@ -62,11 +63,11 @@ public class SecurityFilter implements ContainerRequestFilter {
     }
 
     public String findToken(ContainerRequestContext requestContext) {
-        String token = requestContext.getHeaderString(ApiResource.X_AUTH_TOKEN);
+        String token = requestContext.getHeaderString(TokenHeader.NAME);
         if (token != null)
             return token;
 
-        Cookie c = requestContext.getCookies().get(ApiResource.X_AUTH_TOKEN);
+        Cookie c = requestContext.getCookies().get(TokenHeader.NAME);
         if (c == null)
             return null;
 

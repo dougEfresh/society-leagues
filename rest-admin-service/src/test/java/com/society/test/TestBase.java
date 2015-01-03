@@ -3,6 +3,7 @@ package com.society.test;
 import com.society.leagues.ServerControl;
 import com.society.leagues.client.ApiFactory;
 import com.society.leagues.client.api.AuthApi;
+import com.society.leagues.client.api.Role;
 import com.society.leagues.client.api.domain.TokenResponse;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.infrastructure.security.ServiceAuthenticator;
@@ -15,10 +16,10 @@ import javax.ws.rs.client.Client;
 import static org.junit.Assert.assertNotNull;
 
 public abstract class TestBase {
-    public static final String NORMAL_USER="email_608@domain.com";
-    public static final String NORMAL_PASS="password_608";
-    public static final String ADMIN_USER="email_46@domain.com";
-    public static final String ADMIN_PASS ="password_46";
+    public static final String NORMAL_USER = "email_608@domain.com";
+    public static final String NORMAL_PASS = "password_608";
+    public static final String ADMIN_USER =  "email_46@domain.com";
+    public static final String ADMIN_PASS =  "password_46";
 
     @Autowired ServiceAuthenticator mockedServiceAuthenticator;
     @Autowired ServerControl app;
@@ -35,12 +36,11 @@ public abstract class TestBase {
     }
 
     public String authenticate() {
-        TokenResponse response = authApi.authenticate(
-                new User(ADMIN_USER, ADMIN_PASS)
-        );
+        User user = new User(ADMIN_USER,ADMIN_USER);
+        user.addRole(Role.ADMIN);
+        TokenResponse response = authApi.authenticate(user);
         assertNotNull(response);
         assertNotNull(response.getToken());
-
         return response.getToken();
     }
 

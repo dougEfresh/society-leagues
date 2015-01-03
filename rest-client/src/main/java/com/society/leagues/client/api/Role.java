@@ -27,4 +27,9 @@ public enum Role {
     public static boolean isAdmin(Role r) {
         return  r == ADMIN || r == OPERATOR;
     }
+
+    @Override
+    public String toString() {
+        return role;
+    }
 }

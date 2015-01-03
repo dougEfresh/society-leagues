@@ -5,8 +5,11 @@ import com.society.leagues.client.admin.api.MatchResultApi;
 import com.society.leagues.client.api.domain.PlayerMatch;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.security.RolesAllowed;
+
 @Component
-public class MatchResultResource extends ApiResource implements MatchResultApi {
+@RolesAllowed(value = {"Root","Operator"})
+public class MatchResultResource extends AdminApiResource implements MatchResultApi {
 
     @Override
     public Integer save(PlayerMatch matchResult) {

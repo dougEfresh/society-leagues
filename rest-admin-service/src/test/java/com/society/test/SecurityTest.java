@@ -3,6 +3,7 @@ package com.society.test;
 import com.society.leagues.Main;
 import com.society.leagues.client.ApiFactory;
 import com.society.leagues.client.admin.api.MatchResultApi;
+import com.society.leagues.client.api.Role;
 import com.society.leagues.client.api.domain.TokenResponse;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.client.exception.Unauthorized;
@@ -15,6 +16,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.ws.rs.ProcessingException;
 
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.*;
 
@@ -66,13 +69,56 @@ public class SecurityTest extends TestBase {
 
     @Test
     public void testAccess() {
-        User user = new User();
+        User user = new User(ADMIN_USER,ADMIN_PASS);
+        user.addRole(Role.ADMIN);
+        Mockito.when(mockedServiceAuthenticator.authenticate(
+                user.getUsername(),user.getPassword()))
+                .thenReturn(user);
+        TokenResponse response = authApi.authenticate(user);
+        assertNotNull(response);
+        assertNotNull(response.getToken());
+        MatchResultApi matchResultApi = ApiFactory.createApi(
+                MatchResultApi.class,
+                response.getToken(),
+                baseURL,
+                true);
+        assertNotNull(matchResultApi.delete(0));
+
+        user = new User(ADMIN_USER,ADMIN_PASS);
+        user.addRole(Role.OPERATOR);
         Mockito.when(mockedServiceAuthenticator.authenticate(
                 ADMIN_USER,ADMIN_PASS))
                 .thenReturn(user);
 
-        String token = authenticate();
-        MatchResultApi matchResultApi = ApiFactory.createApi(MatchResultApi.class, token, baseURL, true);
+        response = authApi.authenticate(user);
+        assertNotNull(response);
+        assertNotNull(response.getToken());
+        matchResultApi = ApiFactory.createApi(
+                MatchResultApi.class,
+                response.getToken(),
+                baseURL,
+                true);
         assertNotNull(matchResultApi.delete(0));
+    }
+
+    @Test
+    public void testRole() {
+        User user = new User(ADMIN_USER,ADMIN_PASS);
+        user.addRole(Role.USER);
+        Mockito.when(mockedServiceAuthenticator.authenticate(
+                ADMIN_USER,ADMIN_PASS))
+                .thenReturn(user);
+        TokenResponse response = authApi.authenticate(user);
+        assertNotNull(response);
+        assertNotNull(response.getToken());
+        try {
+            MatchResultApi matchResultApi = ApiFactory.createApi(MatchResultApi.class,
+                    response.getToken(),
+                    baseURL,
+                    true);
+            matchResultApi.delete(0);
+        } catch (Throwable t){
+            assertTrue(t.getCause() instanceof Unauthorized);
+        }
     }
 }

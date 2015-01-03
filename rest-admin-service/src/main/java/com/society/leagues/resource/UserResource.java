@@ -15,7 +15,7 @@ import javax.ws.rs.Path;
         basePath = "/api/vi"
 )
 @Path("/api/admin/user")
-public class UserResource extends ApiResource {
+public class UserResource extends AdminApiResource {
 
     @Path(value = "/create")
     @POST

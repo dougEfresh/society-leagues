@@ -32,28 +32,25 @@ public class AuthResource extends ApiResource implements AuthApi {
             String username,
             @ApiParam(required = true, defaultValue = "password_608")
             String password) {
-        return auth(new User(username,password));
+        return auth(username,password);
     }
 
-    @ApiOperation(value = "login",
-            notes = "These fields can also be in the Header or Cookie of the request",
-            response = String.class)
+
     @Override
-    public TokenResponse authenticate(
-            @ApiParam(required = true) User user) {
-         return auth(user);
+    public TokenResponse authenticate(User user) {
+         return auth(user.getUsername(),user.getPassword());
     }
 
-    private TokenResponse auth(User user) {
+    private TokenResponse auth(String username, String password) {
         TokenResponse response = new TokenResponse();
         response.setSuccess(false);
         try {
-            User authUser = authenticator.authenticate(user.getUsername(), user.getPassword());
+            User authUser = authenticator.authenticate(username,password);
             if (authUser == null)
                 return response;
 
             String token = tokenService.generateNewToken();
-            tokenService.store(token, new UserSecurityContext(user));
+            tokenService.store(token, new UserSecurityContext(authUser));
             response.setToken(token);
             response.setSuccess(true);
         } catch (Throwable t) {
