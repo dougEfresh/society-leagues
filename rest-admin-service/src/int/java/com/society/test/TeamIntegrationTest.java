@@ -7,7 +7,7 @@ import com.society.leagues.client.api.Role;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.league.League;
 import com.society.leagues.client.api.domain.league.LeagueType;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,9 +15,11 @@ import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.UUID;
+
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.TestCase.assertNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class})
@@ -31,49 +33,26 @@ public class TeamIntegrationTest extends TestIntegrationBase {
         api = ApiFactory.createApi(TeamAdminApi.class, authenticate(Role.ADMIN), baseURL);
     }
 
-    @Test
+      @Test
     public void testCreate() {
-        League league = new League(LeagueType.INDIVIDUAL,0d,1);
-        Team team = new Team("TheBestEva",league,2);
+        Team team = new Team(UUID.randomUUID().toString());
 
         Team returned = api.create(team);
         assertNotNull(returned);
-
         assertNotNull(returned.getId());
-        assertEquals(team.getName(),returned.getName());
-        assertNotNull(returned.getLeague());
-        assertEquals(team.getLeague().getId(), returned.getLeague().getId());
+        assertNotNull(returned.getName());
 
         returned.setName(null);
-        assertNull(api.create(returned));
-
-        returned.setName("Blah");
-        returned.setLeague(null);
-        assertNull(api.create(returned));
-
-        league.setId(null);
-        returned.setLeague(league);
         assertNull(api.create(returned));
 
     }
 
     @Test
-    public void testModify() {
-        League league = new League(LeagueType.INDIVIDUAL,0d,1);
-        Team team = new Team("TheBestEva",league);
-        Team created = api.create(team);
-
-        league.setId(123);
-        created.setLeague(league);
-        Team returned = api.modify(created);
+    public void testDelete() {
+        Team team = new Team(UUID.randomUUID().toString());
+        Team returned = api.create(team);
         assertNotNull(returned);
-        assertEquals(created.getId(),returned.getId());
-        assertEquals(created.getName(),returned.getName());
-        assertNotNull(returned.getLeague());
-        assertEquals(team.getLeague().getId(),returned.getLeague().getId());
-
-        league.setId(null);
-        returned.setLeague(league);
-        assertNull(api.modify(returned));
+        assertTrue(api.delete(returned));
+        assertFalse(api.delete(returned));
     }
 }

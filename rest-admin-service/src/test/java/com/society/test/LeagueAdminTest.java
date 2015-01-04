@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class, TestConfig.class, AdminTestConfig.class})
 @IntegrationTest(value = {"server.port:0","daemon:true","debug:true"})
-public class LeagueTest extends TestBase {
+public class LeagueAdminTest extends TestBase {
     LeagueAdminApi api;
 
     @Before
@@ -31,31 +31,37 @@ public class LeagueTest extends TestBase {
 
     @Test
     public void testCreate() {
-        League league = new League(LeagueType.INDIVIDUAL,100.00d,1);
+        League league = new League(LeagueType.INDIVIDUAL);
+        league.setId(3000);
         Mockito.when(mockLeagueDao.create(Mockito.any(League.class))).thenReturn(league);
         League returned = api.create(league);
         assertNotNull(returned);
-        assertEquals(league.getDues(), returned.getDues());
         assertEquals(league.getType(),returned.getType());
         assertEquals(league.getId(),returned.getId());
 
         Mockito.reset(mockLeagueDao);
 
-        league.setDues(null);
+        league.setType(null);
         Mockito.when(mockLeagueDao.create(league)).thenReturn(league);
         assertNull(api.create(league));
     }
 
     @Test
     public void testDelete() {
-        League league = new League(LeagueType.MIXED,100.00d,1);
-        Mockito.when(mockLeagueDao.delete(league.getId())).thenReturn(Boolean.TRUE);
-        assertTrue(api.delete(league.getId()));
+        League league = new League(LeagueType.MIXED);
+        league.setId(3001);
+        Mockito.when(mockLeagueDao.delete(Mockito.any(League.class))).thenReturn(Boolean.TRUE);
+        assertTrue(api.delete(league));
+
+        Mockito.reset(mockLeagueDao);
+        Mockito.when(mockLeagueDao.delete(Mockito.any(League.class))).thenReturn(Boolean.FALSE);
+        assertFalse(api.delete(league));
     }
 
     @Test
     public void testModify() {
-        League league = new League(LeagueType.TEAM,100.00d,1);
+        League league = new League(LeagueType.TEAM);
+        league.setId(3002);
         Mockito.when(mockLeagueDao.modify(Mockito.any(League.class))).thenReturn(league);
         assertNotNull(api.modify(league));
 

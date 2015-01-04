@@ -18,7 +18,7 @@ public interface TeamAdminApi {
     @POST
     Team create(Team team);
 
-    @Path(value = "modify")
+    @Path(value = "delete")
     @POST
-    Team modify(Team team);
+    Boolean delete(Team team);
 }

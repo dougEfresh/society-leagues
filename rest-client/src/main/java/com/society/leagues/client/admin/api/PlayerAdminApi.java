@@ -18,7 +18,7 @@ public interface PlayerAdminApi {
     @POST
     Boolean delete(@PathParam(value = "id") Integer id);
 
-    @Path(value = "modify")
+    @Path(value = "delete")
     @POST
     Player modify(Player player);
 

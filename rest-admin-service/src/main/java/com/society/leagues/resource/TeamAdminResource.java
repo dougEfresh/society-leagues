@@ -19,7 +19,7 @@ public class TeamAdminResource extends AdminApiResource implements TeamAdminApi 
 
     @Override
     public Team create(Team team) {
-        if (team == null || team.getLeague() == null || team.getLeague().getId() == null || team.getName() == null) {
+        if (team == null || team.getName() == null) {
             logger.error("Could not verify team: " + team);
             return null;
         }
@@ -28,12 +28,11 @@ public class TeamAdminResource extends AdminApiResource implements TeamAdminApi 
     }
 
     @Override
-    public Team modify(Team team) {
-        if (team == null || team.getId() == null || team.getLeague() == null ||
-                team.getLeague().getId() == null || team.getName() == null) {
+    public Boolean delete(Team team) {
+        if (team == null || team.getId() == null) {
             logger.error("Could not verify team: " + team);
-            return null;
+            return Boolean.FALSE;
         }
-        return dao.modify(team);
+        return dao.delete(team);
     }
 }

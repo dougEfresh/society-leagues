@@ -2,7 +2,6 @@ package com.society.test;
 
 import com.society.leagues.Main;
 import com.society.leagues.client.ApiFactory;
-import com.society.leagues.client.admin.api.PlayerAdminApi;
 import com.society.leagues.client.admin.api.TeamAdminApi;
 import com.society.leagues.client.api.Role;
 import com.society.leagues.client.api.domain.Team;
@@ -16,6 +15,10 @@ import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.UUID;
+
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -34,51 +37,31 @@ public class TeamAdminTest extends TestBase {
 
     @Test
     public void testCreate() {
-        League league = new League(LeagueType.INDIVIDUAL,0d,1);
-        Team team = new Team("TheBestEva",league,2);
-        team.setId(100);
+        Team team = new Team(UUID.randomUUID().toString());
+        team.setId(1000);
         Mockito.when(mockTeamDao.create(Mockito.any(Team.class))).thenReturn(team);
 
         Team returned = api.create(team);
         assertNotNull(returned);
         assertEquals(team.getId(), returned.getId());
         assertEquals(team.getName(),returned.getName());
-        assertNotNull(returned.getLeague());
-        assertEquals(team.getLeague().getId(), returned.getLeague().getId());
 
         Mockito.reset(mockTeamDao);
         returned.setName(null);
         assertNull(api.create(returned));
 
-        Mockito.reset(mockTeamDao);
-        returned.setName("Blah");
-        returned.setLeague(null);
-        assertNull(api.create(returned));
-
-        Mockito.reset(mockTeamDao);
-        league.setId(null);
-        returned.setLeague(league);
-        assertNull(api.create(returned));
-
     }
 
     @Test
-    public void testModify() {
-        League league = new League(LeagueType.INDIVIDUAL,0d,1);
-        Team team = new Team("TheBestEva",league);
-        team.setId(101);
-        Mockito.when(mockTeamDao.modify(Mockito.any(Team.class))).thenReturn(team);
+    public void testDelete() {
+        Team team = new Team(UUID.randomUUID().toString());
+        team.setId(1001);
+        Mockito.when(mockTeamDao.delete(Mockito.any(Team.class))).thenReturn(Boolean.TRUE);
 
-        Team returned = api.modify(team);
-        assertNotNull(returned);
-        assertEquals(team.getId(),returned.getId());
-        assertEquals(team.getName(),returned.getName());
-        assertNotNull(returned.getLeague());
-        assertEquals(team.getLeague().getId(),returned.getLeague().getId());
+        assertTrue(api.delete(team));
 
         Mockito.reset(mockTeamDao);
-        league.setId(null);
-        returned.setLeague(league);
-        assertNull(api.modify(returned));
+        Mockito.when(mockTeamDao.delete(Mockito.any(Team.class))).thenReturn(Boolean.FALSE);
+        assertFalse(api.delete(team));
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.sql.Types;
+import java.util.Date;
 
 @Component
 public class TeamAdminDao extends Dao implements TeamAdminApi {
@@ -23,6 +23,7 @@ public class TeamAdminDao extends Dao implements TeamAdminApi {
         try {
             jdbcTemplate.update(getCreateStatement(team),keyHolder);
             team.setId(keyHolder.getKey().intValue());
+            team.setCreated(new Date());
             return team;
         } catch (Throwable t) {
             logger.error(t.getMessage(),t);
@@ -31,31 +32,22 @@ public class TeamAdminDao extends Dao implements TeamAdminApi {
     }
 
     @Override
-    public Team modify(Team team) {
+    public Boolean delete(Team team) {
         try {
-            if (jdbcTemplate.update("UPDATE team SET captain_id = ? , league_id = ? WHERE team_id = ?",
-                    team.getCaptain(), team.getLeague().getId(), team.getId()) <= 0)
-                return null;
-
-            return team;
+            return  (jdbcTemplate.update("delete from team WHERE team_id = ?",team.getId() ) > 0);
         } catch (Throwable t){
             logger.error(t.getMessage(),t);
         }
-        return null;
+        return Boolean.FALSE;
     }
 
      private PreparedStatementCreator getCreateStatement(final Team team) {
         return con -> {
             PreparedStatement ps = con.prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
-            int i = 1;
-            ps.setInt(i++, team.getLeague().getId());
-            ps.setString(i++, team.getName());
-            if (team.getCaptain() == null)
-                ps.setNull(i++, Types.INTEGER);
-            else
-                ps.setInt(i++, team.getCaptain());
+            ps.setString(1, team.getName());
             return ps;
         };
     }
-    final static String CREATE = "INSERT INTO team (league_id,name,captain_id) VALUES (?,?,?)";
+
+    final static String CREATE = "INSERT INTO team (name) VALUES (?)";
 }

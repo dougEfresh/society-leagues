@@ -14,9 +14,9 @@ public interface LeagueAdminApi {
     @POST
     League create(final League league);
 
-    @Path("delete/{id}")
-    @GET
-    Boolean delete(@PathParam(value = "id") Integer id);
+    @Path("delete")
+    @POST
+    Boolean delete(final League league);
 
     @Path("modify")
     @POST

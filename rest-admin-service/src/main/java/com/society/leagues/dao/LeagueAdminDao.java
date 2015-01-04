@@ -30,9 +30,9 @@ public class LeagueAdminDao extends Dao implements LeagueAdminApi {
     }
 
     @Override
-    public Boolean delete(Integer id) {
+    public Boolean delete(final League league) {
         try {
-            return jdbcTemplate.update("DELETE from league where league_id = ?",id) > 0;
+            return jdbcTemplate.update("DELETE from league where league_id = ?",league.getId()) > 0;
         } catch (Throwable t) {
             logger.error(t.getMessage(),t);
         }
@@ -42,7 +42,7 @@ public class LeagueAdminDao extends Dao implements LeagueAdminApi {
     @Override
     public League modify(League league) {
         try {
-            if (jdbcTemplate.update("UPDATE league SET league_dues = ? WHERE league_id  = ?", league.getDues(),league.getId()) <= 0)
+            if (jdbcTemplate.update("UPDATE league SET league_type = ? WHERE league_id  = ?", league.getType().name() , league.getId()) <= 0)
                 return null;
 
             return league;
@@ -56,11 +56,10 @@ public class LeagueAdminDao extends Dao implements LeagueAdminApi {
     private PreparedStatementCreator getCreateStatement(final League league) {
         return con -> {
             PreparedStatement ps = con.prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, league.getType().name);
-            ps.setDouble(2, league.getDues());
+            ps.setString(1, league.getType().name());
             return ps;
         };
     }
 
-    final static String CREATE = "INSERT INTO league(league_type,league_dues) VALUES (?,?)";
+    final static String CREATE = "INSERT INTO league(league_type) VALUES (?)";
 }

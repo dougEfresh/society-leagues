@@ -29,39 +29,36 @@ public class LeagueIntegrationTest extends TestIntegrationBase {
 
     @Test
     public void testCreate() {
-        League league = new League(LeagueType.INDIVIDUAL,100.00d,1);
+        League league = new League(LeagueType.INDIVIDUAL);
         League returned = api.create(league);
         assertNotNull(returned);
-        assertEquals(league.getDues(), returned.getDues());
         assertEquals(league.getType(),returned.getType());
         assertNotNull(returned.getId());
 
-        league.setDues(null);
+        league.setType(null);
         assertNull(api.create(league));
     }
 
     @Test
     public void testDelete() {
-        League league = new League(LeagueType.MIXED,100.00d,1);
+        League league = new League(LeagueType.MIXED);
         League returned = api.create(league);
-        assertTrue(api.delete(returned.getId()));
-        assertFalse(api.delete(returned.getId()));
+        assertTrue(api.delete(returned));
+        assertFalse(api.delete(returned));
     }
 
     @Test
     public void testModify() {
-        League league = new League(LeagueType.TEAM,100.00d,1);
+        League league = new League(LeagueType.TEAM);
         League returned = api.create(league);
-        returned.setDues(10000d);
+        returned.setType(LeagueType.INDIVIDUAL);
 
         League modified = api.modify(returned);
         assertNotNull(modified);
-        assertEquals(returned.getDues(),modified.getDues());
-
+        assertEquals(modified.getType(),LeagueType.INDIVIDUAL);
 
         league.setId(null);
         assertNull(api.modify(league));
-
 
         league.setId(-100);
         assertNull(api.modify(league));

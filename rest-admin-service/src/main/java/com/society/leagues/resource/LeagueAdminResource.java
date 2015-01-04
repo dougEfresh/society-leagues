@@ -21,7 +21,7 @@ public class LeagueAdminResource extends AdminApiResource implements LeagueAdmin
 
     @Override
     public League create(League league) {
-        if (league.getDues() == null || league.getType() == null) {
+        if (league == null || league.getType() == null) {
             logger.error("League is not verified: "+ league);
             return null;
         }
@@ -29,13 +29,13 @@ public class LeagueAdminResource extends AdminApiResource implements LeagueAdmin
     }
 
     @Override
-    public Boolean delete(Integer id) {
-        return dao.delete(id);
+    public Boolean delete(final League league) {
+        return dao.delete(league);
     }
 
     @Override
     public League modify(League league) {
-        if (league.getDues() == null || league.getType() == null || league.getId() == null) {
+        if (league == null || league.getType() == null) {
             logger.error("League is not verified: "+ league);
             return null;
         }
