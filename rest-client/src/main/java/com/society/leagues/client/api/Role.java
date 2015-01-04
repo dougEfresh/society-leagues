@@ -1,14 +1,17 @@
 package com.society.leagues.client.api;
 
 public enum Role {
-    ADMIN("Root"),
-    OPERATOR("Operator"),
-    USER("Player"),
-    ANON("Anon");
+    ADMIN("Root",1),
+    OPERATOR("Operator",2),
+    Player("Player",3),
+    ANON("Anon",4);
 
-    final String role;
-    Role(String role) {
+    public final String role;
+    public final Integer id;
+
+    Role(String role,Integer id) {
         this.role = role;
+        this.id = id;
     }
 
     public static Role fromString(String role) {
@@ -18,14 +21,18 @@ public enum Role {
         if (OPERATOR.role.equals(role))
             return OPERATOR;
 
-          if (USER.role.equals(role))
-            return USER;
+          if (Player.role.equals(role))
+            return Player;
 
         return ANON;
     }
 
     public static boolean isAdmin(Role r) {
         return  r == ADMIN || r == OPERATOR;
+    }
+
+    public static Integer id(Role r) {
+        return r.id;
     }
 
     @Override

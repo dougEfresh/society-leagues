@@ -3,19 +3,17 @@ package com.society.leagues.client.api.domain;
 import com.society.leagues.client.api.Role;
 
 import javax.annotation.security.DenyAll;
-import java.util.Set;
-import java.util.TreeSet;
 
 @SuppressWarnings("unused")
 public class User {
-    String username;
-    String firstName;
-    String lastName;
-    String email;
-    String password;
-    String login;
-    int id;
-    Set<Role> roles = new TreeSet<>();
+    protected String username;
+    protected String firstName;
+    protected String lastName;
+    protected String email;
+    protected String password;
+    protected String login;
+    Integer id;
+    Role role;
 
     public User(String username, String password) {
         this.username = username;
@@ -75,7 +73,7 @@ public class User {
         this.login = login;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -83,28 +81,54 @@ public class User {
         this.id = id;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        roles.addAll(roles);
+    public Role getRole() {
+        return role;
     }
 
     public void setRole(Role role) {
-        roles.add(role);
+        this.role = role;
     }
 
      public void addRole(Role role) {
-        roles.add(role);
+         this.role = role;
     }
 
     public boolean isAdmin() {
-        for (Role role : roles) {
-            if (role == Role.ADMIN || role == Role.OPERATOR)
-                return true;
-        }
-        return false;
+        return Role.isAdmin(role);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+
+        User user = (User) o;
+
+        if (email != null ? !email.equals(user.email) : user.email != null) return false;
+        if (login != null ? !login.equals(user.login) : user.login != null) return false;
+        if (username != null ? !username.equals(user.username) : user.username != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = username != null ? username.hashCode() : 0;
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (login != null ? login.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", login='" + login + '\'' +
+                ", id=" + id +
+                ", role" +
+                '}';
+    }
 }

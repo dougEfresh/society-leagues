@@ -32,11 +32,7 @@ public class UserSecurityContext implements SecurityContext {
     @Override
     public boolean isUserInRole(String role) {
         Role r = Role.fromString(role);
-        for (Role userRole : user.getRoles()) {
-            if (r == userRole)
-                return true;
-        }
-        return false;
+        return  r == user.getRole();
     }
 
     @Override

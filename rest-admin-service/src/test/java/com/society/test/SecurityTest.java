@@ -22,7 +22,7 @@ import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Main.class, TestConfig.class})
+@SpringApplicationConfiguration(classes = {Main.class, TestConfig.class, AdminTestConfig.class})
 @IntegrationTest(value = {"server.port:0","daemon:true","debug:true"})
 public class SecurityTest extends TestBase {
 
@@ -104,7 +104,7 @@ public class SecurityTest extends TestBase {
     @Test
     public void testRole() {
         User user = new User(ADMIN_USER,ADMIN_PASS);
-        user.addRole(Role.USER);
+        user.addRole(Role.Player);
         Mockito.when(mockedServiceAuthenticator.authenticate(
                 ADMIN_USER,ADMIN_PASS))
                 .thenReturn(user);
