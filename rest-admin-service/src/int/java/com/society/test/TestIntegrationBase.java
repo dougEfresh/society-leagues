@@ -7,7 +7,7 @@ import com.society.leagues.client.api.Role;
 import com.society.leagues.client.api.domain.Player;
 import com.society.leagues.client.api.domain.TokenResponse;
 import com.society.leagues.client.api.domain.User;
-import com.society.leagues.dao.PlayerDao;
+import com.society.leagues.dao.PlayerAdminDao;
 import com.society.leagues.infrastructure.security.ServiceAuthenticator;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,8 @@ public class TestIntegrationBase {
 
     @Autowired ServiceAuthenticator serviceAuthenticator;
     @Autowired ServerControl app;
-    @Autowired PlayerDao playerDao;
+    @Autowired
+    PlayerAdminDao playerDao;
 
     AuthApi authApi;
     String baseURL;

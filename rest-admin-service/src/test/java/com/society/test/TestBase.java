@@ -7,8 +7,9 @@ import com.society.leagues.client.api.Role;
 import com.society.leagues.client.api.domain.Player;
 import com.society.leagues.client.api.domain.TokenResponse;
 import com.society.leagues.client.api.domain.User;
-import com.society.leagues.dao.LeagueDao;
-import com.society.leagues.dao.PlayerDao;
+import com.society.leagues.dao.LeagueAdminDao;
+import com.society.leagues.dao.PlayerAdminDao;
+import com.society.leagues.dao.TeamAdminDao;
 import com.society.leagues.infrastructure.security.ServiceAuthenticator;
 import org.junit.Before;
 import org.mockito.Mockito;
@@ -26,8 +27,9 @@ public abstract class TestBase {
 
     @Autowired ServiceAuthenticator mockedServiceAuthenticator;
     @Autowired ServerControl app;
-    @Autowired PlayerDao mockPlayerDao;
-    @Autowired LeagueDao mockLeagueDao;
+    @Autowired PlayerAdminDao mockPlayerDao;
+    @Autowired LeagueAdminDao mockLeagueDao;
+    @Autowired TeamAdminDao mockTeamDao;
 
     AuthApi authApi;
     String baseURL;
@@ -35,7 +37,7 @@ public abstract class TestBase {
 
     @Before
     public void setup() throws Exception {
-        Mockito.reset(mockedServiceAuthenticator,mockPlayerDao,mockLeagueDao);
+        Mockito.reset(mockedServiceAuthenticator,mockPlayerDao,mockLeagueDao,mockTeamDao);
         baseURL = "http://localhost:" + app.getPort();
         authApi = ApiFactory.createApi(AuthApi.class,null,baseURL,true);
     }

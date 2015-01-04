@@ -13,8 +13,8 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 
 @Component
-public class PlayerDao extends Dao implements PlayerAdminApi {
-    private static Logger logger = LoggerFactory.getLogger(PlayerDao.class);
+public class PlayerAdminDao extends Dao implements PlayerAdminApi {
+    private static Logger logger = LoggerFactory.getLogger(PlayerAdminDao.class);
 
     @Override
     public Player create(Player player) {

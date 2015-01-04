@@ -12,9 +12,9 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 
 @Component
-public class LeagueDao extends Dao implements LeagueAdminApi {
+public class LeagueAdminDao extends Dao implements LeagueAdminApi {
 
-    private static Logger logger = LoggerFactory.getLogger(LeagueDao.class);
+    private static Logger logger = LoggerFactory.getLogger(LeagueAdminDao.class);
 
     @Override
     public League create(final League league) {
