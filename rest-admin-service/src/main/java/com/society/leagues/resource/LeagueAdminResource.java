@@ -11,13 +11,13 @@ import org.springframework.stereotype.Component;
 import javax.annotation.security.RolesAllowed;
 
 @Component
-@RolesAllowed(value = {"Root","Operator"})
+@RolesAllowed(value = {"Root"})
 @SuppressWarnings("unused")
-public class LeagueResource extends AdminApiResource implements LeagueAdminApi  {
+public class LeagueAdminResource extends AdminApiResource implements LeagueAdminApi  {
 
     @Autowired
     LeagueAdminDao dao;
-    private static Logger logger = LoggerFactory.getLogger(LeagueResource.class);
+    private static Logger logger = LoggerFactory.getLogger(LeagueAdminResource.class);
 
     @Override
     public League create(League league) {

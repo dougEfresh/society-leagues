@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 import javax.annotation.security.RolesAllowed;
 
 @Component
-@RolesAllowed(value = {"Root","Operator"})
-public class PlayerResource extends AdminApiResource implements PlayerAdminApi {
+@RolesAllowed(value = {"Root"})
+public class PlayerAdminResource extends AdminApiResource implements PlayerAdminApi {
     @Autowired
     PlayerAdminDao dao;
-    private static Logger logger = LoggerFactory.getLogger(PlayerResource.class);
+    private static Logger logger = LoggerFactory.getLogger(PlayerAdminResource.class);
 
     @Override
     public Player create(Player player) {
