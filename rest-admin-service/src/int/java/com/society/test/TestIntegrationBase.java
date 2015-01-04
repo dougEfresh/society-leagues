@@ -10,22 +10,24 @@ import com.society.leagues.client.api.domain.User;
 import com.society.leagues.dao.PlayerDao;
 import com.society.leagues.infrastructure.security.ServiceAuthenticator;
 import org.junit.Before;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.client.Client;
 
 import static org.junit.Assert.assertNotNull;
 
-public abstract class TestBase {
+public class TestIntegrationBase {
     public static final String NORMAL_USER = "email_608@domain.com";
     public static final String NORMAL_PASS = "password_608";
-    public static final String ADMIN_USER =  "email_46@domain.com";
-    public static final String ADMIN_PASS =  "password_46";
+    public static final String ADMIN_USER =  "email_528@domain.com";
+    public static final String ADMIN_PASS =  "password_528";
 
-    @Autowired ServiceAuthenticator mockedServiceAuthenticator;
-    @Autowired ServerControl app;
-    @Autowired PlayerDao mockPlayerDao;
+    @Autowired
+    ServiceAuthenticator serviceAuthenticator;
+    @Autowired
+    ServerControl app;
+    @Autowired
+    PlayerDao playerDao;
 
     AuthApi authApi;
     String baseURL;
@@ -33,18 +35,17 @@ public abstract class TestBase {
 
     @Before
     public void setup() throws Exception {
-        Mockito.reset(mockedServiceAuthenticator,mockPlayerDao);
         baseURL = "http://localhost:" + app.getPort();
-        authApi = ApiFactory.createApi(AuthApi.class,null,baseURL,true);
+        authApi = ApiFactory.createApi(AuthApi.class, null, baseURL, true);
     }
 
     public String authenticate(Role role) {
-        User user = new User(ADMIN_USER,ADMIN_PASS);
-        user.addRole(role);
-        Mockito.reset(mockedServiceAuthenticator);
-        Mockito.when(mockedServiceAuthenticator.authenticate(
-                user.getUsername(),user.getPassword()))
-                .thenReturn(user);
+        User user;
+        if (Role.isAdmin(role))
+            user = new User(ADMIN_USER,ADMIN_PASS);
+        else
+            user = new User(NORMAL_USER,NORMAL_USER);
+
         TokenResponse response = authApi.authenticate(user);
         assertNotNull(response);
         assertNotNull(response.getToken());

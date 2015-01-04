@@ -19,7 +19,6 @@ public class PlayerDao extends SocietyDao implements PlayerAdminApi {
             jdbcTemplate.update(CREATE,
                     player.getLogin(),
                     role.id,
-                    player.getEmail(),
                     player.getFirstName(),
                     player.getLastName(),
                     player.getEmail(),
@@ -89,7 +88,7 @@ public class PlayerDao extends SocietyDao implements PlayerAdminApi {
             "VALUES " +
             "(?,?,?,?,?,?)";
 
-     static String MODIFY = "UPDATE player " +
+    static String MODIFY = "UPDATE player " +
             "set " +
             "player_login=?," +
             "player_group=?," +
@@ -97,5 +96,5 @@ public class PlayerDao extends SocietyDao implements PlayerAdminApi {
             "last_name=?," +
             "email=?," +
             "`password`= ? " +
-             " where player_id = ?";
+            " where player_id = ?";
 }

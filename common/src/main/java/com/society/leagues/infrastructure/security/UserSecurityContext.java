@@ -16,7 +16,6 @@ public class UserSecurityContext implements SecurityContext {
     }
 
     public UserSecurityContext() {
-        this.user = user;
     }
 
     @Override
@@ -43,5 +42,13 @@ public class UserSecurityContext implements SecurityContext {
     @Override
     public String getAuthenticationScheme() {
         return null;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

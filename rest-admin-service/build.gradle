@@ -18,18 +18,6 @@ bootRun {
     jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=' + port
 }
 
-sourceSets {
-    integTest {
-        java.srcDir file('src/int/java')
-        resources.srcDir file('src/int/resources')
-    }
-}
-
-task intTest(type: Test) {
-    testClassesDir = sourceSets.integTest.output.classesDir
-    classpath = sourceSets.integTest.runtimeClasspath
-}
-
 dependencies {
     compile(project(':rest-client'))
     compile(project(':common'))

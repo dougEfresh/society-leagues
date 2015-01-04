@@ -11,9 +11,8 @@ public class AuthDao extends SocietyDao {
 
     public User getUser(String username, String password) {
         Map<String, Object> data = jdbcTemplate.queryForMap(
-                "SELECT *," +
-                        "case when g_name = 'Root' or g_name = 'Operator' then 1 else 0 end as admin" +
-                        " From player p left join groups g on p.player_group=g_id " +
+                "SELECT *" +
+                        " From player p " +
                         " WHERE p.player_login = ? " +
                         " AND p.`password` = ?",
                 username,
@@ -25,10 +24,7 @@ public class AuthDao extends SocietyDao {
         user.setLastName((String) data.get("last_name"));
         user.setLogin((String) data.get("player_login"));
         user.setId((Integer) data.get("player_id"));
-        user.addRole(Role.Player);
-
-        if ((Integer) data.get("admin") > 0)
-            user.addRole(Role.ADMIN);
+        user.setRole(Role.fromId((Integer) data.get("player_group")));
 
         return user;
     }

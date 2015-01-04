@@ -35,6 +35,22 @@ public enum Role {
         return r.id;
     }
 
+    public static Role fromId(Integer id) {
+        if (id == null)
+            return ANON;
+
+        switch (id) {
+            case 1:
+                return ADMIN;
+            case 2:
+                return OPERATOR;
+            case 3:
+                return Player;
+            default:
+                return ANON;
+        }
+    }
+
     @Override
     public String toString() {
         return role;
