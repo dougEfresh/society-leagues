@@ -6,7 +6,6 @@ import com.society.leagues.infrastructure.security.UserSecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -22,6 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * TODO: Need to implement cache
  */
 @Component
+@SuppressWarnings("unused")
 public class TokenServiceJdbc implements TokenService {
     private static final Logger logger = LoggerFactory.getLogger(TokenServiceJdbc.class);
     @Autowired JdbcTemplate jdbcTemplate;
@@ -34,11 +34,12 @@ public class TokenServiceJdbc implements TokenService {
 
     @PostConstruct
     public void init() {
-        jdbcTemplate.execute("create table IF NOT EXISTS token_cache(token varchar(64)," +
-                        " player varchar(4096) NOT NULL," +
-                " created_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-                " PRIMARY KEY (token))"
-        );
+        jdbcTemplate.execute(CREATE_TABLE);
+    }
+
+    @Override
+    public void clearCache() {
+        cache.get().clear();
     }
 
     @Override
@@ -65,9 +66,7 @@ public class TokenServiceJdbc implements TokenService {
         String json =  new Genson().serialize(securityContext);
         logger.debug("Storing " + json + " to db");
         //TODO Check for existing token?
-        jdbcTemplate.update("REPLACE into token_cache (token,player) VALUES (?,?)",
-                token,
-                json);
+        jdbcTemplate.update("REPLACE into token_cache (token,player) VALUES (?,?)", token, json);
     }
 
     @Override
@@ -78,17 +77,10 @@ public class TokenServiceJdbc implements TokenService {
             return true;
 
         try {
-            String json = jdbcTemplate.queryForObject("SELECT player FROM token_cache WHERE token = ?", String.class, token);
-            if (json == null || json.isEmpty()) {
-                logger.warn("Could not find player for token: " + token);
-                return false;
-            }
-            UserSecurityContext context = new Genson().deserialize(json,UserSecurityContext.class);
+            UserSecurityContext context = new Genson().deserialize(getJson(token),UserSecurityContext.class);
             cache.get().put(token,context);
             return true;
-        } catch (EmptyResultDataAccessException e) {
-            logger.warn("Could not find player for token: " + token);
-        }
+        } catch (Throwable t) { logger.error(t.getMessage(), t); }
         return false;
     }
 
@@ -99,19 +91,30 @@ public class TokenServiceJdbc implements TokenService {
             return cache.get().get(token);
 
          try {
-            String json = jdbcTemplate.queryForObject("SELECT player FROM token_cache WHERE token = ?", String.class, token);
-            if (json == null || json.isEmpty()) {
-                logger.warn("Could not find player for token: " + token);
-                return null;
-            }
-            UserSecurityContext context = new Genson().deserialize(json,UserSecurityContext.class);
+            UserSecurityContext context = new Genson().deserialize(getJson(token),UserSecurityContext.class);
             cache.get().put(token,context);
             return context;
-        } catch (EmptyResultDataAccessException e) {
-            logger.warn("Could not find player for token: " + token);
-        }
+        } catch (Throwable t) { logger.error(t.getMessage(), t); }
 
         return null;
     }
 
+    private String getJson(String token) {
+        try {
+            String json = jdbcTemplate.queryForObject("SELECT player FROM token_cache WHERE token = ?", String.class, token);
+            if (json == null || json.isEmpty()) {
+                throw new RuntimeException("No token: " + token );
+            }
+            return json;
+        } catch (Throwable t) {
+            logger.warn("Could not find player for token: " + token);
+            logger.error(t.getMessage(), t);
+        }
+        return null;
+    }
+
+    final static String CREATE_TABLE = "create table IF NOT EXISTS token_cache(token varchar(64)," +
+                        " player varchar(4096) NOT NULL," +
+                " created_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                " PRIMARY KEY (token))";
 }

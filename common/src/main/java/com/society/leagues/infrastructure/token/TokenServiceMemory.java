@@ -19,6 +19,11 @@ public class TokenServiceMemory implements TokenService {
     }
 
     @Override
+    public void clearCache() {
+        cache.get().clear();
+    }
+
+    @Override
     public String generateNewToken() {
         return UUID.randomUUID().toString();
     }

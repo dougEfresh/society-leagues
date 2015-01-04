@@ -45,7 +45,7 @@ $result = mysql_query("SELECT
 						RIGHT JOIN league ON league.league_id=division.league_id
 						RIGHT JOIN player ON player.player_id=result_ind.player_id
 						RIGHT JOIN team ON team.team_id=result_ind.team_id
-						WHERE result_ind.player_id='{$_GET['player_id']}' GROUP BY division.division_id;");
+						WHERE result_ind.player_id='{$_GET['player_id']}' GROUP BY division.division_id  order by season.created_date  ");
 
 while($row = mysql_fetch_assoc($result))
 {

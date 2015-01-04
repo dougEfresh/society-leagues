@@ -22,12 +22,9 @@ public class TestIntegrationBase {
     public static final String ADMIN_USER =  "email_528@domain.com";
     public static final String ADMIN_PASS =  "password_528";
 
-    @Autowired
-    ServiceAuthenticator serviceAuthenticator;
-    @Autowired
-    ServerControl app;
-    @Autowired
-    PlayerDao playerDao;
+    @Autowired ServiceAuthenticator serviceAuthenticator;
+    @Autowired ServerControl app;
+    @Autowired PlayerDao playerDao;
 
     AuthApi authApi;
     String baseURL;
@@ -44,7 +41,7 @@ public class TestIntegrationBase {
         if (Role.isAdmin(role))
             user = new User(ADMIN_USER,ADMIN_PASS);
         else
-            user = new User(NORMAL_USER,NORMAL_USER);
+            user = new User(NORMAL_USER,NORMAL_PASS);
 
         TokenResponse response = authApi.authenticate(user);
         assertNotNull(response);
