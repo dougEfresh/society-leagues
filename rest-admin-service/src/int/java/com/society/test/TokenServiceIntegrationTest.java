@@ -2,7 +2,6 @@ package com.society.test;
 
 import com.society.leagues.Main;
 import com.society.leagues.client.api.Role;
-import com.society.leagues.client.api.domain.User;
 import com.society.leagues.infrastructure.security.UserSecurityContext;
 import com.society.leagues.infrastructure.token.TokenService;
 import org.junit.Test;
@@ -12,7 +11,6 @@ import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import static org.junit.Assert.*;
 

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
-public class AccountDao extends SocietyDao {
+public class AccountDao extends Dao {
     final static String  ACCT_INFO = "SELECT *," +
                                 "hc_8B.hcd_name hc8B, "+
                                 "hc_8.hcd_name hc8, "+

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 @Configuration
-public class DivisionDao extends SocietyDao {
+public class DivisionDao extends Dao {
 
     public List<Map<String, Object>> getInfo(int id) {
         return queryForListMap(DIV_LIST + " WHERE division.division_id=? "

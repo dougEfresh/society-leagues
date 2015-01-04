@@ -8,6 +8,7 @@ import javax.ws.rs.core.MediaType;
 
 @Path(value = "/api/admin/match")
 @Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public interface MatchResultApi {
 
     @Path(value = "save")

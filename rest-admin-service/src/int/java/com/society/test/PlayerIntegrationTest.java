@@ -12,7 +12,10 @@ import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.junit.Assert.*;
+import java.util.UUID;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class})
@@ -29,6 +32,7 @@ public class PlayerIntegrationTest extends TestIntegrationBase {
     @Test
     public void testCreate() {
         Player player = generatePlayer(Role.Player);
+        player.setLogin(UUID.randomUUID().toString());
         Player returned  = api.create(player);
         assertNotNull(returned);
         assertNull(returned.getPassword());

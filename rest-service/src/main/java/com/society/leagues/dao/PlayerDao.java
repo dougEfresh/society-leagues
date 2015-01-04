@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class PlayerDao extends SocietyDao {
+public class PlayerDao extends Dao {
 
     public List<Map<String,Object>> getTeamHistory(int id) {
         return queryForListMap(TEAM_HISTORY,id);

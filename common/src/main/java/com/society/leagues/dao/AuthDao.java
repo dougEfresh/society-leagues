@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 @Component
-public class AuthDao extends SocietyDao {
+public class AuthDao extends Dao {
 
     public User getUser(String username, String password) {
         Map<String, Object> data = jdbcTemplate.queryForMap(

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 @Configuration
-public class SchedulerDao extends SocietyDao {
+public class SchedulerDao extends Dao {
 
     public List<Map<String,Object>> getSchedule(int divisionId) {
         return queryForListMap(SCHEDULE_DIV, divisionId);

@@ -5,31 +5,23 @@ import com.society.leagues.client.api.Role;
 import com.society.leagues.client.api.domain.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+
 @Component
-public class PlayerDao extends SocietyDao implements PlayerAdminApi {
+public class PlayerDao extends Dao implements PlayerAdminApi {
     private static Logger logger = LoggerFactory.getLogger(PlayerDao.class);
 
     @Override
     public Player create(Player player) {
-        Role role = player.getRole();
-
+        final GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         try {
-            jdbcTemplate.update(CREATE,
-                    player.getLogin(),
-                    role.id,
-                    player.getFirstName(),
-                    player.getLastName(),
-                    player.getEmail(),
-                    player.getPassword()
-            );
-            Integer id = jdbcTemplate.queryForObject(
-                    "select player_id from player where player_login = ?",
-                    Integer.class,
-                    player.getLogin());
-
-            player.setId(id);
+            jdbcTemplate.update(getCreateStatement(player), keyHolder);
+            player.setId(keyHolder.getKey().intValue());
             return player;
         } catch (Throwable t) {
             logger.error(t.getMessage(), t);
@@ -75,6 +67,21 @@ public class PlayerDao extends SocietyDao implements PlayerAdminApi {
             logger.error(t.getMessage(), t);
         }
         return null;
+    }
+
+    private PreparedStatementCreator getCreateStatement(final Player player) {
+        return con -> {
+            PreparedStatement ps = con.prepareStatement(CREATE,Statement.RETURN_GENERATED_KEYS);
+            int i = 1;
+            ps.setString(i++, player.getLogin());
+            ps.setInt(i++, player.getRole().id);
+            ps.setString(i++, player.getFirstName());
+            ps.setString(i++, player.getLastName());
+            ps.setString(i++, player.getEmail());
+            ps.setString(i, player.getPassword());
+
+            return ps;
+        };
     }
 
     static String CREATE = "INSERT INTO player " +
