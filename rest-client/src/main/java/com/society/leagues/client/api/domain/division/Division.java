@@ -39,4 +39,13 @@ public class Division {
     public void setId(Integer id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "Division{" +
+                "type=" + type +
+                ", league=" + league +
+                ", id=" + id +
+                '}';
+    }
 }

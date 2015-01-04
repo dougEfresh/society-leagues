@@ -1,5 +1,6 @@
 package com.society.test;
 
+import com.society.leagues.dao.DivisionAdminDao;
 import com.society.leagues.dao.LeagueAdminDao;
 import com.society.leagues.dao.PlayerAdminDao;
 import com.society.leagues.dao.TeamAdminDao;
@@ -16,19 +17,25 @@ public class AdminTestConfig {
 
     @Bean
     @Primary
-    PlayerAdminDao getPlayerDao() {
+    PlayerAdminDao getPlayerAdminDao() {
         return mock(PlayerAdminDao.class);
     }
 
     @Bean
     @Primary
-    LeagueAdminDao getLeagueDao() {
+    LeagueAdminDao getLeagueAdminDao() {
         return mock(LeagueAdminDao.class);
     }
 
     @Bean
     @Primary
-    TeamAdminDao getTeamDao() {
+    DivisionAdminDao getDivisionAdminDao() {
+        return mock(DivisionAdminDao.class);
+    }
+
+    @Bean
+    @Primary
+    TeamAdminDao getTeamAdminDao() {
         return mock(TeamAdminDao.class);
     }
 }
