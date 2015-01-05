@@ -1,15 +1,17 @@
 package com.society.leagues.dao;
 
 import com.society.leagues.client.api.admin.DivisionAdminApi;
+import com.society.leagues.client.api.domain.LeagueObject;
 import com.society.leagues.client.api.domain.division.Division;
+import com.society.leagues.client.api.domain.league.League;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+
 
 @Component
 public class DivisionAdminDao extends Dao implements DivisionAdminApi {
@@ -17,44 +19,25 @@ public class DivisionAdminDao extends Dao implements DivisionAdminApi {
 
     @Override
     public Division create(Division division) {
-         try {
-            GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-            jdbcTemplate.update(getCreateStatement(division),keyHolder);
-            division.setId(keyHolder.getKey().intValue());
-        } catch (Throwable t) {
-            logger.error(t.getMessage(),t);
-            return null;
-        }
-        return division;
+        return create(division,getCreateStatement(division,CREATE));
     }
 
     @Override
     public Boolean delete(Division division) {
-          try {
-            return jdbcTemplate.update("DELETE from division where division_id = ?",division.getId()) > 0;
-        } catch (Throwable t) {
-            logger.error(t.getMessage(),t);
-        }
-        return Boolean.FALSE;
+        return delete(division,"DELETE from division where division_id = ?");
     }
 
     @Override
     public Division modify(Division division) {
-          try {
-            if (jdbcTemplate.update("UPDATE division SET `type` = ?, league_id = ? WHERE division_id  = ?",
-                    division.getType().name(),division.getLeague().getId(),division.getId()) <= 0)
-                return null;
-
-            return division;
-        } catch (Throwable t) {
-            logger.error(t.getMessage(),t);
-        }
-        return null;
+        return modify(division,"UPDATE division SET `type` = ?, league_id = ? WHERE division_id  = ?",
+                division.getType().name(),division.getLeague().getId(),division.getId());
     }
 
-    private PreparedStatementCreator getCreateStatement(final Division division) {
+    protected PreparedStatementCreator getCreateStatement(final LeagueObject leagueObject, String sql) {
+        Division division = (Division) leagueObject;
+
         return con -> {
-            PreparedStatement ps = con.prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, division.getLeague().getId());
             ps.setString(2, division.getType().name());
             return ps;

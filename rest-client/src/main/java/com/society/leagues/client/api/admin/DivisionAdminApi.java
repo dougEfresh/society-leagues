@@ -8,20 +8,20 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path(value = "/api/admin/division")
+@Path(value = "/")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public interface DivisionAdminApi {
 
-    @Path("create")
+    @Path("api/admin/division/create")
     @POST
     Division create(final Division division);
 
-    @Path("delete")
+    @Path("api/admin/division/delete")
     @POST
     Boolean delete(final Division division);
 
-    @Path("modify")
+    @Path("api/admin/division/modify")
     @POST
     Division modify(Division division);
 }

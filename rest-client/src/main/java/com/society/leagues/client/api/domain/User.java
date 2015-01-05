@@ -5,15 +5,14 @@ import com.society.leagues.client.api.Role;
 import javax.annotation.security.DenyAll;
 
 @SuppressWarnings("unused")
-public class User {
+public class User extends LeagueObject {
     protected String username;
     protected String firstName;
     protected String lastName;
     protected String email;
     protected String password;
     protected String login;
-    Integer id;
-    Role role;
+    protected Role role;
 
     public User(String username, String password) {
         this.username = username;
@@ -71,14 +70,6 @@ public class User {
 
     public void setLogin(String login) {
         this.login = login;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public Role getRole() {

@@ -2,9 +2,8 @@ package com.society.leagues.client.api.domain;
 
 import java.util.Date;
 
-public class Team {
+public class Team extends LeagueObject {
     String name;
-    Integer id;
     Date created;
 
     public Team(String name) {
@@ -21,14 +20,6 @@ public class Team {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public Date getCreated() {

@@ -1,8 +1,9 @@
 package com.society.leagues.client.api.domain.league;
 
-public class League {
+import com.society.leagues.client.api.domain.LeagueObject;
+
+public class League extends LeagueObject {
     LeagueType type;
-    Integer id;
 
     public League(LeagueType type) {
         this.type = type;
@@ -18,15 +19,6 @@ public class League {
     public void setType(LeagueType type) {
         this.type = type;
     }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
 
     @Override
     public String toString() {

@@ -13,8 +13,7 @@ import javax.annotation.security.RolesAllowed;
 @Component
 @RolesAllowed(value = {"Root"})
 public class PlayerAdminResource extends AdminApiResource implements PlayerAdminApi {
-    @Autowired
-    PlayerAdminDao dao;
+    @Autowired PlayerAdminDao dao;
     private static Logger logger = LoggerFactory.getLogger(PlayerAdminResource.class);
 
     @Override
@@ -23,7 +22,7 @@ public class PlayerAdminResource extends AdminApiResource implements PlayerAdmin
             logger.error("Could not verify player: " + player);
             return null;
         }
-        Player created =  dao.create(player);
+        Player created = dao.create(player);
 
         //TODO use the deny annotation instead
         if (created != null)
@@ -33,8 +32,8 @@ public class PlayerAdminResource extends AdminApiResource implements PlayerAdmin
     }
 
     @Override
-    public Boolean delete(Integer id) {
-        return dao.delete(id);
+    public Boolean delete(Player player) {
+        return dao.delete(player);
     }
 
     @Override

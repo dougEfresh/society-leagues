@@ -1,8 +1,9 @@
 package com.society.leagues.client.api.domain.division;
 
+import com.society.leagues.client.api.domain.LeagueObject;
 import com.society.leagues.client.api.domain.league.League;
 
-public class Division {
+public class Division extends LeagueObject {
 
     DivisionType type;
     League league;

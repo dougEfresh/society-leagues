@@ -9,16 +9,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-@Path(value = "/api/admin/team")
+@Path(value = "/")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public interface TeamAdminApi {
 
-    @Path(value = "create")
+    @Path(value = "/api/admin/team/create")
     @POST
     Team create(Team team);
 
-    @Path(value = "delete")
+    @Path(value = "/api/admin/team/delete")
     @POST
     Boolean delete(Team team);
 }

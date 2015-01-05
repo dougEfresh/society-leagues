@@ -32,7 +32,8 @@ public class PlayerTest extends TestBase {
     @Test
     public void testCreate() {
         Player newPlayer = generatePlayer(Role.Player);
-        Mockito.when(mockPlayerDao.create(newPlayer)).thenReturn(newPlayer);
+        newPlayer.setId(100);
+        Mockito.when(mockPlayerDao.create(Mockito.any(Player.class))).thenReturn(newPlayer);
         Player returned = api.create(newPlayer);
         assertNotNull(returned);
         assertEquals(newPlayer.getEmail(),returned.getEmail());
@@ -43,8 +44,8 @@ public class PlayerTest extends TestBase {
     @Test
     public void testDelete() {
         Player newPlayer = generatePlayer(Role.Player);
-        Mockito.when(mockPlayerDao.delete(newPlayer.getId())).thenReturn(Boolean.TRUE);
-        assertTrue(api.delete(newPlayer.getId()));
+        Mockito.when(mockPlayerDao.delete(newPlayer)).thenReturn(Boolean.TRUE);
+        assertTrue(api.delete(newPlayer));
     }
 
     @Test
