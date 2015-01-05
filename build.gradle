@@ -23,18 +23,6 @@ subprojects {
     apply plugin: 'java'
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
-    
-sourceSets {
-    integTest {
-        java.srcDir file('src/int/java')
-        resources.srcDir file('src/int/resources')
-    }
-}
-
-task intTest(type: Test) {
-    testClassesDir = sourceSets.integTest.output.classesDir
-    classpath = sourceSets.integTest.runtimeClasspath
-}
 }
 
 task wrapper(type: Wrapper) {

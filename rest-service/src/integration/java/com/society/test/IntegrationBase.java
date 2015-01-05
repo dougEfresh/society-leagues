@@ -1,5 +1,6 @@
 package com.society.test;
 
+/*
 import com.society.leagues.resource.ApiResource;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,8 +18,9 @@ import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
+*/
 public class IntegrationBase {
+    /*
     public static final String X_AUTH_USERNAME = "X-Auth-Username";
     public static final String X_AUTH_PASSWORD = "X-Auth-Password";
     public static final String X_AUTH_TOKEN = "X-Auth-Token";
@@ -95,4 +97,5 @@ public class IntegrationBase {
             throw new RuntimeException(e);
         }
     }
+    */
 }
