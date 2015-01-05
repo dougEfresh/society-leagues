@@ -2,7 +2,7 @@ package com.society.test;
 
 import com.society.leagues.Main;
 import com.society.leagues.client.ApiFactory;
-import com.society.leagues.client.admin.api.LeagueAdminApi;
+import com.society.leagues.client.api.admin.LeagueAdminApi;
 import com.society.leagues.client.api.Role;
 import com.society.leagues.client.api.domain.league.League;
 import com.society.leagues.client.api.domain.league.LeagueType;

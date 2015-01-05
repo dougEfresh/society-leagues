@@ -1,4 +1,4 @@
-package com.society.leagues.client.admin.api;
+package com.society.leagues.client.api.admin;
 
 import com.society.leagues.client.api.domain.league.League;
 

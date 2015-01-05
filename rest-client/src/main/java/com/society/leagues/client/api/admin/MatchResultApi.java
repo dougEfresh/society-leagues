@@ -1,8 +1,7 @@
-package com.society.leagues.client.admin.api;
+package com.society.leagues.client.api.admin;
 
 import com.society.leagues.client.api.domain.PlayerMatch;
 
-import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 

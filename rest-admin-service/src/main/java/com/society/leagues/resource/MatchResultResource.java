@@ -1,7 +1,7 @@
 package com.society.leagues.resource;
 
 
-import com.society.leagues.client.admin.api.MatchResultApi;
+import com.society.leagues.client.api.admin.MatchResultApi;
 import com.society.leagues.client.api.domain.PlayerMatch;
 import org.springframework.stereotype.Component;
 

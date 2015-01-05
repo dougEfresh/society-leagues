@@ -2,12 +2,9 @@ package com.society.test;
 
 import com.society.leagues.Main;
 import com.society.leagues.client.ApiFactory;
-import com.society.leagues.client.admin.api.TeamAdminApi;
+import com.society.leagues.client.api.admin.TeamAdminApi;
 import com.society.leagues.client.api.Role;
 import com.society.leagues.client.api.domain.Team;
-import com.society.leagues.client.api.domain.league.League;
-import com.society.leagues.client.api.domain.league.LeagueType;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

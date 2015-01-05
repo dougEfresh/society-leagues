@@ -1,6 +1,6 @@
 package com.society.leagues.resource;
 
-import com.society.leagues.client.admin.api.LeagueAdminApi;
+import com.society.leagues.client.api.admin.LeagueAdminApi;
 import com.society.leagues.client.api.domain.league.League;
 import com.society.leagues.dao.LeagueAdminDao;
 import org.slf4j.Logger;

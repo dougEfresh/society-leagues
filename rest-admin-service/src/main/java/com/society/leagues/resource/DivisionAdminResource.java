@@ -1,6 +1,6 @@
 package com.society.leagues.resource;
 
-import com.society.leagues.client.admin.api.DivisionAdminApi;
+import com.society.leagues.client.api.admin.DivisionAdminApi;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.dao.DivisionAdminDao;
 import org.slf4j.Logger;
