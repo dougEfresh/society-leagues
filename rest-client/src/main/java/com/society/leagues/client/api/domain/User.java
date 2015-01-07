@@ -3,32 +3,29 @@ package com.society.leagues.client.api.domain;
 import com.society.leagues.client.api.Role;
 
 import javax.annotation.security.DenyAll;
+import javax.validation.constraints.NotNull;
 
 @SuppressWarnings("unused")
 public class User extends LeagueObject {
-    protected String username;
+
+    @NotNull
     protected String firstName;
+    @NotNull
     protected String lastName;
     protected String email;
     protected String password;
+    @NotNull
     protected String login;
+    @NotNull
     protected Role role;
 
-    public User(String username, String password) {
-        this.username = username;
+    public User(String login, String password) {
+        this.login = login;
         this.password = password;
     }
 
     public User() {
 
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getFirstName() {
@@ -80,7 +77,7 @@ public class User extends LeagueObject {
         this.role = role;
     }
 
-     public void addRole(Role role) {
+    public void addRole(Role role) {
          this.role = role;
     }
 
@@ -95,25 +92,31 @@ public class User extends LeagueObject {
 
         User user = (User) o;
 
-        if (email != null ? !email.equals(user.email) : user.email != null) return false;
-        if (login != null ? !login.equals(user.login) : user.login != null) return false;
-        if (username != null ? !username.equals(user.username) : user.username != null) return false;
+        if (email != null ? !email.equals(user.email) : user.email != null)
+            return false;
 
-        return true;
+        return !(login != null ? !login.equals(user.login) : user.login != null);
     }
 
     @Override
     public int hashCode() {
-        int result = username != null ? username.hashCode() : 0;
-        result = 31 * result + (email != null ? email.hashCode() : 0);
+
+        int result = 31 * (email != null ? email.hashCode() : 0);
         result = 31 * result + (login != null ? login.hashCode() : 0);
         return result;
+    }
+
+    public boolean verify() {
+        return email != null &&
+                login != null &&
+                firstName != null &&
+                lastName != null &&
+                password != null;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "username='" + username + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +

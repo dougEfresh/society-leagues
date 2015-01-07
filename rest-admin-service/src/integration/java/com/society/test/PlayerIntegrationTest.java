@@ -31,7 +31,7 @@ public class PlayerIntegrationTest extends TestIntegrationBase {
 
     @Test
     public void testCreate() {
-        Player player = generatePlayer(Role.Player);
+        Player player = generatePlayer(Role.PLAYER);
         player.setLogin(UUID.randomUUID().toString());
         Player returned  = api.create(player);
         assertNotNull(returned);

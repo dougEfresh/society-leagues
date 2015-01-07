@@ -72,7 +72,7 @@ public class SecurityTest extends TestBase {
         User user = new User(ADMIN_USER,ADMIN_PASS);
         user.addRole(Role.ADMIN);
         Mockito.when(mockedServiceAuthenticator.authenticate(
-                user.getUsername(),user.getPassword()))
+                user.getLogin(),user.getPassword()))
                 .thenReturn(user);
         TokenResponse response = authApi.authenticate(user);
         assertNotNull(response);
@@ -85,7 +85,8 @@ public class SecurityTest extends TestBase {
         assertNotNull(matchResultApi.delete(0));
 
         user = new User(ADMIN_USER,ADMIN_PASS);
-        user.addRole(Role.OPERATOR);
+        user.addRole(Role.ADMIN);
+        Mockito.reset(mockedServiceAuthenticator);
         Mockito.when(mockedServiceAuthenticator.authenticate(
                 ADMIN_USER,ADMIN_PASS))
                 .thenReturn(user);
@@ -104,7 +105,7 @@ public class SecurityTest extends TestBase {
     @Test
     public void testRole() {
         User user = new User(ADMIN_USER,ADMIN_PASS);
-        user.addRole(Role.Player);
+        user.addRole(Role.PLAYER);
         Mockito.when(mockedServiceAuthenticator.authenticate(
                 ADMIN_USER,ADMIN_PASS))
                 .thenReturn(user);
@@ -112,7 +113,8 @@ public class SecurityTest extends TestBase {
         assertNotNull(response);
         assertNotNull(response.getToken());
         try {
-            MatchResultApi matchResultApi = ApiFactory.createApi(MatchResultApi.class,
+            MatchResultApi matchResultApi = ApiFactory.createApi(
+                    MatchResultApi.class,
                     response.getToken(),
                     baseURL,
                     true);

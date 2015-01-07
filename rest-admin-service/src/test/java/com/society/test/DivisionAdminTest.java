@@ -81,7 +81,7 @@ public class DivisionAdminTest extends TestBase {
 
     @Test
     public void testNoAccess() {
-        api = ApiFactory.createApi(DivisionAdminApi.class,authenticate(Role.Player),baseURL);
+        api = ApiFactory.createApi(DivisionAdminApi.class,authenticate(Role.PLAYER),baseURL);
         try {
             api.create(new Division(DivisionType.INDIVIDUAL_CHALLENGE,new League()));
         } catch (Throwable t){

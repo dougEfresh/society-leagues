@@ -26,7 +26,7 @@ public class PlayerAdminDao extends Dao implements PlayerAdminApi {
     public Player modify(final Player player) {
         return modify(player,MODIFY,
                     player.getLogin(),
-                    player.getRole().id,
+                    player.getRole().name(),
                     player.getEmail(),
                     player.getFirstName(),
                     player.getLastName(),
@@ -43,7 +43,7 @@ public class PlayerAdminDao extends Dao implements PlayerAdminApi {
             PreparedStatement ps = con.prepareStatement(CREATE,Statement.RETURN_GENERATED_KEYS);
             int i = 1;
             ps.setString(i++, player.getLogin());
-            ps.setInt(i++, player.getRole().id);
+            //ps.setS(i++, player.getRole().name());
             ps.setString(i++, player.getFirstName());
             ps.setString(i++, player.getLastName());
             ps.setString(i++, player.getEmail());

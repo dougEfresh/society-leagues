@@ -21,51 +21,9 @@ import static org.junit.Assert.*;
 @SpringApplicationConfiguration(classes = {Main.class, TestConfig.class, AdminTestConfig.class})
 @IntegrationTest(value = {"server.port:0","daemon:true","debug:true"})
 public class PlayerTest extends TestBase {
-    PlayerAdminApi api;
-
-    @Before
-    public void setup() throws Exception {
-        super.setup();
-        api = ApiFactory.createApi(PlayerAdminApi.class,authenticate(Role.ADMIN),baseURL);
-    }
 
     @Test
     public void testCreate() {
-        Player newPlayer = generatePlayer(Role.Player);
-        newPlayer.setId(100);
-        Mockito.when(mockPlayerDao.create(Mockito.any(Player.class))).thenReturn(newPlayer);
-        Player returned = api.create(newPlayer);
-        assertNotNull(returned);
-        assertEquals(newPlayer.getEmail(),returned.getEmail());
-        assertNull(returned.getPassword());
-        assertNotNull(returned.getId());
-    }
 
-    @Test
-    public void testDelete() {
-        Player newPlayer = generatePlayer(Role.Player);
-        Mockito.when(mockPlayerDao.delete(newPlayer)).thenReturn(Boolean.TRUE);
-        assertTrue(api.delete(newPlayer));
-    }
-
-    @Test
-    public void testModify() {
-        Player player = generatePlayer(Role.Player);
-        Player modifiedPlayer = generatePlayer(Role.Player);
-        modifiedPlayer.setFirstName("me");
-        Mockito.when(mockPlayerDao.modify(player)).thenReturn(modifiedPlayer);
-        Player returned = api.modify(player);
-        assertNotNull(returned);
-        assertEquals(modifiedPlayer.getFirstName(),returned.getFirstName());
-    }
-
-    @Test
-    public void testNoAccess() {
-        api = ApiFactory.createApi(PlayerAdminApi.class,authenticate(Role.Player),baseURL);
-        try {
-            api.create(generatePlayer(Role.Player));
-        } catch (Throwable t){
-            assertTrue(t.getCause() instanceof Unauthorized);
-        }
     }
 }

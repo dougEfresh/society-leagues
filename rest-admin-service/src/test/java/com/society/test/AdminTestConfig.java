@@ -41,4 +41,10 @@ public class AdminTestConfig {
     SeasonAdminDao getSeasonAdminDao() {
         return mock(SeasonAdminDao.class);
     }
+
+    @Bean
+    @Primary
+    UserAdminDao getUserAdminDao() {
+        return mock(UserAdminDao.class);
+    }
 }

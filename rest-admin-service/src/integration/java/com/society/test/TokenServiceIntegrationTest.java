@@ -34,12 +34,12 @@ public class TokenServiceIntegrationTest extends TestIntegrationBase {
         assertNotNull(context.getUser());
         assertTrue(context.isUserInRole(Role.ADMIN.role));
 
-        token = authenticate(Role.Player);
+        token = authenticate(Role.PLAYER);
         context = tokenService.retrieve(token);
         assertNotNull(context);
         assertNotNull(context.getUser());
         assertFalse(context.isUserInRole(Role.ADMIN.role));
-        assertTrue(context.isUserInRole(Role.Player.role));
+        assertTrue(context.isUserInRole(Role.PLAYER.role));
 
         //TODO Test with logout
         jdbcTemplate.update("update token_cache set created_date = ADDDATE(now(),-40)");

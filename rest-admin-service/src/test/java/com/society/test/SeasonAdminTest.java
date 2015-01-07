@@ -96,7 +96,7 @@ public class SeasonAdminTest  extends TestBase {
 
     @Test
     public void testNoAccess() {
-        api = ApiFactory.createApi(SeasonAdminApi.class,authenticate(Role.Player),baseURL);
+        api = ApiFactory.createApi(SeasonAdminApi.class,authenticate(Role.PLAYER),baseURL);
         try {
             api.create(new Season(new Division(),"No",new Date()));
         } catch (Throwable t){

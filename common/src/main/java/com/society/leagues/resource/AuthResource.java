@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
         position = 1,
         produces = "application/json")
 @Component
+@SuppressWarnings("unused")
 public class AuthResource extends ApiResource implements AuthApi {
     final static Logger logger = LoggerFactory.getLogger(AuthResource.class);
     @Autowired ServiceAuthenticator authenticator;
@@ -38,7 +39,10 @@ public class AuthResource extends ApiResource implements AuthApi {
 
     @Override
     public TokenResponse authenticate(User user) {
-         return auth(user.getUsername(),user.getPassword());
+        if (user == null)
+            return new TokenResponse();
+
+         return auth(user.getLogin(),user.getPassword());
     }
 
     private TokenResponse auth(String username, String password) {
@@ -54,7 +58,7 @@ public class AuthResource extends ApiResource implements AuthApi {
             response.setToken(token);
             response.setSuccess(true);
         } catch (Throwable t) {
-            logger.info("Error occurred during auth", t);
+            logger.error("Error occurred during auth", t);
         }
         return response;
     }

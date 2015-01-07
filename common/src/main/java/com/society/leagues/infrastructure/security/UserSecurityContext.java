@@ -20,17 +20,12 @@ public class UserSecurityContext implements SecurityContext {
 
     @Override
     public Principal getUserPrincipal() {
-        return new Principal() {
-            @Override
-            public String getName() {
-                return user.getLogin();
-            }
-        };
+        return user::getLogin;
     }
 
     @Override
     public boolean isUserInRole(String role) {
-        Role r = Role.fromString(role);
+        Role r = Role.valueOf(role);
         return  r == user.getRole();
     }
 

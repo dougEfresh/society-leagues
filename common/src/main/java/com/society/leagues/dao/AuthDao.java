@@ -24,7 +24,7 @@ public class AuthDao extends Dao {
         user.setLastName((String) data.get("last_name"));
         user.setLogin((String) data.get("player_login"));
         user.setId((Integer) data.get("player_id"));
-        user.setRole(Role.fromId((Integer) data.get("player_group")));
+        user.setRole(Role.valueOf((String) data.get("player_group")));
 
         return user;
     }

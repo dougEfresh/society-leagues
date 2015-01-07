@@ -73,7 +73,7 @@ public class LeagueAdminTest extends TestBase {
 
     @Test
     public void testNoAccess() {
-        api = ApiFactory.createApi(LeagueAdminApi.class,authenticate(Role.Player),baseURL);
+        api = ApiFactory.createApi(LeagueAdminApi.class,authenticate(Role.PLAYER),baseURL);
         try {
             api.create(new League());
         } catch (Throwable t){
