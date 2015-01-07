@@ -3,9 +3,12 @@ package com.society.leagues.client.api.domain.division;
 import com.society.leagues.client.api.domain.LeagueObject;
 import com.society.leagues.client.api.domain.league.League;
 
-public class Division extends LeagueObject {
+import javax.validation.constraints.NotNull;
 
+public class Division extends LeagueObject {
+    @NotNull
     DivisionType type;
+    @NotNull
     League league;
     Integer id;
 

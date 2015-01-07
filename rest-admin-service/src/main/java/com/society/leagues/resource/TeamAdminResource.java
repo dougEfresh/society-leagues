@@ -19,7 +19,7 @@ public class TeamAdminResource extends AdminApiResource implements TeamAdminApi 
 
     @Override
     public Team create(Team team) {
-        if (team == null || team.getName() == null) {
+        if (team == null || team.getName() == null || team.getDefaultDivision() == null || team.getDefaultDivision().getId() == null) {
             logger.error("Could not verify team: " + team);
             return null;
         }

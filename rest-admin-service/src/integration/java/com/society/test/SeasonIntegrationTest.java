@@ -2,12 +2,11 @@ package com.society.test;
 
 import com.society.leagues.Main;
 import com.society.leagues.client.ApiFactory;
+import com.society.leagues.client.api.Role;
 import com.society.leagues.client.api.admin.DivisionAdminApi;
 import com.society.leagues.client.api.admin.LeagueAdminApi;
 import com.society.leagues.client.api.admin.SeasonAdminApi;
-import com.society.leagues.client.api.admin.TeamAdminApi;
-import com.society.leagues.client.api.Role;
-import com.society.leagues.client.api.domain.Team;
+import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.client.api.domain.league.League;
@@ -19,20 +18,17 @@ import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.UUID;
+import java.util.Date;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class})
 @IntegrationTest(value = {"server.port:0","daemon:true","debug:true"})
-public class TeamIntegrationTest extends TestIntegrationBase {
+public class SeasonIntegrationTest extends TestIntegrationBase {
     LeagueAdminApi leagueApi;
     DivisionAdminApi divisionApi;
-    SeasonAdminApi seasonApi;
-    TeamAdminApi api;
+    SeasonAdminApi api;
 
     @Before
     public void setup() throws Exception {
@@ -40,41 +36,51 @@ public class TeamIntegrationTest extends TestIntegrationBase {
         String token = authenticate(Role.ADMIN);
         leagueApi = ApiFactory.createApi(LeagueAdminApi.class, token, baseURL);
         divisionApi = ApiFactory.createApi(DivisionAdminApi.class, token, baseURL);
-        seasonApi = ApiFactory.createApi(SeasonAdminApi.class, token, baseURL);
-        api = ApiFactory.createApi(TeamAdminApi.class, authenticate(Role.ADMIN), baseURL);
+        api = ApiFactory.createApi(SeasonAdminApi.class, token, baseURL);
     }
+
 
     @Test
     public void testCreate() {
         League league = new League(LeagueType.INDIVIDUAL);
-        league = leagueApi.create(league);
-        Division division = new Division(DivisionType.NINE_BALL_TUESDAYS,league);
-        division = divisionApi.create(division);
+        league.setId(3000);
+        Division division = new Division(DivisionType.EIGHT_BALL_THURSDAYS,league);
+        division.setId(4000);
+        Season season = new Season(division,"Cool",new Date());
 
-        Team team = new Team(UUID.randomUUID().toString(),division);
-        Team returned = api.create(team);
+        Season returned = api.create(season);
         assertNotNull(returned);
+        assertEquals(season.getName(),returned.getName());
         assertNotNull(returned.getId());
-        assertNotNull(returned.getName());
-        assertNotNull(returned.getDefaultDivision());
-        assertNotNull(returned.getDefaultDivision().getId());
 
-        returned.setName(null);
-        assertNull(api.create(returned));
-
+        division.setId(null);
+        assertNull(api.create(season));
     }
 
     @Test
     public void testDelete() {
-        League league = new League(LeagueType.INDIVIDUAL);
-        league = leagueApi.create(league);
+        League league = new League(LeagueType.MIXED);
+        league.setId(3001);
         Division division = new Division(DivisionType.NINE_BALL_TUESDAYS,league);
-        division = divisionApi.create(division);
+        division.setId(4001);
+        Season season = new Season(division,"Cool",new Date());
+        season = api.create(season);
+        assertTrue(api.delete(season));
+        assertFalse(api.delete(season));
+    }
 
-        Team team = new Team(UUID.randomUUID().toString(),division);
-        Team returned = api.create(team);
-        assertNotNull(returned);
-        assertTrue(api.delete(returned));
-        assertFalse(api.delete(returned));
+    @Test
+    public void testModify() {
+        League league = new League(LeagueType.TEAM);
+        league.setId(3002);
+        Division division = new Division(DivisionType.MIXED_MONDAYS,league);
+        division.setId(4002);
+        Season season = new Season(division,"Cool",new Date());
+        season = api.create(season);
+        season.setName("blah");
+        assertNotNull(api.modify(season));
+
+        season.setId(null);
+        assertNull(api.modify(season));
     }
 }

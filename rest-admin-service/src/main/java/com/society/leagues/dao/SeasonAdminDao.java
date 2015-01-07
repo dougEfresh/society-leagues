@@ -6,7 +6,6 @@ import com.society.leagues.client.api.domain.Season;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
@@ -30,7 +29,7 @@ public class SeasonAdminDao extends Dao implements SeasonAdminApi {
     @Override
     public Season modify(Season season) {
         return modify(season,
-                "update season set name = ?, division_id = ?, startDate = ?, endDate = ? where season_id = ?"
+                "update season set name = ?, division_id = ?, start_date = ?, end_date = ? where season_id = ?"
                 ,season.getName(),season.getDivision().getId(),season.getStartDate(),season.getEndDate(),season.getId());
     }
 

@@ -27,9 +27,10 @@ public class TeamAdminDao extends Dao implements TeamAdminApi {
         return con -> {
             PreparedStatement ps = con.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, team.getName());
+            ps.setInt(2,team.getDefaultDivision().getId());
             return ps;
         };
     }
 
-    final static String CREATE = "INSERT INTO team (name) VALUES (?)";
+    final static String CREATE = "INSERT INTO team (name,default_division_id) VALUES (?,?)";
 }

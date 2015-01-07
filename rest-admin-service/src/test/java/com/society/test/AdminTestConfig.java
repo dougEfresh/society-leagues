@@ -1,9 +1,6 @@
 package com.society.test;
 
-import com.society.leagues.dao.DivisionAdminDao;
-import com.society.leagues.dao.LeagueAdminDao;
-import com.society.leagues.dao.PlayerAdminDao;
-import com.society.leagues.dao.TeamAdminDao;
+import com.society.leagues.dao.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -37,5 +34,11 @@ public class AdminTestConfig {
     @Primary
     TeamAdminDao getTeamAdminDao() {
         return mock(TeamAdminDao.class);
+    }
+
+    @Bean
+    @Primary
+    SeasonAdminDao getSeasonAdminDao() {
+        return mock(SeasonAdminDao.class);
     }
 }

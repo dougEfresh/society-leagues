@@ -2,12 +2,16 @@ package com.society.leagues.client.api.domain;
 
 import com.society.leagues.client.api.domain.division.Division;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class Season extends LeagueObject {
 
+    @NotNull
     Division division;
+    @NotNull
     String name;
+    @NotNull
     Date startDate;
     Date endDate;
 

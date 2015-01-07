@@ -5,6 +5,10 @@ import com.society.leagues.client.ApiFactory;
 import com.society.leagues.client.api.admin.TeamAdminApi;
 import com.society.leagues.client.api.Role;
 import com.society.leagues.client.api.domain.Team;
+import com.society.leagues.client.api.domain.division.Division;
+import com.society.leagues.client.api.domain.division.DivisionType;
+import com.society.leagues.client.api.domain.league.League;
+import com.society.leagues.client.api.domain.league.LeagueType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +39,11 @@ public class TeamAdminTest extends TestBase {
 
     @Test
     public void testCreate() {
-        Team team = new Team(UUID.randomUUID().toString());
+        League league = new League(LeagueType.INDIVIDUAL);
+        league.setId(3000);
+        Division division = new Division(DivisionType.EIGHT_BALL_THURSDAYS,league);
+        division.setId(4000);
+        Team team = new Team(UUID.randomUUID().toString(),division);
         team.setId(1000);
         Mockito.when(mockTeamDao.create(Mockito.any(Team.class))).thenReturn(team);
 
@@ -52,7 +60,7 @@ public class TeamAdminTest extends TestBase {
 
     @Test
     public void testDelete() {
-        Team team = new Team(UUID.randomUUID().toString());
+        Team team = new Team(UUID.randomUUID().toString(),null);
         team.setId(1001);
         Mockito.when(mockTeamDao.delete(Mockito.any(Team.class))).thenReturn(Boolean.TRUE);
 
