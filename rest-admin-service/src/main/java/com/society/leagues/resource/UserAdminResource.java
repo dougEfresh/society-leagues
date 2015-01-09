@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.security.RolesAllowed;
 
 @Component
-@RolesAllowed(value = {"Root","Operator"})
+@RolesAllowed(value = {"ADMIN","Operator"})
 @SuppressWarnings("unused")
 public class UserAdminResource extends AdminApiResource implements UserAdminApi {
     private static Logger logger = LoggerFactory.getLogger(UserAdminResource.class);

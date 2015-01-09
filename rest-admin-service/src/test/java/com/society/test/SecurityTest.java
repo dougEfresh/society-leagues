@@ -2,11 +2,18 @@ package com.society.test;
 
 import com.society.leagues.Main;
 import com.society.leagues.client.ApiFactory;
+import com.society.leagues.client.api.admin.LeagueAdminApi;
 import com.society.leagues.client.api.admin.MatchResultApi;
 import com.society.leagues.client.api.Role;
+import com.society.leagues.client.api.admin.TeamAdminApi;
+import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.TokenResponse;
 import com.society.leagues.client.api.domain.User;
+import com.society.leagues.client.api.domain.division.Division;
+import com.society.leagues.client.api.domain.league.League;
+import com.society.leagues.client.api.domain.league.LeagueType;
 import com.society.leagues.client.exception.Unauthorized;
+import com.society.leagues.resource.LeagueAdminResource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -23,7 +30,7 @@ import static org.junit.Assert.assertFalse;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class, TestConfig.class, AdminTestConfig.class})
-@IntegrationTest(value = {"server.port:0","daemon:true","debug:true"})
+@IntegrationTest(value = {"server.port:8080","daemon:true","debug:true"})
 public class SecurityTest extends TestBase {
 
     @Test
@@ -77,12 +84,15 @@ public class SecurityTest extends TestBase {
         TokenResponse response = authApi.authenticate(user);
         assertNotNull(response);
         assertNotNull(response.getToken());
-        MatchResultApi matchResultApi = ApiFactory.createApi(
-                MatchResultApi.class,
+        LeagueAdminApi leagueAdminApi = ApiFactory.createApi(
+                LeagueAdminApi.class,
                 response.getToken(),
                 baseURL,
                 true);
-        assertNotNull(matchResultApi.delete(0));
+
+        League league = new League(LeagueType.INDIVIDUAL);
+        league.setId(100);
+        assertNotNull(leagueAdminApi.delete(league));
 
         user = new User(ADMIN_USER,ADMIN_PASS);
         user.addRole(Role.ADMIN);
@@ -94,12 +104,14 @@ public class SecurityTest extends TestBase {
         response = authApi.authenticate(user);
         assertNotNull(response);
         assertNotNull(response.getToken());
-        matchResultApi = ApiFactory.createApi(
-                MatchResultApi.class,
+
+        leagueAdminApi = ApiFactory.createApi(
+                LeagueAdminApi.class,
                 response.getToken(),
                 baseURL,
                 true);
-        assertNotNull(matchResultApi.delete(0));
+
+        assertNotNull(leagueAdminApi.delete(league));
     }
 
     @Test

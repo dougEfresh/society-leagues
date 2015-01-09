@@ -17,34 +17,18 @@ import java.net.URI;
 public class ServerControl {
     static Logger logger = LoggerFactory.getLogger(ServerControl.class);
     @Autowired RestAppConfig app;
-    @Value("${daemon:false}")
-    boolean daemon;
-    @Value("${server.port:8080}")
+    @Value("${server.port:8081}")
     int port;
     HttpServer server;
     Thread serverThread;
 
     public void run(String ...args) throws Exception {
-        logger.info("Starting Society League REST service");
+        logger.info("Starting Society League REST service on port " + port);
         startServer();
         logger.info("Application started.\n" +
                 "Try accessing " + getBaseURI() + " in the browser.\n" +
                 "Hit crt-c to stop the application...");
 
-        serverThread  = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        Thread.sleep(100000);
-                    } catch (InterruptedException e) {
-                        server.shutdown();
-                    }
-                }
-            }
-        });
-        serverThread.setDaemon(daemon);
-        serverThread.start();
     }
 
     public void startServer() throws Exception {

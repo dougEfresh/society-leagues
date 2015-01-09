@@ -10,15 +10,15 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public interface MatchResultApi {
 
-    @Path(value = "save")
+    @Path(value = "api/admin/match/save")
     @POST
     Integer save(PlayerMatch matchResult);
 
-    @Path(value = "delete/{id}")
+    @Path(value = "api/admin/match/delete/{id}")
     @GET
     Boolean delete(@PathParam(value = "id")Integer id);
 
-    @Path(value = "get/{id}")
+    @Path(value = "api/admin/match/get/{id}")
     @GET
     PlayerMatch get(@PathParam(value = "id")Integer id);
 

@@ -2,13 +2,15 @@ package com.society.leagues.infrastructure.security;
 
 import com.society.leagues.client.api.Role;
 import com.society.leagues.client.api.domain.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 
 
 public class UserSecurityContext implements SecurityContext {
-
+    private static Logger logger = LoggerFactory.getLogger(UserSecurityContext.class);
     User user;
 
     public UserSecurityContext(User user) {
@@ -25,8 +27,13 @@ public class UserSecurityContext implements SecurityContext {
 
     @Override
     public boolean isUserInRole(String role) {
-        Role r = Role.valueOf(role);
-        return  r == user.getRole();
+        try {
+            Role r = Role.valueOf(role);
+            return r == user.getRole();
+        } catch (Throwable t) {
+            logger.error(t.getLocalizedMessage(),t);
+        }
+        return false;
     }
 
     @Override

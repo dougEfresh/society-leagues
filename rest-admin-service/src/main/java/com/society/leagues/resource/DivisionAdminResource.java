@@ -1,5 +1,6 @@
 package com.society.leagues.resource;
 
+import com.society.leagues.client.api.Role;
 import com.society.leagues.client.api.admin.DivisionAdminApi;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.dao.DivisionAdminDao;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.security.RolesAllowed;
 
 @Component
-@RolesAllowed(value = {"Root"})
+@RolesAllowed(value = {"ADMIN"})
 public class DivisionAdminResource extends AdminApiResource implements DivisionAdminApi {
 
     private static Logger logger = LoggerFactory.getLogger(DivisionAdminResource.class);

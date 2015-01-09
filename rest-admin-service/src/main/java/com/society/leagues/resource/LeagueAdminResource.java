@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.security.RolesAllowed;
 
 @Component
-@RolesAllowed(value = {"Root"})
+@RolesAllowed(value = {"ADMIN"})
 @SuppressWarnings("unused")
 public class LeagueAdminResource extends AdminApiResource implements LeagueAdminApi  {
 

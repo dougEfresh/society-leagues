@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.security.RolesAllowed;
 
 @Component
-@RolesAllowed(value = {"Root"})
+@RolesAllowed(value = {"ADMIN"})
 public class SeasonAdminResource extends AdminApiResource implements SeasonAdminApi {
     private static Logger logger = LoggerFactory.getLogger(SeasonAdminResource.class);
 

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.security.RolesAllowed;
 
 @Component
-@RolesAllowed(value = {"Root"})
+@RolesAllowed(value = {"ADMIN"})
 public class PlayerAdminResource extends AdminApiResource implements PlayerAdminApi {
     @Autowired PlayerAdminDao dao;
     private static Logger logger = LoggerFactory.getLogger(PlayerAdminResource.class);

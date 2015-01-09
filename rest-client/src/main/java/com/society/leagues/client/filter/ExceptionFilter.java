@@ -42,7 +42,8 @@ public class ExceptionFilter implements ClientResponseFilter {
                     requestContext.getUri(),
                     responseContext.getStatusInfo().getStatusCode(),
                     responseContext.getStatusInfo().getReasonPhrase());
-            throw new ServerError(errMsg);
+
+           // throw new ServerError(errMsg);
         }
 
     }

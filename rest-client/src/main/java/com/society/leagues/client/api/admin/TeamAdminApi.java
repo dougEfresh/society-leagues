@@ -14,11 +14,11 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public interface TeamAdminApi {
 
-    @Path(value = "/api/admin/team/create")
+    @Path(value = "api/admin/team/create")
     @POST
     Team create(Team team);
 
-    @Path(value = "/api/admin/team/delete")
+    @Path(value = "api/admin/team/delete")
     @POST
     Boolean delete(Team team);
 }
