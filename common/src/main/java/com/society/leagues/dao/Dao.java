@@ -55,4 +55,14 @@ public abstract class Dao {
         }
         return null;
     }
+
+    public Integer getId(String table,LeagueObject leagueObject) {
+          try {
+              String sql = String.format("select %s_id from %s where %s_id=?",table,table,table);
+              return jdbcTemplate.queryForObject(sql, Integer.class, leagueObject.getId());
+        } catch (Throwable ignore) {
+
+        }
+        return null;
+    }
 }

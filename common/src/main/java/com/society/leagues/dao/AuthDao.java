@@ -12,9 +12,9 @@ public class AuthDao extends Dao {
     public User getUser(String username, String password) {
         Map<String, Object> data = jdbcTemplate.queryForMap(
                 "SELECT *" +
-                        " From player p " +
-                        " WHERE p.player_login = ? " +
-                        " AND p.`password` = ?",
+                        " From users  " +
+                        " WHERE login = ? " +
+                        " AND `password` = ?",
                 username,
                 password
         );
@@ -22,9 +22,9 @@ public class AuthDao extends Dao {
         User user = new User();
         user.setFirstName((String) data.get("first_name"));
         user.setLastName((String) data.get("last_name"));
-        user.setLogin((String) data.get("player_login"));
-        user.setId((Integer) data.get("player_id"));
-        user.setRole(Role.valueOf((String) data.get("player_group")));
+        user.setLogin((String) data.get("login"));
+        user.setId((Integer) data.get("user_id"));
+        user.setRole(Role.valueOf((String) data.get("role")));
 
         return user;
     }

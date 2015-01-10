@@ -12,23 +12,14 @@ import javax.annotation.security.RolesAllowed;
 
 @Component
 @RolesAllowed(value = {"ADMIN"})
+@SuppressWarnings("unused")
 public class PlayerAdminResource extends AdminApiResource implements PlayerAdminApi {
     @Autowired PlayerAdminDao dao;
     private static Logger logger = LoggerFactory.getLogger(PlayerAdminResource.class);
 
     @Override
     public Player create(Player player) {
-        if (!player.verify()) {
-            logger.error("Could not verify player: " + player);
-            return null;
-        }
-        Player created = dao.create(player);
-
-        //TODO use the deny annotation instead
-        if (created != null)
-            created.setPassword(null);
-
-        return created;
+        return dao.create(player);
     }
 
     @Override

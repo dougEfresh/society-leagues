@@ -39,13 +39,14 @@ public class SeasonIntegrationTest extends TestIntegrationBase {
         api = ApiFactory.createApi(SeasonAdminApi.class, token, baseURL);
     }
 
-
     @Test
     public void testCreate() {
         League league = new League(LeagueType.INDIVIDUAL);
-        league.setId(3000);
+        league = leagueApi.create(league);
+
         Division division = new Division(DivisionType.EIGHT_BALL_THURSDAYS,league);
-        division.setId(4000);
+        division = divisionApi.create(division);
+
         Season season = new Season(division,"Cool",new Date());
 
         Season returned = api.create(season);
@@ -60,10 +61,13 @@ public class SeasonIntegrationTest extends TestIntegrationBase {
     @Test
     public void testDelete() {
         League league = new League(LeagueType.MIXED);
-        league.setId(3001);
+        league = leagueApi.create(league);
+
         Division division = new Division(DivisionType.NINE_BALL_TUESDAYS,league);
-        division.setId(4001);
-        Season season = new Season(division,"Cool",new Date());
+        division = divisionApi.create(division);
+
+        Season season = new Season(division,"9Ball",new Date());
+
         season = api.create(season);
         assertTrue(api.delete(season));
         assertFalse(api.delete(season));
@@ -71,13 +75,16 @@ public class SeasonIntegrationTest extends TestIntegrationBase {
 
     @Test
     public void testModify() {
-        League league = new League(LeagueType.TEAM);
-        league.setId(3002);
-        Division division = new Division(DivisionType.MIXED_MONDAYS,league);
-        division.setId(4002);
-        Season season = new Season(division,"Cool",new Date());
+        League league = new League(LeagueType.MIXED);
+        league = leagueApi.create(league);
+
+        Division division = new Division(DivisionType.NINE_BALL_TUESDAYS,league);
+        division = divisionApi.create(division);
+
+        Season season = new Season(division,"ChangeMe",new Date());
+
         season = api.create(season);
-        season.setName("blah");
+        season.setName("Blah");
         assertNotNull(api.modify(season));
 
         season.setId(null);

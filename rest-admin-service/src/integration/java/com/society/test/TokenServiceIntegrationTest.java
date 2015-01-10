@@ -32,14 +32,14 @@ public class TokenServiceIntegrationTest extends TestIntegrationBase {
         UserSecurityContext context = tokenService.retrieve(token);
         assertNotNull(context);
         assertNotNull(context.getUser());
-        assertTrue(context.isUserInRole(Role.ADMIN.role));
+        assertTrue(context.isUserInRole(Role.ADMIN.name()));
 
         token = authenticate(Role.PLAYER);
         context = tokenService.retrieve(token);
         assertNotNull(context);
         assertNotNull(context.getUser());
-        assertFalse(context.isUserInRole(Role.ADMIN.role));
-        assertTrue(context.isUserInRole(Role.PLAYER.role));
+        assertFalse(context.isUserInRole(Role.ADMIN.name()));
+        assertTrue(context.isUserInRole(Role.PLAYER.name()));
 
         //TODO Test with logout
         jdbcTemplate.update("update token_cache set created_date = ADDDATE(now(),-40)");
@@ -57,7 +57,7 @@ public class TokenServiceIntegrationTest extends TestIntegrationBase {
         UserSecurityContext context = tokenService.retrieve(token);
         assertNotNull(context);
         assertNotNull(context.getUser());
-        assertTrue(context.isUserInRole(Role.ADMIN.role));
+        assertTrue(context.isUserInRole(Role.ADMIN.name()));
 
         jdbcTemplate.update("delete from token_cache");
         tokenService.clearCache();

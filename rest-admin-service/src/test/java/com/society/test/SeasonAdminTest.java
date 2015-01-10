@@ -42,7 +42,6 @@ public class SeasonAdminTest  extends TestBase {
         api = ApiFactory.createApi(SeasonAdminApi.class, token, baseURL);
     }
 
-
     @Test
     public void testCreate() {
         League league = new League(LeagueType.INDIVIDUAL);

@@ -19,20 +19,16 @@ public class PlayerAdminDao extends Dao implements PlayerAdminApi {
 
     @Override
     public Boolean delete(final Player player) {
-        return delete(player,"UPDATE player set password = null WHERE player_id = ?");
+        return delete(player,"delete from player WHERE player_id = ?");
     }
 
     @Override
     public Player modify(final Player player) {
         return modify(player,MODIFY,
-                    player.getLogin(),
-                    player.getRole().name(),
-                    player.getEmail(),
-                    player.getFirstName(),
-                    player.getLastName(),
-                    player.getEmail(),
-                    player.getPassword(),
-                    player.getId()
+                player.getSeason().getId(),
+                player.getUser().getId(),
+                player.getTeam().getId(),
+                player.getId()
             );
 
     }
@@ -42,35 +38,23 @@ public class PlayerAdminDao extends Dao implements PlayerAdminApi {
         return con -> {
             PreparedStatement ps = con.prepareStatement(CREATE,Statement.RETURN_GENERATED_KEYS);
             int i = 1;
-            ps.setString(i++, player.getLogin());
-            //ps.setS(i++, player.getRole().name());
-            ps.setString(i++, player.getFirstName());
-            ps.setString(i++, player.getLastName());
-            ps.setString(i++, player.getEmail());
-            ps.setString(i, player.getPassword());
-
+            ps.setInt(i++, player.getSeason().getId());
+            ps.setInt(i++, player.getUser().getId());
+            ps.setInt(i++, player.getTeam().getId());
             return ps;
         };
     }
 
     static String CREATE = "INSERT INTO player " +
             "(" +
-            "player_login," +
-            "player_group," +
-            "first_name," +
-            "last_name," +
-            "email," +
-            "password) " +
+            "season_id,user_id,team_id) " +
             "VALUES " +
-            "(?,?,?,?,?,?)";
+            "(?,?,?)";
 
     static String MODIFY = "UPDATE player " +
             "set " +
-            "player_login=?," +
-            "player_group=?," +
-            "first_name=?," +
-            "last_name=?," +
-            "email=?," +
-            "`password`= ? " +
+            "season_id=?," +
+            "user_id=?," +
+            "team_id=?," +
             " where player_id = ?";
 }
