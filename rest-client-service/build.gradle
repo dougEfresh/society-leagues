@@ -1,7 +1,8 @@
 apply plugin: 'spring-boot'
 
 jar {
-    archiveName = 'society-leagues-admin-server.jar'
+    baseName = 'society-leagues'
+    archiveName = 'society-leagues-service.jar'
     version = '1.0.0'
 }
 
@@ -21,7 +22,6 @@ bootRun {
 dependencies {
     compile(project(':client-api'))
     compile(project(':common'))
-
     compile 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
     compile 'org.springframework.boot:spring-boot-actuator'
@@ -35,13 +35,8 @@ dependencies {
 
     compile 'org.codehaus.groovy:groovy-all:2.3.8'
 
-    compile files('libs/rest-proxy-client.jar')
     //Test
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile(project(':test-framework'))
+    testCompile(project(':rest-admin-service'))
 }
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.1'
-}
-

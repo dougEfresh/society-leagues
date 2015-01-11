@@ -1,5 +1,5 @@
 dependencies {
-    compile(project(':rest-client'))
+    compile(project(':client-api'))
 
     compile 'org.slf4j:slf4j-api:1.7.7'
 

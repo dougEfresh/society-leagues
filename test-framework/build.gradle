@@ -1,0 +1,7 @@
+dependencies {
+    compile(project(':client-api'))
+    compile(project(':common'))
+
+    compile 'junit:junit:4.12'
+    compile 'org.apache.derby:derby:10.11.1.1'
+}

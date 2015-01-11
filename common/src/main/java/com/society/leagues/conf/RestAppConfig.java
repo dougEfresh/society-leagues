@@ -7,6 +7,8 @@ import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +17,7 @@ import java.util.List;
 
 @Component
 public class RestAppConfig extends ResourceConfig {
-
+    private static Logger logger = LoggerFactory.getLogger(RestAppConfig.class);
     @Autowired List<ApiResource> resources;
     @Autowired SecurityFilter securityFilter;
 
@@ -31,6 +33,10 @@ public class RestAppConfig extends ResourceConfig {
         register(LoggingFilter.class);
         register(JacksonFeature.class);
         register(securityFilter);
+        logger.info("Found " + resources.size() + " resources");
+        for (ApiResource resource : resources) {
+            logger.info("Registering " + resource.getClass().getSimpleName());
+        }
         resources.forEach(this::register);
 
     }
