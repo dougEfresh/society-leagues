@@ -29,7 +29,7 @@ integrationTest {
 dependencies {
     compile(project(':rest-client'))
     compile(project(':common'))
-    testCompile(project(':common-test'))
+    testCompile(project(':test-framework'))
 
     compile 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
