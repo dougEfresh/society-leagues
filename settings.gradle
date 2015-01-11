@@ -1,1 +1,1 @@
-include 'rest-client', 'rest-service', 'common', 'rest-admin-service' ,'test-framework'
+include 'rest-client', 'rest-service', 'common', 'rest-admin-service' 

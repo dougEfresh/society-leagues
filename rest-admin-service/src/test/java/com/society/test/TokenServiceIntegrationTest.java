@@ -42,10 +42,9 @@ public class TokenServiceIntegrationTest extends TestIntegrationBase {
         assertTrue(context.isUserInRole(Role.PLAYER.name()));
 
         //TODO Test with logout
-        jdbcTemplate.update("update token_cache set created_date = ADDDATE(now(),-40)");
+        jdbcTemplate.update("update token_cache set created_date = '2000-01-01 00:00:00'");
         tokenService.evictExpiredTokens();
         assertFalse(tokenService.contains(token));
-
     }
 
     @Test

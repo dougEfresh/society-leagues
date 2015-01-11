@@ -58,7 +58,7 @@ public class UserAdminDao extends Dao implements UserAdminApi {
             "first_name," +
             "last_name," +
             "email," +
-            "password) " +
+            "passwd) " +
             "VALUES " +
             "(?,?,?,?,?,?)";
 
@@ -69,6 +69,6 @@ public class UserAdminDao extends Dao implements UserAdminApi {
             "first_name=?," +
             "last_name=?," +
             "email=?," +
-            "`password`= ? " +
+            "passwd= ? " +
             " where user_id = ?";
 }

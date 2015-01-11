@@ -14,7 +14,7 @@ public class AuthDao extends Dao {
                 "SELECT *" +
                         " From users  " +
                         " WHERE login = ? " +
-                        " AND `password` = ?",
+                        " AND passwd = ?",
                 username,
                 password
         );

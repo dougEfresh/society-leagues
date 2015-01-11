@@ -1,0 +1,6 @@
+CREATE TABLE division (
+  division_id int NOT NULL GENERATED ALWAYS AS IDENTITY,
+  league_id int NOT NULL CONSTRAINT DIV_L_FK REFERENCES league ON DELETE CASCADE ON UPDATE RESTRICT,
+  type varchar(64) NOT NULL,
+  PRIMARY KEY (division_id)
+)

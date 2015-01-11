@@ -29,7 +29,7 @@ public class DivisionAdminDao extends Dao implements DivisionAdminApi {
 
     @Override
     public Division modify(Division division) {
-        return modify(division,"UPDATE division SET `type` = ?, league_id = ? WHERE division_id  = ?",
+        return modify(division,"UPDATE division SET type = ?, league_id = ? WHERE division_id  = ?",
                 division.getType().name(),division.getLeague().getId(),division.getId());
     }
 
@@ -44,6 +44,6 @@ public class DivisionAdminDao extends Dao implements DivisionAdminApi {
         };
     }
 
-    final static String CREATE = "INSERT INTO division(league_id,`type`) VALUES (?,?)";
+    final static String CREATE = "INSERT INTO division(league_id,type) VALUES (?,?)";
 }
 

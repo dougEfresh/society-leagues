@@ -11,6 +11,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -32,11 +35,6 @@ public class TokenServiceJdbc implements TokenService {
 
     public static final int HALF_AN_HOUR_IN_MILLISECONDS = 30 * 60 * 1000;
 
-    @PostConstruct
-    public void init() {
-        jdbcTemplate.execute(CREATE_TABLE);
-    }
-
     @Override
     public void clearCache() {
         cache.get().clear();
@@ -46,12 +44,15 @@ public class TokenServiceJdbc implements TokenService {
     @Scheduled(fixedRate = HALF_AN_HOUR_IN_MILLISECONDS)
     public void evictExpiredTokens() {
         logger.info("Evicting expired tokens");
-        List<String> oldTokens = jdbcTemplate.queryForList("select token from token_cache where created_date  < ADDDATE(now(),-30)",
-                String.class);
+        Date expiredDate = Date.from(new Date().toInstant().minus(30, ChronoUnit.DAYS));
+        List<String> oldTokens = jdbcTemplate.queryForList(
+                "select token from token_cache where created_date  < ?",
+                String.class,
+                expiredDate);
         for (String oldToken : oldTokens) {
             cache.get().remove(oldToken);
         }
-        int dropped = jdbcTemplate.update("delete from token_cache where created_date  < ADDDATE(now(),-30)" );
+        int dropped = jdbcTemplate.update("delete from token_cache where created_date < ?", expiredDate );
         logger.info("Dropped " + dropped + " tokens");
     }
 
@@ -66,7 +67,7 @@ public class TokenServiceJdbc implements TokenService {
         String json =  new Genson().serialize(securityContext);
         logger.debug("Storing " + json + " to db");
         //TODO Check for existing token?
-        jdbcTemplate.update("REPLACE into token_cache (token,player) VALUES (?,?)", token, json);
+        jdbcTemplate.update("INSERT into token_cache (token,player) VALUES (?,?)", token, json);
     }
 
     @Override
@@ -112,9 +113,4 @@ public class TokenServiceJdbc implements TokenService {
         }
         return null;
     }
-
-    final static String CREATE_TABLE = "create table IF NOT EXISTS token_cache(token varchar(64)," +
-                        " player varchar(4096) NOT NULL," +
-                " created_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-                " PRIMARY KEY (token))";
 }
