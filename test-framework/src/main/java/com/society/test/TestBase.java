@@ -14,18 +14,10 @@ import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.client.Client;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.sql.DriverManager;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -44,55 +36,16 @@ public class TestBase {
     String baseURL;
     Client client;
     static JdbcTemplate derbyTemplate = DaoConfig.getDerbyTemplate();
-    static boolean created = false;
 
     @BeforeClass
     public static void createDb() throws Exception {
-        if (created)
-            return;
-
-        final ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
-        Resource resource = resourceResolver.getResource("classpath:schema/");
-        File dir = resource.getFile();
-        if (dir == null)
-            throw new RuntimeException("Could not find derby schema in classpath:schema/");
-        if (dir.listFiles() == null)
-            throw new RuntimeException("No files in classpath:schema/");
-
-        int i = 1;
-        while (i <= dir.list().length) {
-            for (File file : dir.listFiles()) {
-                if (!file.getName().startsWith("0" +i+ "_")) {
-                    continue;
-                }
-                BufferedReader reader = new BufferedReader(new FileReader(file));
-                String sql = "";
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    sql += line + "\n";
-                }
-                logger.info(sql);
-                derbyTemplate.update(sql);
-            }
-            i++;
-        }
-        created = true;
-        createAccounts();
+        Schema.createDb(derbyTemplate);
+        Schema.createAccounts(derbyTemplate);
     }
 
     @AfterClass
     public static void killDb() throws Exception {
 
-    }
-
-    public static void createAccounts() {
-        derbyTemplate.update("INSERT INTO users (login,role,passwd)" +
-                            " VALUES (?,?,?)",
-                    ADMIN_USER, Role.ADMIN.name(),ADMIN_PASS);
-
-        derbyTemplate.update("INSERT INTO users (login,role,passwd) " +
-                            "VALUES (?,?,?)",
-                    NORMAL_USER, Role.PLAYER.name(), NORMAL_PASS);
     }
 
     @Before

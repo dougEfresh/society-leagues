@@ -83,25 +83,6 @@ public class DivisionTest extends TestBase {
     }
 
     @Test
-    public void testList() {
-        League league = new League(LeagueType.INDIVIDUAL);
-        league = leagueApi.create(league);
-        Division division = new Division(DivisionType.EIGHT_BALL_THURSDAYS, league);
-        Division returned = api.create(division);
-        assertNotNull(returned);
-
-        List<Division> divisions = api.list();
-        boolean found = false;
-        for (Division d : divisions) {
-            if (Objects.equals(d.getId(), returned.getId())) {
-                found = true;
-                break;
-            }
-        }
-        assertTrue(found);
-    }
-
-    @Test
     public void testNoAccess() {
         try {
             api = ApiFactory.createApi(DivisionApi.class, baseURL);
