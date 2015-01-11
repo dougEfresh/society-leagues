@@ -1,5 +1,5 @@
 create table player  (
- player_id int(11) NOT NULL, 
+ player_id int(11) NOT NULL AUTO_INCREMENT, 
  season_id int(11) NOT NULL,
  user_id int(11) NOT NULL,
  team_id int(11) NOT NULL,
@@ -8,4 +8,4 @@ CONSTRAINT FOREIGN KEY (`season_id`) REFERENCES season(season_id) ON DELETE CASC
 CONSTRAINT FOREIGN KEY (`user_id`)   REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
 CONSTRAINT FOREIGN KEY (`team_id`)   REFERENCES team(team_id) ON DELETE CASCADE ON UPDATE CASCADE
 
-) ENGINE=MyISAM AUTO_INCREMENT=8000;
+) ENGINE=MyISAM AUTO_INCREMENT=90000;

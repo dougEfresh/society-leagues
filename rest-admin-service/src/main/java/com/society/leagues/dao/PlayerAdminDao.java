@@ -14,7 +14,7 @@ import java.sql.Statement;
 public class PlayerAdminDao extends Dao implements PlayerAdminApi {
     @Override
     public Player create(final Player player) {
-        return create(player,getCreateStatement(player,CREATE));
+        return create(player,getCreateStatement(player));
     }
 
     @Override
@@ -33,8 +33,7 @@ public class PlayerAdminDao extends Dao implements PlayerAdminApi {
 
     }
 
-    protected PreparedStatementCreator getCreateStatement(final LeagueObject leagueObject, String sql) {
-        final Player player = (Player) leagueObject;
+    protected PreparedStatementCreator getCreateStatement(final Player player) {
         return con -> {
             PreparedStatement ps = con.prepareStatement(CREATE,Statement.RETURN_GENERATED_KEYS);
             int i = 1;

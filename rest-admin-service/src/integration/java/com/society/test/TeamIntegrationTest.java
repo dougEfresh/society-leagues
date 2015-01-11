@@ -28,6 +28,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class})
 @IntegrationTest(value = {"server.port:0","daemon:true","debug:true"})
+@SuppressWarnings("deprecated")
 public class TeamIntegrationTest extends TestIntegrationBase {
     LeagueAdminApi leagueApi;
     DivisionAdminApi divisionApi;

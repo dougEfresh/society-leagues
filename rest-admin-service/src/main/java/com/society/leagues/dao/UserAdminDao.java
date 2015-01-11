@@ -13,7 +13,9 @@ public class UserAdminDao extends Dao implements UserAdminApi {
 
     @Override
     public User create(User user) {
-        return create(user,getCreateStatement(user,CREATE));
+        User u = create(user,getCreateStatement(user));
+        u.setPassword(null);
+        return u;
     }
 
     @Override
@@ -29,11 +31,12 @@ public class UserAdminDao extends Dao implements UserAdminApi {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
-                user.getPassword()
+                user.getPassword(),
+                user.getId()
         );
     }
 
-    protected PreparedStatementCreator getCreateStatement(final User user, String sql) {
+    protected PreparedStatementCreator getCreateStatement(final User user) {
         return con -> {
             PreparedStatement ps = con.prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
             int i = 1;

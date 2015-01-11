@@ -19,7 +19,7 @@ public class TeamAdminDao extends Dao implements TeamAdminApi {
 
     @Override
     public Boolean delete(Team team) {
-        return delete(team,"delete from team WHERE team_id = ?");
+        return delete(team, "delete from team WHERE team_id = ?");
     }
 
     protected PreparedStatementCreator getCreateStatement(final LeagueObject leagueObject, String sql) {

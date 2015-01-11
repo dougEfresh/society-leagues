@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.security.RolesAllowed;
 
 @Component
-@RolesAllowed(value = {"ADMIN","Operator"})
+@RolesAllowed(value = {"ADMIN"})
 @SuppressWarnings("unused")
 public class UserAdminResource extends AdminApiResource implements UserAdminApi {
     private static Logger logger = LoggerFactory.getLogger(UserAdminResource.class);
@@ -20,7 +20,7 @@ public class UserAdminResource extends AdminApiResource implements UserAdminApi 
 
     @Override
     public User create(User user) {
-        if (!user.verify()) {
+        if (user == null || user.getLogin() == null || user.getPassword() == null) {
             logger.error("Could not verify user: " + user);
             return null;
         }

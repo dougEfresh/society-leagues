@@ -10,6 +10,15 @@ public class Player extends LeagueObject {
     @NotNull
     Team team;
 
+    public Player(Season season, User user, Team team) {
+        this.season = season;
+        this.user = user;
+        this.team = team;
+    }
+
+    public Player() {
+    }
+
     public Season getSeason() {
         return season;
     }
