@@ -25,19 +25,7 @@ public class AuthResource extends ApiResource implements AuthApi {
     @Autowired ServiceAuthenticator authenticator;
     @Autowired TokenService tokenService;
 
-    @ApiOperation(value = "login",
-            notes = "These fields can also be in the Header or Cookie of the request",
-            response = TokenResponse.class)
-    public TokenResponse authenticate (
-            @ApiParam(required = true, defaultValue = "email_608@domain.com")
-            String username,
-            @ApiParam(required = true, defaultValue = "password_608")
-            String password) {
-        return auth(username,password);
-    }
-
-
-    @Override
+     @Override
     public TokenResponse authenticate(User user) {
         if (user == null)
             return new TokenResponse();

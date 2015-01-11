@@ -23,10 +23,8 @@ public class JdbcServiceAuthenticator implements ServiceAuthenticator {
             logger.info("Successfully logged player_id: " +user.getId());
         } catch (EmptyResultDataAccessException e) {
             logger.error("No such user: " + username);
-            return user;
         } catch (Throwable t) {
             logger.error(t.getMessage(),t);
-            return user;
         }
         return user;
     }

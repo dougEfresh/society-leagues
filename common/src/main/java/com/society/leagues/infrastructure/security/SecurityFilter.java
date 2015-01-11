@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
-import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 import java.io.IOException;
@@ -45,8 +44,7 @@ public class SecurityFilter implements ContainerRequestFilter {
     }
 
     public boolean noToken(ContainerRequestContext requestContext) {
-        return requestContext.getHeaderString(TokenHeader.NAME) == null &&
-                !requestContext.getCookies().containsKey(TokenHeader.NAME);
+        return requestContext.getHeaderString(TokenHeader.NAME) == null;
     }
 
     public SecurityContext getSecurityContext(ContainerRequestContext requestContext) {
@@ -63,14 +61,6 @@ public class SecurityFilter implements ContainerRequestFilter {
     }
 
     public String findToken(ContainerRequestContext requestContext) {
-        String token = requestContext.getHeaderString(TokenHeader.NAME);
-        if (token != null)
-            return token;
-
-        Cookie c = requestContext.getCookies().get(TokenHeader.NAME);
-        if (c == null)
-            return null;
-
-        return c.getValue();
+        return requestContext.getHeaderString(TokenHeader.NAME);
     }
 }

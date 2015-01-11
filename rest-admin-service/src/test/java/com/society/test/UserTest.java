@@ -35,6 +35,9 @@ public class UserTest extends TestBase {
         assertNotNull(returned);
         assertNotNull(returned.getId());
         assertNull(returned.getPassword());
+
+        returned.setLogin(null);
+        assertNull(api.create(returned));
     }
 
     @Test
@@ -43,6 +46,10 @@ public class UserTest extends TestBase {
         User returned  = api.create(user);
         assertNotNull(returned);
         assertTrue(api.delete(returned));
+
+        returned.setId(null);
+        assertFalse(api.delete(returned));
+
     }
 
     @Test

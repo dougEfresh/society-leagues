@@ -45,6 +45,10 @@ public class LeagueTest extends TestBase {
         League returned = api.create(league);
         assertTrue(api.delete(returned));
         assertFalse(api.delete(returned));
+
+        returned = api.create(league);
+        returned.setId(null);
+        assertFalse(api.delete(returned));
     }
 
     @Test

@@ -82,11 +82,7 @@ public class TestBase {
 
     @AfterClass
     public static void killDb() throws Exception {
-        try {
-            DriverManager.getConnection("jdbc:derby:memory;shutdown=true");
-        } catch (Throwable ignore) {
-            logger.info(ignore.getMessage());
-        }
+
     }
 
     public static void createAccounts() {

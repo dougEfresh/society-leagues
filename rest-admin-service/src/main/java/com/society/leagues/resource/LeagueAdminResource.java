@@ -30,12 +30,16 @@ public class LeagueAdminResource extends AdminApiResource implements LeagueAdmin
 
     @Override
     public Boolean delete(final League league) {
+        if (league == null || league.getId() == null) {
+            logger.error("Could not validate league " + league);
+            return Boolean.FALSE;
+        }
         return dao.delete(league);
     }
 
     @Override
     public League modify(League league) {
-        if (league == null || league.getType() == null) {
+        if (league == null || league.getType() == null || league.getId() == null) {
             logger.error("League is not verified: "+ league);
             return null;
         }
