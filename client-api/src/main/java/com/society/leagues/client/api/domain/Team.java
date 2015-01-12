@@ -11,6 +11,7 @@ public class Team extends LeagueObject {
     @NotNull
     Division defaultDivision;
     Date created;
+    public static final Team bye = new Team("Bye",null);
 
     public Team(String name, Division division) {
         this.name = name;
