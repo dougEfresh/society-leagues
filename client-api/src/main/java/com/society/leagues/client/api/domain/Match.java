@@ -1,14 +1,18 @@
 package com.society.leagues.client.api.domain;
 
-public class Match {
+import java.time.LocalDate;
+
+public class Match extends LeagueObject {
     Team home;
     Team away;
-    Integer seasonId;
+    Season season;
+    LocalDate matchDate;
 
-    public Match(Team home, Team away, Integer seasonId) {
+    public Match(Team home, Team away, Season season, LocalDate matchDate) {
         this.home = home;
         this.away = away;
-        this.seasonId = seasonId;
+        this.season = season;
+        this.matchDate = matchDate;
     }
 
     public Match() {
@@ -28,5 +32,21 @@ public class Match {
 
     public void setAway(Team away) {
         this.away = away;
+    }
+
+    public LocalDate getMatchDate() {
+        return matchDate;
+    }
+
+    public void setMatchDate(LocalDate matchDate) {
+        this.matchDate = matchDate;
+    }
+
+    public Season getSeason() {
+        return season;
+    }
+
+    public void setSeason(Season season) {
+        this.season = season;
     }
 }

@@ -17,10 +17,10 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -37,7 +37,7 @@ public class SchedulerTest extends TestBase {
     public void setup() throws Exception {
         super.setup();
         String token = authenticate(Role.ADMIN);
-        api = ApiFactory.createApi(SchedulerAdminApi.class, token, baseURL);
+        api = ApiFactory.createApi(SchedulerAdminApi.class, token, baseURL,true);
         leagueApi = ApiFactory.createApi(LeagueAdminApi.class, token, baseURL);
         divisionApi = ApiFactory.createApi(DivisionAdminApi.class, token, baseURL);
         seasonApi = ApiFactory.createApi(SeasonAdminApi.class, token, baseURL);
@@ -55,7 +55,7 @@ public class SchedulerTest extends TestBase {
         division = divisionApi.create(division);
         assertNotNull(division);
 
-        Season season = new Season(division,"Whatever",new Date());
+        Season season = new Season(division,"Whatever", LocalDate.now());
         season = seasonApi.create(season);
         assertNotNull(season);
 
@@ -70,5 +70,6 @@ public class SchedulerTest extends TestBase {
         }
         List<Match> matches = api.create(season.getId(),teams);
         assertNotNull(matches);
+        assertFalse(matches.isEmpty());
     }
 }

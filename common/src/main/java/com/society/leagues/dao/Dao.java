@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import java.util.List;
@@ -56,7 +57,25 @@ public abstract class Dao {
         return null;
     }
 
-    public Integer getId(String table,LeagueObject leagueObject) {
+    public <T extends LeagueObject> T get(String sql, Object[] args, RowMapper<T> rowMapper) {
+        try {
+            return jdbcTemplate.queryForObject(sql,args,rowMapper);
+        } catch (Throwable t) {
+            logger.error(t.getLocalizedMessage(),t);
+        }
+        return null;
+    }
+    
+    public <T extends LeagueObject> T get(String sql, Object id, RowMapper<T> rowMapper) {
+        try {
+            return jdbcTemplate.queryForObject(sql,new Object[] {id},rowMapper);
+        } catch (Throwable t) {
+            logger.error(t.getLocalizedMessage(),t);
+        }
+        return null;
+    }
+    
+    public Integer getId(String table, LeagueObject leagueObject) {
           try {
               String sql = String.format("select %s_id from %s where %s_id=?",table,table,table);
               return jdbcTemplate.queryForObject(sql, Integer.class, leagueObject.getId());

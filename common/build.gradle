@@ -19,5 +19,5 @@ dependencies {
     compile 'org.glassfish.jersey.ext:jersey-entity-filtering:2.14'
     compile 'org.glassfish.jersey.containers:jersey-container-grizzly2-http:2.14'
 
-    compile 'com.owlike:genson:1.2-RC1'
+    compile 'com.owlike:genson:1.2'
 }

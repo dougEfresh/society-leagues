@@ -21,6 +21,7 @@ bootRun {
 dependencies {
     compile(project(':client-api'))
     compile(project(':common'))
+    compile(project(':rest-client-service'))
 
     compile 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
@@ -34,6 +35,7 @@ dependencies {
     //compile "org.ajar:swagger-spring-mvc-ui:0.2"
 
     compile 'org.codehaus.groovy:groovy-all:2.3.8'
+    compile 'com.owlike:genson:1.2'
 
     compile files('libs/rest-proxy-client.jar')
     //Test

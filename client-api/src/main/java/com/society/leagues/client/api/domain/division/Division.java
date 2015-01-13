@@ -10,7 +10,6 @@ public class Division extends LeagueObject {
     DivisionType type;
     @NotNull
     League league;
-    Integer id;
 
     public Division(DivisionType type, League league) {
         this.type = type;
@@ -34,14 +33,6 @@ public class Division extends LeagueObject {
 
     public void setLeague(League league) {
         this.league = league;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     @Override

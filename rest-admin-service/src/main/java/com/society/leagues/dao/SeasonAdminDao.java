@@ -8,9 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.stereotype.Component;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
+import java.sql.*;
 
 @Component
 public class SeasonAdminDao extends Dao implements SeasonAdminApi {
@@ -39,7 +37,7 @@ public class SeasonAdminDao extends Dao implements SeasonAdminApi {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, season.getDivision().getId());
             ps.setString(2, season.getName());
-            ps.setDate(3, new Date(season.getStartDate().getTime()));
+            ps.setDate(3,season.getSqlStartDate());
             return ps;
         };
     }

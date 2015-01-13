@@ -31,8 +31,11 @@ public class ApiFactory {
                 register(new TokenFilter(token)).
                 register(ExceptionFilter.class);
 
-        if (debug)
-            config = config.register(LoggingFilter.class);
+        if (debug) {
+            java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(LoggingFilter.class.getName());
+            LoggingFilter loggingFilter  = new LoggingFilter(LOGGER,true);
+            config = config.register(loggingFilter);
+        }
 
         Client client = ClientBuilder.newClient(config);
         return RestProxyFactory.getRestClientApi(api,url,client);

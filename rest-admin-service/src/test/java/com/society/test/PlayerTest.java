@@ -4,10 +4,7 @@ import com.society.leagues.Main;
 import com.society.leagues.client.ApiFactory;
 import com.society.leagues.client.api.admin.*;
 import com.society.leagues.client.api.Role;
-import com.society.leagues.client.api.domain.Player;
-import com.society.leagues.client.api.domain.Season;
-import com.society.leagues.client.api.domain.Team;
-import com.society.leagues.client.api.domain.User;
+import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.client.api.domain.league.League;
@@ -19,11 +16,9 @@ import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Date;
 import java.util.UUID;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class})
@@ -58,7 +53,7 @@ public class PlayerTest extends TestBase {
         division = divisionApi.create(division);
         assertNotNull(division);
 
-        Season season = new Season(division,"Cool",new Date());
+        Season season = new Season(division,"Cool", LocalDate.now());
         season = seasonApi.create(season);
         assertNotNull(season);
 

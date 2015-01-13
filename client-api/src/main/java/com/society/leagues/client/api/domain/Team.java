@@ -46,6 +46,23 @@ public class Team extends LeagueObject {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Team)) return false;
+
+        Team team = (Team) o;
+
+        if (!name.equals(team.name)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
     public String toString() {
         return "Team{" +
                 "name='" + name + '\'' +

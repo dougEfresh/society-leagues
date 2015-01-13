@@ -5,6 +5,7 @@ import com.society.leagues.client.api.domain.Player;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.client.api.domain.league.League;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,17 +18,23 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class DivisionDao  extends Dao implements DivisionClientApi  {
+public class DivisionDao extends Dao implements DivisionClientApi  {
 
-    static RowMapper<Division> rowMapper = (rs, rowNum) -> {
+    @Autowired LeagueDao leagueDao;
+    
+    public static RowMapper<Division> rowMapper = (rs, rowNum) -> {
         Division division = new Division();
-        League league = new League();
+        //League league = leagueDao.get(rs.getInt("league_id"));
+        //division.setLeague(league);
         division.setId(rs.getInt("division_id"));
-        league.setId(rs.getInt("league_id"));
-        division.setLeague(league);
         division.setType(DivisionType.valueOf(rs.getString("type")));
         return division;
     };
+
+    @Override
+    public Division get(Integer id) {
+        return get("select * from division where division_id = ?", id, rowMapper);
+    }
 
     @Override
     public List<Division> list() {
