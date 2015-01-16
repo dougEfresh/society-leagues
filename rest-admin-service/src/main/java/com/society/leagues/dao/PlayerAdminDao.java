@@ -40,20 +40,22 @@ public class PlayerAdminDao extends Dao implements PlayerAdminApi {
             ps.setInt(i++, player.getSeason().getId());
             ps.setInt(i++, player.getUser().getId());
             ps.setInt(i++, player.getTeam().getId());
+            ps.setString(i++, player.getHandicap());
             return ps;
         };
     }
 
     static String CREATE = "INSERT INTO player " +
             "(" +
-            "season_id,user_id,team_id) " +
+            "season_id,user_id,team_id,handicap) " +
             "VALUES " +
-            "(?,?,?)";
+            "(?,?,?,?)";
 
     static String MODIFY = "UPDATE player " +
             "set " +
             "season_id=?," +
             "user_id=?," +
             "team_id=?," +
+            "handicap=?," +
             " where player_id = ?";
 }

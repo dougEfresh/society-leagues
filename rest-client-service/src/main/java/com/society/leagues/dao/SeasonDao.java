@@ -19,10 +19,11 @@ public class SeasonDao extends Dao implements SeasonClientApi {
         division.setLeague(league);
         Season season = new Season();
         season.setDivision(division);
-        season.setSqlStartDate(rs.getDate("start_date"));
-        season.setSqlEndDate(rs.getDate("end_date"));
+        season.setStartDate(rs.getDate("start_date"));
+        season.setEndDate(rs.getDate("end_date"));
         season.setName(rs.getString("name"));
         season.setId(rs.getInt("season_id"));
+        season.setRounds(rs.getInt("rounds"));
         return season;
     };
     

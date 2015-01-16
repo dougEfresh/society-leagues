@@ -8,9 +8,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
+import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.stereotype.Component;
 
+import java.sql.Types;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 @Component
@@ -31,17 +35,35 @@ public class SchedulerAdminDao extends Dao implements SchedulerAdminApi {
             List<Match> matches = new ArrayList<>();
             Map<Team, Boolean> homeState = initialHomeState(teams);
 
-            for (int i = 1; i <= teams.size(); i++) {
+            for (int i = 1; i <= season.getRounds(); i++) {
                 matches.addAll(createRound(homeState, teams, season, i));
                 // Move last item to first
                 teams.add(1, teams.get(teams.size() - 1));
                 teams.remove(teams.size() - 1);
             }
+            Collections.sort(matches);
             return matches;
         } catch (Throwable t) {
             logger.error(t.getLocalizedMessage(),t);
         }
         return Collections.emptyList();
+    }
+
+    @Override
+    public Match create(Match match) {
+        List<SqlParameter> parameters = Arrays.asList(
+                new SqlParameter(Types.INTEGER), 
+                new SqlParameter(Types.INTEGER), 
+                new SqlParameter(Types.INTEGER),
+                new SqlParameter(Types.DATE));
+        PreparedStatementCreatorFactory ps = new PreparedStatementCreatorFactory(CREATE,parameters);
+        ps.setReturnGeneratedKeys(true);
+        return create(match,ps.newPreparedStatementCreator(new Object[]{
+                match.getHome().getId(),
+                match.getAway().getId(),
+                match.getSeason().getId(),
+                match.getMatchDate()
+        }));
     }
 
     /**
@@ -51,10 +73,12 @@ public class SchedulerAdminDao extends Dao implements SchedulerAdminApi {
      * @param round the week round
      * @return list of matches
      */
-    private List<Match> createRound(Map<Team,Boolean> homeState, List<Team> teams,Season season, int round) {
+    private List<Match> createRound(Map<Team,Boolean> homeState, List<Team> teams, Season season, int round) {
         List<Match> matches = new ArrayList<>();
-        LocalDate matchDate = season.getStartDate().getLocalDate().plusDays((round-1) * 7);
-         
+        java.sql.Date d = (java.sql.Date) season.getStartDate();
+        LocalDate matchDate= d.toLocalDate().plusDays((round-1)*7);
+        //LocalDateTime matchDate = LocalDateTime.from(season.getStartDate().toInstant()).plusDays((round-1) * 7);
+
         int mid = teams.size() / 2;
         // Split list into two
 
@@ -88,10 +112,10 @@ public class SchedulerAdminDao extends Dao implements SchedulerAdminApi {
             
             if (isHome(homeState,t1)) {
                 homeState.put(t1,false);
-                matches.add(new Match(t2,t1,season,matchDate));
+                matches.add(new Match(t2,t1,season, java.util.Date.from(matchDate.atStartOfDay(ZoneId.systemDefault()).toInstant())));
             } else {
                 homeState.put(t2,false);
-                matches.add(new Match(t1,t2,season,matchDate));
+                matches.add(new Match(t1,t2,season, java.util.Date.from(matchDate.atStartOfDay(ZoneId.systemDefault()).toInstant())));
             }
             
         }
@@ -109,10 +133,6 @@ public class SchedulerAdminDao extends Dao implements SchedulerAdminApi {
         return homeState;
     }
     
-    LocalDate getNextMatchDate(java.sql.Date startingDate, int round) {
-        return startingDate.toLocalDate().plusDays(--round * 7);
-    }
-    
     boolean isHome(Map<Team,Boolean> homeState, Team team) {
         if (homeState.containsKey(team)) {
             return homeState.get(team);
@@ -120,5 +140,18 @@ public class SchedulerAdminDao extends Dao implements SchedulerAdminApi {
         
         return false;
     }
+    
+    static String CREATE = "INSERT INTO team_match " +
+            "(" +
+            "home_team_id,away_team_id,season_id,match_date) " +
+            "VALUES " +
+            "(?,?,?,?)";
+
+    static String MODIFY = "UPDATE player " +
+            "set " +
+            "season_id=?," +
+            "user_id=?," +
+            "team_id=?," +
+            " where player_id = ?";
     
 }

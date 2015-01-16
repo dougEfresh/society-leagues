@@ -1,18 +1,29 @@
 package com.society.leagues.client.api.domain;
 
-import java.time.LocalDate;
 
-public class Match extends LeagueObject {
+import javax.validation.constraints.NotNull;
+import java.util.Date;
+
+public class Match extends LeagueObject implements Comparable<Match> {
+    @NotNull
     Team home;
+    @NotNull
     Team away;
+    @NotNull
     Season season;
-    LocalDate matchDate;
+    @NotNull
+    Date matchDate;
 
-    public Match(Team home, Team away, Season season, LocalDate matchDate) {
+    public Match(Team home, Team away, Season season, Date matchDate) {
         this.home = home;
         this.away = away;
         this.season = season;
         this.matchDate = matchDate;
+    }
+
+    @Override
+    public int compareTo(Match o) {
+        return this.matchDate.compareTo(o.matchDate);
     }
 
     public Match() {
@@ -34,11 +45,11 @@ public class Match extends LeagueObject {
         this.away = away;
     }
 
-    public LocalDate getMatchDate() {
+    public Date getMatchDate() {
         return matchDate;
     }
 
-    public void setMatchDate(LocalDate matchDate) {
+    public void setMatchDate(Date matchDate) {
         this.matchDate = matchDate;
     }
 

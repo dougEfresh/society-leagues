@@ -16,6 +16,7 @@ import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Date;
 import java.util.UUID;
 
 import static org.junit.Assert.assertNotNull;
@@ -53,7 +54,7 @@ public class PlayerTest extends TestBase {
         division = divisionApi.create(division);
         assertNotNull(division);
 
-        Season season = new Season(division,"Cool", LocalDate.now());
+        Season season = new Season(division,"Cool", new Date(),10);
         season = seasonApi.create(season);
         assertNotNull(season);
 
@@ -65,7 +66,7 @@ public class PlayerTest extends TestBase {
         user = userApi.create(user);
         assertNotNull(user);
 
-        Player player = new Player(season,user,team);
+        Player player = new Player(season,user,team,"D");
 
         player = api.create(player);
         assertNotNull(player);

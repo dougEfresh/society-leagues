@@ -72,11 +72,11 @@ public class DivisionTest extends TestBase {
         Division division = new Division(DivisionType.NINE_BALL_TUESDAYS, league);
         Division returned = api.create(division);
 
-        returned.setType(DivisionType.INDIVIDUAL_CHALLENGE);
+        returned.setType(DivisionType.NINE_BALL_BALL_CHALLENGE);
 
         Division modified = api.modify(returned);
         assertNotNull(modified);
-        assertEquals(modified.getType(), DivisionType.INDIVIDUAL_CHALLENGE);
+        assertEquals(modified.getType(), DivisionType.NINE_BALL_BALL_CHALLENGE);
 
         returned.setId(null);
         assertNull(api.modify(returned));

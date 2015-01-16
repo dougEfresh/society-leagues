@@ -27,8 +27,9 @@ public class SeasonAdminDao extends Dao implements SeasonAdminApi {
     @Override
     public Season modify(Season season) {
         return modify(season,
-                "update season set name = ?, division_id = ?, start_date = ?, end_date = ? where season_id = ?"
-                ,season.getName(),season.getDivision().getId(),season.getStartDate(),season.getEndDate(),season.getId());
+                "update season set name = ?, division_id = ?, start_date = ?, end_date = ? , rounds = ? where season_id = ?"
+                ,season.getName(),season.getDivision().getId(),season.getStartDate(),season.getEndDate(),season.getRounds()
+                ,season.getId());
     }
 
     PreparedStatementCreator getCreateStatement(LeagueObject leagueObject, String sql) {
@@ -37,10 +38,11 @@ public class SeasonAdminDao extends Dao implements SeasonAdminApi {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, season.getDivision().getId());
             ps.setString(2, season.getName());
-            ps.setDate(3,season.getSqlStartDate());
+            ps.setDate(3,new Date(season.getStartDate().getTime()));
+            ps.setInt(4,season.getRounds());
             return ps;
         };
     }
 
-    final static String CREATE = "INSERT INTO season(division_id,name,start_date) VALUES (?,?,?)";
+    final static String CREATE = "INSERT INTO season(division_id,name,start_date,rounds) VALUES (?,?,?,?)";
 }

@@ -3,6 +3,7 @@ create table player  (
  season_id int(11) NOT NULL,
  user_id int(11) NOT NULL,
  team_id int(11) NOT NULL,
+ handicap varchar(16) NOT NULL,
  PRIMARY KEY (`player_id`),
 CONSTRAINT FOREIGN KEY (`season_id`) REFERENCES season(season_id) ON DELETE CASCADE ON UPDATE CASCADE,
 CONSTRAINT FOREIGN KEY (`user_id`)   REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,

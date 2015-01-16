@@ -44,8 +44,10 @@ public class Schema {
             "  end_date     DATE,\n" +
             "  updated_date TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,\n" +
             "  status       INT                   DEFAULT 1,\n" +
+            "  rounds       INT          NOT NULL,\n" +
             "  PRIMARY KEY (season_id)\n" +
             " )\n";
+    
     static final String team = "CREATE TABLE team (\n" +
             "  team_id int NOT NULL GENERATED ALWAYS AS IDENTITY,\n" +
             "  name varchar(128) NOT NULL,\n" +
@@ -55,15 +57,28 @@ public class Schema {
             "  PRIMARY KEY (team_id)\n" +
             ")\n" +
             "\n";
+    
     static final String player = "create table player  (\n" +
             " player_id int NOT NULL GENERATED ALWAYS AS IDENTITY,\n" +
             " season_id int NOT NULL,\n" +
             " user_id int NOT NULL,\n" +
             " team_id int NOT NULL,\n" +
+            " handicap varchar(255) NOT NULL,\n" +
             " PRIMARY KEY (player_id),\n" +
             "CONSTRAINT P_S_FK FOREIGN KEY (season_id) REFERENCES season(season_id) ON DELETE CASCADE ON UPDATE RESTRICT ,\n" +
             "CONSTRAINT P_U_FK FOREIGN KEY (user_id)   REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE RESTRICT ,\n" +
             "CONSTRAINT P_T_FK FOREIGN KEY (team_id)   REFERENCES team(team_id) ON DELETE CASCADE ON UPDATE RESTRICT\n" +
+            ")\n";
+    
+      static final String team_match = "create table team_match  (\n" +
+              " team_match_id int NOT NULL GENERATED ALWAYS AS IDENTITY,\n" +
+              " season_id int NOT NULL CONSTRAINT T_M_S_K REFERENCES season ON DELETE CASCADE,\n" +
+              " home_team_id int NOT NULL CONSTRAINT HOME_K REFERENCES team ON DELETE CASCADE  ,\n" +
+              " away_team_id int NOT NULL CONSTRAINT AWAY_K REFERENCES team ON DELETE CASCADE ,\n" +
+              " match_date date not null, " +
+              " racks int not null DEFAULT 0," +
+              " win int not null DEFAULT 0," +
+              " PRIMARY KEY (team_match_id)" +
             ")\n";
 
     public static void createDb(JdbcTemplate jdbcTemplate) {
@@ -77,7 +92,8 @@ public class Schema {
         jdbcTemplate.update(season);
         jdbcTemplate.update(team);
         jdbcTemplate.update(player);
-
+        jdbcTemplate.update(team_match);
+        
         createdSchema= true;
     }
 

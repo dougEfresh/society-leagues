@@ -1,10 +1,9 @@
 package com.society.leagues.client.api.domain;
 
-import com.owlike.genson.annotation.JsonIgnore;
 import com.society.leagues.client.api.domain.division.Division;
 
 import javax.validation.constraints.NotNull;
-import java.sql.Date;
+import java.util.Date;
 
 
 public class Season extends LeagueObject {
@@ -14,13 +13,16 @@ public class Season extends LeagueObject {
     @NotNull
     String name;
     @NotNull
-    LocalDate startDate;
-    LocalDate endDate;
+    Date startDate;
+    Date endDate;
+    @NotNull
+    Integer rounds;
 
-    public Season(Division division, String name, LocalDate startDate) {
+    public Season(Division division, String name, Date startDate, Integer rounds) {
         this.division = division;
         this.name = name;
         this.startDate = startDate;
+        this.rounds = rounds;
     }
 
     public Season() {
@@ -42,34 +44,27 @@ public class Season extends LeagueObject {
         this.division = division;
     }
     
-    public LocalDate getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    @JsonIgnore
-    public Date getSqlStartDate() {
-        return Date.valueOf(startDate.getLocalDate());
-    }
-
-    @JsonIgnore
-    public void setSqlStartDate(Date startDate) {
-        this.startDate = new LocalDate(startDate);
-    }
-
-    public LocalDate getEndDate() {
+    public Date getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
 
-    @JsonIgnore
-    public void setSqlEndDate(Date endDate) {
-        this.endDate = new LocalDate(endDate);
+    public Integer getRounds() {
+        return rounds;
+    }
+
+    public void setRounds(Integer rounds) {
+        this.rounds = rounds;
     }
 }

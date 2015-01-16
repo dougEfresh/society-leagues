@@ -6,7 +6,6 @@ import com.society.leagues.client.api.Role;
 import com.society.leagues.client.api.admin.DivisionAdminApi;
 import com.society.leagues.client.api.admin.LeagueAdminApi;
 import com.society.leagues.client.api.admin.SeasonAdminApi;
-import com.society.leagues.client.api.domain.LocalDate;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
@@ -18,6 +17,8 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.Date;
 
 import static org.junit.Assert.*;
 
@@ -46,7 +47,7 @@ public class SeasonTest extends TestBase {
         Division division = new Division(DivisionType.EIGHT_BALL_THURSDAYS,league);
         division = divisionApi.create(division);
 
-        Season season = new Season(division,"Cool", new LocalDate());
+        Season season = new Season(division,"Cool", new Date(),10);
 
         Season returned = api.create(season);
         assertNotNull(returned);
@@ -65,7 +66,7 @@ public class SeasonTest extends TestBase {
         Division division = new Division(DivisionType.NINE_BALL_TUESDAYS,league);
         division = divisionApi.create(division);
 
-        Season season = new Season(division,"9Ball",LocalDate.now());
+        Season season = new Season(division,"9Ball",new Date(),10);
 
         season = api.create(season);
         assertTrue(api.delete(season));
@@ -80,7 +81,7 @@ public class SeasonTest extends TestBase {
         Division division = new Division(DivisionType.NINE_BALL_TUESDAYS,league);
         division = divisionApi.create(division);
 
-        Season season = new Season(division,"ChangeMe",LocalDate.now());
+        Season season = new Season(division,"ChangeMe",new Date(),10);
 
         season = api.create(season);
         season.setName("Blah");
