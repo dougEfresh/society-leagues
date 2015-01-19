@@ -3,12 +3,11 @@ package com.society.test;
 
 import com.society.leagues.Main;
 import com.society.leagues.client.ApiFactory;
-import com.society.leagues.client.api.admin.LeagueAdminApi;
+import com.society.leagues.client.api.admin.DivisionAdminApi;
 import com.society.leagues.client.api.domain.TokenResponse;
 import com.society.leagues.client.api.domain.User;
-import com.society.leagues.client.api.domain.league.League;
+import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.exception.Unauthorized;
-import com.society.leagues.infrastructure.NotAuthorizedResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.IntegrationTest;
@@ -47,9 +46,9 @@ public class SecurityTest extends TestBase {
         assertTrue(response.isSuccess());
         assertNotNull(response.getToken());
 
-        LeagueAdminApi leagueAdminApi = ApiFactory.createApi(LeagueAdminApi.class,"badtoken",baseURL);
+        DivisionAdminApi adminApi = ApiFactory.createApi(DivisionAdminApi.class,"badtoken",baseURL);
         try {
-            leagueAdminApi.create(new League());
+            adminApi.create(new Division());
         } catch (ProcessingException e) {
               assertTrue(e.getCause() instanceof Unauthorized);
         }

@@ -3,6 +3,7 @@ package com.society.leagues.client.api.domain;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 public class Player extends LeagueObject {
     @NotNull
@@ -13,7 +14,10 @@ public class Player extends LeagueObject {
     Team team;
     @NotBlank
     String handicap;
-
+    List<Match> matches;
+    @NotNull
+    Status status = Status.ACTIVE;
+    
     public Player(Season season, User user, Team team, String handicap) {
         this.season = season;
         this.user = user;
@@ -54,5 +58,21 @@ public class Player extends LeagueObject {
 
     public void setHandicap(String handicap) {
         this.handicap = handicap;
+    }
+
+    public List<Match> getMatches() {
+        return matches;
+    }
+
+    public void setMatches(List<Match> matches) {
+        this.matches = matches;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

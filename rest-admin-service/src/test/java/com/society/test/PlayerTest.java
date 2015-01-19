@@ -7,8 +7,7 @@ import com.society.leagues.client.api.Role;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
-import com.society.leagues.client.api.domain.league.League;
-import com.society.leagues.client.api.domain.league.LeagueType;
+import com.society.leagues.client.api.domain.division.LeagueType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +26,6 @@ import static org.junit.Assert.assertNotNull;
 public class PlayerTest extends TestBase {
     PlayerAdminApi api;
     SeasonAdminApi seasonApi;
-    LeagueAdminApi leagueApi;
     DivisionAdminApi divisionApi;
     TeamAdminApi teamApi;
     UserAdminApi userApi;
@@ -37,7 +35,6 @@ public class PlayerTest extends TestBase {
         super.setup();
         String token = authenticate(Role.ADMIN);
         api = ApiFactory.createApi(PlayerAdminApi.class, token, baseURL);
-        leagueApi = ApiFactory.createApi(LeagueAdminApi.class, token, baseURL);
         divisionApi = ApiFactory.createApi(DivisionAdminApi.class, token, baseURL);
         seasonApi = ApiFactory.createApi(SeasonAdminApi.class, token, baseURL);
         teamApi = ApiFactory.createApi(TeamAdminApi.class, token, baseURL);
@@ -46,15 +43,12 @@ public class PlayerTest extends TestBase {
 
     @Test
     public void testCreate() {
-        League league = new League(LeagueType.INDIVIDUAL);
-        league = leagueApi.create(league);
-        assertNotNull(league);
-
-        Division division = new Division(DivisionType.EIGHT_BALL_THURSDAYS,league);
+        Division division = new Division(DivisionType.EIGHT_BALL_THURSDAYS,LeagueType.TEAM);
         division = divisionApi.create(division);
         assertNotNull(division);
 
         Season season = new Season(division,"Cool", new Date(),10);
+        season.setSeasonStatus(SeasonStatus.ACTIVE);
         season = seasonApi.create(season);
         assertNotNull(season);
 
@@ -67,7 +61,7 @@ public class PlayerTest extends TestBase {
         assertNotNull(user);
 
         Player player = new Player(season,user,team,"D");
-
+        player.setStatus(Status.ACTIVE);
         player = api.create(player);
         assertNotNull(player);
         assertNotNull(player.getId());

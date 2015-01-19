@@ -1,7 +1,6 @@
 package com.society.leagues.client.api.domain.division;
 
 import com.society.leagues.client.api.domain.LeagueObject;
-import com.society.leagues.client.api.domain.league.League;
 
 import javax.validation.constraints.NotNull;
 
@@ -9,9 +8,9 @@ public class Division extends LeagueObject {
     @NotNull
     DivisionType type;
     @NotNull
-    League league;
+    LeagueType league;
 
-    public Division(DivisionType type, League league) {
+    public Division(DivisionType type, LeagueType league) {
         this.type = type;
         this.league = league;
     }
@@ -27,11 +26,11 @@ public class Division extends LeagueObject {
         this.type = type;
     }
 
-    public League getLeague() {
+    public LeagueType getLeague() {
         return league;
     }
 
-    public void setLeague(League league) {
+    public void setLeague(LeagueType league) {
         this.league = league;
     }
 

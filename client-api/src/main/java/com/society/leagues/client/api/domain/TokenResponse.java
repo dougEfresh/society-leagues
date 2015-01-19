@@ -1,6 +1,6 @@
 package com.society.leagues.client.api.domain;
 
-public class TokenResponse {
+public class TokenResponse extends LeagueObject {
     private String token;
     boolean success;
 
@@ -26,4 +26,5 @@ public class TokenResponse {
     public void setSuccess(boolean success) {
         this.success = success;
     }
+
 }

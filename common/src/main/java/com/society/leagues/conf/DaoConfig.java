@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 
@@ -66,7 +67,13 @@ public class DaoConfig {
 
         return template;
     }
-
+    
+    @Bean
+    //@Profile("test")
+    NamedParameterJdbcTemplate getDerbyJdbcNamedTemplate() {
+        return new NamedParameterJdbcTemplate(getDerby());
+    }
+    
     @Bean
     @Profile("test")
     public DataSource getDerbyDataSource() {

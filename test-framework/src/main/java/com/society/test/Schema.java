@@ -12,12 +12,6 @@ public class Schema {
             "  PRIMARY KEY (token)\n" +
             ")\n";
 
-    static final String league = "CREATE TABLE league (\n" +
-            "  league_id int NOT NULL GENERATED ALWAYS AS IDENTITY,\n" +
-            "  league_type varchar(32) NOT NULL,\n" +
-            "  PRIMARY KEY (league_id)\n" +
-            ")\n";
-
     static final String user = "CREATE TABLE users (\n" +
             "  user_id int NOT NULL GENERATED ALWAYS AS IDENTITY,\n" +
             "  login varchar(256) NOT NULL,\n" +
@@ -30,30 +24,31 @@ public class Schema {
             "  PRIMARY KEY (user_id),\n" +
             "  UNIQUE  (login)\n" +
             ")";
+    
     static final String division = "CREATE TABLE division (\n" +
             "  division_id int NOT NULL GENERATED ALWAYS AS IDENTITY,\n" +
-            "  league_id int NOT NULL CONSTRAINT DIV_L_FK REFERENCES league ON DELETE CASCADE ON UPDATE RESTRICT,\n" +
-            "  type varchar(64) NOT NULL,\n" +
+            "  league_type varchar(255) NOT NULL,\n" +
+            "  division_type  varchar(64) NOT NULL,\n" +
             "  PRIMARY KEY (division_id)\n" +
             ")\n";
+    
     static final String season = " CREATE TABLE season (\n" +
             "  season_id    INT          NOT NULL GENERATED ALWAYS AS IDENTITY,\n" +
             "  division_id  INT          NOT NULL CONSTRAINT S_DIV_FK  REFERENCES division ON DELETE CASCADE ON UPDATE RESTRICT,\n" +
             "  name         VARCHAR(128) NOT NULL,\n" +
-            "  start_date   DATE         NOT NULL,\n" +
+            "  start_date   TIMESTAMP         NOT NULL,\n" +
             "  end_date     DATE,\n" +
-            "  updated_date TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,\n" +
-            "  status       INT                   DEFAULT 1,\n" +
+            "  updated TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,\n" +
             "  rounds       INT          NOT NULL,\n" +
+            "  season_status       varchar(255) NOT NULL,\n" +
             "  PRIMARY KEY (season_id)\n" +
             " )\n";
     
     static final String team = "CREATE TABLE team (\n" +
             "  team_id int NOT NULL GENERATED ALWAYS AS IDENTITY,\n" +
             "  name varchar(128) NOT NULL,\n" +
-            "  active boolean DEFAULT true,\n" +
             "  default_division_id int  NOT NULL CONSTRAINT TEAM_DIV_FK REFERENCES division ON DELETE CASCADE ON UPDATE RESTRICT,\n" +
-            "  updated_date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n" +
+            "  created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n" +
             "  PRIMARY KEY (team_id)\n" +
             ")\n" +
             "\n";
@@ -64,6 +59,7 @@ public class Schema {
             " user_id int NOT NULL,\n" +
             " team_id int NOT NULL,\n" +
             " handicap varchar(255) NOT NULL,\n" +
+            " player_status varchar(255) NOT NULL,\n" +
             " PRIMARY KEY (player_id),\n" +
             "CONSTRAINT P_S_FK FOREIGN KEY (season_id) REFERENCES season(season_id) ON DELETE CASCADE ON UPDATE RESTRICT ,\n" +
             "CONSTRAINT P_U_FK FOREIGN KEY (user_id)   REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE RESTRICT ,\n" +
@@ -85,7 +81,6 @@ public class Schema {
         if (createdSchema)
             return;
 
-        jdbcTemplate.update(league);
         jdbcTemplate.update(token);
         jdbcTemplate.update(user);
         jdbcTemplate.update(division);

@@ -9,15 +9,23 @@ public class Team extends LeagueObject {
     @NotNull
     String name;
     @NotNull
-    Division defaultDivision;
+    Division division;
     Date created;
+    TeamStatus status;
+    
     public static final Team bye = new Team("Bye",null);
 
     public Team(String name, Division division) {
         this.name = name;
-        this.defaultDivision = division;
+        this.division = division;
     }
 
+    public Team(String name, Division division, Date created) {
+        this.name = name;
+        this.division = division;
+        this.created = created;
+    }
+    
     public Team() {
     }
 
@@ -37,12 +45,20 @@ public class Team extends LeagueObject {
         this.created = created;
     }
 
-    public Division getDefaultDivision() {
-        return defaultDivision;
+    public Division getDivision() {
+        return division;
     }
 
-    public void setDefaultDivision(Division defaultDivision) {
-        this.defaultDivision = defaultDivision;
+    public void setDivision(Division division) {
+        this.division = division;
+    }
+
+    public TeamStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TeamStatus status) {
+        this.status = status;
     }
 
     @Override

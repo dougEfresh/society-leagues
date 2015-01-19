@@ -17,6 +17,8 @@ public class Season extends LeagueObject {
     Date endDate;
     @NotNull
     Integer rounds;
+    @NotNull
+    SeasonStatus seasonStatus;
 
     public Season(Division division, String name, Date startDate, Integer rounds) {
         this.division = division;
@@ -26,6 +28,14 @@ public class Season extends LeagueObject {
     }
 
     public Season() {
+    }
+
+    public SeasonStatus getSeasonStatus() {
+        return seasonStatus;
+    }
+
+    public void setSeasonStatus(SeasonStatus seasonStatus) {
+        this.seasonStatus = seasonStatus;
     }
 
     public String getName() {

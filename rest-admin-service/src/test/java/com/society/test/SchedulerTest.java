@@ -7,8 +7,7 @@ import com.society.leagues.client.api.admin.*;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
-import com.society.leagues.client.api.domain.league.League;
-import com.society.leagues.client.api.domain.league.LeagueType;
+import com.society.leagues.client.api.domain.division.LeagueType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +28,6 @@ import static org.junit.Assert.*;
 public class SchedulerTest extends TestBase implements SchedulerAdminApi {
     SchedulerAdminApi api;
     SeasonAdminApi seasonApi;
-    LeagueAdminApi leagueApi;
     DivisionAdminApi divisionApi;
     TeamAdminApi teamApi;
     private static Logger logger = LoggerFactory.getLogger(SchedulerTest.class);
@@ -40,7 +38,6 @@ public class SchedulerTest extends TestBase implements SchedulerAdminApi {
         super.setup();
         String token = authenticate(Role.ADMIN);
         api = ApiFactory.createApi(SchedulerAdminApi.class, token, baseURL,true);
-        leagueApi = ApiFactory.createApi(LeagueAdminApi.class, token, baseURL);
         divisionApi = ApiFactory.createApi(DivisionAdminApi.class, token, baseURL);
         seasonApi = ApiFactory.createApi(SeasonAdminApi.class, token, baseURL);
         teamApi = ApiFactory.createApi(TeamAdminApi.class, token, baseURL);
@@ -49,15 +46,12 @@ public class SchedulerTest extends TestBase implements SchedulerAdminApi {
 
     @Test
     public void testCreate() {
-        League league = new League(LeagueType.TEAM);
-        league = leagueApi.create(league);
-        assertNotNull(league);
-
-        Division division = new Division(DivisionType.EIGHT_BALL_THURSDAYS,league);
+        Division division = new Division(DivisionType.EIGHT_BALL_THURSDAYS,LeagueType.TEAM);
         division = divisionApi.create(division);
         assertNotNull(division);
 
         Season season = new Season(division,"Whatever", new Date(),20);
+        season.setSeasonStatus(SeasonStatus.ACTIVE);
         season = seasonApi.create(season);
         assertNotNull(season);
 
@@ -117,16 +111,12 @@ public class SchedulerTest extends TestBase implements SchedulerAdminApi {
 
     @Test
     public void testCreateMatch() throws Exception {
-              
-        League league = new League(LeagueType.TEAM);
-        league = leagueApi.create(league);
-        assertNotNull(league);
-
-        Division division = new Division(DivisionType.EIGHT_BALL_THURSDAYS,league);
+        Division division = new Division(DivisionType.EIGHT_BALL_THURSDAYS,LeagueType.INDIVIDUAL);
         division = divisionApi.create(division);
         assertNotNull(division);
 
         Season season = new Season(division,"Whatever", new Date(),20);
+        season.setSeasonStatus(SeasonStatus.ACTIVE);
         season = seasonApi.create(season);
         assertNotNull(season);
         

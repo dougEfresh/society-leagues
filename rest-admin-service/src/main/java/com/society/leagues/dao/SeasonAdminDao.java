@@ -32,17 +32,17 @@ public class SeasonAdminDao extends Dao implements SeasonAdminApi {
                 ,season.getId());
     }
 
-    PreparedStatementCreator getCreateStatement(LeagueObject leagueObject, String sql) {
-        Season season = (Season) leagueObject;
+    PreparedStatementCreator getCreateStatement(Season season, String sql) {
         return con -> {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, season.getDivision().getId());
             ps.setString(2, season.getName());
             ps.setDate(3,new Date(season.getStartDate().getTime()));
             ps.setInt(4,season.getRounds());
+            ps.setString(5,season.getSeasonStatus().name());
             return ps;
         };
     }
 
-    final static String CREATE = "INSERT INTO season(division_id,name,start_date,rounds) VALUES (?,?,?,?)";
+    final static String CREATE = "INSERT INTO season(division_id,name,start_date,rounds,season_status) VALUES (?,?,?,?,?)";
 }

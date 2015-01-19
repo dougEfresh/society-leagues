@@ -4,25 +4,36 @@ import com.society.leagues.client.api.Role;
 
 import javax.annotation.security.DenyAll;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @SuppressWarnings("unused")
 public class User extends LeagueObject {
 
     @NotNull
-    protected String firstName;
+    String firstName;
     @NotNull
-    protected String lastName;
-    protected String email;
-    protected String password;
+    String lastName;
+    String email;
+    String password;
     @NotNull
-    protected String login;
+    String login;
     @NotNull
-    protected Role role;
-
+    Role role;
+    
+    List<Team> currentTeams;
+    List<Team> pastTeams;
+    List<Match> currentMatches;
+    List<Match> pastMatches;
+    List<Player> currentPlayers;
+        
     public User(String login, String password, Role role) {
         this.login = login;
         this.password = password;
         this.role = role;
+    }
+    
+    public User (Integer id) {
+        setId(id);
     }
 
     public User(String login, String password) {
@@ -31,9 +42,16 @@ public class User extends LeagueObject {
         this.role = Role.PLAYER;
     }
 
-
     public User() {
 
+    }
+
+    public User(String firstName, String lastName, String password, String login, Role role) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.login = login;
+        this.role = role;
     }
 
     public String getFirstName() {
@@ -93,36 +111,43 @@ public class User extends LeagueObject {
         return Role.isAdmin(role);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-
-        User user = (User) o;
-
-        if (email != null ? !email.equals(user.email) : user.email != null)
-            return false;
-
-        return !(login != null ? !login.equals(user.login) : user.login != null);
+    public List<Team> getCurrentTeams() {
+        return currentTeams;
     }
 
-    @Override
-    public int hashCode() {
-
-        int result = 31 * (email != null ? email.hashCode() : 0);
-        result = 31 * result + (login != null ? login.hashCode() : 0);
-        return result;
+    public void setCurrentTeams(List<Team> currentTeams) {
+        this.currentTeams = currentTeams;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", login='" + login + '\'' +
-                ", id=" + id +
-                ", role" +
-                '}';
+    public List<Team> getPastTeams() {
+        return pastTeams;
+    }
+
+    public void setPastTeams(List<Team> pastTeams) {
+        this.pastTeams = pastTeams;
+    }
+
+    public List<Match> getCurrentMatches() {
+        return currentMatches;
+    }
+
+    public void setCurrentMatches(List<Match> currentMatches) {
+        this.currentMatches = currentMatches;
+    }
+
+    public List<Match> getPastMatches() {
+        return pastMatches;
+    }
+
+    public void setPastMatches(List<Match> pastMatches) {
+        this.pastMatches = pastMatches;
+    }
+
+    public List<Player> getCurrentPlayers() {
+        return currentPlayers;
+    }
+
+    public void setCurrentPlayers(List<Player> currentPlayers) {
+        this.currentPlayers = currentPlayers;
     }
 }

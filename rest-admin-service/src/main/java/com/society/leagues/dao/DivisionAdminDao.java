@@ -1,9 +1,7 @@
 package com.society.leagues.dao;
 
 import com.society.leagues.client.api.admin.DivisionAdminApi;
-import com.society.leagues.client.api.domain.LeagueObject;
 import com.society.leagues.client.api.domain.division.Division;
-import com.society.leagues.client.api.domain.league.League;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -29,21 +27,19 @@ public class DivisionAdminDao extends Dao implements DivisionAdminApi {
 
     @Override
     public Division modify(Division division) {
-        return modify(division,"UPDATE division SET type = ?, league_id = ? WHERE division_id  = ?",
-                division.getType().name(),division.getLeague().getId(),division.getId());
+        return modify(division,"UPDATE division SET division_type = ?, league_type = ? WHERE division_id  = ?",
+                division.getType().name(),division.getLeague().name(),division.getId());
     }
 
-    protected PreparedStatementCreator getCreateStatement(final LeagueObject leagueObject, String sql) {
-        Division division = (Division) leagueObject;
-
+    protected PreparedStatementCreator getCreateStatement(final Division division, String sql) {
         return con -> {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, division.getLeague().getId());
+            ps.setString(1, division.getLeague().name());
             ps.setString(2, division.getType().name());
             return ps;
         };
     }
 
-    final static String CREATE = "INSERT INTO division(league_id,type) VALUES (?,?)";
+    final static String CREATE = "INSERT INTO division(league_type,division_type) VALUES (?,?)";
 }
 

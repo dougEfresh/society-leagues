@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.List;
-import java.util.SortedSet;
 
 @Component
 @RolesAllowed(value = {"ADMIN"})

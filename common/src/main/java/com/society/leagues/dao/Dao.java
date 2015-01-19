@@ -8,21 +8,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 
-public abstract class Dao {
+@Component
+public class Dao {
     private static Logger logger = LoggerFactory.getLogger(Dao.class);
     @Autowired public JdbcTemplate jdbcTemplate;
-
-    public Map<String,Object> queryForMap(String query, Object... obj) {
-        return jdbcTemplate.queryForMap(query,obj);
-    }
-
-    public List<Map<String,Object>> queryForListMap(String query, Object... obj) {
-        return jdbcTemplate.queryForList(query,obj);
-    }
 
     public <T extends LeagueObject> T create(T thing, PreparedStatementCreator st) {
         try {
@@ -84,4 +78,5 @@ public abstract class Dao {
         }
         return null;
     }
+    
 }

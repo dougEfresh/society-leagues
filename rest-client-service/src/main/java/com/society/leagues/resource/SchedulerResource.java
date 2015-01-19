@@ -13,23 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-@Path("/api/scheduler")
-@Api( value = "/scheduler" ,
-        description = "Schedule Info & Management",
-        basePath = "/api/vi",
-        position = 4
-
-)
 public class SchedulerResource  {
-
-    @Autowired SchedulerDao dao;
-
-    @Path(value = "/list/{id:[0-9].+}")
-    @GET
-    @ApiOperation(value = "/list", notes = "Displays schedule for division id")
-    public List<Map<String,Object>> getStandings(@PathParam(value = "id") Integer id) {
-        return dao.getSchedule(id);
-    }
 
 }
 

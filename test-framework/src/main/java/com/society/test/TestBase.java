@@ -53,6 +53,12 @@ public class TestBase {
         baseURL = "http://localhost:" + app.getPort();
         authApi = ApiFactory.createApi(AuthApi.class, null, baseURL, true);
     }
+    
+    public void generateData() {
+        SchemaData schemaData = new SchemaData();
+        schemaData.generateData(baseURL,authenticate(Role.ADMIN));
+        
+    }
 
     public String authenticate(Role role) {
         User user;

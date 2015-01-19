@@ -12,6 +12,7 @@ import java.sql.Statement;
 
 @Component
 public class PlayerAdminDao extends Dao implements PlayerAdminApi {
+   
     @Override
     public Player create(final Player player) {
         return create(player,getCreateStatement(player));
@@ -41,15 +42,16 @@ public class PlayerAdminDao extends Dao implements PlayerAdminApi {
             ps.setInt(i++, player.getUser().getId());
             ps.setInt(i++, player.getTeam().getId());
             ps.setString(i++, player.getHandicap());
+            ps.setString(i++, player.getStatus().name());
             return ps;
         };
     }
 
     static String CREATE = "INSERT INTO player " +
             "(" +
-            "season_id,user_id,team_id,handicap) " +
+            "season_id,user_id,team_id,handicap,player_status) " +
             "VALUES " +
-            "(?,?,?,?)";
+            "(?,?,?,?,?)";
 
     static String MODIFY = "UPDATE player " +
             "set " +
