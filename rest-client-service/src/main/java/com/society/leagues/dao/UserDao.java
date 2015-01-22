@@ -7,22 +7,36 @@ import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
-public class UserDao implements UserApi {
+public class UserDao extends ClientDao<User> implements UserApi {
     public static RowMapper<User> rowMapper = (rs, rowNum) -> {
         User user = new User();
-        user.setFirstName(rs.getString("first_name"));
-        user.setFirstName(rs.getString("last_name"));
-        user.setRole(Role.valueOf(rs.getString("role")));
+        user.setId(rs.getInt("user_id"));
         return user;
     };
-    
+
     @Override
-    public User info(Integer id) {
-        //PreparedStatementCreatorFactory factory = new PreparedStatementCreatorFactory()
+    public List<User> current(List<User> users) {
+        return super.current(users);
+    }
+
+    @Override
+    public List<User> current(Integer userId) {
+        return
+    }
+
+    @Override
+    public RowMapper<User> getRowMapper() {
         return null;
     }
-    
+
+    @Override
+    public User get(Integer id) {
+        return get(id,"select * from users where user_id = ?");
+    }
+
     final static String CURRENT_TEAMS = "select t.* from player p " +
             " JOIN team t   on p.team_id=t.team_id" +
             " JOIN season s on p.season_id=s.season_id and " +

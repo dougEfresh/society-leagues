@@ -14,7 +14,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import java.util.*;
 
 public abstract class ClientDao<Q extends LeagueObject> implements ClientApi<Q> {
-    //TODO Some Major Cacheseason
+    //TODO Some Major Cache
     @Autowired JdbcTemplate jdbcTemplate;
     @Autowired NamedParameterJdbcTemplate namedJdbcTemplate;
     private static Logger logger = LoggerFactory.getLogger(ClientDao.class);

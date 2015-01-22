@@ -14,27 +14,36 @@ public interface SeasonClientApi extends ClientApi<Season> {
 
     @Override
     @Path("/api/client/season/current")
+    @POST
     List<Season> current(List<User> users);
 
     @Override
     @Path("/api/client/season/current/{id}")
-    List<Season> current(Integer userId);
+    @GET
+    List<Season> current(@PathParam(value = "id")Integer userId);
 
     @Override
     @Path("/api/client/season/past")
+    @POST
     List<Season> past(List<User> user);
 
     @Override
     @Path("/api/client/season/past/{id}")
-    List<Season> past(Integer userId);
+    @GET
+    List<Season> past(@PathParam(value = "id")Integer userId);
 
     @Override
     @Path("/api/client/season/all")
+    @POST
     List<Season> all(List<User> user);
 
     @Override
     @Path("/api/client/season/all/{id}")
-    List<Season> all(Integer userId);
-    
-    
+    @GET
+    List<Season> all(@PathParam(value = "id")Integer userId);
+
+    @Override
+    @GET
+    @Path("/api/client/season/get/{id}")
+    Season get(@PathParam(value = "id")Integer id);
 }

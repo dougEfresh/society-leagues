@@ -1,6 +1,7 @@
 package com.society.leagues.client.api.domain;
 
 import com.society.leagues.client.api.Role;
+import com.society.leagues.client.api.domain.division.Division;
 
 import javax.annotation.security.DenyAll;
 import javax.validation.constraints.NotNull;
@@ -19,13 +20,12 @@ public class User extends LeagueObject {
     String login;
     @NotNull
     Role role;
-    
-    List<Team> currentTeams;
-    List<Team> pastTeams;
-    List<Match> currentMatches;
-    List<Match> pastMatches;
-    List<Player> currentPlayers;
-        
+
+    List<Division> divisions;
+    List<Season> seasons;
+    List<Team> teams;
+    List<Player> players;
+
     public User(String login, String password, Role role) {
         this.login = login;
         this.password = password;
@@ -111,43 +111,35 @@ public class User extends LeagueObject {
         return Role.isAdmin(role);
     }
 
-    public List<Team> getCurrentTeams() {
-        return currentTeams;
+    public List<Team> getTeams() {
+        return teams;
     }
 
-    public void setCurrentTeams(List<Team> currentTeams) {
-        this.currentTeams = currentTeams;
+    public void setTeams(List<Team> Teams) {
+        this.teams = Teams;
     }
 
-    public List<Team> getPastTeams() {
-        return pastTeams;
+    public List<Division> getDivisions() {
+        return divisions;
     }
 
-    public void setPastTeams(List<Team> pastTeams) {
-        this.pastTeams = pastTeams;
+    public void setDivisions(List<Division> Divisions) {
+        this.divisions = Divisions;
     }
 
-    public List<Match> getCurrentMatches() {
-        return currentMatches;
+    public List<Season> getSeasons() {
+        return seasons;
     }
 
-    public void setCurrentMatches(List<Match> currentMatches) {
-        this.currentMatches = currentMatches;
+    public void setSeasons(List<Season> Seasons) {
+        this.seasons = Seasons;
     }
 
-    public List<Match> getPastMatches() {
-        return pastMatches;
+    public List<Player> getPlayers() {
+        return players;
     }
 
-    public void setPastMatches(List<Match> pastMatches) {
-        this.pastMatches = pastMatches;
-    }
-
-    public List<Player> getCurrentPlayers() {
-        return currentPlayers;
-    }
-
-    public void setCurrentPlayers(List<Player> currentPlayers) {
-        this.currentPlayers = currentPlayers;
+    public void setPlayers(List<Player> Players) {
+        this.players = Players;
     }
 }
