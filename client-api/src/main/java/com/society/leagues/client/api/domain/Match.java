@@ -4,7 +4,7 @@ package com.society.leagues.client.api.domain;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-public class Match extends LeagueObject implements Comparable<Match> {
+public class Match extends LeagueObject  {
     @NotNull
     Team home;
     @NotNull
@@ -22,8 +22,9 @@ public class Match extends LeagueObject implements Comparable<Match> {
     }
 
     @Override
-    public int compareTo(Match o) {
-        return this.matchDate.compareTo(o.matchDate);
+    public int compareTo(LeagueObject o) {
+        //return this.matchDate.compareTo(o.matchDate);
+        return super.compareTo(o);
     }
 
     public Match() {

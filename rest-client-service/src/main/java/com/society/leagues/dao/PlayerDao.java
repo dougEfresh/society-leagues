@@ -16,11 +16,12 @@ public class PlayerDao extends ClientDao<Player> {
         Team team = TeamDao.rowMapper.mapRow(rs,rowNum);
         User user = UserDao.rowMapper.mapRow(rs,rowNum);
         Player player = new Player();
-        player.setHandicap(rs.getString("handicapp"));
+        player.setHandicap(rs.getString("handicap"));
         player.setStatus(Status.valueOf(rs.getString("player_status")));
         player.setTeam(team);
         player.setSeason(season);
         player.setUser(user);
+        player.setId(rs.getInt("player_id"));
         return player;
     };
 

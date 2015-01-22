@@ -1,6 +1,6 @@
 package com.society.leagues.client.api.domain;
 
-public class LeagueObject {
+public class LeagueObject implements Comparable<LeagueObject>{
     protected Integer id;
 
     public Integer getId() {
@@ -26,5 +26,10 @@ public class LeagueObject {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public int compareTo(LeagueObject o) {
+        return o.getId().compareTo(o.getId());
     }
 }

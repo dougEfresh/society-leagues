@@ -15,26 +15,41 @@ public interface UserApi extends ClientApi<User> {
     
     @Override
     @Path("/api/client/user/current")
+    @POST
     List<User> current(List<User> users);
 
     @Override
     @Path("/api/client/user/current/{id}")
+    @GET
     List<User> current(@PathParam(value = "id") Integer userId);
 
     @Override
-    @Path("/api/client/user/all")
+    @Path("/api/client/user/past")
+    @POST
     List<User> past(List<User> user);
 
     @Override
     @Path("/api/client/user/past/{id}")
+    @GET
     List<User> past(@PathParam(value = "id") Integer userId);
 
     @Override
     @Path("/api/client/user/all")
+    @POST
     List<User> all(List<User> user);
 
     @Override
     @Path("/api/client/user/all/{id}")
+    @GET
     List<User> all(@PathParam(value = "id") Integer userId);
+
+    @Path("/api/client/user/all")
+    @GET
+    List<User> all();
+
+    @Override
+    @GET
+    @Path(value = "/api/client/user/get/{id}")
+    User get(@PathParam(value = "id") Integer id);
 }
 

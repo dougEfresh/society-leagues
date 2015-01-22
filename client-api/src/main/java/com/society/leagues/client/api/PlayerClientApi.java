@@ -3,35 +3,47 @@ package com.society.leagues.client.api;
 import com.society.leagues.client.api.domain.Player;
 import com.society.leagues.client.api.domain.User;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
+@Path(value = "/")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public interface PlayerClientApi extends ClientApi<Player> {
 
     @Override
     @Path("/api/client/player/current")
+    @POST
     List<Player> current(List<User> users);
 
     @Override
     @Path("/api/client/player/current/{id}")
-    List<Player> current(Integer userId);
+    @GET
+    List<Player> current(@PathParam(value = "id") Integer userId);
 
     @Override
-    @Path("/api/client/player/all")
+    @Path("/api/client/player/past")
+    @POST
     List<Player> past(List<User> user);
 
     @Override
     @Path("/api/client/player/past/{id}")
-    List<Player> past(Integer userId);
+    @GET
+    List<Player> past(@PathParam(value = "id") Integer userId);
 
     @Override
     @Path("/api/client/player/all")
+    @POST
     List<Player> all(List<User> user);
 
     @Override
     @Path("/api/client/player/all/{id}")
-    List<Player> all(Integer userId);
+    @GET
+    List<Player> all(@PathParam(value = "id") Integer userId);
+
+    @Override
+    @Path("/api/client/player/get/{id}")
+    @GET
+    Player get(@PathParam(value = "id") Integer id);
 }

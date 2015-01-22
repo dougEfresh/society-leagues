@@ -5,7 +5,10 @@ import com.society.leagues.client.api.domain.division.Division;
 
 import javax.annotation.security.DenyAll;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 @SuppressWarnings("unused")
 public class User extends LeagueObject {
@@ -21,10 +24,10 @@ public class User extends LeagueObject {
     @NotNull
     Role role;
 
-    List<Division> divisions;
-    List<Season> seasons;
-    List<Team> teams;
-    List<Player> players;
+    Set<Division> divisions;
+    Set<Season> seasons;
+    Set<Team> teams;
+    Set<Player> players;
 
     public User(String login, String password, Role role) {
         this.login = login;
@@ -111,35 +114,64 @@ public class User extends LeagueObject {
         return Role.isAdmin(role);
     }
 
-    public List<Team> getTeams() {
+    public Set<Team> getTeams() {
         return teams;
     }
 
-    public void setTeams(List<Team> Teams) {
+    public void setTeams(Set<Team> Teams) {
         this.teams = Teams;
     }
 
-    public List<Division> getDivisions() {
+    public void addDivisions(List<Division> divisions) {
+        if (this.divisions == null) {
+            this.divisions = new TreeSet<>();
+        }
+        this.divisions.addAll(divisions);
+    }
+
+    public void addTeams(List<Team> teams) {
+        if (this.teams == null) {
+            this.teams = new TreeSet<>();
+        }
+        this.teams.addAll(teams);
+    }
+
+    public void addSeasons(List<Season> seasons) {
+        if (this.seasons == null) {
+            this.seasons = new TreeSet<>();
+        }
+        this.seasons.addAll(seasons);
+    }
+
+    public void addPlayers(List<Player> players) {
+        if (this.players == null) {
+            this.players = new TreeSet<>();
+        }
+        this.players.addAll(players);
+    }
+
+
+    public Set<Division> getDivisions() {
         return divisions;
     }
 
-    public void setDivisions(List<Division> Divisions) {
+    public void setDivisions(Set<Division> Divisions) {
         this.divisions = Divisions;
     }
 
-    public List<Season> getSeasons() {
+    public Set<Season> getSeasons() {
         return seasons;
     }
 
-    public void setSeasons(List<Season> Seasons) {
+    public void setSeasons(Set<Season> Seasons) {
         this.seasons = Seasons;
     }
 
-    public List<Player> getPlayers() {
+    public Set<Player> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<Player> Players) {
+    public void setPlayers(Set<Player> Players) {
         this.players = Players;
     }
 }
