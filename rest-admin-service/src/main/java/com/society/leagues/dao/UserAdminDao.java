@@ -20,7 +20,7 @@ public class UserAdminDao extends Dao implements UserAdminApi {
 
     @Override
     public Boolean delete(User user) {
-        return delete(user,"UPDATE challengeUsers set status = 0 where user_id = ?");
+        return delete(user,"UPDATE users set status = 0 where user_id = ?");
     }
 
     @Override
@@ -62,7 +62,7 @@ public class UserAdminDao extends Dao implements UserAdminApi {
             "VALUES " +
             "(?,?,?,?,?,?)";
 
-    static String MODIFY = "UPDATE challengeUsers " +
+    static String MODIFY = "UPDATE users " +
             "set " +
             "login=?," +
             "role=?," +

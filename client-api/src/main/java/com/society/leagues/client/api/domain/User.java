@@ -172,4 +172,15 @@ public class User extends LeagueObject {
     public void setPlayers(Set<Player> Players) {
         this.players = Players;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", login='" + login + '\'' +
+                ", role=" + role +
+                '}';
+    }
 }
