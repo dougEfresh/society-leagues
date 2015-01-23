@@ -2,7 +2,7 @@ package com.society.test;
 
 import com.society.leagues.Main;
 import com.society.leagues.client.ApiFactory;
-import com.society.leagues.client.api.Role;
+import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.client.api.TeamClientApi;
 import com.society.leagues.client.api.domain.Team;
 import jersey.repackaged.com.google.common.collect.Lists;
@@ -26,7 +26,6 @@ public class TeamClientTest extends TestBase {
     @Before
     public void setup() throws Exception {
         super.setup();
-        generateData();
         api = ApiFactory.createApi(TeamClientApi.class, authenticate(Role.ADMIN), baseURL);
     }
     
@@ -46,6 +45,5 @@ public class TeamClientTest extends TestBase {
         
         assertNotNull(teams);
         assertTrue(teams.isEmpty());
-        
     }
 }

@@ -1,6 +1,6 @@
 package com.society.leagues.dao;
 
-import com.society.leagues.client.api.Role;
+import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.client.api.domain.User;
 import org.springframework.stereotype.Component;
 

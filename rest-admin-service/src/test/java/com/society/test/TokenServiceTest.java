@@ -1,7 +1,7 @@
 package com.society.test;
 
 import com.society.leagues.Main;
-import com.society.leagues.client.api.Role;
+import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.infrastructure.security.UserSecurityContext;
 import com.society.leagues.infrastructure.token.TokenService;
 import org.junit.Test;

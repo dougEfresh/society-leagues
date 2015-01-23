@@ -49,6 +49,9 @@ public class PlayerResource extends ApiResource implements PlayerClientApi {
     public Player get(Integer id) {
         return dao.get(id);
     }
-    
- 
+
+    @Override
+    public List<Player> get() {
+        return dao.get();
+    }
 }

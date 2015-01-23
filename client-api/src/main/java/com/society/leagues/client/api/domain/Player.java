@@ -1,5 +1,6 @@
 package com.society.leagues.client.api.domain;
 
+import com.society.leagues.client.api.domain.division.Division;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.NotNull;
@@ -8,6 +9,8 @@ import java.util.List;
 public class Player extends LeagueObject {
     @NotNull
     Season season;
+    @NotNull
+    Division division;
     @NotNull
     User user;
     @NotNull
@@ -18,11 +21,12 @@ public class Player extends LeagueObject {
     @NotNull
     Status status = Status.ACTIVE;
     
-    public Player(Season season, User user, Team team, String handicap) {
+    public Player(Season season, User user, Team team, String handicap, Division division) {
         this.season = season;
         this.user = user;
         this.team = team;
         this.handicap = handicap;
+        this.division = division;
     }
 
     public Player() {
@@ -74,5 +78,13 @@ public class Player extends LeagueObject {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Division getDivision() {
+        return division;
+    }
+
+    public void setDivision(Division division) {
+        this.division = division;
     }
 }

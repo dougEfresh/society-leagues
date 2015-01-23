@@ -1,6 +1,6 @@
 package com.society.leagues.resource;
 
-import com.society.leagues.client.api.UserApi;
+import com.society.leagues.client.api.UserClientApi;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,7 @@ import java.util.List;
 
 @Component
 @SuppressWarnings("unused")
-public class UserResource extends ApiResource implements UserApi {
+public class UserResource extends ApiResource implements UserClientApi {
     @Autowired UserDao dao;
 
     @Override
@@ -45,12 +45,17 @@ public class UserResource extends ApiResource implements UserApi {
     }
 
     @Override
-    public List<User> all() {
-        return dao.all();
+    public User get(Integer id) {
+        return dao.get(id);
     }
 
     @Override
-    public User get(Integer id) {
-        return dao.get(id);
+    public List<User> get() {
+        return dao.get();
+    }
+
+    @Override
+    public User get(String login) {
+        return dao.get(login);
     }
 }

@@ -49,4 +49,14 @@ public class TeamResource extends ApiResource implements TeamClientApi {
     public Team get(Integer id) {
         return dao.get(id);
     }
+
+    @Override
+    public List<Team> get() {
+        return dao.get();
+    }
+
+    @Override
+    public Team get(String name) {
+        return null;
+    }
 }

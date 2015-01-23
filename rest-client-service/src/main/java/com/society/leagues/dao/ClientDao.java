@@ -19,17 +19,16 @@ public abstract class ClientDao<Q extends LeagueObject> implements ClientApi<Q> 
     @Autowired NamedParameterJdbcTemplate namedJdbcTemplate;
     private static Logger logger = LoggerFactory.getLogger(ClientDao.class);
     
-    static final String CLIENT_REQUEST = "" +
+    public static final String CLIENT_REQUEST = "" +
             "SELECT p.*," +
             "t.name,t.created,t.default_division_id," +
             "d.division_type,d.league_type," +
             "s.*" +
              " from player p join team t on t.team_id=p.team_id " +
              " join season s on s.season_id=p.season_id " +
-             " join division d on d.division_id=s.division_id " +
+             " join division d on d.division_id=p.division_id " +
              " join users u on u.user_id=p.user_id ";
-             ;
-    
+
     public List<Q> get(List<User> users, Status status) {
         try {
             Map<String, Object> params = new HashMap<>();
@@ -103,6 +102,17 @@ public abstract class ClientDao<Q extends LeagueObject> implements ClientApi<Q> 
          return null;
     }
 
-    public abstract RowMapper<Q> getRowMapper();
 
+    public List<Q> list(String sql,Object ...args) {
+        try {
+            return new ArrayList<>(
+                    new LinkedHashSet<>(jdbcTemplate.query(sql, getRowMapper(),args))
+            );
+        } catch (Throwable t){
+            logger.error(t.getLocalizedMessage(),t);
+        }
+        return null;
+    }
+
+    public abstract RowMapper<Q> getRowMapper();
 }

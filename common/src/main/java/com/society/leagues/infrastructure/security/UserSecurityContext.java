@@ -1,6 +1,6 @@
 package com.society.leagues.infrastructure.security;
 
-import com.society.leagues.client.api.Role;
+import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.client.api.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,6 @@
 package com.society.leagues.dao;
 
-import com.society.leagues.client.api.UserApi;
+import com.society.leagues.client.api.UserClientApi;
 import com.society.leagues.client.api.domain.Player;
 import com.society.leagues.client.api.domain.User;
 import org.slf4j.Logger;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-public class UserDao extends ClientDao<User> implements UserApi {
+public class UserDao extends ClientDao<User> implements UserClientApi {
     public static RowMapper<User> rowMapper = (rs, rowNum) -> {
         User user = new User();
         user.setId(rs.getInt("user_id"));
@@ -29,7 +29,7 @@ public class UserDao extends ClientDao<User> implements UserApi {
 
     @Override
     public List<User> all(List<User> users) {
-        return processUsers(users,playerDao.all(users));
+        return processUsers(users, playerDao.all(users));
     }
 
     @Override
@@ -53,7 +53,7 @@ public class UserDao extends ClientDao<User> implements UserApi {
                 u.addPlayers(Arrays.asList(p));
                 u.addTeams(Arrays.asList(p.getTeam()));
                 u.addSeasons(Arrays.asList(p.getSeason()));
-                u.addDivisions(Arrays.asList(p.getSeason().getDivision()));
+                u.addDivisions(Arrays.asList(p.getDivision()));
             }
 
             return  Arrays.asList(map.values().toArray(new User[]{}));
@@ -61,16 +61,6 @@ public class UserDao extends ClientDao<User> implements UserApi {
             logger.error(t.getLocalizedMessage(),t);
             return null;
         }
-    }
-
-    @Override
-    public List<User> all() {
-        try {
-            return jdbcTemplate.query("select * from users", getRowMapper());
-        } catch (Throwable t) {
-            logger.error(t.getLocalizedMessage(),t);
-        }
-        return null;
     }
 
     @Override
@@ -82,4 +72,20 @@ public class UserDao extends ClientDao<User> implements UserApi {
     public User get(Integer id) {
         return get(id,"select * from challengeUsers where user_id = ?");
     }
+
+    @Override
+    public List<User> get() {
+        return list("select * from users");
+    }
+
+    @Override
+    public User get(String login) {
+        List<User> users = list("select * from users where login = ?",login);
+        if (users == null || users.isEmpty())
+            return null;
+        
+        return users.get(0);
+    }
+    
+    
 }

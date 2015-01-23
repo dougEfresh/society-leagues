@@ -49,4 +49,9 @@ public class DivisionResource extends ApiResource implements DivisionClientApi {
     public Division get(Integer id) {
         return dao.get(id);
     }
+
+    @Override
+    public List<Division> get() {
+        return dao.get();
+    }
 }

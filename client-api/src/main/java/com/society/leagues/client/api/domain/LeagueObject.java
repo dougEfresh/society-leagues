@@ -30,6 +30,6 @@ public class LeagueObject implements Comparable<LeagueObject>{
 
     @Override
     public int compareTo(LeagueObject o) {
-        return o.getId().compareTo(o.getId());
+        return this.getId().compareTo(o.getId());
     }
 }

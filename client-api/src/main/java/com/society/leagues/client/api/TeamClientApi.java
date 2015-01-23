@@ -10,7 +10,7 @@ import java.util.List;
 @Path(value = "/")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public interface TeamClientApi extends ClientApi<Team> {
+public interface TeamClientApi extends ClientApi<Team>  {
 
     @Override
     @Path("/api/client/team/current")
@@ -46,4 +46,9 @@ public interface TeamClientApi extends ClientApi<Team> {
     @Path("/api/client/team/get/{id}")
     @GET
     Team get(@PathParam(value = "id") Integer id);
+    
+
+    @Path(value = "/api/client/team/name/{name}")
+    @GET
+    Team get(@PathParam(value = "name") String name);
 }

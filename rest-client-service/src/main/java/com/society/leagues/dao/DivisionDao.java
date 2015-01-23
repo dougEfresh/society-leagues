@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.jdbc.core.RowMapper;
 
+import java.util.List;
+
 @Component
 public class DivisionDao extends ClientDao<Division> {
     @Autowired Dao dao;
@@ -21,7 +23,12 @@ public class DivisionDao extends ClientDao<Division> {
 
     @Override
     public Division get(Integer id) {
-        return null;
+        return get(id,"select * from division where division_id = ?");
+    }
+
+    @Override
+    public List<Division> get() {
+        return list("select * from division");
     }
 
     @Override

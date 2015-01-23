@@ -2,14 +2,10 @@ package com.society.test;
 
 import com.society.leagues.Main;
 import com.society.leagues.client.ApiFactory;
-import com.society.leagues.client.api.Role;
+import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.client.api.admin.DivisionAdminApi;
 import com.society.leagues.client.api.admin.SeasonAdminApi;
 import com.society.leagues.client.api.domain.Season;
-import com.society.leagues.client.api.domain.SeasonStatus;
-import com.society.leagues.client.api.domain.division.Division;
-import com.society.leagues.client.api.domain.division.DivisionType;
-import com.society.leagues.client.api.domain.division.LeagueType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,27 +34,19 @@ public class SeasonTest extends TestBase {
 
     @Test
     public void testCreate() {
-        Division division = new Division(DivisionType.EIGHT_BALL_THURSDAYS,LeagueType.INDIVIDUAL);
-            division = divisionApi.create(division);
 
-            Season season = new Season(division,"Cool", new Date(),10);
-        season.setSeasonStatus(SeasonStatus.ACTIVE);
-            Season returned = api.create(season);
-            assertNotNull(returned);
-            assertEquals(season.getName(),returned.getName());
-            assertNotNull(returned.getId());
-
-            division.setId(null);
-            assertNull(api.create(season));
+        Season season = new Season("Cool", new Date(),10);
+        Season returned = api.create(season);
+        assertNotNull(returned);
+        assertEquals(season.getName(), returned.getName());
+        assertNotNull(returned.getId());
+        season.setName(null);
+        assertNull(api.create(season));
     }
 
     @Test
     public void testDelete() {
-        Division division = new Division(DivisionType.NINE_BALL_TUESDAYS,LeagueType.TEAM);
-        division = divisionApi.create(division);
-
-        Season season = new Season(division,"9Ball",new Date(),10);
-        season.setSeasonStatus(SeasonStatus.ACTIVE);
+        Season season = new Season("9Ball",new Date(),10);
         season = api.create(season);
         assertTrue(api.delete(season));
         assertFalse(api.delete(season));
@@ -66,11 +54,7 @@ public class SeasonTest extends TestBase {
 
     @Test
     public void testModify() {
-        Division division = new Division(DivisionType.NINE_BALL_TUESDAYS,LeagueType.INDIVIDUAL);
-        division = divisionApi.create(division);
-
-        Season season = new Season(division,"ChangeMe",new Date(),10);
-        season.setSeasonStatus(SeasonStatus.ACTIVE);
+        Season season = new Season("ChangeMe",new Date(),10);
         season = api.create(season);
         season.setName("Blah");
         assertNotNull(api.modify(season));

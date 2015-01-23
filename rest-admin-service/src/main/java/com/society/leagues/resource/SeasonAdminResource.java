@@ -12,6 +12,7 @@ import javax.annotation.security.RolesAllowed;
 
 @Component
 @RolesAllowed(value = {"ADMIN"})
+
 public class SeasonAdminResource extends AdminApiResource implements SeasonAdminApi {
     private static Logger logger = LoggerFactory.getLogger(SeasonAdminResource.class);
 
@@ -19,9 +20,8 @@ public class SeasonAdminResource extends AdminApiResource implements SeasonAdmin
     @Override
     public Season create(Season season) {
         if (season == null ||
-                season.getDivision() == null ||
-                season.getDivision().getId() == null ||
                 season.getName() == null ||
+                season.getRounds() == null ||
                 season.getStartDate() == null) {
             logger.error("Invalid Season: " + season);
             return null;

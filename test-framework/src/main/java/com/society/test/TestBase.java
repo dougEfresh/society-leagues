@@ -3,7 +3,7 @@ package com.society.test;
 import com.society.leagues.ServerControl;
 import com.society.leagues.client.ApiFactory;
 import com.society.leagues.client.api.AuthApi;
-import com.society.leagues.client.api.Role;
+import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.client.api.domain.TokenResponse;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.conf.DaoConfig;
@@ -52,6 +52,7 @@ public class TestBase {
     public void setup() throws Exception {
         baseURL = "http://localhost:" + app.getPort();
         authApi = ApiFactory.createApi(AuthApi.class, null, baseURL, true);
+        generateData();
     }
     
     public void generateData() {

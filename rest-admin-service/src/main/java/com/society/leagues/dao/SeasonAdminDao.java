@@ -27,22 +27,23 @@ public class SeasonAdminDao extends Dao implements SeasonAdminApi {
     @Override
     public Season modify(Season season) {
         return modify(season,
-                "update season set name = ?, division_id = ?, start_date = ?, end_date = ? , rounds = ? where season_id = ?"
-                ,season.getName(),season.getDivision().getId(),season.getStartDate(),season.getEndDate(),season.getRounds()
+                "update season set name = ?, start_date = ?, end_date = ? , rounds = ? where season_id = ?"
+                ,season.getName()
+                ,season.getStartDate()
+                ,season.getEndDate()
+                ,season.getRounds()
                 ,season.getId());
     }
 
     PreparedStatementCreator getCreateStatement(Season season, String sql) {
         return con -> {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, season.getDivision().getId());
-            ps.setString(2, season.getName());
-            ps.setDate(3,new Date(season.getStartDate().getTime()));
-            ps.setInt(4,season.getRounds());
-            ps.setString(5,season.getSeasonStatus().name());
+            ps.setString(1, season.getName());
+            ps.setDate(2,new Date(season.getStartDate().getTime()));
+            ps.setInt(3,season.getRounds());
+            ps.setString(4,season.getSeasonStatus().name());
             return ps;
         };
     }
 
-    final static String CREATE = "INSERT INTO season(division_id,name,start_date,rounds,season_status) VALUES (?,?,?,?,?)";
-}
+    final static String CREATE = "INSERT INTO season(name,start_date,rounds,season_status) VALUES (?,?,?,?)";}

@@ -39,6 +39,7 @@ public class PlayerAdminDao extends Dao implements PlayerAdminApi {
             PreparedStatement ps = con.prepareStatement(CREATE,Statement.RETURN_GENERATED_KEYS);
             int i = 1;
             ps.setInt(i++, player.getSeason().getId());
+            ps.setInt(i++, player.getDivision().getId());
             ps.setInt(i++, player.getUser().getId());
             ps.setInt(i++, player.getTeam().getId());
             ps.setString(i++, player.getHandicap());
@@ -49,9 +50,9 @@ public class PlayerAdminDao extends Dao implements PlayerAdminApi {
 
     static String CREATE = "INSERT INTO player " +
             "(" +
-            "season_id,user_id,team_id,handicap,player_status) " +
+            "season_id,division_id,user_id,team_id,handicap,player_status) " +
             "VALUES " +
-            "(?,?,?,?,?)";
+            "(?,?,?,?,?,?)";
 
     static String MODIFY = "UPDATE player " +
             "set " +

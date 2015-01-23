@@ -48,5 +48,9 @@ public class SeasonResource extends ApiResource implements SeasonClientApi {
     public Season get(Integer id) {
         return dao.get(id);
     }
-    
+
+    @Override
+    public List<Season> get() {
+        return dao.get();
+    }
 }
