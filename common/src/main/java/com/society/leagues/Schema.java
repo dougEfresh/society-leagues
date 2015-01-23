@@ -1,4 +1,4 @@
-package com.society.test;
+package com.society.leagues;
 
 import com.society.leagues.client.api.domain.Role;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -58,7 +58,7 @@ public class Schema {
             " division_id INT  NOT NULL CONSTRAINT S_DIV_FK  REFERENCES division ON DELETE CASCADE ON UPDATE RESTRICT,\n" +
             " user_id int NOT NULL,\n" +
             " team_id int NOT NULL,\n" +
-            " handicap varchar(255) NOT NULL,\n" +
+            " handicap int NOT NULL,\n" +
             " player_status varchar(255) NOT NULL,\n" +
             " PRIMARY KEY (player_id),\n" +
             "CONSTRAINT P_S_FK FOREIGN KEY (season_id) REFERENCES season(season_id) ON DELETE CASCADE ON UPDATE RESTRICT ,\n" +
@@ -92,17 +92,22 @@ public class Schema {
         createdSchema= true;
     }
 
+    public static final String NORMAL_USER = "email_608@domain.com";
+    public static final String NORMAL_PASS = "password_608";
+    public static final String ADMIN_USER =  "email_528@domain.com";
+    public static final String ADMIN_PASS =  "password_528";
+    
     public static void createAccounts(JdbcTemplate jdbcTemplate) {
         if (createdAccounts)
             return;
 
         jdbcTemplate.update("INSERT INTO users (login,role,passwd)" +
                         " VALUES (?,?,?)",
-                TestBase.ADMIN_USER, Role.ADMIN.name(),TestBase.ADMIN_PASS);
+                ADMIN_USER, Role.ADMIN.name(),ADMIN_PASS);
 
         jdbcTemplate.update("INSERT INTO users (login,role,passwd) " +
                         "VALUES (?,?,?)",
-                TestBase.NORMAL_USER, Role.PLAYER.name(), TestBase.NORMAL_PASS);
+                NORMAL_USER, Role.PLAYER.name(), NORMAL_PASS);
 
         createdAccounts = true;
     }

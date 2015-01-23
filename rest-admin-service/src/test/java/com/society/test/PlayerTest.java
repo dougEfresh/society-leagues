@@ -60,7 +60,7 @@ public class PlayerTest extends TestBase {
         user = userApi.create(user);
         assertNotNull(user);
 
-        Player player = new Player(season,user,team,"D",division);
+        Player player = new Player(season,user,team,Handicap.D,division);
         player.setStatus(Status.ACTIVE);
         player = api.create(player);
         assertNotNull(player);

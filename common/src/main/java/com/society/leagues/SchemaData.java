@@ -1,10 +1,9 @@
-package com.society.test;
+package com.society.leagues;
 
 import com.society.leagues.client.ApiFactory;
 import com.society.leagues.client.TeamApi;
 import com.society.leagues.client.api.UserApi;
 import com.society.leagues.client.api.domain.Role;
-import com.society.leagues.client.api.UserClientApi;
 import com.society.leagues.client.api.admin.*;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
@@ -14,17 +13,27 @@ import com.society.leagues.client.api.domain.division.LeagueType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.TreeSet;
-
 
 public class SchemaData {
     public static boolean generated = false;
 
     private String[] CHALLENGE_USERS = new String[]{"Doug_C", "Jeff_T", "Rob_P", "Doug_R", "Jared_P", "Howie_L", "Ken_S", "Alex_K",
                 "Roger_P", "Saj_S", "Sofia_C", "Zack_Z", "Earl_S", "Efren_R", "John_S"};
-    String[] eighthandicap = new String[]{"3", "3", "3", "4", "4", "5", "5", "6", "6", "6", "7", "7", "7", "8", "8"};
-    String[] ninehandicap = new String[]{"D", "D", "D", "D+", "D+", "C", "C", "C+", "C+", "C", "B", "B", "B+", "A", "A+"};
-
+    Handicap[] eighthandicap = new Handicap[]{
+            Handicap.TWO,
+            Handicap.THREE,Handicap.THREE,Handicap.THREE,
+            Handicap.FOUR,Handicap.FOUR,Handicap.FOUR,
+            Handicap.FIVE,Handicap.FIVE,Handicap.FIVE,
+            Handicap.SIX,Handicap.SIX,Handicap.FIVE,
+            Handicap.SEVEN,Handicap.SEVEN};
+    Handicap[] ninehandicap = new Handicap[]{
+            Handicap.D,Handicap.D,
+            Handicap.DPLUS,Handicap.DPLUS,Handicap.DPLUS,
+            Handicap.C,Handicap.C,
+            Handicap.CPLUS,Handicap.CPLUS,
+            Handicap.B,Handicap.B,
+            Handicap.BPLUS,Handicap.BPLUS,
+            Handicap.A,Handicap.PRO};
 
     public static List<User> challengeUsers = new ArrayList<>();
     SeasonAdminApi seasonApi;

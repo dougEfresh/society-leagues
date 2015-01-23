@@ -18,7 +18,7 @@ public class PlayerDao extends ClientDao<Player> {
         
         Player player = new Player();
         player.setDivision(division);
-        player.setHandicap(rs.getString("handicap"));
+        player.setHandicap(Handicap.values()[rs.getInt("handicap")]);
         player.setStatus(Status.valueOf(rs.getString("player_status")));
         player.setTeam(team);
         player.setSeason(season);

@@ -42,7 +42,7 @@ public class PlayerAdminDao extends Dao implements PlayerAdminApi {
             ps.setInt(i++, player.getDivision().getId());
             ps.setInt(i++, player.getUser().getId());
             ps.setInt(i++, player.getTeam().getId());
-            ps.setString(i++, player.getHandicap());
+            ps.setInt(i++, player.getHandicap().ordinal());
             ps.setString(i++, player.getStatus().name());
             return ps;
         };

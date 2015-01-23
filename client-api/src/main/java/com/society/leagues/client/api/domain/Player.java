@@ -15,13 +15,13 @@ public class Player extends LeagueObject {
     User user;
     @NotNull
     Team team;
-    @NotBlank
-    String handicap;
+    @NotNull
+    Handicap handicap;
     List<Match> matches;
     @NotNull
     Status status = Status.ACTIVE;
     
-    public Player(Season season, User user, Team team, String handicap, Division division) {
+    public Player(Season season, User user, Team team, Handicap handicap, Division division) {
         this.season = season;
         this.user = user;
         this.team = team;
@@ -56,11 +56,11 @@ public class Player extends LeagueObject {
         this.team = team;
     }
 
-    public String getHandicap() {
+    public Handicap getHandicap() {
         return handicap;
     }
 
-    public void setHandicap(String handicap) {
+    public void setHandicap(Handicap handicap) {
         this.handicap = handicap;
     }
 

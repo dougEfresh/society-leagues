@@ -1,5 +1,9 @@
 package com.society.test;
 
+import static com.society.leagues.Schema.*;
+
+import com.society.leagues.Schema;
+import com.society.leagues.SchemaData;
 import com.society.leagues.ServerControl;
 import com.society.leagues.client.ApiFactory;
 import com.society.leagues.client.api.AuthApi;
@@ -11,8 +15,6 @@ import com.society.leagues.infrastructure.security.ServiceAuthenticator;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -23,11 +25,11 @@ import static org.junit.Assert.assertNotNull;
 
 @Component
 public class TestBase {
-    public static final String NORMAL_USER = "email_608@domain.com";
-    public static final String NORMAL_PASS = "password_608";
-    public static final String ADMIN_USER =  "email_528@domain.com";
-    public static final String ADMIN_PASS =  "password_528";
-    private static Logger logger = LoggerFactory.getLogger(TestBase.class);
+    public static final String NORMAL_USER = Schema.NORMAL_USER;
+    public static final String NORMAL_PASS = Schema.NORMAL_PASS;
+    public static final String ADMIN_USER =  Schema.ADMIN_USER;
+    public static final String ADMIN_PASS =  Schema.ADMIN_PASS;
+    
     @Autowired ServiceAuthenticator serviceAuthenticator;
     @Autowired ServerControl app;
     @Autowired JdbcTemplate jdbcTemplate;
@@ -40,7 +42,7 @@ public class TestBase {
     @BeforeClass
     public static void createDb() throws Exception {
         Schema.createDb(derbyTemplate);
-        Schema.createAccounts(derbyTemplate);
+        createAccounts(derbyTemplate);
     }
 
     @AfterClass
@@ -58,7 +60,6 @@ public class TestBase {
     public void generateData() {
         SchemaData schemaData = new SchemaData();
         schemaData.generateData(baseURL,authenticate(Role.ADMIN));
-        
     }
 
     public String authenticate(Role role) {
