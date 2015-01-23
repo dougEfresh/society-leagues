@@ -2,6 +2,7 @@ package com.society.leagues.client.api;
 
 import com.society.leagues.client.api.domain.Player;
 import com.society.leagues.client.api.domain.User;
+import com.society.leagues.client.api.domain.division.Division;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -46,4 +47,10 @@ public interface PlayerClientApi extends ClientApi<Player> {
     @Path("/api/client/player/get/{id}")
     @GET
     Player get(@PathParam(value = "id") Integer id);
+    
+    @Path("/api/client/player/handicap/{to}/{from}")
+    @POST
+    List<Player> findHandicapRange(Division division,
+                                   @PathParam(value = "to") Integer to, 
+                                   @PathParam(value = "from") Integer from);
 }

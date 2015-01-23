@@ -23,7 +23,8 @@ public abstract class ClientDao<Q extends LeagueObject> implements ClientApi<Q> 
             "SELECT p.*," +
             "t.name,t.created,t.default_division_id," +
             "d.division_type,d.league_type," +
-            "s.*" +
+            "s.*," +
+            "u.first_name,u.last_name" +
              " from player p join team t on t.team_id=p.team_id " +
              " join season s on s.season_id=p.season_id " +
              " join division d on d.division_id=p.division_id " +
@@ -79,7 +80,8 @@ public abstract class ClientDao<Q extends LeagueObject> implements ClientApi<Q> 
     public List<Q> current(Integer userId) {
         return current(Arrays.asList(new User(userId)));
     }
-
+    
+     
     @Override
     public List<Q> past(Integer userId) {
         return past(Arrays.asList(new User(userId)));
@@ -88,6 +90,15 @@ public abstract class ClientDao<Q extends LeagueObject> implements ClientApi<Q> 
     @Override
     public List<Q> all(Integer userId) {
         return all(Arrays.asList(new User(userId)));
+    }
+
+    public Q get(Integer userId) {
+        List<Q> list = current(Arrays.asList(new User(userId)));
+        if (list == null || list.isEmpty())
+            return null;
+
+        return list.get(0);
+
     }
 
     public Q get(Integer id, String sql) {
@@ -101,7 +112,6 @@ public abstract class ClientDao<Q extends LeagueObject> implements ClientApi<Q> 
          }
          return null;
     }
-
 
     public List<Q> list(String sql,Object ...args) {
         try {

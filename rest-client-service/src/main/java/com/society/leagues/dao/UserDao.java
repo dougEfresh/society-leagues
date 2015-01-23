@@ -16,6 +16,8 @@ public class UserDao extends ClientDao<User> implements UserClientApi {
     public static RowMapper<User> rowMapper = (rs, rowNum) -> {
         User user = new User();
         user.setId(rs.getInt("user_id"));
+        user.setFirstName(rs.getString("first_name"));
+        user.setLastName(rs.getString("last_name"));
         return user;
     };
     static Logger logger = LoggerFactory.getLogger(UserDao.class);
@@ -66,11 +68,6 @@ public class UserDao extends ClientDao<User> implements UserClientApi {
     @Override
     public RowMapper<User> getRowMapper() {
         return rowMapper;
-    }
-
-    @Override
-    public User get(Integer id) {
-        return get(id,"select * from challengeUsers where user_id = ?");
     }
 
     @Override

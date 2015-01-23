@@ -3,6 +3,7 @@ package com.society.leagues.resource;
 import com.society.leagues.client.api.PlayerClientApi;
 import com.society.leagues.client.api.domain.Player;
 import com.society.leagues.client.api.domain.User;
+import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.dao.PlayerDao;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,5 +54,10 @@ public class PlayerResource extends ApiResource implements PlayerClientApi {
     @Override
     public List<Player> get() {
         return dao.get();
+    }
+
+    @Override
+    public List<Player> findHandicapRange(Division division, Integer to, Integer from) {
+        return dao.findHandicapRange(division,to,from);
     }
 }
