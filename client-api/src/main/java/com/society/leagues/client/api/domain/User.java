@@ -4,6 +4,7 @@ import com.society.leagues.client.api.domain.division.Division;
 
 import javax.annotation.security.DenyAll;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -147,8 +148,14 @@ public class User extends LeagueObject {
         }
         this.players.addAll(players);
     }
-
-
+    
+    public void addPlayer(Player player) {
+        if (this.players == null) 
+            this.players = new TreeSet<>();
+        
+        this.players.add(player);
+    }
+    
     public Set<Division> getDivisions() {
         return divisions;
     }

@@ -77,6 +77,23 @@ public class Schema {
               " PRIMARY KEY (team_match_id)" +
             ")\n";
 
+    static final String challenge = "create table challenge  (\n" +
+              " challenge_id int NOT NULL GENERATED ALWAYS AS IDENTITY,\n" +
+              " challenger_player_id int NOT NULL CONSTRAINT PM_S_K REFERENCES player ON DELETE CASCADE,\n" +
+              " opponent_player_id int NOT NULL CONSTRAINT PM_K REFERENCES player ON DELETE CASCADE,\n" +
+              " slot int not null,\n" +
+               " challenge_date timestamp not null,\n" +
+               " team_match_id INT CONSTRAINT TM_C REFERENCES team_match ON DELETE CASCADE,\n" +
+              " PRIMARY KEY (challenge_id)" +
+            ")\n";
+    
+    static final String slot = "create table slot  (\n" +
+              " slot_id int NOT NULL\n" +
+            " challenge_date timestamp not null,\n" +
+              " PRIMARY KEY (slot_id,challenge_date)" +
+            ")\n";
+
+    
     public static void createDb(JdbcTemplate jdbcTemplate) {
         if (createdSchema)
             return;
@@ -88,7 +105,7 @@ public class Schema {
         jdbcTemplate.update(team);
         jdbcTemplate.update(player);
         jdbcTemplate.update(team_match);
-        
+        jdbcTemplate.update(challenge);
         createdSchema= true;
     }
 

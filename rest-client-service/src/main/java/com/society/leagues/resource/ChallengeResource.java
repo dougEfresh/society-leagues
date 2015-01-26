@@ -1,12 +1,15 @@
 package com.society.leagues.resource;
 
 import com.society.leagues.client.api.ChallengeApi;
+import com.society.leagues.client.api.domain.Challenge;
 import com.society.leagues.client.api.domain.Player;
+import com.society.leagues.client.api.domain.Slot;
 import com.society.leagues.dao.ChallengeDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -19,5 +22,35 @@ public class ChallengeResource extends ApiResource implements ChallengeApi {
     @Override
     public List<Player> getPotentials(Integer id) {
         return dao.getPotentials(id);
+    }
+
+    @Override
+    public Challenge requestChallenge(Challenge challenge) {
+        return dao.requestChallenge(challenge);
+    }
+
+    @Override
+    public Challenge acceptChallenge(Challenge challenge) {
+        return dao.acceptChallenge(challenge);
+    }
+
+    @Override
+    public List<Challenge> listChallenges(Integer userId) {
+        return dao.listChallenges(userId);
+    }
+
+    @Override
+    public Boolean cancelChallenge(Challenge challenge) {
+        return null;
+    }
+
+    @Override
+    public Challenge modifyChallenge(Challenge challenge) {
+        return null;
+    }
+
+    @Override
+    public List<Slot> slots(Date date) {
+        return null;
     }
 }
