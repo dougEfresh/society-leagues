@@ -30,7 +30,7 @@ public class RestAppConfig extends ResourceConfig {
         property(ServerProperties.MONITORING_STATISTICS_ENABLED,true);
 
         register(RolesAllowedDynamicFeature.class);
-        register(LoggingFilter.class);
+        //register(LoggingFilter.class);
         register(JacksonFeature.class);
         register(securityFilter);
         logger.info("Found " + resources.size() + " resources");

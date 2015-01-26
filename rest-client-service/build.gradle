@@ -22,6 +22,7 @@ bootRun {
 dependencies {
     compile(project(':client-api'))
     compile(project(':common'))
+    compile(project(':rest-admin-service'))
     compile 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
     compile 'org.springframework.boot:spring-boot-actuator'
@@ -38,5 +39,5 @@ dependencies {
     //Test
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile(project(':test-framework'))
-    testCompile(project(':rest-admin-service'))
+    
 }

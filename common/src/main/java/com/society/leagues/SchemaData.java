@@ -110,7 +110,7 @@ public class SchemaData {
             player.setStatus(Status.ACTIVE);
             player.setSeason(season);
             player.setDivision(division);
-            playerApi.create(player);
+            u.addPlayer(playerApi.create(player));
         }
 
     }
