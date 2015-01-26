@@ -3,6 +3,7 @@ package com.society.leagues.client.api;
 import com.society.leagues.client.api.domain.Challenge;
 import com.society.leagues.client.api.domain.Player;
 import com.society.leagues.client.api.domain.Slot;
+import com.society.leagues.client.api.domain.User;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -16,7 +17,7 @@ public interface ChallengeApi {
     
     @Path("/api/challenge/potential/{id}")
     @GET
-    List<Player> getPotentials(@PathParam(value = "id") Integer id);
+    List<User> getPotentials(@PathParam(value = "id") Integer id);
     
     @POST
     @Path(value = "/api/challenge/request")

@@ -45,9 +45,9 @@ public class ChallengeTest extends TestBase  implements ChallengeApi {
     @Test
     public void testRequestChallenge() throws Exception {
         User user = SchemaData.challengeUsers.get(0);
-        List<Player> players = getPotentials(user.getId());
-        assertNotNull(players);
-        Player opponent = players.get(0);
+        List<User> users = getPotentials(user.getId());
+        assertNotNull(users);
+        Player opponent = users.get(0).getPlayers().stream().findFirst().get();
         Player challenger = user.getPlayers().stream().filter(p -> p.getDivision().getType() == opponent.getDivision().getType()).findFirst().orElseGet(null);
         Challenge challenge = new Challenge();
         Slot slot = Slot.getDefault(new Date()).get(0);
@@ -115,9 +115,9 @@ public class ChallengeTest extends TestBase  implements ChallengeApi {
     
     private Challenge create() {
         User user = SchemaData.challengeUsers.get(COUNTER++);
-        List<Player> players = getPotentials(user.getId());
-        assertNotNull(players);
-        Player opponent = players.get(0);
+        List<User> users = getPotentials(user.getId());
+        assertNotNull(users);
+        Player opponent = user.getPlayers().stream().findAny().get();
         Player challenger = user.getPlayers().stream().filter(p -> p.getDivision().getType() == opponent.getDivision().getType()).findFirst().orElseGet(null);
         Challenge challenge = new Challenge();
         Slot slot = Slot.getDefault(new Date()).get(0);
@@ -137,34 +137,36 @@ public class ChallengeTest extends TestBase  implements ChallengeApi {
             return;
 
 
-        List < Player > players = getPotentials(challenger.getId());
+        List <User> users = getPotentials(challenger.getId());
         Player ePlayer = challenger.getPlayers().stream().filter(p -> p.getDivision().getType() == DivisionType.EIGHT_BALL_CHALLENGE).findFirst().orElse(null);
         Player nPlayer = challenger.getPlayers().stream().filter(p -> p.getDivision().getType() == DivisionType.NINE_BALL_CHALLENGE).findFirst().orElse(null);
 
-        assertNotNull(players);
-        assertFalse(players.isEmpty());
-        for (Player player : players) {
-            if (ePlayer != null && player.getDivision().getType() == DivisionType.EIGHT_BALL_CHALLENGE) {
-                assertTrue(
-                        player.getHandicap().ordinal() <= ePlayer.getHandicap().ordinal()+3 
-                                &&
-                                player.getHandicap().ordinal() >=  ePlayer.getHandicap().ordinal()-3
-                );
-            }
+        assertNotNull(users);
+        assertFalse(users.isEmpty());
+        for (User opponent : users) {
+            for (Player player : opponent.getPlayers()) {
+                if (ePlayer != null && player.getDivision().getType() == DivisionType.EIGHT_BALL_CHALLENGE) {
+                    assertTrue(
+                            player.getHandicap().ordinal() <= ePlayer.getHandicap().ordinal() + 3
+                                    &&
+                                    player.getHandicap().ordinal() >= ePlayer.getHandicap().ordinal() - 3
+                    );
+                }
 
-            if (nPlayer != null && player.getDivision().getType() == DivisionType.NINE_BALL_CHALLENGE) {
-                assertTrue(
-                         player.getHandicap().ordinal() <= nPlayer.getHandicap().ordinal()+3
-                                &&
-                                player.getHandicap().ordinal() >=  nPlayer.getHandicap().ordinal()-3
-                );
+                if (nPlayer != null && player.getDivision().getType() == DivisionType.NINE_BALL_CHALLENGE) {
+                    assertTrue(
+                            player.getHandicap().ordinal() <= nPlayer.getHandicap().ordinal() + 3
+                                    &&
+                                    player.getHandicap().ordinal() >= nPlayer.getHandicap().ordinal() - 3
+                    );
+                }
             }
         }
         
     }
 
     @Override
-    public List<Player> getPotentials(Integer id) {
+    public List<User> getPotentials(Integer id) {
         return api.getPotentials(id);
     }
 }

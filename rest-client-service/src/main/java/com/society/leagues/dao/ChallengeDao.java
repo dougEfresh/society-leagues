@@ -16,10 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -34,13 +31,23 @@ public class ChallengeDao implements ChallengeApi {
     @Value("${email-override:}") String emailOverride;
     
     @Override
-    public List<Player> getPotentials(Integer id) {
+    public List<User> getPotentials(Integer id) {
         try {
             User challenger = userDao.get(id);
             List<Player> potentials = new ArrayList<>();
             potentials.addAll(getHandicapPlayers(challenger, DivisionType.EIGHT_BALL_CHALLENGE));
             potentials.addAll(getHandicapPlayers(challenger, DivisionType.NINE_BALL_CHALLENGE));
-            return potentials.stream().filter(p -> p.getUser().getId() != id).collect(Collectors.toList());
+            potentials = potentials.stream().filter(p -> p.getUser().getId() != id).collect(Collectors.toList());
+            Map<Integer,User> opponents = new HashMap<>();
+            for (Player potential : potentials) {
+                if (!opponents.containsKey(potential.getUser().getId())) {
+                    opponents.put(potential.getUser().getId(),potential.getUser());
+                }
+                User u  = opponents.get(potential.getUser().getId());
+                u.addPlayer(potential);
+            }
+
+            return  Arrays.asList(opponents.values().toArray(new User[] {}));
         } catch (Throwable t) {
             logger.error(t.getLocalizedMessage(),t);
         }
@@ -92,7 +99,7 @@ public class ChallengeDao implements ChallengeApi {
                 "join challenge o on p.player_id=o.opponent_id where p.status = '" + Status.ACTIVE + 
                 "' and s.status = '" + Status.ACTIVE + "' ";
         
-        return jdbcTemplate.
+        return null;
     }
 
     @Override
@@ -126,7 +133,7 @@ public class ChallengeDao implements ChallengeApi {
 
     final static RowMapper<Challenge> mapper = (rs, rowNum) -> {
         Challenge challenge = new Challenge();
-        
+        return null;
     };
     
     final static String CREATE = "INSERT INTO challenge(challenger_player_id," +
