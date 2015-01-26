@@ -17,8 +17,11 @@ import java.util.List;
 public class SchemaData {
     public static boolean generated = false;
 
-    private String[] CHALLENGE_USERS = new String[]{"Doug_C", "Jeff_T", "Rob_P", "Doug_R", "Jared_P", "Howie_L", "Ken_S", "Alex_K",
-                "Roger_P", "Saj_S", "Sofia_C", "Zack_Z", "Earl_S", "Efren_R", "John_S"};
+    private String[] CHALLENGE_USERS = new String[]{"Doug_C",
+            "Jeff_T", "Rob_P", "Doug_R", "Jared_P", "Howie_L", "Ken_S", "Alex_K",
+            "Roger_P", "Saj_S", "Sofia_C", "Zack_Z", "Earl_S",
+            "Efren_R", "John_S"};
+
     Handicap[] eighthandicap = new Handicap[]{
             Handicap.TWO,
             Handicap.THREE,Handicap.THREE,Handicap.THREE,

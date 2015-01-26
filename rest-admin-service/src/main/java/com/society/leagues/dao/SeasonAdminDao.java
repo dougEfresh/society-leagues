@@ -1,7 +1,6 @@
 package com.society.leagues.dao;
 
 import com.society.leagues.client.api.admin.SeasonAdminApi;
-import com.society.leagues.client.api.domain.LeagueObject;
 import com.society.leagues.client.api.domain.Season;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,8 +1,13 @@
-package com.society.leagues.dao;
+package com.society.leagues.resource;
 
 import com.society.leagues.client.api.ChallengeApi;
+import com.society.leagues.client.api.admin.SchedulerAdminApi;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.DivisionType;
+import com.society.leagues.dao.ClientDao;
+import com.society.leagues.dao.Dao;
+import com.society.leagues.dao.PlayerDao;
+import com.society.leagues.dao.UserDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +18,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,7 +29,7 @@ public class ChallengeDao implements ChallengeApi {
     @Autowired Dao dao;
     @Autowired UserDao userDao;
     @Autowired PlayerDao playerDao;
-    @Autowired SchedulerAdminDao schedulerDao;
+    @Autowired SchedulerAdminApi schedulerDao;
     @Autowired JdbcTemplate jdbcTemplate;
     @Value("${email-override:}") String emailOverride;
     
