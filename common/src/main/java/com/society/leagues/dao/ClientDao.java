@@ -36,7 +36,7 @@ public abstract class ClientDao<Q extends LeagueObject> implements ClientApi<Q> 
             List<Integer> ids = new ArrayList<>();
             users.stream().forEach(u -> ids.add(u.getId()));
             params.put("userids", ids);
-            if (status != Status.ALL) {
+            if (status != null) {
                 params.put("seasonStatus", status.name());
                 return new ArrayList<Q>(
                         new LinkedHashSet<Q>(namedJdbcTemplate.query(
@@ -73,7 +73,7 @@ public abstract class ClientDao<Q extends LeagueObject> implements ClientApi<Q> 
     
     @Override
     public List<Q> all(List<User> users) {
-        return get(users, Status.ALL);
+        return get(users, null);
     }
 
     @Override

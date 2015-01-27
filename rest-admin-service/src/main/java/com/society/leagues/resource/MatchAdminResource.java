@@ -1,9 +1,9 @@
 package com.society.leagues.resource;
 
-import com.society.leagues.client.api.admin.SchedulerAdminApi;
+import com.society.leagues.client.api.admin.MatchAdminApi;
 import com.society.leagues.client.api.domain.Match;
 import com.society.leagues.client.api.domain.Team;
-import com.society.leagues.dao.SchedulerAdminDao;
+import com.society.leagues.dao.MatchAdminDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,16 +13,16 @@ import java.util.List;
 @Component
 @RolesAllowed(value = {"ADMIN"})
 @SuppressWarnings("unused")
-public class SchedulerAdminResource extends AdminApiResource implements SchedulerAdminApi {
-    @Autowired SchedulerAdminDao dao;
-
-    @Override
-    public List<Match> create(Integer seasonId, List<Team> teams) {
-        return dao.create(seasonId,teams);
-    }
+public class MatchAdminResource extends AdminApiResource implements MatchAdminApi {
+    @Autowired MatchAdminDao dao;
 
     @Override
     public Match create(Match match) {
         return dao.create(match);
+    }
+
+    @Override
+    public Match modify(Match match) {
+        return dao.modify(match);
     }
 }

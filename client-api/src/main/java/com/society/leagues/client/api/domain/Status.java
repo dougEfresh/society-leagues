@@ -4,5 +4,5 @@ public enum Status {
     ACTIVE,
     INACTIVE,
     PENDING,
-    ALL
+    CANCELLED
 }

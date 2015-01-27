@@ -12,6 +12,7 @@ import javax.annotation.security.RolesAllowed;
 
 @Component
 @RolesAllowed(value = {"ADMIN"})
+@SuppressWarnings("unused")
 public class DivisionAdminResource extends AdminApiResource implements DivisionAdminApi {
 
     private static Logger logger = LoggerFactory.getLogger(DivisionAdminResource.class);

@@ -33,22 +33,10 @@ public class TestBase {
     @Autowired ServiceAuthenticator serviceAuthenticator;
     @Autowired ServerControl app;
     @Autowired JdbcTemplate jdbcTemplate;
-
+    public static String token;
     AuthApi authApi;
     String baseURL;
     Client client;
-    static JdbcTemplate derbyTemplate = DaoConfig.getDerbyTemplate();
-
-    @BeforeClass
-    public static void createDb() throws Exception {
-        Schema.createDb(derbyTemplate);
-        createAccounts(derbyTemplate);
-    }
-
-    @AfterClass
-    public static void killDb() throws Exception {
-
-    }
 
     @Before
     public void setup() throws Exception {

@@ -7,7 +7,7 @@ public class Challenge extends LeagueObject {
     Slot slot;
     Status status;
     Match match;
-    
+
     public Challenge() {
     }
 
@@ -56,4 +56,5 @@ public class Challenge extends LeagueObject {
     public void setStatus(Status status) {
         this.status = status;
     }
+
 }

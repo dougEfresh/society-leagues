@@ -1,10 +1,8 @@
 package com.society.leagues.dao;
 
 import com.society.leagues.client.api.ChallengeApi;
-import com.society.leagues.client.api.admin.SchedulerAdminApi;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.DivisionType;
-import com.society.leagues.client.api.domain.division.LeagueType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +18,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-@SuppressWarnings("unused")
 public class ChallengeDao extends ClientDao<Challenge> implements ChallengeApi {
     private static Logger logger = LoggerFactory.getLogger(ChallengeDao.class);
     @Autowired Dao dao;
     @Autowired UserDao userDao;
     @Autowired PlayerDao playerDao;
     @Autowired JdbcTemplate jdbcTemplate;
+    @Autowired MatchDao matchDao;
+
     @Value("${email-override:}") String emailOverride;
     
     @Override
@@ -83,11 +82,12 @@ public class ChallengeDao extends ClientDao<Challenge> implements ChallengeApi {
         return challenge;
     }
     
-
     @Override
     public List<Challenge> listChallenges(Integer userId) {
-        String sql = "select * from challenge where user_id = ?";
-        List<Map<String,Object>> c = dao.get(sql,userId);
+        String sql = "select c.* from challenge  c left join player cp on c.challenger_player_id = cp.player_id " +
+                " left join player op on c.opponent_player_id = op.player_id " +
+                "where cp.user_id = ? or op.user_id=?";
+        List<Map<String,Object>> c = dao.get(sql,userId,userId);
         ArrayList<Challenge> challenges = new ArrayList<>();
         for (Map<String, Object> rs : c) {
             Integer id = (Integer) rs.get("challenge_id");
@@ -95,35 +95,39 @@ public class ChallengeDao extends ClientDao<Challenge> implements ChallengeApi {
             challenge.setId(id);
             challenge.setOpponent(playerDao.get((Integer) rs.get("opponent_player_id")));
             challenge.setChallenger(playerDao.get((Integer) rs.get("challenge_player_id")));
-            challenge.setStatus(Status.);
+            challenge.setStatus(Status.valueOf(rs.get("status").toString()));
             if (rs.get("team_match_id") != null) {
-                challenge.setMatch();
+                challenge.setMatch(matchDao.get((Integer) rs.get("team_match_id")));
             }
-            playerDao.get();
+            Slot slot = new Slot();
+            slot.setId((Integer) rs.get("slot"));
+            slot.setDate((Date) rs.get("challenge_date"));
+            challenge.setSlot(slot);
+            challenges.add(challenge);
         }
-        List<Player> players = playerDao.current(userId);
-        if (players == null || players.isEmpty())
-            return Collections.emptyList();
-        
-        players = players.stream().filter(p -> p.getDivision().getLeague() == LeagueType.INDIVIDUAL).collect(Collectors.toList());
-
-        
-        for (Player p : players) {
-            
-        }
-        
-        return null;
-            
+        return challenges;
     }
 
     @Override
     public Boolean cancelChallenge(Challenge challenge) {
-        return null;
+        challenge.setStatus(Status.CANCELLED);
+        return modifyChallenge(challenge) != null;
     }
 
     @Override
     public Challenge modifyChallenge(Challenge challenge) {
-        return null;
+        return dao.modify(challenge,"update challenge set challenger_player_id=?," +
+                        "opponent_player_id=?," +
+                        "slot=?," +
+                        "challenge_date=?," +
+                        "status=? " +
+                        "where challenge_id = ?",
+                challenge.getChallenger().getId(),
+                challenge.getOpponent().getId(),
+                challenge.getSlot().getId(),
+                challenge.getSlot().getDate(),
+                challenge.getStatus().name(),
+                challenge.getId());
     }
 
     @Override
@@ -164,6 +168,6 @@ public class ChallengeDao extends ClientDao<Challenge> implements ChallengeApi {
     final static String CREATE = "INSERT INTO challenge(challenger_player_id," +
             "opponent_player_id,slot,challenge_date,status) VALUES (?,?,?,?,?)";
     
-    final static String LIST = "select ";
+
     
 }

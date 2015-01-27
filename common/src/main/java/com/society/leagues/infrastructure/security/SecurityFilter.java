@@ -49,7 +49,7 @@ public class SecurityFilter implements ContainerRequestFilter {
 
     public SecurityContext getSecurityContext(ContainerRequestContext requestContext) {
         String token = findToken(requestContext);
-        logger.debug("Getting security context for: " + token);
+//        logger.debug("Getting security context for: " + token);
         UserSecurityContext securityContext = tokenService.retrieve(token);
         if (securityContext == null) {
             logger.error("Could not find token in headers or cookies: " + requestContext.getUriInfo());

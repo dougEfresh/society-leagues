@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.security.RolesAllowed;
 
-@Component
-@RolesAllowed(value = {"ADMIN","Operator"})
+//@Component
+@RolesAllowed(value = {"ADMIN"})
 public class MatchResultResource extends AdminApiResource implements MatchResultApi {
 
     @Override

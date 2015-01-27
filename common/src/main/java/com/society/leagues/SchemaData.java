@@ -34,6 +34,7 @@ public class SchemaData {
             Handicap.FIVE,Handicap.FIVE,Handicap.FIVE,
             Handicap.SIX,Handicap.SIX,Handicap.FIVE,
             Handicap.SEVEN,Handicap.SEVEN};
+
     Handicap[] ninehandicap = new Handicap[]{
             Handicap.D,Handicap.D,
             Handicap.DPLUS,Handicap.DPLUS,Handicap.DPLUS,
@@ -49,6 +50,8 @@ public class SchemaData {
     TeamApi teamApi;
     PlayerAdminApi playerApi;
     UserApi userApi;
+    MatchAdminApi matchAdminApi;
+
     boolean debug = false;
     
     public void generateData(String url , String token) {
@@ -62,6 +65,7 @@ public class SchemaData {
         teamApi  = ApiFactory.createApi(TeamApi.class,token,url,debug);
         userApi  = ApiFactory.createApi(UserApi.class,token,url,debug);
         playerApi =  ApiFactory.createApi(PlayerAdminApi.class,token,url,debug);
+        matchAdminApi = ApiFactory.createApi(MatchAdminApi.class,token,url,debug);
 
         Division eightBallChallenge = new Division(DivisionType.EIGHT_BALL_CHALLENGE, LeagueType.INDIVIDUAL);
         eightBallChallenge = divisionApi.create(eightBallChallenge);
@@ -84,6 +88,18 @@ public class SchemaData {
         createPlayerForSeason(challengeSeason,eightBallChallenge);
         logger.info("Creating 9ball challenge players");
         createPlayerForSeason(challengeSeason,nineBallChallenge);
+
+        Match match = new Match();
+        User u1 = challengeUsers.get(0);
+        User u2 = challengeUsers.get(1);
+        Player p  = u1.getPlayers().stream().filter(pl -> pl.getDivision().getType() == DivisionType.EIGHT_BALL_CHALLENGE).findFirst().get();
+        match.setHome(p.getTeam());
+        p = u2.getPlayers().stream().filter(tm -> tm.getDivision().getType() == DivisionType.EIGHT_BALL_CHALLENGE).findFirst().get();
+        match.setAway(p.getTeam());
+        match.setMatchDate(new Date());
+        match.setSeason(p.getSeason());
+        matchAdminApi.create(match);
+
         generated = true;
         
     }
@@ -98,7 +114,7 @@ public class SchemaData {
                 u = userApi.create(new User(name[0], name[1], user, user, Role.PLAYER));
                 
                 if (u == null)
-                    throw new RuntimeException("Could not create or verify user: " + logger);
+                    throw new RuntimeException("Could not create or verify user: " + user);
                 
                 challengeUsers.add(u);
             }

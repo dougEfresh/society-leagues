@@ -12,7 +12,6 @@ import java.util.List;
 public class SeasonDao extends ClientDao<Season> {
 
     public static RowMapper<Season> rowMapper = (rs, rowNum) -> {
-        Division division = DivisionDao.rowMapper.mapRow(rs,rowNum);
         Season season = new Season();
         season.setStartDate(rs.getDate("start_date"));
         season.setEndDate(rs.getDate("end_date"));
@@ -35,7 +34,6 @@ public class SeasonDao extends ClientDao<Season> {
 
     @Override
     public Season get(Integer id) {
-        return get(id,"select s.*,d.division_type,d.league_type from season s join division d on " +
-                "s.division_id=d.division_id where season_id = ?");
+        return get(id,"select * from season where season_id = ?");
     }
 }

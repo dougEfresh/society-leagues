@@ -6,5 +6,5 @@ import java.util.List;
 import java.util.Map;
 
 @Configuration
-public class SchedulerDao extends Dao {
+public class SchedulerDao  {
 }

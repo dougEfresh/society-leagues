@@ -5,7 +5,7 @@ import com.society.leagues.client.api.domain.PlayerMatch;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-@Path(value = "/api/admin/match")
+@Path(value = "/")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public interface MatchResultApi {

@@ -20,4 +20,6 @@ dependencies {
     compile 'org.glassfish.jersey.containers:jersey-container-grizzly2-http:2.14'
 
     compile 'com.owlike:genson:1.2'
+    compile "com.h2database:h2:1.4.185"
+
 }

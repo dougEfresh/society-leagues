@@ -1,6 +1,6 @@
 package com.society.leagues.dao;
 
-import com.society.leagues.client.api.admin.SchedulerAdminApi;
+import com.society.leagues.client.api.admin.MatchAdminApi;
 import com.society.leagues.client.api.domain.Match;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Team;
@@ -20,13 +20,13 @@ import java.util.*;
 
 @Component
 @Primary
-public class SchedulerAdminDao extends Dao implements SchedulerAdminApi {
-    private static Logger logger = LoggerFactory.getLogger(SchedulerAdminDao.class);
-    
+public class MatchAdminDao implements MatchAdminApi {
+    private static Logger logger = LoggerFactory.getLogger(MatchAdminDao.class);
+    @Autowired Dao dao;
     @Autowired JdbcTemplate jdbcTemplate;
     @Autowired SeasonDao seasonDao;
     
-    @Override
+    //@Override
     public List<Match> create(Integer seasonId, final List<Team> teams) {
         try {
             Season season = seasonDao.get(seasonId);
@@ -60,12 +60,23 @@ public class SchedulerAdminDao extends Dao implements SchedulerAdminApi {
                 new SqlParameter(Types.DATE));
         PreparedStatementCreatorFactory ps = new PreparedStatementCreatorFactory(CREATE,parameters);
         ps.setReturnGeneratedKeys(true);
-        return create(match,ps.newPreparedStatementCreator(new Object[]{
+        return dao.create(match, ps.newPreparedStatementCreator(new Object[]{
                 match.getHome().getId(),
                 match.getAway().getId(),
                 match.getSeason().getId(),
                 match.getMatchDate()
         }));
+    }
+
+    @Override
+    public Match modify(Match match) {
+        return dao.modify(match, MODIFY,
+                match.getSeason().getId(),
+                match.getHome().getId(),
+                match.getAway().getId(),
+                match.getWin(),
+                match.getId()
+        );
     }
 
     /**
@@ -149,11 +160,12 @@ public class SchedulerAdminDao extends Dao implements SchedulerAdminApi {
             "VALUES " +
             "(?,?,?,?)";
 
-    static String MODIFY = "UPDATE player " +
+    static String MODIFY = "UPDATE team_match " +
             "set " +
-            "season_id=?," +
-            "user_id=?," +
-            "team_id=?," +
-            " where player_id = ?";
+            "season_id=? ," +
+            "home_team_id=? , " +
+            "away_team_id=? , " +
+            "win=? " +
+            " where team_match_id = ?";
     
 }

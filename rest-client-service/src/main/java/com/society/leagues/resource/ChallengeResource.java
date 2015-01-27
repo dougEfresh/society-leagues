@@ -41,16 +41,16 @@ public class ChallengeResource extends ApiResource implements ChallengeApi {
 
     @Override
     public Boolean cancelChallenge(Challenge challenge) {
-        return null;
+        return dao.cancelChallenge(challenge);
     }
 
     @Override
     public Challenge modifyChallenge(Challenge challenge) {
-        return null;
+        return dao.modifyChallenge(challenge);
     }
 
     @Override
     public List<Slot> slots(Date date) {
-        return null;
+        return dao.slots(date);
     }
 }

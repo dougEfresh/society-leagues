@@ -2,22 +2,24 @@ package com.society.test;
 
 import com.society.leagues.Main;
 import com.society.leagues.client.ApiFactory;
+import com.society.leagues.client.api.MatchApi;
 import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.client.api.admin.*;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.client.api.domain.division.LeagueType;
+import com.society.leagues.dao.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -25,26 +27,21 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class})
 @IntegrationTest(value = {"server.port:0","daemon:true","debug:true"})
-public class SchedulerTest extends TestBase implements SchedulerAdminApi {
-    SchedulerAdminApi api;
-    SeasonAdminApi seasonApi;
-    DivisionAdminApi divisionApi;
-    TeamAdminApi teamApi;
-    private static Logger logger = LoggerFactory.getLogger(SchedulerTest.class);
-    
-    
+public class MatchTest extends TestBase implements MatchAdminApi {
+    MatchAdminApi api;
+    @Autowired SeasonAdminDao seasonApi;
+    @Autowired DivisionAdminDao divisionApi;
+    @Autowired TeamAdminDao teamApi;
+    @Autowired MatchDao matchApi;
+
     @Before
     public void setup() throws Exception {
         super.setup();
         String token = authenticate(Role.ADMIN);
-        api = ApiFactory.createApi(SchedulerAdminApi.class, token, baseURL,true);
-        divisionApi = ApiFactory.createApi(DivisionAdminApi.class, token, baseURL);
-        seasonApi = ApiFactory.createApi(SeasonAdminApi.class, token, baseURL);
-        teamApi = ApiFactory.createApi(TeamAdminApi.class, token, baseURL);
-
+        api = ApiFactory.createApi(MatchAdminApi.class, token, baseURL,true);
     }
 
-    @Test
+//    @Test
     public void testCreate() {
         /*
         Division division = new Division(DivisionType.EIGHT_BALL_THURSDAYS,LeagueType.TEAM);
@@ -104,7 +101,7 @@ public class SchedulerTest extends TestBase implements SchedulerAdminApi {
         */
     }
 
-    @Override
+ //   @Override
     public List<Match> create(Integer id, List<Team> teams) {
         return null;
     }
@@ -116,6 +113,7 @@ public class SchedulerTest extends TestBase implements SchedulerAdminApi {
         assertNotNull(division);
 
         Season season = new Season("Whatever", new Date(),20);
+        season.setSeasonStatus(Status.ACTIVE);
         season = seasonApi.create(season);
         assertNotNull(season);
         
@@ -138,5 +136,25 @@ public class SchedulerTest extends TestBase implements SchedulerAdminApi {
     @Override
     public Match create(Match match) {
         return api.create(match);
+    }
+
+    @Test
+    public void testModify() throws Exception {
+        testCreateMatch();
+        List<Match> matches = matchApi.get();
+        assertNotNull(matches);
+        assertFalse(matches.isEmpty());
+        for (Match match : matches) {
+            match.setWin(match.getHome().getId());
+            match = modify(match);
+            assertNotNull(match);
+            assertTrue(match.getWinner().getId().equals(match.getHome().getId()));
+        }
+    }
+
+
+    @Override
+    public Match modify(Match match) {
+        return api.modify(match);
     }
 }

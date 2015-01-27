@@ -13,14 +13,14 @@ import java.util.SortedSet;
 @Path(value = "/")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public interface SchedulerAdminApi {
+public interface MatchAdminApi {
 
-    @Path("api/admin/scheduler/create/{id}")
-    @POST
-    List<Match> create(@PathParam(value = "id") final Integer id, final List<Team> teams);
-
-    @Path("api/admin/scheduler/create")
+    @Path("api/admin/match/create")
     @POST
     Match create(Match match);
+
+    @Path("api/admin/match/modify")
+    @POST
+    Match modify(Match match);
     
 }

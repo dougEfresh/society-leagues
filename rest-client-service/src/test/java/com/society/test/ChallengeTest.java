@@ -7,8 +7,10 @@ import com.society.leagues.client.api.ChallengeApi;
 import com.society.leagues.client.api.UserApi;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.DivisionType;
+import com.society.leagues.dao.UserDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -26,42 +28,38 @@ import static org.junit.Assert.assertTrue;
 public class ChallengeTest extends TestBase  implements ChallengeApi {
     
     ChallengeApi api;
-    UserApi userApi;
-    
+    @Autowired UserDao userApi;
+
     @Override
     public void setup() throws Exception {
         super.setup();
-        api = ApiFactory.createApi(ChallengeApi.class,authenticate(Role.PLAYER),baseURL);
-        userApi = ApiFactory.createApi(UserApi.class,authenticate(Role.PLAYER),baseURL);
+        if (token == null) {
+            token = authenticate(Role.PLAYER);
+        }
+        api = ApiFactory.createApi(ChallengeApi.class,token,baseURL,true);
     }
 
     @Test
     public void testPotentials() throws Exception {
-        for (User user : userApi.get()) {
-            verifyUser(user);
-        }
+        userApi.get().forEach(this::verifyUser);
     }
 
     @Test
     public void testRequestChallenge() throws Exception {
-        User user = SchemaData.challengeUsers.get(0);
-        List<User> users = getPotentials(user.getId());
+        User challenger = SchemaData.challengeUsers.get(0);
+        List<User> users = getPotentials(challenger.getId());
         assertNotNull(users);
-        Player opponent = users.get(0).getPlayers().stream().findFirst().get();
-        Player challenger = user.getPlayers().stream().filter(p -> p.getDivision().getType() == opponent.getDivision().getType()).findFirst().orElseGet(null);
+        User opponent = users.get(0);
+        Player ch = challenger.getPlayers().stream().findFirst().get();
+        Player op = opponent.getPlayers().stream().filter(p -> p.getDivision().getType() == ch.getDivision().getType()).findFirst().orElseGet(null);
         Challenge challenge = new Challenge();
         Slot slot = Slot.getDefault(new Date()).get(0);
         challenge.setSlot(slot);
-        challenge.setChallenger(challenger);
-        challenge.setOpponent(opponent);
+        challenge.setChallenger(ch);
+        challenge.setOpponent(op);
         challenge = requestChallenge(challenge);
         assertNotNull(challenge);
         assertNotNull(challenge.getId());
-    }
-
-    @Test
-    public void testDupSlot() throws Exception {
-        
     }
 
     @Override
@@ -96,14 +94,31 @@ public class ChallengeTest extends TestBase  implements ChallengeApi {
         return api.listChallenges(userId);
     }
 
+    @Test
+    public void testCancel() throws Exception {
+        Challenge c = create();
+        assertTrue(cancelChallenge(c));
+    }
+
     @Override
     public Boolean cancelChallenge(Challenge challenge) {
-        return null;
+        return api.cancelChallenge(challenge);
+    }
+
+    @Test
+    public void testModify() throws Exception {
+        Challenge challenge = create();
+        Date d = new Date();
+        Slot slot = new Slot(4,d);
+        challenge.setSlot(slot);
+        challenge = modifyChallenge(challenge);
+        assertNotNull(challenge);
+        assertTrue(challenge.getSlot().getId().equals(4));
     }
 
     @Override
     public Challenge modifyChallenge(Challenge challenge) {
-        return null;
+        return api.modifyChallenge(challenge);
     }
 
     @Override
@@ -124,6 +139,7 @@ public class ChallengeTest extends TestBase  implements ChallengeApi {
         challenge.setSlot(slot);
         challenge.setChallenger(challenger);
         challenge.setOpponent(opponent);
+        challenge.setStatus(Status.PENDING);
         challenge = requestChallenge(challenge);
         assertNotNull(challenge);
         assertNotNull(challenge.getId());
