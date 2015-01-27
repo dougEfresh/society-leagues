@@ -1,6 +1,5 @@
 package com.society.test;
 
-import static com.society.leagues.Schema.*;
 
 import com.society.leagues.Schema;
 import com.society.leagues.SchemaData;
@@ -10,11 +9,8 @@ import com.society.leagues.client.api.AuthApi;
 import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.client.api.domain.TokenResponse;
 import com.society.leagues.client.api.domain.User;
-import com.society.leagues.conf.DaoConfig;
 import com.society.leagues.infrastructure.security.ServiceAuthenticator;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;

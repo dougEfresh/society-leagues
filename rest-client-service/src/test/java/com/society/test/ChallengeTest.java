@@ -24,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class})
-@IntegrationTest(value = {"server.port:0","daemon:true","debug:true"})
+@IntegrationTest(value = {"server.port:0","debug:true","embedded:true"})
 public class ChallengeTest extends TestBase  implements ChallengeApi {
     
     ChallengeApi api;
