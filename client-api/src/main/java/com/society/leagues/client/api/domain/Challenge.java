@@ -5,8 +5,9 @@ public class Challenge extends LeagueObject {
     Player challenger;
     Player opponent;
     Slot slot;
+    Status status;
     Match match;
-
+    
     public Challenge() {
     }
 
@@ -46,5 +47,13 @@ public class Challenge extends LeagueObject {
 
     public void setMatch(Match match) {
         this.match = match;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

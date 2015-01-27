@@ -82,8 +82,9 @@ public class Schema {
               " challenger_player_id int NOT NULL CONSTRAINT PM_S_K REFERENCES player ON DELETE CASCADE,\n" +
               " opponent_player_id int NOT NULL CONSTRAINT PM_K REFERENCES player ON DELETE CASCADE,\n" +
               " slot int not null,\n" +
-               " challenge_date timestamp not null,\n" +
-               " team_match_id INT CONSTRAINT TM_C REFERENCES team_match ON DELETE CASCADE,\n" +
+            " challenge_date timestamp not null,\n" +
+            " status varchar(255) null,\n" +
+            " team_match_id INT CONSTRAINT TM_C REFERENCES team_match ON DELETE CASCADE,\n" +
               " PRIMARY KEY (challenge_id)" +
             ")\n";
     
@@ -106,7 +107,7 @@ public class Schema {
         jdbcTemplate.update(player);
         jdbcTemplate.update(team_match);
         jdbcTemplate.update(challenge);
-        createdSchema= true;
+        createdSchema = true;
     }
 
     public static final String NORMAL_USER = "email_608@domain.com";

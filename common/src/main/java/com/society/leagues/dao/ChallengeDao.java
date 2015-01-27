@@ -1,13 +1,10 @@
-package com.society.leagues.resource;
+package com.society.leagues.dao;
 
 import com.society.leagues.client.api.ChallengeApi;
 import com.society.leagues.client.api.admin.SchedulerAdminApi;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.DivisionType;
-import com.society.leagues.dao.ClientDao;
-import com.society.leagues.dao.Dao;
-import com.society.leagues.dao.PlayerDao;
-import com.society.leagues.dao.UserDao;
+import com.society.leagues.client.api.domain.division.LeagueType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +21,11 @@ import java.util.stream.Collectors;
 
 @Component
 @SuppressWarnings("unused")
-public class ChallengeDao implements ChallengeApi {
+public class ChallengeDao extends ClientDao<Challenge> implements ChallengeApi {
     private static Logger logger = LoggerFactory.getLogger(ChallengeDao.class);
     @Autowired Dao dao;
     @Autowired UserDao userDao;
     @Autowired PlayerDao playerDao;
-    @Autowired SchedulerAdminApi schedulerDao;
     @Autowired JdbcTemplate jdbcTemplate;
     @Value("${email-override:}") String emailOverride;
     
@@ -40,17 +36,19 @@ public class ChallengeDao implements ChallengeApi {
             List<Player> potentials = new ArrayList<>();
             potentials.addAll(getHandicapPlayers(challenger, DivisionType.EIGHT_BALL_CHALLENGE));
             potentials.addAll(getHandicapPlayers(challenger, DivisionType.NINE_BALL_CHALLENGE));
-            potentials = potentials.stream().filter(p -> p.getUser().getId() != id).collect(Collectors.toList());
+            potentials = potentials.stream().filter(p -> !Objects.equals(p.getUser().getId(), id)).collect(Collectors.toList());
             Map<Integer,User> opponents = new HashMap<>();
             for (Player potential : potentials) {
                 if (!opponents.containsKey(potential.getUser().getId())) {
                     opponents.put(potential.getUser().getId(),potential.getUser());
                 }
+                
                 User u  = opponents.get(potential.getUser().getId());
+                potential.setUser(null);
                 u.addPlayer(potential);
             }
 
-            return  Arrays.asList(opponents.values().toArray(new User[] {}));
+            return  Arrays.asList(opponents.values().toArray(new User[]{}));
         } catch (Throwable t) {
             logger.error(t.getLocalizedMessage(),t);
         }
@@ -66,6 +64,7 @@ public class ChallengeDao implements ChallengeApi {
             st.setInt(2,challenge.getOpponent().getId());
             st.setInt(3,challenge.getSlot().getId());
             st.setDate(4, new java.sql.Date(challenge.getSlot().getDate().getTime()));
+            st.setString(5,Status.PENDING.name());
             return st;
         } ;
         return dao.create(challenge,ps);
@@ -73,21 +72,10 @@ public class ChallengeDao implements ChallengeApi {
 
     @Override
     public Challenge acceptChallenge(Challenge challenge) {
-        Match match = new Match();
-        match.setHome(challenge.getChallenger().getTeam());
-        match.setAway(challenge.getOpponent().getTeam());
-        match.setMatchDate(challenge.getSlot().getDate());
-        match.setSeason(challenge.getChallenger().getSeason());
-        match = schedulerDao.create(match);
-        if (match == null ) {
-            logger.error("Could not create match");
-            return null;
-        }
-        
-        challenge.setMatch(match);
         try {
-            jdbcTemplate.update("UPDATE challenge SET team_match_id =? WHERE challenge_id = ?", 
-                    match.getId(), challenge.getId());
+            jdbcTemplate.update("UPDATE challenge SET status  = ? WHERE challenge_id = ?", 
+                    Status.ACTIVE.name(), challenge.getId());
+            challenge.setStatus(Status.ACTIVE);
         } catch (Throwable t ){ 
             logger.error(t.getLocalizedMessage(),t);
             return null;
@@ -98,11 +86,34 @@ public class ChallengeDao implements ChallengeApi {
 
     @Override
     public List<Challenge> listChallenges(Integer userId) {
-        String sql = ClientDao.CLIENT_REQUEST + "  " +
-                "join challenge o on p.player_id=o.opponent_id where p.status = '" + Status.ACTIVE + 
-                "' and s.status = '" + Status.ACTIVE + "' ";
+        String sql = "select * from challenge where user_id = ?";
+        List<Map<String,Object>> c = dao.get(sql,userId);
+        ArrayList<Challenge> challenges = new ArrayList<>();
+        for (Map<String, Object> rs : c) {
+            Integer id = (Integer) rs.get("challenge_id");
+            Challenge challenge = new Challenge();
+            challenge.setId(id);
+            challenge.setOpponent(playerDao.get((Integer) rs.get("opponent_player_id")));
+            challenge.setChallenger(playerDao.get((Integer) rs.get("challenge_player_id")));
+            challenge.setStatus(Status.);
+            if (rs.get("team_match_id") != null) {
+                challenge.setMatch();
+            }
+            playerDao.get();
+        }
+        List<Player> players = playerDao.current(userId);
+        if (players == null || players.isEmpty())
+            return Collections.emptyList();
+        
+        players = players.stream().filter(p -> p.getDivision().getLeague() == LeagueType.INDIVIDUAL).collect(Collectors.toList());
+
+        
+        for (Player p : players) {
+            
+        }
         
         return null;
+            
     }
 
     @Override
@@ -134,11 +145,25 @@ public class ChallengeDao implements ChallengeApi {
         return Collections.emptyList();
     }
 
+    @Override
+    public RowMapper<Challenge> getRowMapper() {
+        return mapper;
+    }
+
+    @Override
+    public List<Challenge> get() {
+        return null;
+    }
+
     final static RowMapper<Challenge> mapper = (rs, rowNum) -> {
         Challenge challenge = new Challenge();
+        
         return null;
     };
     
     final static String CREATE = "INSERT INTO challenge(challenger_player_id," +
-            "opponent_player_id,slot,challenge_date) VALUES (?,?,?,?)";
+            "opponent_player_id,slot,challenge_date,status) VALUES (?,?,?,?,?)";
+    
+    final static String LIST = "select ";
+    
 }

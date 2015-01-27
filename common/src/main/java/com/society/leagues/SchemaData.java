@@ -9,6 +9,10 @@ import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.client.api.domain.division.LeagueType;
+import com.society.leagues.dao.UserDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,11 +20,12 @@ import java.util.List;
 
 public class SchemaData {
     public static boolean generated = false;
-
-    private String[] CHALLENGE_USERS = new String[]{"Doug_C",
-            "Jeff_T", "Rob_P", "Doug_R", "Jared_P", "Howie_L", "Ken_S", "Alex_K",
-            "Roger_P", "Saj_S", "Sofia_C", "Zack_Z", "Earl_S",
-            "Efren_R", "John_S"};
+    private static Logger logger = LoggerFactory.getLogger(SchemaData.class);
+    private String[] CHALLENGE_USERS = new String[] {
+            "Doug_C", "Jeff_T", "Rob_P", "Doug_R", "Jared_P", 
+            "Howie_L", "Ken_S", "Alex_K", "Roger_P", "Saj_S", 
+            "Sofia_C", "Zack_Z", "Earl_S", "Efren_R", "John_S"
+    };
 
     Handicap[] eighthandicap = new Handicap[]{
             Handicap.TWO,
@@ -44,18 +49,19 @@ public class SchemaData {
     TeamApi teamApi;
     PlayerAdminApi playerApi;
     UserApi userApi;
-
+    boolean debug = false;
+    
     public void generateData(String url , String token) {
         if (generated)
             return;
         
-        boolean debug = false;
+        logger.info("***** generating data *****");
+
         seasonApi = ApiFactory.createApi(SeasonAdminApi.class,token,url,debug);
         divisionApi  = ApiFactory.createApi(DivisionAdminApi.class,token,url,debug);
         teamApi  = ApiFactory.createApi(TeamApi.class,token,url,debug);
         userApi  = ApiFactory.createApi(UserApi.class,token,url,debug);
         playerApi =  ApiFactory.createApi(PlayerAdminApi.class,token,url,debug);
-
 
         Division eightBallChallenge = new Division(DivisionType.EIGHT_BALL_CHALLENGE, LeagueType.INDIVIDUAL);
         eightBallChallenge = divisionApi.create(eightBallChallenge);
@@ -74,7 +80,9 @@ public class SchemaData {
         if (challengeSeason == null)
             throw new RuntimeException("Could not Challenge Season");
 
+        logger.info("Creating 8ball challenge players");
         createPlayerForSeason(challengeSeason,eightBallChallenge);
+        logger.info("Creating 9ball challenge players");
         createPlayerForSeason(challengeSeason,nineBallChallenge);
         generated = true;
         
@@ -86,7 +94,12 @@ public class SchemaData {
             String[] name = user.split("_");
             User u = userApi.get(user);
             if (u == null) {
+                logger.info("Calling create user: " + user);
                 u = userApi.create(new User(name[0], name[1], user, user, Role.PLAYER));
+                
+                if (u == null)
+                    throw new RuntimeException("Could not create or verify user: " + logger);
+                
                 challengeUsers.add(u);
             }
             Team team = new Team(user, division);

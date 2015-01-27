@@ -13,6 +13,7 @@ import java.util.*;
 
 @Component
 public class UserDao extends ClientDao<User> implements UserClientApi {
+    
     public static RowMapper<User> rowMapper = (rs, rowNum) -> {
         User user = new User();
         user.setId(rs.getInt("user_id"));
@@ -20,6 +21,7 @@ public class UserDao extends ClientDao<User> implements UserClientApi {
         user.setLastName(rs.getString("last_name"));
         return user;
     };
+    
     static Logger logger = LoggerFactory.getLogger(UserDao.class);
 
     @Autowired PlayerDao playerDao;

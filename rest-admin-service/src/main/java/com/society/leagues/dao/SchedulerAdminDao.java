@@ -7,6 +7,7 @@ import com.society.leagues.client.api.domain.Team;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
 import org.springframework.jdbc.core.SqlParameter;
@@ -18,6 +19,7 @@ import java.time.ZoneId;
 import java.util.*;
 
 @Component
+@Primary
 public class SchedulerAdminDao extends Dao implements SchedulerAdminApi {
     private static Logger logger = LoggerFactory.getLogger(SchedulerAdminDao.class);
     

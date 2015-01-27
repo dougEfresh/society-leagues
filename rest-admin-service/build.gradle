@@ -21,7 +21,6 @@ bootRun {
 dependencies {
     compile(project(':client-api'))
     compile(project(':common'))
-    //compile(project(':rest-client-service'))
 
     compile 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
@@ -41,6 +40,8 @@ dependencies {
     //Test
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile(project(':test-framework'))
+    //To generate schema
+    testCompile(project(':rest-client-service'))
 }
 
 task wrapper(type: Wrapper) {

@@ -4,6 +4,7 @@ import com.society.leagues.client.api.ChallengeApi;
 import com.society.leagues.client.api.domain.Challenge;
 import com.society.leagues.client.api.domain.Slot;
 import com.society.leagues.client.api.domain.User;
+import com.society.leagues.dao.ChallengeDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

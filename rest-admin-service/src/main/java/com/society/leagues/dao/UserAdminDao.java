@@ -2,6 +2,8 @@ package com.society.leagues.dao;
 
 import com.society.leagues.client.api.admin.UserAdminApi;
 import com.society.leagues.client.api.domain.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.stereotype.Component;
 
@@ -10,10 +12,15 @@ import java.sql.Statement;
 
 @Component
 public class UserAdminDao extends Dao implements UserAdminApi {
-
+    private static Logger logger = LoggerFactory.getLogger(UserAdminDao.class);
+    
     @Override
     public User create(User user) {
+        logger.debug("Creating user: " + user.getLogin());
         User u = create(user,getCreateStatement(user));
+        if (u == null)
+            return null;
+                
         u.setPassword(null);
         return u;
     }

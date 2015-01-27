@@ -69,6 +69,15 @@ public class Dao {
         return null;
     }
     
+    public List<Map<String,Object>> get(String sql, Object ...args){
+        try {
+            return jdbcTemplate.queryForList(sql, args);
+        } catch (Throwable t) {
+            logger.error(t.getLocalizedMessage(),t);
+        }
+        return null;
+    }
+    
     public Integer getId(String table, LeagueObject leagueObject) {
           try {
               String sql = String.format("select %s_id from %s where %s_id=?",table,table,table);
