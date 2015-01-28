@@ -26,6 +26,7 @@ public class SchemaData {
             "Howie_L", "Ken_S", "Alex_K", "Roger_P", "Saj_S", 
             "Sofia_C", "Zack_Z", "Earl_S", "Efren_R", "John_S"
     };
+    public static List<User> challengeUsers = new ArrayList<>();
 
     Handicap[] eighthandicap = new Handicap[]{
             Handicap.TWO,
@@ -44,7 +45,7 @@ public class SchemaData {
             Handicap.BPLUS,Handicap.BPLUS,
             Handicap.A,Handicap.PRO};
 
-    public static List<User> challengeUsers = new ArrayList<>();
+
     SeasonAdminApi seasonApi;
     DivisionAdminApi divisionApi;
     TeamApi teamApi;
