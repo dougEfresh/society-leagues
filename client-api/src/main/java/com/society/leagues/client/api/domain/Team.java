@@ -1,28 +1,22 @@
 package com.society.leagues.client.api.domain;
 
-import com.society.leagues.client.api.domain.division.Division;
-
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class Team extends LeagueObject {
     @NotNull
     String name;
-    @NotNull
-    Division division;
     Date created;
     TeamStatus status;
     
     public static final Team bye = new Team("Bye",null);
 
-    public Team(String name, Division division) {
+    public Team(String name) {
         this.name = name;
-        this.division = division;
     }
 
-    public Team(String name, Division division, Date created) {
+    public Team(String name, Date created) {
         this.name = name;
-        this.division = division;
         this.created = created;
     }
     
@@ -43,14 +37,6 @@ public class Team extends LeagueObject {
 
     public void setCreated(Date created) {
         this.created = created;
-    }
-
-    public Division getDivision() {
-        return division;
-    }
-
-    public void setDivision(Division division) {
-        this.division = division;
     }
 
     public TeamStatus getStatus() {

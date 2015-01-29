@@ -1,24 +1,23 @@
 package com.society.leagues;
 
-import com.society.leagues.client.ApiFactory;
-import com.society.leagues.client.TeamApi;
-import com.society.leagues.client.api.UserApi;
 import com.society.leagues.client.api.domain.Role;
-import com.society.leagues.client.api.admin.*;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.client.api.domain.division.LeagueType;
-import com.society.leagues.dao.UserDao;
+import com.society.leagues.dao.admin.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Component
 public class SchemaData {
+
     public static boolean generated = false;
     private static Logger logger = LoggerFactory.getLogger(SchemaData.class);
     private String[] CHALLENGE_USERS = new String[] {
@@ -46,27 +45,18 @@ public class SchemaData {
             Handicap.A,Handicap.PRO};
 
 
-    SeasonAdminApi seasonApi;
-    DivisionAdminApi divisionApi;
-    TeamApi teamApi;
-    PlayerAdminApi playerApi;
-    UserApi userApi;
-    MatchAdminApi matchAdminApi;
+    @Autowired SeasonAdminDao seasonApi;
+    @Autowired DivisionAdminDao divisionApi;
+    @Autowired TeamAdminDao teamApi;
+    @Autowired PlayerAdminDao playerApi;
+    @Autowired UserAdminDao userApi;
+    @Autowired MatchAdminDao matchAdminApi;
 
-    boolean debug = false;
-    
-    public void generateData(String url , String token) {
+    public void generateData() {
         if (generated)
             return;
         
         logger.info("***** generating data *****");
-
-        seasonApi = ApiFactory.createApi(SeasonAdminApi.class,token,url,debug);
-        divisionApi  = ApiFactory.createApi(DivisionAdminApi.class,token,url,debug);
-        teamApi  = ApiFactory.createApi(TeamApi.class,token,url,debug);
-        userApi  = ApiFactory.createApi(UserApi.class,token,url,debug);
-        playerApi =  ApiFactory.createApi(PlayerAdminApi.class,token,url,debug);
-        matchAdminApi = ApiFactory.createApi(MatchAdminApi.class,token,url,debug);
 
         Division eightBallChallenge = new Division(DivisionType.EIGHT_BALL_CHALLENGE, LeagueType.INDIVIDUAL);
         eightBallChallenge = divisionApi.create(eightBallChallenge);
@@ -119,7 +109,7 @@ public class SchemaData {
                 
                 challengeUsers.add(u);
             }
-            Team team = new Team(user, division);
+            Team team = new Team(user);
             Team t = teamApi.get(user);
             if (t == null)
                 t = teamApi.create(team);

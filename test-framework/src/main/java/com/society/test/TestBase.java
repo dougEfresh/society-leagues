@@ -12,7 +12,7 @@ import com.society.leagues.client.api.domain.User;
 import com.society.leagues.infrastructure.security.ServiceAuthenticator;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.boot.test.IntegrationTest;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.client.Client;
@@ -20,15 +20,14 @@ import javax.ws.rs.client.Client;
 import static org.junit.Assert.assertNotNull;
 
 @Component
+@IntegrationTest(value = {"server.port:0","daemon:true","debug:true","embedded:true"})
 public class TestBase {
     public static final String NORMAL_USER = Schema.NORMAL_USER;
     public static final String NORMAL_PASS = Schema.NORMAL_PASS;
     public static final String ADMIN_USER =  Schema.ADMIN_USER;
     public static final String ADMIN_PASS =  Schema.ADMIN_PASS;
     
-    @Autowired ServiceAuthenticator serviceAuthenticator;
     @Autowired ServerControl app;
-    @Autowired JdbcTemplate jdbcTemplate;
     public static String token;
     AuthApi authApi;
     String baseURL;
@@ -38,14 +37,8 @@ public class TestBase {
     public void setup() throws Exception {
         baseURL = "http://localhost:" + app.getPort();
         authApi = ApiFactory.createApi(AuthApi.class, null, baseURL, true);
-        generateData();
     }
     
-    public void generateData() {
-        SchemaData schemaData = new SchemaData();
-        schemaData.generateData(baseURL,authenticate(Role.ADMIN));
-    }
-
     public String authenticate(Role role) {
         User user;
         if (Role.isAdmin(role))

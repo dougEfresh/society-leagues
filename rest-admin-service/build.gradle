@@ -44,6 +44,10 @@ dependencies {
     testCompile(project(':rest-client-service'))
 }
 
+task integrationTest(type: Test) {
+        jvmArgs = ['-Dembedded=false']
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '2.1'
 }

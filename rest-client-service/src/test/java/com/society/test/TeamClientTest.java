@@ -19,9 +19,8 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Main.class})
-@IntegrationTest(value = {"server.port:0","daemon:true","debug:true"})
-public class TeamClientTest extends TestBase {
+@SpringApplicationConfiguration(classes = {Main.class,TestBase.class})
+public class TeamClientTest extends TestClientBase {
     TeamClientApi api;
 
     @Before

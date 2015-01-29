@@ -1,31 +1,35 @@
-package com.society.leagues.dao;
+package com.society.leagues.dao.admin;
 
 import com.society.leagues.client.api.admin.SeasonAdminApi;
 import com.society.leagues.client.api.domain.Season;
+import com.society.leagues.dao.Dao;
+import com.society.leagues.dao.SeasonDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
 
 @Component
-public class SeasonAdminDao extends Dao implements SeasonAdminApi {
+public class SeasonAdminDao extends SeasonDao implements SeasonAdminApi {
     private static Logger logger = LoggerFactory.getLogger(SeasonAdminDao.class);
+    @Autowired Dao dao;
 
     @Override
     public Season create(Season season) {
-        return create(season,getCreateStatement(season,CREATE));
+        return dao.create(season,getCreateStatement(season,CREATE));
     }
 
     @Override
     public Boolean delete(Season season) {
-        return delete(season,"delete from season where season_id = ?");
+        return dao.delete(season,"delete from season where season_id = ?");
     }
 
     @Override
     public Season modify(Season season) {
-        return modify(season,
+        return dao.modify(season,
                 "update season set name = ?, start_date = ?, end_date = ? , rounds = ? where season_id = ?"
                 ,season.getName()
                 ,season.getStartDate()

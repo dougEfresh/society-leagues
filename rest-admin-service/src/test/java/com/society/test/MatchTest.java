@@ -2,7 +2,6 @@ package com.society.test;
 
 import com.society.leagues.Main;
 import com.society.leagues.client.ApiFactory;
-import com.society.leagues.client.api.MatchApi;
 import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.client.api.admin.*;
 import com.society.leagues.client.api.domain.*;
@@ -10,11 +9,12 @@ import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.client.api.domain.division.LeagueType;
 import com.society.leagues.dao.*;
+import com.society.leagues.dao.admin.DivisionAdminDao;
+import com.society.leagues.dao.admin.SeasonAdminDao;
+import com.society.leagues.dao.admin.TeamAdminDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -25,13 +25,16 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Main.class})
-@IntegrationTest(value = {"server.port:0","daemon:true","debug:true"})
+@SpringApplicationConfiguration(classes = {Main.class,TestBase.class})
+@IntegrationTest(value = {"server.port:0","daemon:true","debug:true","embedded:true"})
 public class MatchTest extends TestBase implements MatchAdminApi {
     MatchAdminApi api;
-    @Autowired SeasonAdminDao seasonApi;
-    @Autowired DivisionAdminDao divisionApi;
-    @Autowired TeamAdminDao teamApi;
+    @Autowired
+    SeasonAdminDao seasonApi;
+    @Autowired
+    DivisionAdminDao divisionApi;
+    @Autowired
+    TeamAdminDao teamApi;
     @Autowired MatchDao matchApi;
 
     @Before
@@ -120,8 +123,8 @@ public class MatchTest extends TestBase implements MatchAdminApi {
         List<Team> teams = new ArrayList<>();
         for (String teamName: new String[] {"1","2","3","4"}) {
             Team team = new Team("Team " + teamName + " "  +
-                    UUID.randomUUID().toString().substring(0,7),
-                    division);
+                    UUID.randomUUID().toString().substring(0,7)
+                    );
             team  = teamApi.create(team);
             assertNotNull(team);
             teams.add(team);

@@ -17,9 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Main.class})
-@IntegrationTest(value = {"server.port:0","daemon:true","debug:true"})
-public class UserClientTest extends TestBase {
+@SpringApplicationConfiguration(classes = {Main.class,TestBase.class})
+public class UserClientTest extends TestClientBase {
 
     UserClientApi api;
 

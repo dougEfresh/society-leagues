@@ -23,9 +23,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Main.class})
-@IntegrationTest(value = {"server.port:0","debug:true","embedded:true"})
-public class ChallengeTest extends TestBase  implements ChallengeApi {
+@SpringApplicationConfiguration(classes = {Main.class,TestBase.class})
+public class ChallengeTest extends TestClientBase  implements ChallengeApi {
     
     ChallengeApi api;
     @Autowired UserDao userApi;

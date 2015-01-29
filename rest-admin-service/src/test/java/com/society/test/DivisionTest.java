@@ -21,8 +21,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Main.class})
-@IntegrationTest(value = {"server.port:0","daemon:true","debug:true"})
+@SpringApplicationConfiguration(classes = {Main.class,TestBase.class})
 public class DivisionTest extends TestBase {
     DivisionApi api;
 

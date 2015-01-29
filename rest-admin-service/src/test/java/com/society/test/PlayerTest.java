@@ -21,8 +21,8 @@ import java.util.UUID;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Main.class})
-@IntegrationTest(value = {"server.port:0","daemon:true","debug:true"})
+@SpringApplicationConfiguration(classes = {Main.class,TestBase.class})
+@IntegrationTest(value = {"server.port:0","daemon:true","debug:true","embedded:true"})
 public class PlayerTest extends TestBase {
     PlayerAdminApi api;
     SeasonAdminApi seasonApi;
@@ -52,7 +52,7 @@ public class PlayerTest extends TestBase {
         season = seasonApi.create(season);
         assertNotNull(season);
 
-        Team team = new Team(UUID.randomUUID().toString(),division);
+        Team team = new Team(UUID.randomUUID().toString());
         team  = teamApi.create(team);
         assertNotNull(team);
 

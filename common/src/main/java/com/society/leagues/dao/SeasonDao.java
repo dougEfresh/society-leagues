@@ -3,12 +3,14 @@ package com.society.leagues.dao;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Status;
 import com.society.leagues.client.api.domain.division.Division;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@Primary
 public class SeasonDao extends ClientDao<Season> {
 
     public static RowMapper<Season> rowMapper = (rs, rowNum) -> {

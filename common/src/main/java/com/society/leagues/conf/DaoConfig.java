@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 
@@ -21,7 +22,7 @@ public class DaoConfig {
     String password;
     @Value("${db:league}")
     String db;
-    @Value("@{embedded:false}")
+    @Value("${embedded:false}")
     boolean useEmbedded;
     static String dbName = System.currentTimeMillis() + "";
 
@@ -52,7 +53,12 @@ public class DaoConfig {
     JdbcTemplate getJdbcTemplate() {
         return new JdbcTemplate(getDataSource());
     }
-    
+
+    @Bean
+    NamedParameterJdbcTemplate getNamedJdbcTemplate() {
+        return new NamedParameterJdbcTemplate(getDataSource());
+    }
+
     public static DataSource getEmbeddedDatasource() {
         logger.info("***** Using embedded DB ****");
         String className = "org.h2.Driver";

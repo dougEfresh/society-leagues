@@ -1,14 +1,16 @@
-package com.society.leagues.dao;
+package com.society.leagues.dao.admin;
 
 import com.society.leagues.client.api.admin.MatchAdminApi;
 import com.society.leagues.client.api.domain.Match;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Team;
+import com.society.leagues.dao.Dao;
+import com.society.leagues.dao.MatchDao;
+import com.society.leagues.dao.SeasonDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.stereotype.Component;
@@ -19,12 +21,12 @@ import java.time.ZoneId;
 import java.util.*;
 
 @Component
-@Primary
-public class MatchAdminDao implements MatchAdminApi {
+public class MatchAdminDao extends MatchDao implements MatchAdminApi {
     private static Logger logger = LoggerFactory.getLogger(MatchAdminDao.class);
-    @Autowired Dao dao;
-    @Autowired JdbcTemplate jdbcTemplate;
-    @Autowired SeasonDao seasonDao;
+    @Autowired
+    Dao dao;
+    @Autowired
+    SeasonDao seasonDao;
     
     //@Override
     public List<Match> create(Integer seasonId, final List<Team> teams) {

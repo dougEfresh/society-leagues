@@ -2,6 +2,7 @@ package com.society.leagues;
 
 import com.society.leagues.client.api.domain.Role;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -9,11 +10,16 @@ import javax.annotation.PostConstruct;
 
 @Component
 public class Schema {
-
+    @Value("${embedded:false}")
+    boolean embedded;
     @Autowired JdbcTemplate jdbcTemplate;
+    @Autowired SchemaData schemaData;
 
     @PostConstruct
     public void init() {
+        if (!embedded)
+            return;
+
         createDb(jdbcTemplate);
         createAccounts(jdbcTemplate);
     }
@@ -60,7 +66,6 @@ public class Schema {
     static final String team = "CREATE TABLE team (\n" +
             "  team_id int NOT NULL AUTO_INCREMENT(15000) PRIMARY KEY,\n" +
             "  name varchar(128) NOT NULL,\n" +
-            "  default_division_id int  NOT NULL CONSTRAINT TEAM_DIV_FK REFERENCES division ON DELETE CASCADE ON UPDATE RESTRICT,\n" +
             "  created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n" +
             "  PRIMARY KEY (team_id)\n" +
             ")\n" +

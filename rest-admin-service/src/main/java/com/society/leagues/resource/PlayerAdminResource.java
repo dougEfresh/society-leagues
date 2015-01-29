@@ -2,7 +2,7 @@ package com.society.leagues.resource;
 
 import com.society.leagues.client.api.admin.PlayerAdminApi;
 import com.society.leagues.client.api.domain.Player;
-import com.society.leagues.dao.PlayerAdminDao;
+import com.society.leagues.dao.admin.PlayerAdminDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

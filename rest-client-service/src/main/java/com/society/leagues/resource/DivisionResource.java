@@ -5,6 +5,7 @@ import com.society.leagues.client.api.domain.User;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.dao.DivisionDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

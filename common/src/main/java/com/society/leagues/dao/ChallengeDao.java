@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,7 +18,7 @@ import java.sql.Statement;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
+@Component @Primary
 public class ChallengeDao extends ClientDao<Challenge> implements ChallengeApi {
     private static Logger logger = LoggerFactory.getLogger(ChallengeDao.class);
     @Autowired Dao dao;
@@ -132,7 +133,7 @@ public class ChallengeDao extends ClientDao<Challenge> implements ChallengeApi {
 
     @Override
     public List<Slot> slots(Date date) {
-        return null;
+        return Slot.getDefault(date);
     }
 
     private List<Player> getHandicapPlayers(User user, DivisionType division) {
@@ -161,7 +162,6 @@ public class ChallengeDao extends ClientDao<Challenge> implements ChallengeApi {
 
     final static RowMapper<Challenge> mapper = (rs, rowNum) -> {
         Challenge challenge = new Challenge();
-        
         return null;
     };
     

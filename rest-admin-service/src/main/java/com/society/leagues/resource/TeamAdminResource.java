@@ -2,7 +2,7 @@ package com.society.leagues.resource;
 
 import com.society.leagues.client.api.admin.TeamAdminApi;
 import com.society.leagues.client.api.domain.Team;
-import com.society.leagues.dao.TeamAdminDao;
+import com.society.leagues.dao.admin.TeamAdminDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class TeamAdminResource extends AdminApiResource implements TeamAdminApi 
 
     @Override
     public Team create(Team team) {
-        if (team == null || team.getName() == null || team.getDivision() == null || team.getDivision().getId() == null) {
+        if (team == null || team.getName() == null) {
             logger.error("Could not verify team: " + team);
             return null;
         }

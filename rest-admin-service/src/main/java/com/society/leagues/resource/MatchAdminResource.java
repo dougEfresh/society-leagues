@@ -2,13 +2,11 @@ package com.society.leagues.resource;
 
 import com.society.leagues.client.api.admin.MatchAdminApi;
 import com.society.leagues.client.api.domain.Match;
-import com.society.leagues.client.api.domain.Team;
-import com.society.leagues.dao.MatchAdminDao;
+import com.society.leagues.dao.admin.MatchAdminDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.security.RolesAllowed;
-import java.util.List;
 
 @Component
 @RolesAllowed(value = {"ADMIN"})

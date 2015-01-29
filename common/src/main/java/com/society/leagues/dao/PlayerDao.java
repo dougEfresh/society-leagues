@@ -5,6 +5,7 @@ import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Component
+@Primary
 public class PlayerDao extends ClientDao<Player> implements PlayerClientApi {
 
     public RowMapper<Player> rowMapper = (rs, rowNum) -> {

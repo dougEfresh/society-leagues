@@ -4,12 +4,13 @@ import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.client.api.domain.division.LeagueType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.util.List;
 
-@Component
+@Component @Primary
 public class DivisionDao extends ClientDao<Division> {
     @Autowired Dao dao;
 

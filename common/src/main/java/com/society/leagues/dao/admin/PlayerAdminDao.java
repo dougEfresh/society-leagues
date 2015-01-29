@@ -1,9 +1,12 @@
-package com.society.leagues.dao;
+package com.society.leagues.dao.admin;
 
 import com.society.leagues.client.api.admin.PlayerAdminApi;
 import com.society.leagues.client.api.domain.LeagueObject;
 import com.society.leagues.client.api.domain.Player;
 
+import com.society.leagues.dao.Dao;
+import com.society.leagues.dao.PlayerDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.stereotype.Component;
 
@@ -11,21 +14,21 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 
 @Component
-public class PlayerAdminDao extends Dao implements PlayerAdminApi {
-   
+public class PlayerAdminDao extends PlayerDao implements PlayerAdminApi {
+    @Autowired Dao dao;
     @Override
     public Player create(final Player player) {
-        return create(player,getCreateStatement(player));
+        return dao.create(player,getCreateStatement(player));
     }
 
     @Override
     public Boolean delete(final Player player) {
-        return delete(player,"delete from player WHERE player_id = ?");
+        return dao.delete(player,"delete from player WHERE player_id = ?");
     }
 
     @Override
     public Player modify(final Player player) {
-        return modify(player,MODIFY,
+        return dao.modify(player,MODIFY,
                 player.getSeason().getId(),
                 player.getUser().getId(),
                 player.getTeam().getId(),
