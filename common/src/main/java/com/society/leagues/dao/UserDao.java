@@ -15,6 +15,7 @@ import java.util.*;
 @Component
 @Primary
 public class UserDao extends ClientDao<User> implements UserClientApi {
+    @Autowired Dao dao;
     
     public static RowMapper<User> rowMapper = (rs, rowNum) -> {
         User user = new User();
@@ -81,12 +82,17 @@ public class UserDao extends ClientDao<User> implements UserClientApi {
 
     @Override
     public User get(String login) {
-        List<User> users = list("select * from users where login = ?",login);
-        if (users == null || users.isEmpty())
+        User u = dao.get("select * from users where login = ?",rowMapper,login);
+        if (u == null)
             return null;
         
+        List<User> users  = processUsers(Arrays.asList(u),
+                Arrays.asList(playerDao.get(u.getId())));
+        
+        if (users == null || users.isEmpty())
+            return u;
+        
         return users.get(0);
+        
     }
-    
-    
 }

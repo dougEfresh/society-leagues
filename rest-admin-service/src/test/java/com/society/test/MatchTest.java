@@ -7,7 +7,6 @@ import com.society.leagues.client.api.admin.*;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
-import com.society.leagues.client.api.domain.division.LeagueType;
 import com.society.leagues.dao.*;
 import com.society.leagues.dao.admin.DivisionAdminDao;
 import com.society.leagues.dao.admin.SeasonAdminDao;
@@ -16,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -26,15 +24,11 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class,TestBase.class})
-@IntegrationTest(value = {"server.port:0","daemon:true","debug:true","embedded:true"})
 public class MatchTest extends TestBase implements MatchAdminApi {
     MatchAdminApi api;
-    @Autowired
-    SeasonAdminDao seasonApi;
-    @Autowired
-    DivisionAdminDao divisionApi;
-    @Autowired
-    TeamAdminDao teamApi;
+    @Autowired SeasonAdminDao seasonApi;
+    @Autowired DivisionAdminDao divisionApi;
+    @Autowired TeamAdminDao teamApi;
     @Autowired MatchDao matchApi;
 
     @Before
@@ -111,7 +105,7 @@ public class MatchTest extends TestBase implements MatchAdminApi {
 
     @Test
     public void testCreateMatch() throws Exception {
-        Division division = new Division(DivisionType.EIGHT_BALL_THURSDAYS,LeagueType.INDIVIDUAL);
+        Division division = new Division(DivisionType.EIGHT_BALL_THURSDAYS);
         division = divisionApi.create(division);
         assertNotNull(division);
 

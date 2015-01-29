@@ -3,6 +3,7 @@ package com.society.leagues.dao;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Status;
 import com.society.leagues.client.api.domain.division.Division;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -12,7 +13,8 @@ import java.util.List;
 @Component
 @Primary
 public class SeasonDao extends ClientDao<Season> {
-
+    @Autowired Dao dao;
+    
     public static RowMapper<Season> rowMapper = (rs, rowNum) -> {
         Season season = new Season();
         season.setStartDate(rs.getDate("start_date"));
@@ -26,7 +28,7 @@ public class SeasonDao extends ClientDao<Season> {
 
     @Override
     public List<Season> get() {
-        return list("select s.*,d.league_type from season s join division d on s.division_id=d.division_id");
+        return list("select s.* from season s ");
     }
 
     @Override
@@ -37,5 +39,9 @@ public class SeasonDao extends ClientDao<Season> {
     @Override
     public Season get(Integer id) {
         return get(id,"select * from season where season_id = ?");
+    }
+    
+    public Season get(String name) {
+        return dao.get("select * from season where name = ?", rowMapper,name);
     }
 }

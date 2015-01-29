@@ -18,7 +18,6 @@ public class DivisionDao extends ClientDao<Division> {
         Division division = new Division();
         division.setId(rs.getInt("division_id"));
         division.setType(DivisionType.valueOf(rs.getString("division_type")));
-        division.setLeague(LeagueType.valueOf(rs.getString("league_type")));
         return division;
     };
 

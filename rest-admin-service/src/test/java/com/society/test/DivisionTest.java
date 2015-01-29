@@ -33,7 +33,7 @@ public class DivisionTest extends TestBase {
 
     @Test
     public void testCreate() {
-        Division division = new Division(DivisionType.EIGHT_BALL_THURSDAYS, LeagueType.INDIVIDUAL);
+        Division division = new Division(DivisionType.EIGHT_BALL_THURSDAYS);
         Division returned = api.create(division);
         assertNotNull(returned);
         assertEquals(division.getType(), returned.getType());
@@ -45,7 +45,7 @@ public class DivisionTest extends TestBase {
 
     @Test
     public void testDelete() {
-        Division division = new Division(DivisionType.EIGHT_BALL_WEDNESDAYS, LeagueType.INDIVIDUAL);
+        Division division = new Division(DivisionType.EIGHT_BALL_WEDNESDAYS);
         Division returned = api.create(division);
         assertTrue(api.delete(returned));
         assertFalse(api.delete(returned));
@@ -56,7 +56,7 @@ public class DivisionTest extends TestBase {
 
     @Test
     public void testModify() {
-        Division division = new Division(DivisionType.NINE_BALL_TUESDAYS, LeagueType.TEAM);
+        Division division = new Division(DivisionType.NINE_BALL_TUESDAYS);
         Division returned = api.create(division);
 
         returned.setType(DivisionType.NINE_BALL_CHALLENGE);

@@ -22,6 +22,13 @@ public class Season extends LeagueObject {
         this.rounds = rounds;
         this.seasonStatus = Status.PENDING;
     }
+    
+    public Season(String name, Date startDate, Integer rounds, Status status) {
+        this.name = name;
+        this.startDate = startDate;
+        this.rounds = rounds;
+        this.seasonStatus = status;
+    }
 
     public Season() {
     }

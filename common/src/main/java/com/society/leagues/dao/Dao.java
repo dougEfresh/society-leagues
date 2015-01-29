@@ -78,6 +78,16 @@ public class Dao {
         return null;
     }
     
+    public <T extends LeagueObject> T get(String sql,RowMapper<T> rowMapper,Object ...args) {
+        try {
+            List<T> list = jdbcTemplate.query(sql, rowMapper, args);
+            return list.get(0);
+        } catch (Throwable t) {
+            logger.error(t.getLocalizedMessage(),t);
+        }
+        return null;
+    }
+    
     public Integer getId(String table, LeagueObject leagueObject) {
           try {
               String sql = String.format("select %s_id from %s where %s_id=?",table,table,table);

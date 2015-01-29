@@ -3,6 +3,7 @@ package com.society.leagues.dao;
 import com.society.leagues.client.api.TeamClientApi;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.division.Division;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import java.util.List;
 @Component
 @Primary
 public class TeamDao extends ClientDao<Team> implements TeamClientApi {
+    @Autowired Dao dao;
     
     public static RowMapper<Team> rowMapper = (rs, rowNum) -> {
         Team team = new Team(rs.getString("name"));
@@ -22,16 +24,12 @@ public class TeamDao extends ClientDao<Team> implements TeamClientApi {
 
     @Override
     public List<Team> get() {
-        return list("select t.*,d.league_type from team t join division d on t.division_id=d.division_id");
+        return list("select * from team");
     }
 
     @Override
     public Team get(String name) {
-        List<Team>  teams = list("select * from team where name = ?",name);
-        if (teams == null || teams.isEmpty()) 
-            return null;
-        
-        return teams.get(0);
+        return dao.get("select * from team where name = ?",rowMapper,name);
     }
 
     @Override
@@ -43,4 +41,5 @@ public class TeamDao extends ClientDao<Team> implements TeamClientApi {
     public RowMapper<Team> getRowMapper() {
         return rowMapper;
     }
+    
 }

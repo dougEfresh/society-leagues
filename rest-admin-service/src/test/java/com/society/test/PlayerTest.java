@@ -7,12 +7,16 @@ import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
-import com.society.leagues.client.api.domain.division.LeagueType;
+import com.society.leagues.dao.admin.DivisionAdminDao;
+import com.society.leagues.dao.admin.SeasonAdminDao;
+import com.society.leagues.dao.admin.TeamAdminDao;
+import com.society.leagues.dao.admin.UserAdminDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.IntegrationTest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.stereotype.Component;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Date;
@@ -22,28 +26,24 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class,TestBase.class})
-@IntegrationTest(value = {"server.port:0","daemon:true","debug:true","embedded:true"})
+@Component
 public class PlayerTest extends TestBase {
     PlayerAdminApi api;
-    SeasonAdminApi seasonApi;
-    DivisionAdminApi divisionApi;
-    TeamAdminApi teamApi;
-    UserAdminApi userApi;
+    @Autowired SeasonAdminDao seasonApi;
+    @Autowired DivisionAdminDao divisionApi;
+    @Autowired TeamAdminDao teamApi;
+    @Autowired UserAdminDao userApi;
 
     @Before
     public void setup() throws Exception {
         super.setup();
         String token = authenticate(Role.ADMIN);
         api = ApiFactory.createApi(PlayerAdminApi.class, token, baseURL);
-        divisionApi = ApiFactory.createApi(DivisionAdminApi.class, token, baseURL);
-        seasonApi = ApiFactory.createApi(SeasonAdminApi.class, token, baseURL);
-        teamApi = ApiFactory.createApi(TeamAdminApi.class, token, baseURL);
-        userApi = ApiFactory.createApi(UserAdminApi.class, token, baseURL);
     }
 
     @Test
     public void testCreate() {
-        Division division = new Division(DivisionType.EIGHT_BALL_THURSDAYS,LeagueType.TEAM);
+        Division division = new Division(DivisionType.EIGHT_BALL_THURSDAYS);
         division = divisionApi.create(division);
         assertNotNull(division);
 

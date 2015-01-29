@@ -7,13 +7,10 @@ import javax.validation.constraints.NotNull;
 public class Division extends LeagueObject {
     @NotNull
     DivisionType type;
-    @NotNull
-    LeagueType league;
 
-    public Division(DivisionType type, LeagueType league) {
+    public Division(DivisionType type) {
         this.type = type;
-        this.league = league;
-    }
+        }
 
     public Division() {
     }
@@ -27,18 +24,13 @@ public class Division extends LeagueObject {
     }
 
     public LeagueType getLeague() {
-        return league;
+        return type.getLeagueType();
     }
-
-    public void setLeague(LeagueType league) {
-        this.league = league;
-    }
-
+    
     @Override
     public String toString() {
         return "Division{" +
                 "type=" + type +
-                ", league=" + league +
                 ", id=" + id +
                 '}';
     }
