@@ -31,28 +31,10 @@ public class UserClientTest extends TestClientBase {
     @Test
     public void testCurrent() throws Exception {
         //List<User> users = api.current(SchemaData.challengeUsers);
-        List<User> users = api.current(Arrays.asList(new User(3)));
+        List<User> users = api.get();
+        users = api.current(Arrays.asList(users.get(10)));
 
         assertNotNull(users);
         assertFalse(users.isEmpty());
-
-        for (User user : users) {
-            assertNotNull(user.getDivisions());
-            assertFalse(user.getDivisions().isEmpty());
-            assertTrue(user.getDivisions().size() == 2);
-
-            assertNotNull(user.getSeasons());
-            assertFalse(user.getSeasons().isEmpty());
-            assertTrue(user.getSeasons().size() == 1);
-            
-            assertNotNull(user.getTeams());
-            assertFalse(user.getTeams().isEmpty());
-            assertTrue(user.getTeams().size() == 1);
-            
-            assertNotNull(user.getPlayers());
-            assertFalse(user.getPlayers().isEmpty());
-            assertTrue(user.getPlayers().size() == 2);
-        }
-
     }
 }

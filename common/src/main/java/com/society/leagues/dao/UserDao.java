@@ -86,8 +86,9 @@ public class UserDao extends ClientDao<User> implements UserClientApi {
         if (u == null)
             return null;
         
-        List<User> users  = processUsers(Arrays.asList(u),
-                Arrays.asList(playerDao.get(u.getId())));
+        List<User> users  = processUsers(
+                Arrays.asList(u),
+                playerDao.current(u.getId()));
         
         if (users == null || users.isEmpty())
             return u;

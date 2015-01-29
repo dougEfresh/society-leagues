@@ -49,7 +49,7 @@ public class ChallengeTest extends TestClientBase  implements ChallengeApi {
         List<User> users = getPotentials(challenger.getId());
         assertNotNull(users);
         User opponent = users.get(0);
-        Player ch = challenger.getPlayers().stream().findFirst().get();
+        Player ch = challenger.getPlayers().stream().filter(p -> p.getDivision().getType() == DivisionType.NINE_BALL_CHALLENGE).findFirst().get();
         Player op = opponent.getPlayers().stream().filter(p -> p.getDivision().getType() == ch.getDivision().getType()).findFirst().orElseGet(null);
         Challenge challenge = new Challenge();
         Slot slot = Slot.getDefault(new Date()).get(0);
@@ -125,7 +125,7 @@ public class ChallengeTest extends TestClientBase  implements ChallengeApi {
         return null;
     }
     
-    static int COUNTER = 0;
+    static int COUNTER = 1;
     
     private Challenge create() {
         User user = userApi.get("login" +COUNTER++);

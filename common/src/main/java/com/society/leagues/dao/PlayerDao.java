@@ -40,7 +40,7 @@ public class PlayerDao extends ClientDao<Player> implements PlayerClientApi {
 
     @Override
     public Player get(Integer id) {
-        return null;
+        return get(id,CLIENT_REQUEST);
     }
 
     @Override

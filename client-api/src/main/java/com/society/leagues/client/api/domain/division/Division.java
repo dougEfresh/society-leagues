@@ -23,7 +23,8 @@ public class Division extends LeagueObject {
         this.type = type;
     }
 
-    public LeagueType getLeague() {
+
+    public LeagueType league() {
         return type.getLeagueType();
     }
     

@@ -20,7 +20,7 @@ public class DivisionAdminResource extends AdminApiResource implements DivisionA
 
     @Override
     public Division create(Division division) {
-        if (division == null || division.getType() == null || division.getLeague() == null) {
+        if (division == null || division.getType() == null || division.league() == null) {
             logger.error("Division is not verified: "+ division);
             return null;
         }
@@ -39,7 +39,7 @@ public class DivisionAdminResource extends AdminApiResource implements DivisionA
 
     @Override
     public Division modify(Division division) {
-         if (division == null || division.getType() == null || division.getLeague() == null || division.getId() == null) {
+         if (division == null || division.getType() == null || division.league() == null || division.getId() == null) {
              logger.error("Division is not verified: "+ division);
             return null;
         }

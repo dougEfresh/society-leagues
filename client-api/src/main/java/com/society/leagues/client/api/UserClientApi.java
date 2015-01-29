@@ -57,5 +57,7 @@ public interface UserClientApi extends ClientApi<User> {
     @Path(value = "/api/client/user/login/{login}")
     @GET
     User get(@PathParam(value = "login") String login);
+
+
 }
 

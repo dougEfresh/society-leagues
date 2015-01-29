@@ -53,7 +53,12 @@ public class PlayerAdminDao extends PlayerDao implements PlayerAdminApi {
 
     static String CREATE = "INSERT INTO player " +
             "(" +
-            "season_id,division_id,user_id,team_id,handicap,player_status) " +
+            "season_id," +
+            "division_id," +
+            "user_id," +
+            "team_id," +
+            "handicap," +
+            "player_status) " +
             "VALUES " +
             "(?,?,?,?,?,?)";
 

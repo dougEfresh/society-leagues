@@ -21,7 +21,7 @@ public abstract class ClientDao<Q extends LeagueObject> implements ClientApi<Q> 
     
     public static final String CLIENT_REQUEST = "" +
             "SELECT p.*," +
-            "t.name,t.created,t.default_division_id," +
+            "t.name,t.created," +
             "d.division_type,d.league_type," +
             "s.*," +
             "u.first_name,u.last_name" +

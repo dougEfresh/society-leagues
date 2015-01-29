@@ -32,13 +32,13 @@ public class DivisionAdminDao extends DivisionDao implements DivisionAdminApi {
     @Override
     public Division modify(Division division) {
         return dao.modify(division,"UPDATE division SET division_type = ?, league_type = ? WHERE division_id  = ?",
-                division.getType().name(),division.getLeague().name(),division.getId());
+                division.getType().name(),division.league().name(),division.getId());
     }
 
     protected PreparedStatementCreator getCreateStatement(final Division division, String sql) {
         return con -> {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, division.getLeague().name());
+            ps.setString(1, division.league().name());
             ps.setString(2, division.getType().name());
             return ps;
         };

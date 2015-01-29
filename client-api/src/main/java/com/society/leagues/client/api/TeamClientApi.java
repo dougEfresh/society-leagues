@@ -51,4 +51,9 @@ public interface TeamClientApi extends ClientApi<Team>  {
     @Path(value = "/api/client/team/name/{name}")
     @GET
     Team get(@PathParam(value = "name") String name);
+
+    @Override
+    @Path("/api/client/team/")
+    @GET
+    List<Team> get();
 }
