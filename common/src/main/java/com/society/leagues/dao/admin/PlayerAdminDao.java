@@ -1,7 +1,6 @@
 package com.society.leagues.dao.admin;
 
 import com.society.leagues.client.api.admin.PlayerAdminApi;
-import com.society.leagues.client.api.domain.LeagueObject;
 import com.society.leagues.client.api.domain.Player;
 
 import com.society.leagues.dao.Dao;
@@ -16,6 +15,7 @@ import java.sql.Statement;
 @Component
 public class PlayerAdminDao extends PlayerDao implements PlayerAdminApi {
     @Autowired Dao dao;
+    
     @Override
     public Player create(final Player player) {
         return dao.create(player,getCreateStatement(player));
@@ -32,6 +32,7 @@ public class PlayerAdminDao extends PlayerDao implements PlayerAdminApi {
                 player.getSeason().getId(),
                 player.getUser().getId(),
                 player.getTeam().getId(),
+                player.getStart(),player.getEnd(),
                 player.getId()
             );
 
@@ -46,7 +47,17 @@ public class PlayerAdminDao extends PlayerDao implements PlayerAdminApi {
             ps.setInt(i++, player.getUser().getId());
             ps.setInt(i++, player.getTeam().getId());
             ps.setInt(i++, player.getHandicap().ordinal());
-            ps.setString(i++, player.getStatus().name());
+            
+            if (player.getStart() != null)
+                ps.setDate(i++, new java.sql.Date(player.getStart().getTime()));
+            else 
+                ps.setDate(i++, null);
+            
+            if (player.getEnd() != null)
+                ps.setDate(i++, new java.sql.Date(player.getEnd().getTime()));
+            else
+                ps.setDate(i++, null);
+
             return ps;
         };
     }
@@ -58,9 +69,10 @@ public class PlayerAdminDao extends PlayerDao implements PlayerAdminApi {
             "user_id," +
             "team_id," +
             "handicap," +
-            "player_status) " +
+            "start_date," +
+            "end_date) " +
             "VALUES " +
-            "(?,?,?,?,?,?)";
+            "(?,?,?,?,?,?,?)";
 
     static String MODIFY = "UPDATE player " +
             "set " +
@@ -68,5 +80,7 @@ public class PlayerAdminDao extends PlayerDao implements PlayerAdminApi {
             "user_id=?," +
             "team_id=?," +
             "handicap=?," +
+            "start_date=?," +
+            "end_date=?," +
             " where player_id = ?";
 }

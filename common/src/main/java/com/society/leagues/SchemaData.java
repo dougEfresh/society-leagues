@@ -64,7 +64,7 @@ public class SchemaData {
                 player.setTeam(teamApi.get(teamName));
                 player.setDivision(division);
                 player.setSeason(seasonApi.get(division.getType().name()));
-                player.setStatus(Status.ACTIVE);
+                player.setStart(new Date());
                 player.setHandicap(getRandomHandicap(i,division.getType()));
                 playerApi.create(player);
             }

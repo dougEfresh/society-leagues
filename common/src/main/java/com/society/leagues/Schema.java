@@ -78,11 +78,13 @@ public class Schema {
             " user_id int NOT NULL,\n" +
             " team_id int NOT NULL,\n" +
             " handicap int NOT NULL,\n" +
-            " player_status varchar(255) NOT NULL,\n" +
+            " start_date DATE null,\n" +
+            " end_date DATE null,\n" +
             " PRIMARY KEY (player_id),\n" +
             "CONSTRAINT P_S_FK FOREIGN KEY (season_id) REFERENCES season(season_id) ON DELETE CASCADE ON UPDATE RESTRICT ,\n" +
             "CONSTRAINT P_U_FK FOREIGN KEY (user_id)   REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE RESTRICT ,\n" +
             "CONSTRAINT P_T_FK FOREIGN KEY (team_id)   REFERENCES team(team_id) ON DELETE CASCADE ON UPDATE RESTRICT\n" +
+            
             ")\n";
     
       static final String team_match = "create table team_match  (\n" +

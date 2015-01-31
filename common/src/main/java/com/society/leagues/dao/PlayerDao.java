@@ -25,7 +25,8 @@ public class PlayerDao extends ClientDao<Player> implements PlayerClientApi {
         Player player = new Player();
         player.setDivision(division);
         player.setHandicap(Handicap.values()[rs.getInt("handicap")]);
-        player.setStatus(Status.valueOf(rs.getString("player_status")));
+        player.setStart(rs.getDate("start_date"));
+        player.setEnd(rs.getDate("end_date"));
         player.setTeam(team);
         player.setSeason(season);
         player.setUser(user);
