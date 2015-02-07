@@ -7,6 +7,5 @@ import java.util.List;
 import java.util.Map;
 
 @Configuration
-@Primary
 public class SchedulerDao  {
 }

@@ -1,17 +1,16 @@
 package com.society.test;
 
 import com.society.leagues.Main;
-import com.society.leagues.SchemaData;
 import com.society.leagues.client.ApiFactory;
 import com.society.leagues.client.api.ChallengeApi;
-import com.society.leagues.client.api.UserApi;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.dao.UserDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -25,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class,TestBase.class})
 public class ChallengeTest extends TestClientBase  implements ChallengeApi {
-    
+    private static Logger logger = LoggerFactory.getLogger(ChallengeTest.class);
     ChallengeApi api;
     @Autowired UserDao userApi;
 
@@ -48,6 +47,7 @@ public class ChallengeTest extends TestClientBase  implements ChallengeApi {
         User challenger = userApi.get("login4");
         List<User> users = getPotentials(challenger.getId());
         assertNotNull(users);
+        assertFalse(users.isEmpty());
         User opponent = users.get(0);
         Player ch = challenger.getPlayers().stream().filter(p -> p.getDivision().getType() == DivisionType.NINE_BALL_CHALLENGE).findFirst().get();
         Player op = opponent.getPlayers().stream().filter(p -> p.getDivision().getType() == ch.getDivision().getType()).findFirst().orElseGet(null);
@@ -82,7 +82,7 @@ public class ChallengeTest extends TestClientBase  implements ChallengeApi {
     @Test
     public void testList() throws Exception {
         Challenge challenge = create();
-        List<Challenge> challenges = listChallenges(challenge.getChallenger().getUser().getId());
+        List<Challenge> challenges = listChallenges(challenge.getChallenger().getUserId());
         assertNotNull(challenges);
         assertFalse(challenges.isEmpty());
         assertTrue(challenges.size() == 1);
@@ -128,9 +128,10 @@ public class ChallengeTest extends TestClientBase  implements ChallengeApi {
     static int COUNTER = 1;
     
     private Challenge create() {
-        User user = userApi.get("login" +COUNTER++);
+        User user = userApi.get("login" + COUNTER++);
         List<User> users = getPotentials(user.getId());
         assertNotNull(users);
+        assertFalse(users.isEmpty());
         Player opponent = user.getPlayers().stream().findAny().get();
         Player challenger = user.getPlayers().stream().filter(p -> p.getDivision().getType() == opponent.getDivision().getType()).findFirst().orElseGet(null);
         Challenge challenge = new Challenge();
@@ -147,7 +148,8 @@ public class ChallengeTest extends TestClientBase  implements ChallengeApi {
     }
 
     private void verifyUser(User challenger) {
-        challenger = userApi.current(challenger.getId()).get(0);
+        challenger = userApi.get(challenger.getId());
+
         if (challenger.getPlayers() == null || challenger.getPlayers().isEmpty())
             return;
 
@@ -169,11 +171,13 @@ public class ChallengeTest extends TestClientBase  implements ChallengeApi {
                 }
 
                 if (nPlayer != null && player.getDivision().getType() == DivisionType.NINE_BALL_CHALLENGE) {
-                    assertTrue(
-                            player.getHandicap().ordinal() <= nPlayer.getHandicap().ordinal() + 3
-                                    &&
-                                    player.getHandicap().ordinal() >= nPlayer.getHandicap().ordinal() - 3
-                    );
+                    boolean check = player.getHandicap().ordinal() <= nPlayer.getHandicap().ordinal() + 3
+                            &&      player.getHandicap().ordinal() >= nPlayer.getHandicap().ordinal() - 3;
+
+                    if (!check)
+                        logger.info("Player is not with in handicap range\n\n" + player.getHandicap().ordinal() + "\n\n" + nPlayer.getHandicap().ordinal());
+
+                    assertTrue(check);
                 }
             }
         }

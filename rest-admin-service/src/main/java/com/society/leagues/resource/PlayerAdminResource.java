@@ -2,7 +2,7 @@ package com.society.leagues.resource;
 
 import com.society.leagues.client.api.admin.PlayerAdminApi;
 import com.society.leagues.client.api.domain.Player;
-import com.society.leagues.dao.admin.PlayerAdminDao;
+import com.society.leagues.dao.PlayerDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import javax.annotation.security.RolesAllowed;
 @RolesAllowed(value = {"ADMIN"})
 @SuppressWarnings("unused")
 public class PlayerAdminResource extends AdminApiResource implements PlayerAdminApi {
-    @Autowired PlayerAdminDao dao;
+    @Autowired PlayerDao dao;
     private static Logger logger = LoggerFactory.getLogger(PlayerAdminResource.class);
 
     @Override

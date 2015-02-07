@@ -2,7 +2,7 @@ package com.society.leagues.resource;
 
 import com.society.leagues.client.api.admin.TeamAdminApi;
 import com.society.leagues.client.api.domain.Team;
-import com.society.leagues.dao.admin.TeamAdminDao;
+import com.society.leagues.dao.TeamDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import javax.annotation.security.RolesAllowed;
 @SuppressWarnings("unused")
 public class TeamAdminResource extends AdminApiResource implements TeamAdminApi {
     private static Logger logger = LoggerFactory.getLogger(TeamAdminResource.class);
-    @Autowired TeamAdminDao dao;
+    @Autowired TeamDao dao;
 
     @Override
     public Team create(Team team) {

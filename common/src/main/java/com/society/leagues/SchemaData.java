@@ -4,15 +4,13 @@ import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
-import com.society.leagues.dao.admin.*;
+import com.society.leagues.dao.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.List;
-
 
 @Component
 public class SchemaData {
@@ -20,18 +18,20 @@ public class SchemaData {
     public static boolean generated = false;
     private static Logger logger = LoggerFactory.getLogger(SchemaData.class);
     
-    @Autowired SeasonAdminDao seasonApi;
-    @Autowired DivisionAdminDao divisionApi;
-    @Autowired TeamAdminDao teamApi;
-    @Autowired PlayerAdminDao playerApi;
-    @Autowired UserAdminDao userApi;
-    @Autowired MatchAdminDao matchAdminApi;
+    @Autowired SeasonDao seasonApi;
+    @Autowired DivisionDao divisionApi;
+    @Autowired TeamDao teamApi;
+    @Autowired PlayerDao playerApi;
+    @Autowired UserDao userApi;
+    @Autowired MatchDao matchAdminApi;
     
     static int NUM_PLAYERS = 80;
     
     public void generateData() {
         if (generated)
             return;
+
+        generated = true;
         
         logger.info("***** generating data *****");
         
@@ -59,7 +59,7 @@ public class SchemaData {
         for (int i = 1 ; i <= NUM_PLAYERS ; i++) {
             for (Division division : divisionApi.get()) {
                 Player player = new Player();
-                player.setUser(userApi.get("login"+i));
+                player.setUserId(userApi.getWithNoPlayer("login"+i).getId());
                 String teamName = "team " + ((i % 8) + 1);
                 player.setTeam(teamApi.get(teamName));
                 player.setDivision(division);
@@ -69,7 +69,7 @@ public class SchemaData {
                 playerApi.create(player);
             }
         }
-        
+        /*
         Match match = new Match();
         User u1 = userApi.get("login1");
         User u2 = userApi.get("login2");
@@ -80,9 +80,7 @@ public class SchemaData {
         match.setMatchDate(new Date());
         match.setSeason(p.getSeason());
         matchAdminApi.create(match);
-
-        generated = true;
-        
+        */
     }
     
     private Handicap getRandomHandicap(int i, DivisionType divisionType) {

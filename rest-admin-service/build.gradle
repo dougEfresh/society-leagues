@@ -40,8 +40,6 @@ dependencies {
     //Test
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile(project(':test-framework'))
-    //To generate schema
-    testCompile(project(':rest-client-service'))
 }
 
 task integrationTest(type: Test) {

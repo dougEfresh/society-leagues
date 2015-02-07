@@ -2,12 +2,16 @@ package com.society.leagues.dao;
 
 import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.client.api.domain.User;
+import com.society.leagues.dao.Dao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 @Component
-public class AuthDao extends Dao {
+public class AuthDao {
+    @Autowired JdbcTemplate jdbcTemplate;
 
     public User getUser(String username, String password) {
         Map<String, Object> data = jdbcTemplate.queryForMap(

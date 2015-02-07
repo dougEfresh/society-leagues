@@ -9,17 +9,7 @@ import java.util.List;
 
 public interface ClientApi<T extends LeagueObject> {
     
-    List<T> current(List<User> users);
-
-    List<T> current(Integer userId);
-
-    List<T> past(List<User> user);
-
-    List<T> past(Integer userId);
-    
-    List<T> all(List<User> user);
-
-    List<T> all(Integer userId);
+    List<T> get(List<Integer> id);
     
     T get(Integer id);
     

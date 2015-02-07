@@ -13,37 +13,16 @@ import java.util.List;
 public interface SeasonClientApi extends ClientApi<Season> {
 
     @Override
-    @Path("/api/client/season/current")
-    @POST
-    List<Season> current(List<User> users);
-
-    @Override
-    @Path("/api/client/season/current/{id}")
     @GET
-    List<Season> current(@PathParam(value = "id")Integer userId);
-
-    @Override
-    @Path("/api/client/season/past")
-    @POST
-    List<Season> past(List<User> user);
-
-    @Override
-    @Path("/api/client/season/past/{id}")
-    @GET
-    List<Season> past(@PathParam(value = "id")Integer userId);
-
-    @Override
-    @Path("/api/client/season/all")
-    @POST
-    List<Season> all(List<User> user);
-
-    @Override
-    @Path("/api/client/season/all/{id}")
-    @GET
-    List<Season> all(@PathParam(value = "id")Integer userId);
+    @Path(value = "/api/client/season")
+    List<Season> get();
 
     @Override
     @GET
-    @Path("/api/client/season/get/{id}")
+    @Path("/api/client/season/id/{id}")
     Season get(@PathParam(value = "id")Integer id);
+
+    @GET
+    @Path("/api/client/season/name/{name}")
+    Season get(@PathParam(value = "name")String name);
 }

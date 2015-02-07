@@ -15,36 +15,6 @@ public class UserResource extends ApiResource implements UserClientApi {
     @Autowired UserDao dao;
 
     @Override
-    public List<User> current(List<User> users) {
-        return dao.current(users);
-    }
-
-    @Override
-    public List<User> current(Integer userId) {
-        return dao.current(userId);
-    }
-
-    @Override
-    public List<User> past(List<User> user) {
-        return dao.past(user);
-    }
-
-    @Override
-    public List<User> past(Integer userId) {
-        return dao.past(userId);
-    }
-
-    @Override
-    public List<User> all(List<User> user) {
-        return dao.all(user);
-    }
-
-    @Override
-    public List<User> all(Integer userId) {
-        return dao.all(userId);
-    }
-
-    @Override
     public User get(Integer id) {
         return dao.get(id);
     }
@@ -57,5 +27,10 @@ public class UserResource extends ApiResource implements UserClientApi {
     @Override
     public User get(String login) {
         return dao.get(login);
+    }
+
+    @Override
+    public List<User> get(List<Integer> id) {
+        return dao.get(id);
     }
 }

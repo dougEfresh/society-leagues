@@ -39,6 +39,4 @@ dependencies {
     //Test
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile(project(':test-framework'))
-    //To generate schema
-    testCompile(project(':rest-admin-service'))
 }

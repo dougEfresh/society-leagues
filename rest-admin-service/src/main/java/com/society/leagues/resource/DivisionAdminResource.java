@@ -2,7 +2,7 @@ package com.society.leagues.resource;
 
 import com.society.leagues.client.api.admin.DivisionAdminApi;
 import com.society.leagues.client.api.domain.division.Division;
-import com.society.leagues.dao.admin.DivisionAdminDao;
+import com.society.leagues.dao.DivisionDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import javax.annotation.security.RolesAllowed;
 public class DivisionAdminResource extends AdminApiResource implements DivisionAdminApi {
 
     private static Logger logger = LoggerFactory.getLogger(DivisionAdminResource.class);
-    @Autowired DivisionAdminDao dao;
+    @Autowired DivisionDao dao;
 
     @Override
     public Division create(Division division) {

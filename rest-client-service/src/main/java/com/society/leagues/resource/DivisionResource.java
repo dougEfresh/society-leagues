@@ -17,36 +17,6 @@ public class DivisionResource extends ApiResource implements DivisionClientApi {
     @Autowired DivisionDao dao;
 
     @Override
-    public List<Division> current(List<User> users) {
-        return dao.current(users);
-    }
-
-    @Override
-    public List<Division> current(Integer userId) {
-        return dao.current(userId);
-    }
-
-    @Override
-    public List<Division> past(List<User> user) {
-        return dao.past(user);
-    }
-
-    @Override
-    public List<Division> past(Integer userId) {
-        return dao.past(userId);
-    }
-
-    @Override
-    public List<Division> all(List<User> user) {
-        return dao.all(user);
-    }
-
-    @Override
-    public List<Division> all(Integer userId) {
-        return dao.all(userId);
-    }
-
-    @Override
     public Division get(Integer id) {
         return dao.get(id);
     }
@@ -54,5 +24,10 @@ public class DivisionResource extends ApiResource implements DivisionClientApi {
     @Override
     public List<Division> get() {
         return dao.get();
+    }
+
+    @Override
+    public List<Division> get(List<Integer> id) {
+        return dao.get(id);
     }
 }

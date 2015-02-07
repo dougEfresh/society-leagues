@@ -23,10 +23,15 @@ public class User extends LeagueObject {
     @NotNull
     Role role;
 
-    Set<Division> divisions;
-    Set<Season> seasons;
-    Set<Team> teams;
-    Set<Player> players;
+    Set<Division> divisions = new TreeSet<>();
+    Set<Season> seasons = new TreeSet<>();
+    Set<Team> teams = new TreeSet<>();
+    Set<Player> players = new TreeSet<>();
+
+    Set<Division> pastDivision = new TreeSet<>();
+    Set<Season> pastSeasons = new TreeSet<>();
+    Set<Team> pastTeams = new TreeSet<>();
+    Set<Player> pastPlayers = new TreeSet<>();
 
     public User(String login, String password, Role role) {
         this.login = login;
@@ -150,12 +155,58 @@ public class User extends LeagueObject {
     }
     
     public void addPlayer(Player player) {
-        if (this.players == null) 
-            this.players = new TreeSet<>();
-        
         this.players.add(player);
     }
-    
+
+
+    public Set<Division> getPastDivision() {
+        return pastDivision;
+    }
+
+    public void  addPastDivisions(List<Division> pastDivision) {
+        this.pastDivision.addAll(pastDivision);
+    }
+
+    public Set<Season> getPastSeasons() {
+        return pastSeasons;
+    }
+
+    public void addPastSeasons(List<Season> pastSeasons) {
+        this.pastSeasons.addAll(pastSeasons);
+    }
+
+    public Set<Team> getPastTeams() {
+        return pastTeams;
+    }
+
+    public void addPastTeams(List<Team> pastTeams) {
+        this.pastTeams.addAll(pastTeams);
+    }
+
+    public Set<Player> getPastPlayers() {
+        return pastPlayers;
+    }
+
+    public void addPastPlayers(List<Player> pastPlayers) {
+        this.pastPlayers.addAll(pastPlayers);
+    }
+
+    public void setPastDivision(Set<Division> pastDivision) {
+        this.pastDivision = pastDivision;
+    }
+
+    public void setPastSeasons(Set<Season> pastSeasons) {
+        this.pastSeasons = pastSeasons;
+    }
+
+    public void setPastTeams(Set<Team> pastTeams) {
+        this.pastTeams = pastTeams;
+    }
+
+    public void setPastPlayers(Set<Player> pastPlayers) {
+        this.pastPlayers = pastPlayers;
+    }
+
     public Set<Division> getDivisions() {
         return divisions;
     }

@@ -1,8 +1,6 @@
 buildscript {
   repositories {
       jcenter()
-      maven { url "http://repo.spring.io/snapshot" }
-      maven { url "http://repo.spring.io/milestone" }
       mavenLocal()
   }
   dependencies {
@@ -13,8 +11,6 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        maven { url "http://repo.spring.io/snapshot" }
-        maven { url "http://repo.spring.io/milestone" }
         mavenLocal()
     }
 }

@@ -1,26 +1,29 @@
 package com.society.leagues.dao;
 
 import com.society.leagues.client.api.PlayerClientApi;
+import com.society.leagues.client.api.admin.PlayerAdminApi;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Primary;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
-@Primary
-public class PlayerDao extends ClientDao<Player> implements PlayerClientApi {
+public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdminApi {
+    @Autowired SeasonDao seasonDao;
+    @Autowired TeamDao teamDao;
+    @Autowired DivisionDao divisionDao;
 
     public RowMapper<Player> rowMapper = (rs, rowNum) -> {
-        Season season = SeasonDao.rowMapper.mapRow(rs,rowNum);
-        Team team = TeamDao.rowMapper.mapRow(rs,rowNum);
-        User user = UserDao.rowMapper.mapRow(rs,rowNum);
-        Division division = DivisionDao.rowMapper.mapRow(rs,rowNum);
+        Season season = seasonDao.get(rs.getInt("season_id"));
+        Team team = teamDao.get(rs.getInt("team_id"));
+        Division division = divisionDao.get(rs.getInt("division_id"));
         
         Player player = new Player();
         player.setDivision(division);
@@ -29,30 +32,90 @@ public class PlayerDao extends ClientDao<Player> implements PlayerClientApi {
         player.setEnd(rs.getDate("end_date"));
         player.setTeam(team);
         player.setSeason(season);
-        player.setUser(user);
+        player.setUserId(rs.getInt("user_id"));
         player.setId(rs.getInt("player_id"));
         return player;
     };
 
-    @Override
-    public List<Player> get() {
-        return list(CLIENT_REQUEST);
+    public List<Player> getByUser(User user) {
+        return  get().stream().filter(p -> p.getUserId().equals(user.getId())).collect(Collectors.toList());
     }
 
     @Override
-    public Player get(Integer id) {
-        return get(id,CLIENT_REQUEST);
+    public Player create(final Player player) {
+        return create(player,getCreateStatement(player));
     }
 
     @Override
-    public List<Player> findHandicapRange(Division division, Integer to, Integer from) {
-        return list(CLIENT_REQUEST +
-                            " where d.division_id = ? and handicap between ? and ?",
-                    division.getId(),to,from);
+    public Boolean delete(final Player player) {
+        return delete(player,"update player set end_date = CURRENT_TIMESTAMP WHERE player_id = ?");
     }
+
+    @Override
+    public Player modify(final Player player) {
+        return modify(player,MODIFY,
+                player.getSeason().getId(),
+                player.getUserId(),
+                player.getTeam().getId(),
+                player.getStart(),player.getEnd(),
+                player.getId()
+        );
+
+    }
+
+    protected PreparedStatementCreator getCreateStatement(final Player player) {
+        return con -> {
+            PreparedStatement ps = con.prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
+            int i = 1;
+            ps.setInt(i++, player.getSeason().getId());
+            ps.setInt(i++, player.getDivision().getId());
+            ps.setInt(i++, player.getUserId());
+            ps.setInt(i++, player.getTeam().getId());
+            ps.setInt(i++, player.getHandicap().ordinal());
+
+            if (player.getStart() != null)
+                ps.setDate(i++, new java.sql.Date(player.getStart().getTime()));
+            else
+                ps.setDate(i++, null);
+
+            if (player.getEnd() != null)
+                ps.setDate(i++, new java.sql.Date(player.getEnd().getTime()));
+            else
+                ps.setDate(i++, null);
+
+            return ps;
+        };
+    }
+
+    static String CREATE = "INSERT INTO player " +
+            "(" +
+            "season_id," +
+            "division_id," +
+            "user_id," +
+            "team_id," +
+            "handicap," +
+            "start_date," +
+            "end_date) " +
+            "VALUES " +
+            "(?,?,?,?,?,?,?)";
+
+    static String MODIFY = "UPDATE player " +
+            "set " +
+            "season_id=?," +
+            "user_id=?," +
+            "team_id=?," +
+            "handicap=?," +
+            "start_date=?," +
+            "end_date=?," +
+            " where player_id = ?";
 
     @Override
     public RowMapper<Player> getRowMapper() {
             return rowMapper;
+    }
+
+    @Override
+    public String getSql() {
+        return "select * from player";
     }
 }

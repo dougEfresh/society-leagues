@@ -15,37 +15,7 @@ import java.util.List;
 public interface UserClientApi extends ClientApi<User> {
     
     @Override
-    @Path("/api/client/user/current")
-    @POST
-    List<User> current(List<User> users);
-
-    @Override
-    @Path("/api/client/user/current/{id}")
-    @GET
-    List<User> current(@PathParam(value = "id") Integer userId);
-
-    @Override
-    @Path("/api/client/user/past")
-    @POST
-    List<User> past(List<User> user);
-
-    @Override
-    @Path("/api/client/user/past/{id}")
-    @GET
-    List<User> past(@PathParam(value = "id") Integer userId);
-
-    @Override
-    @Path("/api/client/user/all")
-    @POST
-    List<User> all(List<User> user);
-
-    @Override
-    @Path("/api/client/user/all/{id}")
-    @GET
-    List<User> all(@PathParam(value = "id") Integer userId);
-
-    @Override
-    @Path(value = "/api/client/user/get")
+    @Path(value = "/api/client/users")
     @GET
     List<User> get();
 
@@ -57,7 +27,6 @@ public interface UserClientApi extends ClientApi<User> {
     @Path(value = "/api/client/user/login/{login}")
     @GET
     User get(@PathParam(value = "login") String login);
-
 
 }
 

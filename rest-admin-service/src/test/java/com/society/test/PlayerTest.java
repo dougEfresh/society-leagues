@@ -7,10 +7,10 @@ import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
-import com.society.leagues.dao.admin.DivisionAdminDao;
-import com.society.leagues.dao.admin.SeasonAdminDao;
-import com.society.leagues.dao.admin.TeamAdminDao;
-import com.society.leagues.dao.admin.UserAdminDao;
+import com.society.leagues.dao.DivisionDao;
+import com.society.leagues.dao.SeasonDao;
+import com.society.leagues.dao.TeamDao;
+import com.society.leagues.dao.UserDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,10 +29,10 @@ import static org.junit.Assert.assertNotNull;
 @Component
 public class PlayerTest extends TestBase {
     PlayerAdminApi api;
-    @Autowired SeasonAdminDao seasonApi;
-    @Autowired DivisionAdminDao divisionApi;
-    @Autowired TeamAdminDao teamApi;
-    @Autowired UserAdminDao userApi;
+    @Autowired SeasonDao seasonApi;
+    @Autowired DivisionDao divisionApi;
+    @Autowired TeamDao teamApi;
+    @Autowired UserDao userApi;
 
     @Before
     public void setup() throws Exception {

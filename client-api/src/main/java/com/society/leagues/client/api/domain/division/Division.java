@@ -35,4 +35,8 @@ public class Division extends LeagueObject {
                 ", id=" + id +
                 '}';
     }
+
+    public boolean isChallenge() {
+        return this.getType() == DivisionType.NINE_BALL_CHALLENGE || this.getType() == DivisionType.EIGHT_BALL_CHALLENGE;
+    }
 }

@@ -16,30 +16,6 @@ public interface MatchApi extends ClientApi<Match> {
     Match get(@PathParam(value = "id") Integer id);
 
     @Override
-    @POST @Path("/api/client/match/current")
-    List<Match> current(List<User> users);
-
-    @Override
-    @GET @Path("/api/client/match/current/{id}")
-    List<Match> current(@PathParam(value = "id") Integer userId);
-
-    @Override
-    @POST @Path("/api/client/match/past")
-    List<Match> past(List<User> user);
-
-    @Override
-    @GET @Path("/api/client/match/past/{id}")
-    List<Match> past(@PathParam(value = "id") Integer userId);
-
-    @Override
-    @POST @Path("/api/client/match/all")
-    List<Match> all(List<User> user);
-
-    @Override
-    @GET @Path("/api/client/match/all/{id}")
-    List<Match> all(@PathParam(value = "id") Integer userId);
-
-    @Override
     @GET @Path("/api/client/match/get")
     List<Match> get();
 

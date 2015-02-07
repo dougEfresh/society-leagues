@@ -42,6 +42,4 @@ public interface ChallengeApi {
     @POST
     @Path(value = "/api/challenge/slots")
     List<Slot> slots(Date date);
-    
-    
 }

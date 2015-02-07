@@ -13,7 +13,7 @@ public class Player extends LeagueObject {
     @NotNull
     Division division;
     @NotNull
-    User user;
+    Integer userId;
     @NotNull
     Team team;
     @NotNull
@@ -24,14 +24,14 @@ public class Player extends LeagueObject {
     
     public Player(Season season, User user, Team team, Handicap handicap, Division division) {
         this.season = season;
-        this.user = user;
+        this.userId = user.getId();
         this.team = team;
         this.handicap = handicap;
         this.division = division;
     }
     public Player(Season season, User user, Team team, Handicap handicap, Division division, Date start) {
         this.season = season;
-        this.user = user;
+        this.userId = user.getId();
         this.team = team;
         this.handicap = handicap;
         this.division = division;
@@ -47,14 +47,6 @@ public class Player extends LeagueObject {
 
     public void setSeason(Season season) {
         this.season = season;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public Team getTeam() {
@@ -114,5 +106,27 @@ public class Player extends LeagueObject {
 
     public void setEnd(Date end) {
         this.end = end;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "season=" + season +
+                ", division=" + division +
+                ", user=" + userId +
+                ", team=" + team +
+                ", handicap=" + handicap +
+                ", matches=" + matches +
+                ", start=" + start +
+                ", end=" + end +
+                '}';
     }
 }

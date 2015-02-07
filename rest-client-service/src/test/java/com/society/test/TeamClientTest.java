@@ -27,7 +27,6 @@ import static org.junit.Assert.*;
 @Component
 public class TeamClientTest extends TestClientBase {
     TeamClientApi api;
-    @Autowired UserDao userDao;
 
     @Before
     public void setup() throws Exception {
@@ -40,16 +39,5 @@ public class TeamClientTest extends TestClientBase {
         List<Team> teams = api.get();
         assertNotNull(teams);
         assertFalse(teams.isEmpty());
-        User u = userDao.get("login1");
-        teams = api.current(u.getId());
-        assertNotNull(teams);
-        assertFalse(teams.isEmpty());
-
-        Team team = api.get(teams.get(0).getId());
-        assertNotNull(team);
-        teams = api.past(u.getId());
-        
-        assertNotNull(teams);
-        assertTrue(teams.isEmpty());
     }
 }

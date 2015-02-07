@@ -92,6 +92,7 @@ public class Schema {
               " season_id int NOT NULL CONSTRAINT T_M_S_K REFERENCES season ON DELETE CASCADE,\n" +
               " home_team_id int NOT NULL CONSTRAINT HOME_K REFERENCES team ON DELETE CASCADE  ,\n" +
               " away_team_id int NOT NULL CONSTRAINT AWAY_K REFERENCES team ON DELETE CASCADE ,\n" +
+              " division_id int NOT NULL CONSTRAINT DIV_TEAM_K REFERENCES division ON DELETE CASCADE ,\n" +
               " match_date date not null, " +
               " racks int not null DEFAULT 0," +
               " win int," +

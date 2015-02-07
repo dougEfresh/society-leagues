@@ -1,18 +1,17 @@
 package com.society.leagues.client.api.domain;
 
 
+import com.society.leagues.client.api.domain.division.Division;
+
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class Match extends LeagueObject  {
-    @NotNull
-    Team home;
-    @NotNull
-    Team away;
-    @NotNull
-    Season season;
-    @NotNull
-    Date matchDate;
+    @NotNull Team home;
+    @NotNull Team away;
+    @NotNull Season season;
+    @NotNull Division division;
+    @NotNull Date matchDate;
     Integer racks;
     Integer win;
 
@@ -88,5 +87,13 @@ public class Match extends LeagueObject  {
             return away;
         }
         return null;
+    }
+
+    public Division getDivision() {
+        return division;
+    }
+
+    public void setDivision(Division division) {
+        this.division = division;
     }
 }
