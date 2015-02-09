@@ -69,6 +69,7 @@ public class SchemaData {
                 playerApi.create(player);
             }
         }
+
         /*
         Match match = new Match();
         User u1 = userApi.get("login1");

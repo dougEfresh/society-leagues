@@ -22,4 +22,8 @@ dependencies {
     compile 'com.owlike:genson:1.2'
     compile "com.h2database:h2:1.4.185"
 
+    //Swagger
+    compile 'com.wordnik:swagger-annotations:1.3.12'
+    compile 'com.wordnik:swagger-jersey2-jaxrs_2.10:1.3.12'
+
 }

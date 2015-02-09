@@ -25,7 +25,7 @@ public class AuthResource extends ApiResource implements AuthApi {
     @Autowired ServiceAuthenticator authenticator;
     @Autowired TokenService tokenService;
 
-     @Override
+    @Override
     public TokenResponse authenticate(User user) {
         if (user == null)
             return new TokenResponse();
@@ -43,6 +43,7 @@ public class AuthResource extends ApiResource implements AuthApi {
 
             String token = tokenService.generateNewToken();
             tokenService.store(token, new UserSecurityContext(authUser));
+            response.setId(authUser.getId());
             response.setToken(token);
             response.setSuccess(true);
         } catch (Throwable t) {

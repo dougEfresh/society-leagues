@@ -27,16 +27,16 @@ public class MatchDao extends Dao<Match> implements MatchApi, MatchAdminApi {
     }
 
      public RowMapper<Match> rowMapper = (rs, rowNum) -> {
-        Season season = seasonDao.get(rs.getInt("season_id"));
-        Team team = teamDao.get(rs.getInt("team_id"));
-        Division division = divisionDao.get(rs.getInt("division_id"));
-
-        return new Match();
+         Season season = seasonDao.get(rs.getInt("season_id"));
+         Team team = teamDao.get(rs.getInt("team_id"));
+         Division division = divisionDao.get(rs.getInt("division_id"));
+         Match m = new Match();
+         return m;
     };
 
     @Override
     public RowMapper<Match> getRowMapper() {
-        return null;
+        return rowMapper;
     }
 
     @Override

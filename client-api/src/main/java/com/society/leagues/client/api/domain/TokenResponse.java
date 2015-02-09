@@ -1,7 +1,7 @@
 package com.society.leagues.client.api.domain;
 
 public class TokenResponse extends LeagueObject {
-    private String token;
+    String token;
     boolean success;
 
     public TokenResponse() {
