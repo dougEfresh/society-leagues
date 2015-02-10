@@ -34,9 +34,10 @@ public class ServerControl {
     public void startServer() throws Exception {
         server = GrizzlyHttpServerFactory.createHttpServer(
                 getBaseURI(),
-                app);
+                app,true);
 
         server.start();
+
     }
 
     public URI getBaseURI() {
