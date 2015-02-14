@@ -44,7 +44,7 @@ public class ChallengeTest extends TestClientBase  implements ChallengeApi {
 
     @Test
     public void testRequestChallenge() throws Exception {
-        User challenger = userApi.get("login4");
+        User challenger = userApi.get("login4@example.com");
         List<User> users = getPotentials(challenger.getId());
         assertNotNull(users);
         assertFalse(users.isEmpty());
@@ -128,7 +128,7 @@ public class ChallengeTest extends TestClientBase  implements ChallengeApi {
     static int COUNTER = 1;
     
     private Challenge create() {
-        User user = userApi.get("login" + COUNTER++);
+        User user = userApi.get("login" + COUNTER++ + "@example.com");
         List<User> users = getPotentials(user.getId());
         assertNotNull(users);
         assertFalse(users.isEmpty());

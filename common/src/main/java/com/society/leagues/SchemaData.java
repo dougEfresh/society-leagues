@@ -48,10 +48,10 @@ public class SchemaData {
         for (int i = 1 ; i <= NUM_PLAYERS ; i++){
             User user = new User();
             user.setFirstName("player_"+ i);
-            user.setLastName(i + "");
-            user.setEmail(i + "");
+            user.setLastName("lastname_" + i);
+            user.setEmail(i + "@example.com");
             user.setPassword("password" + i);
-            user.setLogin("login" + i);
+            user.setLogin("login" + i + "@example.com");
             user.addRole(Role.PLAYER);
             userApi.create(user);
         }
@@ -59,7 +59,7 @@ public class SchemaData {
         for (int i = 1 ; i <= NUM_PLAYERS ; i++) {
             for (Division division : divisionApi.get()) {
                 Player player = new Player();
-                player.setUserId(userApi.getWithNoPlayer("login"+i).getId());
+                player.setUserId(userApi.getWithNoPlayer("login"+i+"@example.com").getId());
                 String teamName = "team " + ((i % 8) + 1);
                 player.setTeam(teamApi.get(teamName));
                 player.setDivision(division);
