@@ -23,7 +23,8 @@ public class DaoConfig {
     @Value("${db:league}")
     String db;
     @Value("${embedded:false}")
-    boolean useEmbedded;
+    boolean useEmbedded = false;
+
     static String dbName = System.currentTimeMillis() + "";
 
     @Bean

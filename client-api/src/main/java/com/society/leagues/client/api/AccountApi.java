@@ -10,12 +10,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import java.util.Map;
 
-@Api(value = "/account" ,
+@Api(value = "/api/v1/account" ,
         description = "Account Information & Changes ",
         basePath = "/api/",
         position = 2
 )
-@Path(value = "/api/account")
+@Path(value = "/api/v1/account")
 @Consumes(MediaType.APPLICATION_JSON)
 public interface AccountApi {
 

@@ -23,28 +23,18 @@ public class RestAppConfig extends ResourceConfig {
     @Autowired List<ApiResource> resources;
     @Autowired SecurityFilter securityFilter;
 
-    public RestAppConfig() {
-        super();
-        BeanConfig beanConfig = new BeanConfig();
-        beanConfig.setVersion("1.0.2");
-        beanConfig.setBasePath("http://localhost:8002/api");
-        beanConfig.setResourcePackage("com.society");
-        beanConfig.setScan(true);
-    }
-
-
-
     @PostConstruct
     public void init() {
         BeanConfig beanConfig = new BeanConfig();
-        beanConfig.setVersion("1.0.2");
+        beanConfig.setVersion("1.0.1");
         beanConfig.setBasePath("http://localhost:8081/api");
-        beanConfig.setResourcePackage("com.society");
+        beanConfig.setResourcePackage("com.society.leagues.client");
         beanConfig.setScan(true);
 
-        register(com.wordnik.swagger.jersey.listing.ApiListingResourceJSON.class);
-        register(com.wordnik.swagger.jersey.listing.JerseyApiDeclarationProvider.class);
-        register(com.wordnik.swagger.jersey.listing.JerseyResourceListingProvider.class);
+        register(com.wordnik.swagger.jaxrs.listing.ApiListingResource.class);
+        register(com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider.class);
+        register(com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON.class);
+        register(com.wordnik.swagger.jaxrs.listing.ResourceListingProvider.class);
 
         property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
         property(ServerProperties.JSON_PROCESSING_FEATURE_DISABLE, false);
@@ -63,5 +53,4 @@ public class RestAppConfig extends ResourceConfig {
         resources.forEach(this::register);
 
     }
-
 }

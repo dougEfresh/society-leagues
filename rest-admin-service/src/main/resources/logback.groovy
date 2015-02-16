@@ -31,7 +31,7 @@ appender("CONSOLE", ch.qos.logback.core.ConsoleAppender) {
 }
 
 logger("com.society", DEBUG)
-logger("org.glassfish",DEBUG)
+logger("org.glassfish",INFO)
 logger("log4jdbc.log4j2",DEBUG)
-logger("com.wordnik",DEBUG)
+logger("com.wordnik",INFO)
 root(DEBUG, ["FILE", "CONSOLE"])

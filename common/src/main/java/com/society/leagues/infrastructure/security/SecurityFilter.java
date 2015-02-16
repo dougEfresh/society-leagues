@@ -27,7 +27,7 @@ public class SecurityFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-        if (isLoginRequest(requestContext))
+        if (isLoginOrApiDocs(requestContext))
             return;
 
         if (noToken(requestContext)) {
@@ -39,8 +39,11 @@ public class SecurityFilter implements ContainerRequestFilter {
         requestContext.setSecurityContext(getSecurityContext(requestContext));
     }
 
-    public boolean isLoginRequest(ContainerRequestContext requestContext) {
-        return ApiResource.AUTHENTICATE_URL.contains(requestContext.getUriInfo().getPath());
+    public boolean isLoginOrApiDocs(ContainerRequestContext requestContext) {
+        String path = requestContext.getUriInfo().getPath();
+        return  path.contains("authenticate") ||
+                path.contains("docs") ||
+                path.contains("api-doc");
     }
 
     public boolean noToken(ContainerRequestContext requestContext) {

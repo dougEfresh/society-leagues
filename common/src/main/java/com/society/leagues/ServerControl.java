@@ -1,8 +1,11 @@
 package com.society.leagues;
 
 import com.society.leagues.conf.RestAppConfig;
+import org.glassfish.grizzly.http.server.CLStaticHttpHandler;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.NetworkListener;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpContainer;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpContainerProvider;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +35,16 @@ public class ServerControl {
     }
 
     public void startServer() throws Exception {
-        server = GrizzlyHttpServerFactory.createHttpServer(
-                getBaseURI(),
-                app,true);
+        server = GrizzlyHttpServerFactory.createHttpServer(getBaseURI());
+
+        //Api docs
+        CLStaticHttpHandler httpHandler = new CLStaticHttpHandler(this.getClass().getClassLoader(),"/public/");
+        server.getServerConfiguration().addHttpHandler(httpHandler,"/doc");
+
+        //JAX resources
+        GrizzlyHttpContainerProvider provider = new GrizzlyHttpContainerProvider();
+        GrizzlyHttpContainer container = provider.createContainer(GrizzlyHttpContainer.class, app);
+        server.getServerConfiguration().addHttpHandler(container,"/");
 
         server.start();
 

@@ -1,6 +1,7 @@
 package com.society.leagues.resource;
 
 import com.society.leagues.client.api.AuthApi;
+import com.society.leagues.client.api.domain.Login;
 import com.society.leagues.client.api.domain.TokenResponse;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.infrastructure.security.ServiceAuthenticator;
@@ -14,10 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Api(value = "/auth",
-        description = "Login to get token",
-        position = 1,
-        produces = "application/json")
 @Component
 @SuppressWarnings("unused")
 public class AuthResource extends ApiResource implements AuthApi {
@@ -26,11 +23,11 @@ public class AuthResource extends ApiResource implements AuthApi {
     @Autowired TokenService tokenService;
 
     @Override
-    public TokenResponse authenticate(User user) {
+    public TokenResponse authenticate(Login user) {
         if (user == null)
             return new TokenResponse();
 
-         return auth(user.getLogin(),user.getPassword());
+         return auth(user.getUsername(),user.getPassword());
     }
 
     private TokenResponse auth(String username, String password) {
