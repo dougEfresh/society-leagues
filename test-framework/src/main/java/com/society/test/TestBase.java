@@ -6,6 +6,7 @@ import com.society.leagues.SchemaData;
 import com.society.leagues.ServerControl;
 import com.society.leagues.client.ApiFactory;
 import com.society.leagues.client.api.AuthApi;
+import com.society.leagues.client.api.domain.Login;
 import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.client.api.domain.TokenResponse;
 import com.society.leagues.client.api.domain.User;
@@ -40,11 +41,11 @@ public class TestBase {
     }
     
     public String authenticate(Role role) {
-        User user;
+        Login user;
         if (Role.isAdmin(role))
-            user = new User(ADMIN_USER,ADMIN_PASS);
+           user = new Login(ADMIN_USER,ADMIN_PASS);
         else
-            user = new User(NORMAL_USER,NORMAL_PASS);
+            user = new Login(NORMAL_USER,NORMAL_PASS);
 
         TokenResponse response = authApi.authenticate(user);
         assertNotNull(response);

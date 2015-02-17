@@ -61,7 +61,7 @@ public class DaoConfig {
     }
 
     public static DataSource getEmbeddedDatasource() {
-        logger.info("***** Using embedded DB ****");
+        logger.info("***** Using embedded DB ****  " + dbName);
         String className = "org.h2.Driver";
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setUrl("jdbc:h2:mem:" + dbName);

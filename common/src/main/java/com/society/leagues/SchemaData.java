@@ -8,8 +8,11 @@ import com.society.leagues.dao.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Date;
 
 @Component
@@ -17,16 +20,16 @@ public class SchemaData {
 
     public static boolean generated = false;
     private static Logger logger = LoggerFactory.getLogger(SchemaData.class);
-    
+
     @Autowired SeasonDao seasonApi;
     @Autowired DivisionDao divisionApi;
     @Autowired TeamDao teamApi;
     @Autowired PlayerDao playerApi;
     @Autowired UserDao userApi;
     @Autowired MatchDao matchAdminApi;
-    
+
     static int NUM_PLAYERS = 80;
-    
+
     public void generateData() {
         if (generated)
             return;

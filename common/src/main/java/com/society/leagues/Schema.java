@@ -10,7 +10,7 @@ import javax.annotation.PostConstruct;
 
 @Component
 public class Schema {
-    @Value("${embedded:false}")
+    @Value("${embedded:true}")
     boolean embedded;
     @Autowired JdbcTemplate jdbcTemplate;
     @Autowired SchemaData schemaData;
@@ -22,6 +22,7 @@ public class Schema {
 
         createDb(jdbcTemplate);
         createAccounts(jdbcTemplate);
+        schemaData.generateData();
     }
 
     static boolean createdSchema;
@@ -121,6 +122,8 @@ public class Schema {
         if (createdSchema)
             return;
 
+        createdSchema = true;
+
         jdbcTemplate.update(token);
         jdbcTemplate.update(user);
         jdbcTemplate.update(division);
@@ -129,7 +132,7 @@ public class Schema {
         jdbcTemplate.update(player);
         jdbcTemplate.update(team_match);
         jdbcTemplate.update(challenge);
-        createdSchema = true;
+
     }
 
     public static final String NORMAL_USER = "email_608@domain.com";
@@ -140,6 +143,8 @@ public class Schema {
     public static void createAccounts(JdbcTemplate jdbcTemplate) {
         if (createdAccounts)
             return;
+
+        createdAccounts = true;
 
         jdbcTemplate.update("INSERT INTO users (login,role,passwd)" +
                         " VALUES (?,?,?)",

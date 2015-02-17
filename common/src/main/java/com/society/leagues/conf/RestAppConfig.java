@@ -43,7 +43,9 @@ public class RestAppConfig extends ResourceConfig {
         property(ServerProperties.MONITORING_STATISTICS_ENABLED,true);
 
         register(RolesAllowedDynamicFeature.class);
-        //register(LoggingFilter.class);
+        java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(LoggingFilter.class.getName());
+        LoggingFilter loggingFilter  = new LoggingFilter(LOGGER,true);
+        register(loggingFilter);
         register(JacksonFeature.class);
         register(securityFilter);
         logger.info("Found " + resources.size() + " resources");

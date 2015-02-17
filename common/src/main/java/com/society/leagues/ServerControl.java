@@ -41,6 +41,10 @@ public class ServerControl {
         CLStaticHttpHandler httpHandler = new CLStaticHttpHandler(this.getClass().getClassLoader(),"/public/");
         server.getServerConfiguration().addHttpHandler(httpHandler,"/doc");
 
+        //Api docs
+        CLStaticHttpHandler demoHttpHandler = new CLStaticHttpHandler(this.getClass().getClassLoader(),"/public/demo/");
+        server.getServerConfiguration().addHttpHandler(httpHandler,"/demo");
+
         //JAX resources
         GrizzlyHttpContainerProvider provider = new GrizzlyHttpContainerProvider();
         GrizzlyHttpContainer container = provider.createContainer(GrizzlyHttpContainer.class, app);

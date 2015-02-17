@@ -37,6 +37,9 @@ public class LeagueCache<T extends LeagueObject> {
     }
 
     public synchronized void set(Collection<T> objects) {
+        if (objects == null)
+            return;
+
         objects.stream().forEach(o -> cache.put(o.getId(),o));
     }
 
