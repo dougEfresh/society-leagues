@@ -1,0 +1,16 @@
+{
+    "name": "svb-league",
+    "version": "1.0",
+    "authors": [
+        "dchimento@gmail.com"
+    ],
+    "description": "SVB Billiard Software",
+    "dependencies": {
+        "angular": "1.3.8",
+        "angular-messages": "1.3.8",
+        "lodash": "2.4.1",
+        "pure": "0.5.0",
+        "requirejs": "2.1.15",
+        "spring-security-csrf-token-interceptor": "0.1.5"
+    }
+}

@@ -27,6 +27,10 @@ dependencies {
 
     compile 'org.springframework.boot:spring-boot-actuator'
     compile 'org.springframework.boot:spring-boot-starter-jdbc'
+    compile 'org.springframework.boot:spring-boot-autoconfigure'
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-security'
+    compile 'org.springframework.boot:spring-boot-starter-tomcat'
 
     compile 'org.codehaus.groovy:groovy-all:2.3.8'
     compile 'com.owlike:genson:1.2'

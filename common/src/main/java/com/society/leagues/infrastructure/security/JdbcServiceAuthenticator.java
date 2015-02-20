@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 public class JdbcServiceAuthenticator implements ServiceAuthenticator {
     private final static Logger logger = LoggerFactory.getLogger(JdbcServiceAuthenticator.class);
     @Autowired AuthDao dao;
-    @Autowired TokenService tokenService;
 
     @Override
     public User authenticate(String username, String password) {

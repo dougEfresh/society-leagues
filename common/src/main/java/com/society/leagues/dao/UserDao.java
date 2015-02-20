@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
@@ -72,8 +73,7 @@ public class UserDao extends Dao<User> implements UserClientApi, UserAdminApi{
             ps.setString(i++, user.getFirstName());
             ps.setString(i++, user.getLastName());
             ps.setString(i++, user.getEmail());
-            ps.setString(i, user.getPassword());
-
+            ps.setString(i, new BCryptPasswordEncoder().encode(user.getPassword()));
             return ps;
         };
     }
@@ -112,6 +112,10 @@ public class UserDao extends Dao<User> implements UserClientApi, UserAdminApi{
     @Override
     public User get(String login) {
         return hydrateUser(super.get().stream().filter(user -> user.getLogin() != null && user.getLogin().equalsIgnoreCase(login)).findFirst().orElse(null));
+    }
+
+    public String getPassword(Integer id) {
+        return jdbcTemplate.queryForObject("select passwd from users where user_id = ?",String.class,id);
     }
 
     @Override
