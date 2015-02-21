@@ -30,14 +30,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterAfter(csrfTokenFilter, CsrfFilter.class);
 
         http
-            .authorizeRequests()
-            .antMatchers("/resources/public/**").permitAll()
+                .authorizeRequests()
+                .antMatchers("/docs/**").permitAll()
+                .antMatchers("/resources/public/**").permitAll()
             .antMatchers("/resources/img/**").permitAll()
             .antMatchers("/resources/bower_components/**").permitAll()
             .anyRequest().authenticated()
             .and()
             .formLogin()
-            .defaultSuccessUrl("/resources/user.html")
+            .defaultSuccessUrl("/resources/home.html")
             .loginProcessingUrl("/authenticate")
             .usernameParameter("username")
             .passwordParameter("password")

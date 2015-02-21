@@ -37,12 +37,12 @@ angular.module('common', ['ngMessages'])
                 data: postData,
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
-                    "X-Login-Ajax-call": 'false'
+                    "X-Login-Ajax-call": 'true'
                 }
             })
             .then(function(response) {
                 if (response.data == 'ok') {
-                    window.location.replace('/resources/user.html');
+                    window.location.replace('/resources/home.html');
                 } else {
                     $scope.vm.errorMessages = [];
                     $scope.vm.errorMessages.push({description: 'Access denied'});

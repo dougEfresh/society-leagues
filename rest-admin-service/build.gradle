@@ -14,8 +14,9 @@ bootRun {
     if (project.hasProperty('debugPort')) {
        port=project.debugPort
     }
+    args '--embedded=true'
 
-    jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=' + port
+    jvmArgs [ '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=' + port ]
 }
 
 dependencies {
