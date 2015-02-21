@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title>Test</title>
+ 
+	<script src="/demo/demo/js/jquery.js"></script>
+	<script src="/demo/demo/js/jquery.cookie.js"></script>
+	<script src="/demo/demo/js/cookie.js"></script>
+	<script src="/demo/demo/js/society-api/util.js"></script>
+	<script src="/demo/demo/js/society-api/login.js"></script>
+	<script src="/demo/demo/js/society-api/accountApi.js"></script>
+	<script src="/demo/demo/js/society-api/playerApi.js"></script>
+	<script src="/demo/demo/js/society-api/divisionApi.js"></script>
+</head>
+<body>
+
+<form id="login" action="/api/v1/auth/authenticate">
+    <input type="text" name="username" />
+    <input type="password" name="password" />
+    <input type="button" value="submit" onsubmit="login($);">
+</form>
+
+<div class="dataSample" id="loginSection">
+    <h3>Login Response</h3>
+    <div class="dataSample" id="loginResponse"></div>
+    <hr/>
+</div>
+
+<!--
+<div class="dataSample" id="accountSection">
+	<h3>Account Response</h3>
+	<div class="dataSample" id="accountInfo"></div>
+	<hr/>
+</div>
+
+<div class="dataSample" id="playerSection">
+	<h3>Player Response</h3>
+	<div class="dataSample" id="playerInfo"></div>
+	<hr/>
+</div>
+
+<div class="dataSample" id="divisionSection">
+	<h3>Division Response</h3>
+	<div class="dataSample" id="divisionInfo"></div>
+	<hr/>
+</div>
+-->
+
+</body>
+<script>
+	jQuery(document).ready(function ($) {
+				jQuery.ajaxSetup({async: false});
+				login($);
+			}
+	);
+</script>
+</html>
