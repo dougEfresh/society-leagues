@@ -19,12 +19,15 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
     @Autowired SeasonDao seasonDao;
     @Autowired TeamDao teamDao;
     @Autowired DivisionDao divisionDao;
+    @Autowired MatchDao matchDao;
+    @Autowired TeamResultDao teamResultDao;
+    @Autowired ChallengeDao challengeDao;
 
-    public RowMapper<Player> rowMapper = (rs, rowNum) -> {
+    RowMapper<Player> rowMapper = (rs, rowNum) -> {
         Season season = seasonDao.get(rs.getInt("season_id"));
         Team team = teamDao.get(rs.getInt("team_id"));
         Division division = divisionDao.get(rs.getInt("division_id"));
-        
+
         Player player = new Player();
         player.setDivision(division);
         player.setHandicap(Handicap.values()[rs.getInt("handicap")]);
@@ -34,6 +37,11 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
         player.setSeason(season);
         player.setUserId(rs.getInt("user_id"));
         player.setId(rs.getInt("player_id"));
+
+        player.setMatches(matchDao.getByTeam(player.getTeam()));
+        player.setTeamResults(teamResultDao.getByTeam(player.getTeam()));
+        player.setChallenges(challengeDao.getByPlayer(player.getId()));
+
         return player;
     };
 

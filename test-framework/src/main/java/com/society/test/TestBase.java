@@ -13,7 +13,9 @@ import com.society.leagues.client.api.domain.User;
 import com.society.leagues.infrastructure.security.ServiceAuthenticator;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.IntegrationTest;
+import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.client.Client;
@@ -22,6 +24,7 @@ import static org.junit.Assert.assertNotNull;
 
 @Component
 @IntegrationTest(value = {"server.port:0","daemon:true","debug:true","embedded:true"})
+@WebIntegrationTest(randomPort = true)
 public class TestBase {
     public static final String NORMAL_USER = Schema.NORMAL_USER;
     public static final String NORMAL_PASS = Schema.NORMAL_PASS;
@@ -32,6 +35,8 @@ public class TestBase {
     public static String token;
     AuthApi authApi;
     String baseURL;
+    @Value("${server.local.port}")
+    public String url;
     Client client;
 
     @Before

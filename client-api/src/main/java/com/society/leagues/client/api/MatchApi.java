@@ -1,6 +1,8 @@
 package com.society.leagues.client.api;
 
 import com.society.leagues.client.api.domain.Match;
+import com.society.leagues.client.api.domain.Player;
+import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.User;
 
 import javax.ws.rs.*;
@@ -18,5 +20,7 @@ public interface MatchApi extends ClientApi<Match> {
     @Override
     @GET @Path("/api/client/match/get")
     List<Match> get();
+
+    List<Match> getByTeam(Team team);
 
 }

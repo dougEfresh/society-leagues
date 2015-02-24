@@ -14,12 +14,12 @@ dependencies {
     compile "com.h2database:h2:1.4.185"
     compile 'org.apache.tomcat:tomcat-dbcp:8.0.15'
 
-    compile 'org.springframework.boot:spring-boot-actuator'
-    compile 'org.springframework.boot:spring-boot-starter-jdbc'
-    compile 'org.springframework.boot:spring-boot-autoconfigure'
-    compile 'org.springframework.boot:spring-boot-starter-web'
-    compile 'org.springframework.boot:spring-boot-starter-security'
-    compile 'org.springframework.boot:spring-boot-starter-tomcat'
+    compile 'org.springframework.boot:spring-boot-actuator:1.2.1.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter-jdbc:1.2.1.RELEASE'
+    compile 'org.springframework.boot:spring-boot-autoconfigure:1.2.1.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter-web:1.2.1.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter-security:1.2.1.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter-tomcat:1.2.1.RELEASE'
     compile 'com.allanditzel:spring-security-csrf-token-filter:1.1'
 
     //JAX-RS

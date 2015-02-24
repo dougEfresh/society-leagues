@@ -4,6 +4,7 @@ package com.society.test;
 import com.society.leagues.Main;
 import com.society.leagues.client.ApiFactory;
 import com.society.leagues.client.api.admin.DivisionAdminApi;
+import com.society.leagues.client.api.domain.Login;
 import com.society.leagues.client.api.domain.TokenResponse;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.client.api.domain.division.Division;
@@ -26,7 +27,7 @@ public class SecurityTest extends TestBase {
 
     @Test
     public void testAuth() {
-        TokenResponse response = authApi.authenticate(new User(ADMIN_USER, ADMIN_PASS));
+        TokenResponse response = authApi.authenticate(new Login(ADMIN_USER, ADMIN_PASS));
         assertNotNull(response);
         assertTrue(response.isSuccess());
         assertNotNull(response.getToken());
@@ -34,7 +35,7 @@ public class SecurityTest extends TestBase {
 
     @Test
     public void testBadAuth() {
-        TokenResponse response = authApi.authenticate(new User(ADMIN_USER, "blah"));
+        TokenResponse response = authApi.authenticate(new Login(ADMIN_USER, "blah"));
         assertNotNull(response);
         assertFalse(response.isSuccess());
         assertNull(response.getToken());
@@ -42,7 +43,7 @@ public class SecurityTest extends TestBase {
 
     @Test
     public void testExpiredToken() {
-        TokenResponse response = authApi.authenticate(new User(ADMIN_USER, ADMIN_PASS));
+        TokenResponse response = authApi.authenticate(new Login(ADMIN_USER, ADMIN_PASS));
         assertNotNull(response);
         assertTrue(response.isSuccess());
         assertNotNull(response.getToken());

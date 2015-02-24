@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         CsrfTokenResponseHeaderBindingFilter csrfTokenFilter = new CsrfTokenResponseHeaderBindingFilter();
         http.addFilterAfter(csrfTokenFilter, CsrfFilter.class);
 
-        http
+        http//.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/docs/**").permitAll()
                 .antMatchers("/resources/public/**").permitAll()

@@ -9,7 +9,7 @@ require.config({
         angular: '../bower_components/angular/angular',
         angularMessages: '../bower_components/angular-messages/angular-messages',
         csrfInterceptor: '../bower_components/spring-security-csrf-token-interceptor/dist/spring-security-csrf-token-interceptor.min',
-        lodash: "../bower_components/lodash/dist/lodash",
+        lodash: "../bower_components/lodash/lodash",
         jQuery: "./datetimepicker/jquery", // needed only by the date time picker
         datetimepicker: './datetimepicker/jquery.datetimepicker',
         editableTableWidgets: '../public/js/editable-table-widgets',

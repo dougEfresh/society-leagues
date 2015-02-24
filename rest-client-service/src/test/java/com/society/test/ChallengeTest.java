@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Date;
 import java.util.List;
@@ -124,7 +125,12 @@ public class ChallengeTest extends TestClientBase  implements ChallengeApi {
     public List<Slot> slots(Date date) {
         return null;
     }
-    
+
+    @Override
+    public List<Challenge> getByPlayer(@PathVariable(value = "id") Integer id) {
+        return null;
+    }
+
     static int COUNTER = 1;
     
     private Challenge create() {

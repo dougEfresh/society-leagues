@@ -88,16 +88,20 @@ public class Schema {
             
             ")\n";
     
-      static final String team_match = "create table team_match  (\n" +
+    static final String team_match = "create table team_match  (\n" +
               " team_match_id int NOT NULL AUTO_INCREMENT(30000) PRIMARY KEY,\n" +
               " season_id int NOT NULL CONSTRAINT T_M_S_K REFERENCES season ON DELETE CASCADE,\n" +
               " home_team_id int NOT NULL CONSTRAINT HOME_K REFERENCES team ON DELETE CASCADE  ,\n" +
               " away_team_id int NOT NULL CONSTRAINT AWAY_K REFERENCES team ON DELETE CASCADE ,\n" +
               " division_id int NOT NULL CONSTRAINT DIV_TEAM_K REFERENCES division ON DELETE CASCADE ,\n" +
-              " match_date date not null, " +
-              " racks int not null DEFAULT 0," +
-              " win int," +
-              " PRIMARY KEY (team_match_id)" +
+              " match_date date not null" +
+            ")\n";
+
+     static final String team_result = "create table team_result (\n" +
+              " team_result_id int NOT NULL AUTO_INCREMENT(50000) PRIMARY KEY,\n" +
+              " team_match_id int NOT NULL CONSTRAINT TEAM_MATCH_FK REFERENCES team_match ON DELETE CASCADE,\n" +
+              " home_racks int NOT NULL," +
+              " away_racks int NOT NULL" +
             ")\n";
 
     static final String challenge = "create table challenge  (\n" +
@@ -131,6 +135,7 @@ public class Schema {
         jdbcTemplate.update(team);
         jdbcTemplate.update(player);
         jdbcTemplate.update(team_match);
+        jdbcTemplate.update(team_result);
         jdbcTemplate.update(challenge);
 
     }

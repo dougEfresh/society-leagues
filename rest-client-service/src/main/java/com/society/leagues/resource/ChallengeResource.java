@@ -7,6 +7,7 @@ import com.society.leagues.client.api.domain.User;
 import com.society.leagues.dao.ChallengeDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.Date;
@@ -52,5 +53,10 @@ public class ChallengeResource extends ApiResource implements ChallengeApi {
     @Override
     public List<Slot> slots(Date date) {
         return dao.slots(date);
+    }
+
+    @Override
+    public List<Challenge> getByPlayer(@PathVariable(value = "id") Integer id) {
+        return dao.getByPlayer(id);
     }
 }

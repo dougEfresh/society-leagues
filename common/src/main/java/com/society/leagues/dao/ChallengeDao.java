@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -122,7 +123,7 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         return Slot.getDefault(date);
     }
 
-    public List<Player> findChallengeUsers(Division division,Handicap handicap) {
+    private List<Player> findChallengeUsers(Division division,Handicap handicap) {
         return playerDao.get().stream().
                 filter(p -> p.getDivision().getId().equals(division.getId()) &&
                         p.getHandicap().ordinal() >= handicap.ordinal()-3 &&
@@ -130,7 +131,11 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
                 collect(Collectors.toList());
     }
 
-
+    @Override
+    public List<Challenge> getByPlayer(Integer id) {
+        return get().stream().filter(c -> c.getOpponent().getId().equals(id) || c.getChallenger().getId().equals(id)).
+                collect(Collectors.toList());
+    }
 
     @Override
     public RowMapper<Challenge> getRowMapper() {

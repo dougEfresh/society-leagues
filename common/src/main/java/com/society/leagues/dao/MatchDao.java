@@ -5,15 +5,19 @@ import com.society.leagues.client.api.admin.MatchAdminApi;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.stereotype.Component;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class MatchDao extends Dao<Match> implements MatchApi, MatchAdminApi {
@@ -23,14 +27,22 @@ public class MatchDao extends Dao<Match> implements MatchApi, MatchAdminApi {
 
     @Override
     public String getSql() {
-        return "select * from match";
+        return "select * from team_match";
     }
 
      public RowMapper<Match> rowMapper = (rs, rowNum) -> {
          Season season = seasonDao.get(rs.getInt("season_id"));
-         Team team = teamDao.get(rs.getInt("team_id"));
+         Team home = teamDao.get(rs.getInt("home_team_id"));
+         Team away = teamDao.get(rs.getInt("away_team_id"));
          Division division = divisionDao.get(rs.getInt("division_id"));
+
          Match m = new Match();
+         m.setMatchDate(rs.getDate("match_date"));
+         m.setAway(away);
+         m.setHome(home);
+         m.setSeason(season);
+         m.setDivision(division);
+         m.setId(rs.getInt("team_match_id"));
          return m;
     };
 
@@ -41,19 +53,7 @@ public class MatchDao extends Dao<Match> implements MatchApi, MatchAdminApi {
 
     @Override
     public Match create(Match match) {
-        List<SqlParameter> parameters = Arrays.asList(
-                new SqlParameter(Types.INTEGER),
-                new SqlParameter(Types.INTEGER),
-                new SqlParameter(Types.INTEGER),
-                new SqlParameter(Types.DATE));
-        PreparedStatementCreatorFactory ps = new PreparedStatementCreatorFactory(CREATE,parameters);
-        ps.setReturnGeneratedKeys(true);
-        return create(match, ps.newPreparedStatementCreator(new Object[]{
-                match.getHome().getId(),
-                match.getAway().getId(),
-                match.getSeason().getId(),
-                match.getMatchDate()
-        }));
+        return create(match,getCreateStatement(match,CREATE));
     }
 
     @Override
@@ -62,9 +62,13 @@ public class MatchDao extends Dao<Match> implements MatchApi, MatchAdminApi {
                 match.getSeason().getId(),
                 match.getHome().getId(),
                 match.getAway().getId(),
-                match.getWin(),
                 match.getId()
         );
+    }
+
+    @Override
+    public List<Match> getByTeam(Team team) {
+        return get().stream().filter(m -> m.getHome().equals(team) || m.getAway().equals(team)).collect(Collectors.toList());
     }
 
     /**
@@ -134,7 +138,7 @@ public class MatchDao extends Dao<Match> implements MatchApi, MatchAdminApi {
         return homeState;
     }
 
-    boolean isHome(Map<Team,Boolean> homeState, Team team) {
+    private boolean isHome(Map<Team,Boolean> homeState, Team team) {
         if (homeState.containsKey(team)) {
             return homeState.get(team);
         }
@@ -142,7 +146,7 @@ public class MatchDao extends Dao<Match> implements MatchApi, MatchAdminApi {
         return false;
     }
 
-    public List<Match> create(Integer seasonId, final List<Team> teams) {
+    private List<Match> create(Integer seasonId, final List<Team> teams) {
         try {
             Season season = null ;//seasonDao.get(seasonId);
             if (teams.size() % 2 == 1) {
@@ -166,18 +170,28 @@ public class MatchDao extends Dao<Match> implements MatchApi, MatchAdminApi {
         return Collections.emptyList();
     }
 
+    private PreparedStatementCreator getCreateStatement(final Match match, String sql) {
+        return con -> {
+            PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            int i = 1;
+            ps.setInt(i++,match.getHome().getId());
+            ps.setInt(i++,match.getAway().getId());
+            ps.setInt(i++,match.getSeason().getId());
+            ps.setInt(i++,match.getDivision().getId());
+            ps.setDate(i,new java.sql.Date(match.getMatchDate().getTime()));
+            return ps;
+        };
+    }
     static String CREATE = "INSERT INTO team_match " +
             "(" +
-            "home_team_id,away_team_id,season_id,match_date) " +
+            "home_team_id,away_team_id,season_id,division_id,match_date) " +
             "VALUES " +
-            "(?,?,?,?)";
+            "(?,?,?,?,?)";
 
     static String MODIFY = "UPDATE team_match " +
             "set " +
             "season_id=? ," +
             "home_team_id=? , " +
-            "away_team_id=? , " +
-            "win=? " +
+            "away_team_id=? " +
             " where team_match_id = ?";
-
 }

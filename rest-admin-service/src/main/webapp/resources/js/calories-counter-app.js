@@ -6,23 +6,57 @@ angular.module('caloriesCounterApp', ['editableTableWidgets', 'frontendServices'
             });
         }
     })
-    .controller('CaloriesTrackerCtrl', ['$scope' , 'MealService', 'UserService', '$timeout',
+    .controller('CaloriesTrackerCtrl',
+    ['$scope' , 'MealService', 'UserService', '$timeout',
         function ($scope, MealService, UserService, $timeout) {
 
             $scope.vm = {
-                maxCaloriesPerDay: 2000,
                 currentPage: 1,
                 totalPages: 0,
-                originalMeals: [],
-                meals: [],
                 isSelectionEmpty: true,
                 errorMessages: [],
-                infoMessages: []
+                infoMessages: [],
+                matches: [],
+                results: [],
+                pendingChallenges: [],
+                acceptedChallenges: []
             };
 
-            updateUserInfo();
-            loadMealData(null, null, null, null, 1);
+            function filterPlayers(players) {
+		/*
+                _.chain.filter(players,function (p) {
+                    return p.division.divisionType.leagueType == "INDIVIDUAL";
+                });
+		*/
+		console.log(players[0].division);
+		return players;
+            }
 
+            function getMatches(players) {
+                return _.chain(players).map(function(p) {
+                    return p.matches;
+                });
+            }
+
+            function getResults(players) {
+                return _.chain(players).map(function(p) {
+                    return p.teamResults;
+                });
+            }
+
+            function getPendingChallenges(players) {
+                return _.chain(players).map(function(p) {
+                    return _.chain(p.challenges).filter(function (c) {c.status == 'PENDING'} )
+                });
+            }
+
+            function getAcceptedChallenges(players) {
+                return _.chain(players).map(function(p) {
+                    return _.chain(p.challenges).filter(function (c) {c.status == 'ACCEPTED'} )
+                });
+            }
+
+            updateUserInfo();
 
             function showErrorMessage(errorMessage) {
                 clearMessages();
@@ -32,14 +66,17 @@ angular.module('caloriesCounterApp', ['editableTableWidgets', 'frontendServices'
             function updateUserInfo() {
                 UserService.getUserInfo()
                     .then(function (userInfo) {
-                        $scope.vm.userName = userInfo.userName;
-                        $scope.vm.maxCaloriesPerDay = userInfo.maxCaloriesPerDay;
-                        $scope.vm.todaysCalories = userInfo.todaysCalories ? userInfo.todaysCalories : 'None';
-                        updateCaloriesCounterStatus();
+                        $scope.vm.userName = userInfo.firstName;
+                        $scope.vm.matches = getMatches(filterPlayers(userInfo.players));
+                        $scope.vm.results = getResults(filterPlayers(userInfo.players));
+                        $scope.vm.pendingChallenges = getPendingChallenges(filterPlayers(userInfo.players));
+                        $scope.vm.acceptedChallenges = getAcceptedChallenges(filterPlayers(userInfo.players));
                     },
                     function (errorMessage) {
                         showErrorMessage(errorMessage);
+                        markAppAsInitialized();
                     });
+
             }
 
             function markAppAsInitialized() {
@@ -299,6 +336,6 @@ angular.module('caloriesCounterApp', ['editableTableWidgets', 'frontendServices'
                 UserService.logout();
             }
 
-
+            markAppAsInitialized();
         }]);
 

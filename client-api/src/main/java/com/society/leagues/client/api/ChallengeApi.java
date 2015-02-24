@@ -4,6 +4,9 @@ import com.society.leagues.client.api.domain.Challenge;
 import com.society.leagues.client.api.domain.Player;
 import com.society.leagues.client.api.domain.Slot;
 import com.society.leagues.client.api.domain.User;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -42,4 +45,7 @@ public interface ChallengeApi {
     @POST
     @Path(value = "/api/challenge/slots")
     List<Slot> slots(Date date);
+
+    @RequestMapping(value = "/api/challenge/player/{id}", produces = MediaType.APPLICATION_ATOM_XML, method = RequestMethod.GET)
+    List<Challenge> getByPlayer(@PathVariable(value = "id") Integer id);
 }

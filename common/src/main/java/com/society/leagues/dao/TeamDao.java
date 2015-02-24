@@ -39,8 +39,6 @@ public class TeamDao extends Dao<Team> implements TeamClientApi, TeamAdminApi {
         };
     }
 
-    final static String CREATE = "INSERT INTO team (name) VALUES (?)";
-
     @Override
     public Team get(String name) {
         return get().stream().filter(f -> f.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
@@ -55,5 +53,7 @@ public class TeamDao extends Dao<Team> implements TeamClientApi, TeamAdminApi {
     public RowMapper<Team> getRowMapper() {
         return rowMapper;
     }
-    
+
+    final static String CREATE = "INSERT INTO team (name) VALUES (?)";
+
 }

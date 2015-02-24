@@ -36,7 +36,7 @@ public class ApiFactory {
             return Feign.builder().
                     decoder(feignDecoder).
                     encoder(feignEncoder).
-                    logger(feignLogger).logLevel(Logger.Level.HEADERS).
+                    logger(feignLogger).logLevel(Logger.Level.FULL).
                     contract(new SpringMvcContract()).
                     target(api, url);
         }

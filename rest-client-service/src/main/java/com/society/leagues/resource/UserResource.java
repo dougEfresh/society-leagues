@@ -4,19 +4,24 @@ import com.society.leagues.client.api.UserClientApi;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import java.security.Principal;
 
 @Component
 @RestController
 @SuppressWarnings("unused")
 public class UserResource extends ApiResource implements UserClientApi {
     @Autowired UserDao dao;
+
+    @RequestMapping(value = "/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public User get(Principal principal) {
+        return get(principal.getName());
+    }
 
     @Override
     public User get(@PathVariable(value = "id") Integer id) {

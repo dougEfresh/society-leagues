@@ -12,20 +12,12 @@ public class Match extends LeagueObject  {
     @NotNull Season season;
     @NotNull Division division;
     @NotNull Date matchDate;
-    Integer racks;
-    Integer win;
 
     public Match(Team home, Team away, Season season, Date matchDate) {
         this.home = home;
         this.away = away;
         this.season = season;
         this.matchDate = matchDate;
-    }
-
-    @Override
-    public int compareTo(LeagueObject o) {
-        //return this.matchDate.compareTo(o.matchDate);
-        return super.compareTo(o);
     }
 
     public Match() {
@@ -61,32 +53,6 @@ public class Match extends LeagueObject  {
 
     public void setSeason(Season season) {
         this.season = season;
-    }
-
-    public Integer getRacks() {
-        return racks;
-    }
-
-    public void setRacks(Integer racks) {
-        this.racks = racks;
-    }
-
-    public Integer getWin() {
-        return win;
-    }
-
-    public void setWin(Integer win) {
-        this.win = win;
-    }
-
-    public Team getWinner() {
-        if (home.getId().equals(win)) {
-            return home;
-        }
-        if (away.getId().equals(win)) {
-            return away;
-        }
-        return null;
     }
 
     public Division getDivision() {

@@ -19,6 +19,8 @@ public class Player extends LeagueObject {
     @NotNull
     Handicap handicap;
     List<Match> matches;
+    List<TeamResult> teamResults;
+    List<Challenge> challenges;
     Date start;
     Date end;
     
@@ -29,6 +31,7 @@ public class Player extends LeagueObject {
         this.handicap = handicap;
         this.division = division;
     }
+
     public Player(Season season, User user, Team team, Handicap handicap, Division division, Date start) {
         this.season = season;
         this.userId = user.getId();
@@ -114,6 +117,22 @@ public class Player extends LeagueObject {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public List<TeamResult> getTeamResults() {
+        return teamResults;
+    }
+
+    public void setTeamResults(List<TeamResult> teamResults) {
+        this.teamResults = teamResults;
+    }
+
+    public List<Challenge> getChallenges() {
+        return challenges;
+    }
+
+    public void setChallenges(List<Challenge> challenges) {
+        this.challenges = challenges;
     }
 
     @Override
