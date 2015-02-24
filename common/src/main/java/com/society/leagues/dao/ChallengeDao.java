@@ -153,7 +153,8 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         challenge.setStatus(Status.valueOf(rs.getString("status")));
         challenge.setChallenger(challenger);
         challenge.setOpponent(opponent);
-        //challenge.setMatch(matchDao.get(rs.getInt("team_match_id")));
+        challenge.setId(rs.getInt("challenge_id"));
+        challenge.setMatch(matchDao.get(rs.getInt("team_match_id")));
         return challenge;
     };
     

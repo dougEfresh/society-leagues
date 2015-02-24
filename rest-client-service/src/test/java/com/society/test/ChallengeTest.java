@@ -1,10 +1,11 @@
 package com.society.test;
 
 import com.society.leagues.Main;
-import com.society.leagues.client.ApiFactory;
 import com.society.leagues.client.api.ChallengeApi;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.DivisionType;
+import com.society.leagues.dao.ChallengeDao;
+import com.society.leagues.dao.PlayerDao;
 import com.society.leagues.dao.UserDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,31 +13,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Main.class,TestBase.class})
-public class ChallengeTest extends TestClientBase  implements ChallengeApi {
+@SpringApplicationConfiguration(classes = {Main.class})
+@WebIntegrationTest(randomPort = true, value = {"embedded=true", "generate=true"})
+public class ChallengeTest implements ChallengeApi {
     private static Logger logger = LoggerFactory.getLogger(ChallengeTest.class);
-    ChallengeApi api;
+    @Autowired ChallengeDao api;
     @Autowired UserDao userApi;
-
-    @Override
-    public void setup() throws Exception {
-        super.setup();
-        if (token == null) {
-            token = authenticate(Role.PLAYER);
-        }
-        api = ApiFactory.createApi(ChallengeApi.class,token,baseURL,true);
-    }
+    @Autowired PlayerDao playerApi;
 
     @Test
     public void testPotentials() throws Exception {
@@ -126,9 +122,19 @@ public class ChallengeTest extends TestClientBase  implements ChallengeApi {
         return null;
     }
 
+    @Test
+    public void testByPlayer() throws Exception {
+        List<Player> challengers = playerApi.get().stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList());
+        for (Player challenger : challengers) {
+            List<Challenge> challenges = getByPlayer(challenger.getId());
+            assertNotNull(challenges);
+            assertFalse(challenges.isEmpty());
+        }
+    }
+
     @Override
     public List<Challenge> getByPlayer(@PathVariable(value = "id") Integer id) {
-        return null;
+        return api.getByPlayer(id);
     }
 
     static int COUNTER = 1;

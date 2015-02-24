@@ -3,7 +3,6 @@ package com.society.leagues.infrastructure.security;
 import com.society.leagues.client.api.domain.TokenHeader;
 import com.society.leagues.infrastructure.NotAuthorizedResponse;
 import com.society.leagues.infrastructure.token.TokenService;
-import com.society.leagues.resource.ApiResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,24 +26,20 @@ public class SecurityFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-        if (isLoginOrApiDocs(requestContext))
-            return;
-
-        if (noToken(requestContext)) {
-            requestContext.abortWith(
-                    new NotAuthorizedResponse(requestContext).getResponse()
-            );
-            return;
+        if (isApi(requestContext)) {
+            if (noToken(requestContext)) {
+                requestContext.abortWith(
+                        new NotAuthorizedResponse(requestContext).getResponse()
+                );
+                return;
+            }
+            requestContext.setSecurityContext(getSecurityContext(requestContext));
         }
-        requestContext.setSecurityContext(getSecurityContext(requestContext));
     }
 
-    public boolean isLoginOrApiDocs(ContainerRequestContext requestContext) {
+    public boolean isApi(ContainerRequestContext requestContext) {
         String path = requestContext.getUriInfo().getPath();
-        return  path.contains("authenticate") ||
-                path.contains("docs") ||
-                path.contains("demo") ||
-                path.contains("api-doc");
+        return  !path.contains("api/v1/auth") && path.contains("api/");
     }
 
     public boolean noToken(ContainerRequestContext requestContext) {

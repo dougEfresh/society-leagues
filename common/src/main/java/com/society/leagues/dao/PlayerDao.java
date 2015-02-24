@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,6 +58,25 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
     @Override
     public Boolean delete(final Player player) {
         return delete(player,"update player set end_date = CURRENT_TIMESTAMP WHERE player_id = ?");
+    }
+
+    @Override
+    public Player get(Integer id) {
+        List<Player> players = get(Arrays.asList(id));
+        if (players == null || players.isEmpty())
+            return null;
+
+        return players.get(0);
+    }
+
+    @Override
+    public List<Player> get(List<Integer> id) {
+        return list(getSql());
+    }
+
+    @Override
+    public List<Player> get() {
+        return list(getSql());
     }
 
     @Override

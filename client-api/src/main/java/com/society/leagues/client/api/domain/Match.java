@@ -11,7 +11,7 @@ public class Match extends LeagueObject  {
     @NotNull Team away;
     @NotNull Season season;
     @NotNull Division division;
-    @NotNull Date matchDate;
+    Date matchDate;
 
     public Match(Team home, Team away, Season season, Date matchDate) {
         this.home = home;

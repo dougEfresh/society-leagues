@@ -132,11 +132,15 @@ public class SchemaData {
             slot = (int) Math.round(Math.random() * opponents.size())-1;
             Player opponent = opponents.get(slot == -1 ? 0 : slot);
             Challenge challenge = new Challenge();
-            challenge.setChallenger(player);
-            challenge.setOpponent(opponent);
+            Match match = new Match();
+            match.setDivision(player.getDivision());
+            match.setSeason(player.getSeason());
+            match.setHome(player.getTeam());
+            match.setAway(opponent.getTeam());
+            challenge.setMatch(match);
             challenge.setSlot(Slot.getDefault(new DateTime().plusDays(14).toDate()).get(2));
             challenge.setStatus(Status.PENDING);
-            challenge = challengeApi.requestChallenge(challenge);
+            challengeApi.requestChallenge(challenge);
         }
         logger.info("Created " + challengeApi.get().stream().filter(c -> c.getStatus() == Status.PENDING).collect(Collectors.toList()).size() + " challenges");
     }

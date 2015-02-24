@@ -2,8 +2,6 @@ package com.society.leagues.client.api.domain;
 
 public class Challenge extends LeagueObject {
     
-    Player challenger;
-    Player opponent;
     Slot slot;
     Status status;
     Match match;
@@ -11,26 +9,9 @@ public class Challenge extends LeagueObject {
     public Challenge() {
     }
 
-    public Challenge(Player challenger, Player opponent, Slot slot) {
-        this.challenger = challenger;
-        this.opponent = opponent;
+    public Challenge(Match match, Slot slot) {
+        this.match = match;
         this.slot = slot;
-    }
-
-    public Player getChallenger() {
-        return challenger;
-    }
-
-    public void setChallenger(Player challenger) {
-        this.challenger = challenger;
-    }
-
-    public Player getOpponent() {
-        return opponent;
-    }
-
-    public void setOpponent(Player opponent) {
-        this.opponent = opponent;
     }
 
     public Slot getSlot() {

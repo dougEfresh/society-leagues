@@ -94,7 +94,7 @@ public class Schema {
               " home_team_id int NOT NULL CONSTRAINT HOME_K REFERENCES team ON DELETE CASCADE  ,\n" +
               " away_team_id int NOT NULL CONSTRAINT AWAY_K REFERENCES team ON DELETE CASCADE ,\n" +
               " division_id int NOT NULL CONSTRAINT DIV_TEAM_K REFERENCES division ON DELETE CASCADE ,\n" +
-              " match_date date not null" +
+              " match_date date " +
             ")\n";
 
      static final String team_result = "create table team_result (\n" +
@@ -106,12 +106,10 @@ public class Schema {
 
     static final String challenge = "create table challenge  (\n" +
               " challenge_id int NOT NULL AUTO_INCREMENT(40000) PRIMARY KEY,\n" +
-              " challenger_player_id int NOT NULL CONSTRAINT PM_S_K REFERENCES player ON DELETE CASCADE,\n" +
-              " opponent_player_id int NOT NULL CONSTRAINT PM_K REFERENCES player ON DELETE CASCADE,\n" +
+              " team_match_id  int NOT NULL CONSTRAINT PM_S_K REFERENCES team_match ON DELETE CASCADE,\n" +
               " slot int not null,\n" +
               " challenge_date timestamp not null,\n" +
               " status varchar(255) not null,\n" +
-              " team_match_id INT CONSTRAINT TM_C REFERENCES team_match ON DELETE CASCADE,\n" +
               " PRIMARY KEY (challenge_id)" +
             ")\n";
     
