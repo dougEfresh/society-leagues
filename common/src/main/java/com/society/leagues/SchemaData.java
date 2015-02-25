@@ -102,6 +102,7 @@ public class SchemaData {
         }
         logger.info("Created " + playerApi.get().size() + " players");
 
+        /*
         createChallengeMatches(DivisionType.EIGHT_BALL_CHALLENGE);
         createChallengeMatches(DivisionType.NINE_BALL_CHALLENGE);
         Date before = new DateTime().minusDays(8).toDate();
@@ -143,6 +144,7 @@ public class SchemaData {
             challengeApi.requestChallenge(challenge);
         }
         logger.info("Created " + challengeApi.get().stream().filter(c -> c.getStatus() == Status.PENDING).collect(Collectors.toList()).size() + " challenges");
+        */
     }
 
    private void createChallengeMatches(DivisionType divisionType) {

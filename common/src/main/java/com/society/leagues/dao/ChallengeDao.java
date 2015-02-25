@@ -64,8 +64,8 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         PreparedStatementCreator ps = con ->
         {
             PreparedStatement st  = con.prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
-            st.setInt(1,challenge.getChallenger().getId());
-            st.setInt(2,challenge.getOpponent().getId());
+            //st.setInt(1,challenge.getChallenger().getId());
+            //st.setInt(2,challenge.getOpponent().getId());
             st.setInt(3,challenge.getSlot().getId());
             st.setDate(4, new java.sql.Date(challenge.getSlot().getDate().getTime()));
             st.setString(5,Status.PENDING.name());
@@ -89,11 +89,11 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
     
     @Override
     public List<Challenge> listChallenges(Integer userId) {
-        List<Challenge> challenges = get().stream().filter(
-                c -> Objects.equals(c.getChallenger().getUserId(), userId) ||
-                        Objects.equals(c.getOpponent().getUserId(), userId)).
-                collect(Collectors.toList());
-        return challenges;
+        //List<Challenge> challenges = get().stream().filter(
+          //      c -> Objects.equals(c.getChallenger().getUserId(), userId) ||
+            //            Objects.equals(c.getOpponent().getUserId(), userId)).
+              //  collect(Collectors.toList());
+        return null;
     }
 
     @Override
@@ -110,8 +110,8 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
                         "challenge_date=?," +
                         "status=? " +
                         "where challenge_id = ?",
-                challenge.getChallenger().getId(),
-                challenge.getOpponent().getId(),
+                //challenge.getChallenger().getId(),
+                //challenge.getOpponent().getId(),
                 challenge.getSlot().getId(),
                 challenge.getSlot().getDate(),
                 challenge.getStatus().name(),
@@ -133,8 +133,9 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
 
     @Override
     public List<Challenge> getByPlayer(Integer id) {
-        return get().stream().filter(c -> c.getOpponent().getId().equals(id) || c.getChallenger().getId().equals(id)).
-                collect(Collectors.toList());
+        //return get().stream().filter(c -> c.getOpponent().getId().equals(id) || c.getChallenger().getId().equals(id)).
+                //collect(Collectors.toList());
+        return null;
     }
 
     @Override
@@ -151,8 +152,9 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         slot.setDate(rs.getDate("challenge_date"));
         challenge.setSlot(slot);
         challenge.setStatus(Status.valueOf(rs.getString("status")));
-        challenge.setChallenger(challenger);
-        challenge.setOpponent(opponent);
+
+///        challenge.setChallenger(challenger);
+//        challenge.setOpponent(opponent);
         challenge.setId(rs.getInt("challenge_id"));
         challenge.setMatch(matchDao.get(rs.getInt("team_match_id")));
         return challenge;
