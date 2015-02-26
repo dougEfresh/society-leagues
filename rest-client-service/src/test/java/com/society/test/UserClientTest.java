@@ -1,26 +1,19 @@
 package com.society.test;
 
 import com.society.leagues.Main;
-import com.society.leagues.client.ApiFactory;
 import com.society.leagues.client.api.domain.Player;
-import com.society.leagues.client.api.domain.Role;
-import com.society.leagues.client.api.UserClientApi;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.dao.UserDao;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.junit.Assert.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class})
@@ -51,8 +44,8 @@ public class UserClientTest {
                 assertNotNull(player.getChallenges());
                 assertFalse(player.getChallenges().isEmpty());
 
-                assertNotNull(player.getMatches());
-                assertFalse(player.getMatches().isEmpty());
+                assertNotNull(player.getTeamMatches());
+                assertFalse(player.getTeamMatches().isEmpty());
                 assertNotNull(player.getUserId());
 
             }

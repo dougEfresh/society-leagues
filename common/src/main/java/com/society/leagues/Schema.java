@@ -106,8 +106,7 @@ public class Schema {
 
     static final String challenge = "create table challenge  (\n" +
               " challenge_id int NOT NULL AUTO_INCREMENT(40000) PRIMARY KEY,\n" +
-              " team_match_id  int NOT NULL CONSTRAINT PM_S_K REFERENCES team_match ON DELETE CASCADE,\n" +
-              " slot int not null,\n" +
+              " team_match_id int NOT NULL CONSTRAINT PM_S_K REFERENCES team_match ON DELETE CASCADE,\n" +
               " challenge_date timestamp not null,\n" +
               " status varchar(255) not null,\n" +
               " PRIMARY KEY (challenge_id)" +

@@ -6,21 +6,18 @@ import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.PreparedStatementCreatorFactory;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.sql.Types;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class MatchDao extends Dao<Match> implements MatchApi, MatchAdminApi {
+public class MatchDao extends Dao<TeamMatch> implements MatchApi, MatchAdminApi {
     @Autowired SeasonDao seasonDao;
     @Autowired TeamDao teamDao;
     @Autowired DivisionDao divisionDao;
@@ -30,13 +27,13 @@ public class MatchDao extends Dao<Match> implements MatchApi, MatchAdminApi {
         return "select * from team_match";
     }
 
-     public RowMapper<Match> rowMapper = (rs, rowNum) -> {
+     public RowMapper<TeamMatch> rowMapper = (rs, rowNum) -> {
          Season season = seasonDao.get(rs.getInt("season_id"));
          Team home = teamDao.get(rs.getInt("home_team_id"));
          Team away = teamDao.get(rs.getInt("away_team_id"));
          Division division = divisionDao.get(rs.getInt("division_id"));
 
-         Match m = new Match();
+         TeamMatch m = new TeamMatch();
          m.setMatchDate(rs.getDate("match_date"));
          m.setAway(away);
          m.setHome(home);
@@ -47,28 +44,30 @@ public class MatchDao extends Dao<Match> implements MatchApi, MatchAdminApi {
     };
 
     @Override
-    public RowMapper<Match> getRowMapper() {
+    public RowMapper<TeamMatch> getRowMapper() {
         return rowMapper;
     }
 
     @Override
-    public Match create(Match match) {
-        return create(match,getCreateStatement(match,CREATE));
+    public TeamMatch create(TeamMatch teamMatch) {
+        return create(teamMatch,getCreateStatement(teamMatch,CREATE));
     }
 
     @Override
-    public Match modify(Match match) {
-        return modify(match, MODIFY,
-                match.getSeason().getId(),
-                match.getHome().getId(),
-                match.getAway().getId(),
-                match.getId()
+    public TeamMatch modify(TeamMatch teamMatch) {
+        return modify(teamMatch, MODIFY,
+                teamMatch.getSeason().getId(),
+                teamMatch.getHome().getId(),
+                teamMatch.getAway().getId(),
+                teamMatch.getId()
         );
     }
 
     @Override
-    public List<Match> getByTeam(Team team) {
-        return get().stream().filter(m -> m.getHome().equals(team) || m.getAway().equals(team)).collect(Collectors.toList());
+    public List<TeamMatch> getByTeam(Team team) {
+        return get().stream().filter(m -> m.getHome().equals(team) || m.getAway().equals(team)).
+                filter(m -> m.getMatchDate() != null).
+                collect(Collectors.toList());
     }
 
     /**
@@ -78,8 +77,8 @@ public class MatchDao extends Dao<Match> implements MatchApi, MatchAdminApi {
      * @param round the week round
      * @return list of matches
      */
-    private List<Match> createRound(Map<Team,Boolean> homeState, List<Team> teams, Season season, int round) {
-        List<Match> matches = new ArrayList<>();
+    private List<TeamMatch> createRound(Map<Team,Boolean> homeState, List<Team> teams, Season season, int round) {
+        List<TeamMatch> teamMatches = new ArrayList<>();
         java.sql.Date d = (java.sql.Date) season.getStartDate();
         LocalDate matchDate= d.toLocalDate().plusDays((round-1)*7);
         //LocalDateTime matchDate = LocalDateTime.from(season.getStartDate().toInstant()).plusDays((round-1) * 7);
@@ -117,14 +116,14 @@ public class MatchDao extends Dao<Match> implements MatchApi, MatchAdminApi {
 
             if (isHome(homeState,t1)) {
                 homeState.put(t1,false);
-                matches.add(new Match(t2,t1,season, java.util.Date.from(matchDate.atStartOfDay(ZoneId.systemDefault()).toInstant())));
+                teamMatches.add(new TeamMatch(t2,t1,season, java.util.Date.from(matchDate.atStartOfDay(ZoneId.systemDefault()).toInstant())));
             } else {
                 homeState.put(t2,false);
-                matches.add(new Match(t1,t2,season, java.util.Date.from(matchDate.atStartOfDay(ZoneId.systemDefault()).toInstant())));
+                teamMatches.add(new TeamMatch(t1,t2,season, java.util.Date.from(matchDate.atStartOfDay(ZoneId.systemDefault()).toInstant())));
             }
 
         }
-        return matches;
+        return teamMatches;
     }
 
     private Map<Team,Boolean> initialHomeState(List<Team> teams) {
@@ -146,39 +145,43 @@ public class MatchDao extends Dao<Match> implements MatchApi, MatchAdminApi {
         return false;
     }
 
-    private List<Match> create(Integer seasonId, final List<Team> teams) {
+    private List<TeamMatch> create(Integer seasonId, final List<Team> teams) {
         try {
             Season season = null ;//seasonDao.get(seasonId);
             if (teams.size() % 2 == 1) {
                 logger.info("Adding bye team");
                 teams.add(Team.bye);
             }
-            List<Match> matches = new ArrayList<>();
+            List<TeamMatch> teamMatches = new ArrayList<>();
             Map<Team, Boolean> homeState = initialHomeState(teams);
 
             for (int i = 1; i <= season.getRounds(); i++) {
-                matches.addAll(createRound(homeState, teams, season, i));
+                teamMatches.addAll(createRound(homeState, teams, season, i));
                 // Move last item to first
                 teams.add(1, teams.get(teams.size() - 1));
                 teams.remove(teams.size() - 1);
             }
-            Collections.sort(matches);
-            return matches;
+            Collections.sort(teamMatches);
+            return teamMatches;
         } catch (Throwable t) {
             logger.error(t.getLocalizedMessage(),t);
         }
         return Collections.emptyList();
     }
 
-    private PreparedStatementCreator getCreateStatement(final Match match, String sql) {
+    private PreparedStatementCreator getCreateStatement(final TeamMatch teamMatch, String sql) {
         return con -> {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             int i = 1;
-            ps.setInt(i++,match.getHome().getId());
-            ps.setInt(i++,match.getAway().getId());
-            ps.setInt(i++,match.getSeason().getId());
-            ps.setInt(i++,match.getDivision().getId());
-            ps.setDate(i,new java.sql.Date(match.getMatchDate().getTime()));
+            ps.setInt(i++, teamMatch.getHome().getId());
+            ps.setInt(i++, teamMatch.getAway().getId());
+            ps.setInt(i++, teamMatch.getSeason().getId());
+            ps.setInt(i++, teamMatch.getDivision().getId());
+            if (teamMatch.getMatchDate() == null) {
+                ps.setDate(i++,null);
+            } else {
+                ps.setDate(i,new java.sql.Date(teamMatch.getMatchDate().getTime()));
+            }
             return ps;
         };
     }

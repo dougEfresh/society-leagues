@@ -1,11 +1,9 @@
 package com.society.test;
 
 import com.society.leagues.Main;
-import com.society.leagues.Schema;
 import com.society.leagues.client.ApiFactory;
 import com.society.leagues.client.api.AuthApi;
-import com.society.leagues.client.api.admin.TeamResultAdminApi;
-import com.society.leagues.client.api.domain.Match;
+import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.TeamResult;
@@ -17,11 +15,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.Date;
 import java.util.UUID;
@@ -69,18 +65,18 @@ public class TeamResultTest {
         away = teamApi.create(away);
         assertNotNull(away);
 
-        Match match = new Match();
-        match.setDivision(division);
-        match.setSeason(season);
-        match.setHome(home);
-        match.setAway(away);
-        match.setMatchDate(new Date());
-        match = matchApi.create(match);
-        assertNotNull(match);
-        assertNotNull(match.getId());
+        TeamMatch teamMatch = new TeamMatch();
+        teamMatch.setDivision(division);
+        teamMatch.setSeason(season);
+        teamMatch.setHome(home);
+        teamMatch.setAway(away);
+        teamMatch.setMatchDate(new Date());
+        teamMatch = matchApi.create(teamMatch);
+        assertNotNull(teamMatch);
+        assertNotNull(teamMatch.getId());
 
         TeamResult result = new TeamResult();
-        result.setMatch(match);
+        result.setTeamMatch(teamMatch);
         result.setHomeRacks(5);
         result.setAwayRacks(4);
 
@@ -107,18 +103,18 @@ public class TeamResultTest {
         away = teamApi.create(away);
         assertNotNull(away);
 
-        Match match = new Match();
-        match.setDivision(division);
-        match.setSeason(season);
-        match.setHome(home);
-        match.setAway(away);
-        match.setMatchDate(new Date());
-        match = matchApi.create(match);
-        assertNotNull(match);
-        assertNotNull(match.getId());
+        TeamMatch teamMatch = new TeamMatch();
+        teamMatch.setDivision(division);
+        teamMatch.setSeason(season);
+        teamMatch.setHome(home);
+        teamMatch.setAway(away);
+        teamMatch.setMatchDate(new Date());
+        teamMatch = matchApi.create(teamMatch);
+        assertNotNull(teamMatch);
+        assertNotNull(teamMatch.getId());
 
         TeamResult result = new TeamResult();
-        result.setMatch(match);
+        result.setTeamMatch(teamMatch);
         result.setHomeRacks(5);
         result.setAwayRacks(4);
 

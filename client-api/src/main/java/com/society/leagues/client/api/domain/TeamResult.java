@@ -4,17 +4,10 @@ import javax.validation.constraints.NotNull;
 
 public class TeamResult extends LeagueObject {
     @NotNull
-    Match match;
+    Integer teamMatchId;
     Integer homeRacks;
     Integer awayRacks;
 
-    public Match getMatch() {
-        return match;
-    }
-
-    public void setMatch(Match match) {
-        this.match = match;
-    }
 
     public Integer getHomeRacks() {
         return homeRacks;
@@ -32,19 +25,11 @@ public class TeamResult extends LeagueObject {
         this.awayRacks = awayRacks;
     }
 
-    public Team getWinner() {
-        if (homeRacks > awayRacks) {
-            return match.getHome();
-        }
-
-        return match.getAway();
+    public Integer getTeamMatchId() {
+        return teamMatchId;
     }
 
-    public Team getLoser() {
-        if (homeRacks < awayRacks) {
-            return match.getHome();
-        }
-
-        return match.getAway();
+    public void setTeamMatchId(Integer teamMatchId) {
+        this.teamMatchId = teamMatchId;
     }
 }

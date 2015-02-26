@@ -39,9 +39,11 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
         player.setUserId(rs.getInt("user_id"));
         player.setId(rs.getInt("player_id"));
 
-        player.setMatches(matchDao.getByTeam(player.getTeam()));
-        player.setTeamResults(teamResultDao.getByTeam(player.getTeam()));
-        player.setChallenges(challengeDao.getByPlayer(player.getId()));
+        player.setTeamMatches(matchDao.getByTeam(player.getTeam()));
+        for (TeamMatch teamMatch : player.getTeamMatches()) {
+            teamMatch.setResult(teamResultDao.getByMatch(teamMatch.getId()));
+        }
+        player.setChallenges(challengeDao.getByTeam(player.getId()));
 
         return player;
     };

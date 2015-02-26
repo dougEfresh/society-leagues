@@ -283,14 +283,3 @@ https://github.com/yui/pure/blob/master/LICENSE.md
 .pure-paginator .next {
     border-radius: 0 2px 2px 0;
 }
-
-@media (max-width: 480px) {
-    .pure-menu-horizontal {
-        width: 100%;
-    }
-
-    .pure-menu-children li {
-        display: block;
-        border-bottom: 1px solid black;
-    }
-}

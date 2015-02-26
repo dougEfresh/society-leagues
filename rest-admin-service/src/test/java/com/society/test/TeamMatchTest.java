@@ -1,14 +1,10 @@
 package com.society.test;
 
 import com.society.leagues.Main;
-import com.society.leagues.client.ApiFactory;
-import com.society.leagues.client.api.MatchApi;
-import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.client.api.admin.*;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
-import com.society.leagues.client.api.domain.division.LeagueType;
 import com.society.leagues.dao.*;
 import com.society.leagues.dao.DivisionDao;
 import com.society.leagues.dao.SeasonDao;
@@ -26,7 +22,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class,TestBase.class})
-public class MatchTest extends TestBase implements MatchAdminApi {
+public class TeamMatchTest extends TestBase implements MatchAdminApi {
     @Autowired MatchDao api;
     @Autowired SeasonDao seasonApi;
     @Autowired DivisionDao divisionApi;
@@ -53,20 +49,20 @@ public class MatchTest extends TestBase implements MatchAdminApi {
         away = teamApi.create(away);
         assertNotNull(away);
 
-        Match match = new Match();
-        match.setDivision(division);
-        match.setSeason(season);
-        match.setHome(home);
-        match.setAway(away);
-        match.setMatchDate(new Date());
-        match = api.create(match);
-        assertNotNull(match);
-        assertNotNull(match.getId());
+        TeamMatch teamMatch = new TeamMatch();
+        teamMatch.setDivision(division);
+        teamMatch.setSeason(season);
+        teamMatch.setHome(home);
+        teamMatch.setAway(away);
+        teamMatch.setMatchDate(new Date());
+        teamMatch = api.create(teamMatch);
+        assertNotNull(teamMatch);
+        assertNotNull(teamMatch.getId());
     }
 
     @Override
-    public Match create(Match match) {
-        return api.create(match);
+    public TeamMatch create(TeamMatch teamMatch) {
+        return api.create(teamMatch);
     }
 
     @Test
@@ -85,26 +81,26 @@ public class MatchTest extends TestBase implements MatchAdminApi {
         away = teamApi.create(away);
         assertNotNull(away);
 
-        Match match = new Match();
-        match.setDivision(division);
-        match.setSeason(season);
-        match.setHome(home);
-        match.setAway(away);
-        match.setMatchDate(new Date());
-        match = api.create(match);
-        assertNotNull(match);
-        assertNotNull(match.getId());
+        TeamMatch teamMatch = new TeamMatch();
+        teamMatch.setDivision(division);
+        teamMatch.setSeason(season);
+        teamMatch.setHome(home);
+        teamMatch.setAway(away);
+        teamMatch.setMatchDate(new Date());
+        teamMatch = api.create(teamMatch);
+        assertNotNull(teamMatch);
+        assertNotNull(teamMatch.getId());
 
-        match.setHome(away);
+        teamMatch.setHome(away);
 
-        match = api.modify(match);
-        assertNotNull(match);
+        teamMatch = api.modify(teamMatch);
+        assertNotNull(teamMatch);
 
-        assertEquals(match.getHome().getId(),match.getAway().getId());
+        assertEquals(teamMatch.getHome().getId(), teamMatch.getAway().getId());
     }
 
     @Override
-    public Match modify(Match match) {
-        return api.modify(match);
+    public TeamMatch modify(TeamMatch teamMatch) {
+        return api.modify(teamMatch);
     }
 }

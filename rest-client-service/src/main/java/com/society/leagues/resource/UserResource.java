@@ -20,7 +20,9 @@ public class UserResource extends ApiResource implements UserClientApi {
 
     @RequestMapping(value = "/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public User get(Principal principal) {
-        return get(principal.getName());
+        User u = get(principal.getName());
+
+        return u;
     }
 
     @Override

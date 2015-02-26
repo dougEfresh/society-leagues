@@ -2,13 +2,14 @@ package com.society.leagues.dao;
 
 import com.society.leagues.client.api.TeamResultApi;
 import com.society.leagues.client.api.admin.TeamResultAdminApi;
-import com.society.leagues.client.api.domain.Match;
+import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.TeamResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -21,11 +22,10 @@ public class TeamResultDao extends Dao<TeamResult> implements TeamResultAdminApi
 
     public RowMapper<TeamResult> rowMapper = (rs, rowNum) -> {
         TeamResult result = new TeamResult();
-        Match match = matchDao.get(rs.getInt("team_match_id"));
         result.setId(rs.getInt("team_result_id"));
         result.setAwayRacks(rs.getInt("away_racks"));
         result.setHomeRacks(rs.getInt("home_racks"));
-        result.setMatch(match);
+        result.setTeamMatchId(rs.getInt("team_match_id"));
         return result;
     };
 
@@ -46,18 +46,18 @@ public class TeamResultDao extends Dao<TeamResult> implements TeamResultAdminApi
 
     @Override
     public TeamResult modify(TeamResult teamResult) {
-        return modify(teamResult,MODIFY,teamResult.getMatch().getId(),teamResult.getHomeRacks(),teamResult.getAwayRacks(),teamResult.getId());
+        return modify(teamResult,MODIFY,teamResult.getTeamMatchId(),teamResult.getHomeRacks(),teamResult.getAwayRacks(),teamResult.getId());
     }
 
     @Override
-    public List<TeamResult> getByTeam(Team team) {
-        return get().stream().filter( t -> t.getMatch().getHome().equals(team) || t.getMatch().getAway().equals(team)).collect(Collectors.toList());
+    public TeamResult getByMatch(@PathVariable(value = "id") Integer id) {
+        return get().stream().filter(r -> r.getTeamMatchId().equals(id)).findFirst().orElse(null);
     }
 
     private PreparedStatementCreator getCreateStatement(final TeamResult teamResult, String sql) {
         return con -> {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1,teamResult.getMatch().getId());
+            ps.setInt(1,teamResult.getTeamMatchId());
             ps.setInt(2,teamResult.getHomeRacks());
             ps.setInt(3,teamResult.getAwayRacks());
             return ps;

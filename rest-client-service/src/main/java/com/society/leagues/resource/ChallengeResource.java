@@ -56,7 +56,7 @@ public class ChallengeResource extends ApiResource implements ChallengeApi {
     }
 
     @Override
-    public List<Challenge> getByPlayer(@PathVariable(value = "id") Integer id) {
-        return dao.getByPlayer(id);
+    public List<Challenge> getByTeam(@PathVariable(value = "id") Integer id) {
+        return dao.getByTeam(id);
     }
 }

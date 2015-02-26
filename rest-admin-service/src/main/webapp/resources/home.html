@@ -24,22 +24,9 @@
             <img class="logo" src="/resources/img/logo.png">
         </a>
         <span class="header-element page-title">League</span>
-        <!--
-        <div class="today-calories-container">
-            <div class="today-calories {{vm.caloriesStatusStyle}}">
-                Today' calories:
-                <div class="today-calories-placeholder" ng-hide="vm.todaysCalories"></div>
-                <span ng-cloak>{{vm.todaysCalories}}</span>
-            </div>
-        </div>
--->
     </div>
+
     <div class="pure-u-lg-1-2 pure-u-1 utilities">
-        <div class="header-element">
-            Max. calories
-            <input tabindex="10" class="max-cal" type="number" ng-model="vm.maxCaloriesPerDay"
-                   ng-model-options="{'updateOn':'blur'}" ng-blur="updateMaxCaloriesPerDay()">
-        </div>
         <div class="header-element username">
             <div class="username-placeholder" ng-hide="vm.userName"></div>
             <span ng-cloak>{{vm.userName}}</span>
@@ -51,9 +38,7 @@
 </header>
 
 <main class="container not-ready" ng-class="{'app-ready': vm.appReady}" ng-cloak>
-
     <tt-error-messages></tt-error-messages>
-
     <div class="info-messages"
          ng-style="{'opacity': vm.infoMessages.length > 0 ? 1 : 0, 'z-index': vm.infoMessages.length > 0 ? 10 : -10}">
         <img class="info-icon" src="/resources/img/info-icon.png">
@@ -62,39 +47,18 @@
             <div ng-repeat="info in vm.infoMessages">{{info.description}}</div>
         </div>
     </div>
-
-    <div class="meals-list">
-
-        <div class="table-buttons">
-            <button type="submit" class="pure-button" ng-click="add()">Add</button>
-            <button type="submit" class="pure-button" ng-click="delete()" ng-disabled="vm.isSelectionEmpty" disabled>Delete </button>
-        </div>
-
+     <div id="match-history">
         <table class="pure-table">
             <thead>
             <tr>
-                <th class="selection-column"></th>
-                <th>Team Name</th>
-                <!--<th>Division</th>-->
-                <!--<th>Matches</th>-->
+                <th>Challenger</th>
+                <th>Opponent</th>
             </tr>
             </thead>
-
             <tbody>
-            <tr ng-repeat="match in vm.matches" rowValue="meal" ng-class="{'pure-table-odd': $index % 2 == 1, 'pure-table-even': $index % 2 == 0}">
-                <td value="match.home.name"></td>
-                <td value="match.away.name"></td>
-                <!--<td class="selection-column">
-                    <input type="checkbox" ng-model="meal.selected" ng-click="selectionChanged()">
-                </td>
-
-                <td tt-editable-cell value="team.name" is-new="false"></td>
-                -->
-                <!--
-                <td tt-editable-cell value="team." is-new="false">
-                    <input type="text" tt-cell-field  ng-model="meal.calories">
-                </td>
-                -->
+            <tr ng-repeat="match in vm.matches" ng-class="{'pure-table-odd': $index % 2 == 1, 'pure-table-even': $index % 2 == 0}">
+                <td>{{match.home.name}}</td>
+                <td>{{match.away.name}}</td>
             </tr>
             </tbody>
         </table>
@@ -116,17 +80,6 @@
         </ul>
 
     </div>
-
-
-    </form>
-
-    <div class="form-separator"></div>
-
-    <div class="main-controls">
-        <button type="submit" class="pure-button pure-button-primary" ng-click="save()">Save</button>
-        <button type="reset" class="pure-button" ng-click="reset()">Reset</button>
-    </div>
-
 </main>
 
 <body>

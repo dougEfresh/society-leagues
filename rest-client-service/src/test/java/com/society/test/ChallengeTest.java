@@ -50,9 +50,14 @@ public class ChallengeTest implements ChallengeApi {
         Player op = opponent.getPlayers().stream().filter(p -> p.getDivision().getType() == ch.getDivision().getType()).findFirst().orElseGet(null);
         Challenge challenge = new Challenge();
         Slot slot = Slot.getDefault(new Date()).get(0);
-        challenge.setSlot(slot);
-        challenge.setChallenger(ch);
-        challenge.setOpponent(op);
+         TeamMatch teamMatch = new TeamMatch();
+        teamMatch.setHome(ch.getTeam());
+        teamMatch.setAway(op.getTeam());
+        teamMatch.setDivision(ch.getDivision());
+        teamMatch.setSeason(ch.getSeason());
+        challenge.setStatus(Status.PENDING);
+        challenge.setTeamMatch(teamMatch);
+
         challenge = requestChallenge(challenge);
         assertNotNull(challenge);
         assertNotNull(challenge.getId());
@@ -79,10 +84,16 @@ public class ChallengeTest implements ChallengeApi {
     @Test
     public void testList() throws Exception {
         Challenge challenge = create();
-        List<Challenge> challenges = listChallenges(challenge.getChallenger().getUserId());
+        List<Challenge> challenges = listChallenges(challenge.getTeamMatch().getHome().getId());
         assertNotNull(challenges);
         assertFalse(challenges.isEmpty());
-        assertTrue(challenges.size() == 1);
+        boolean found = false;
+        for (Challenge c : challenges) {
+            if (c.equals(challenge))
+                found = true;
+        }
+
+        assertTrue(found);
     }
 
     @Override
@@ -105,11 +116,10 @@ public class ChallengeTest implements ChallengeApi {
     public void testModify() throws Exception {
         Challenge challenge = create();
         Date d = new Date();
-        Slot slot = new Slot(4,d);
-        challenge.setSlot(slot);
+        challenge.setStatus(Status.ACTIVE);
         challenge = modifyChallenge(challenge);
         assertNotNull(challenge);
-        assertTrue(challenge.getSlot().getId().equals(4));
+        assertTrue(challenge.getStatus() == Status.ACTIVE);
     }
 
     @Override
@@ -126,15 +136,15 @@ public class ChallengeTest implements ChallengeApi {
     public void testByPlayer() throws Exception {
         List<Player> challengers = playerApi.get().stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList());
         for (Player challenger : challengers) {
-            List<Challenge> challenges = getByPlayer(challenger.getId());
+            List<Challenge> challenges = getByTeam(challenger.getId());
             assertNotNull(challenges);
             assertFalse(challenges.isEmpty());
         }
     }
 
     @Override
-    public List<Challenge> getByPlayer(@PathVariable(value = "id") Integer id) {
-        return api.getByPlayer(id);
+    public List<Challenge> getByTeam(@PathVariable(value = "id") Integer id) {
+        return api.getByTeam(id);
     }
 
     static int COUNTER = 1;
@@ -147,11 +157,13 @@ public class ChallengeTest implements ChallengeApi {
         Player opponent = user.getPlayers().stream().findAny().get();
         Player challenger = user.getPlayers().stream().filter(p -> p.getDivision().getType() == opponent.getDivision().getType()).findFirst().orElseGet(null);
         Challenge challenge = new Challenge();
-        Slot slot = Slot.getDefault(new Date()).get(0);
-        challenge.setSlot(slot);
-        challenge.setChallenger(challenger);
-        challenge.setOpponent(opponent);
+        TeamMatch teamMatch = new TeamMatch();
+        teamMatch.setHome(challenger.getTeam());
+        teamMatch.setAway(opponent.getTeam());
+        teamMatch.setDivision(challenger.getDivision());
+        teamMatch.setSeason(challenger.getSeason());
         challenge.setStatus(Status.PENDING);
+        challenge.setTeamMatch(teamMatch);
         challenge = requestChallenge(challenge);
         assertNotNull(challenge);
         assertNotNull(challenge.getId());

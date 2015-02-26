@@ -17,31 +17,21 @@ angular.module('caloriesCounterApp', ['editableTableWidgets', 'frontendServices'
                 errorMessages: [],
                 infoMessages: [],
                 matches: [],
-                results: [],
                 pendingChallenges: [],
-                acceptedChallenges: []
+                acceptedChallenges: [],
+                players: []
             };
 
             function filterPlayers(players) {
-		/*
-                _.chain.filter(players,function (p) {
-                    return p.division.divisionType.leagueType == "INDIVIDUAL";
+                return _.filter(players,function (p) {
+                    return p.division.challenge
                 });
-		*/
-		console.log(players[0].division);
-		return players;
             }
 
             function getMatches(players) {
-                return _.chain(players).map(function(p) {
-                    return p.matches;
-                });
-            }
-
-            function getResults(players) {
-                return _.chain(players).map(function(p) {
-                    return p.teamResults;
-                });
+                var m = [];
+                _.forEach(players, function (p) {m = m.concat(p.teamMatches)});
+                return m;
             }
 
             function getPendingChallenges(players) {
@@ -66,17 +56,19 @@ angular.module('caloriesCounterApp', ['editableTableWidgets', 'frontendServices'
             function updateUserInfo() {
                 UserService.getUserInfo()
                     .then(function (userInfo) {
+                        //console.log(JSON.stringify(userInfo));
+                        window.userInfo = userInfo;
                         $scope.vm.userName = userInfo.firstName;
-                        $scope.vm.matches = getMatches(filterPlayers(userInfo.players));
-                        $scope.vm.results = getResults(filterPlayers(userInfo.players));
-                        $scope.vm.pendingChallenges = getPendingChallenges(filterPlayers(userInfo.players));
-                        $scope.vm.acceptedChallenges = getAcceptedChallenges(filterPlayers(userInfo.players));
+                        $scope.vm.players = filterPlayers(userInfo.players);
+                        $scope.vm.matches = getMatches($scope.vm.players);
+                        console.log(JSON.stringify($scope.vm.matches));
+                        $scope.vm.pendingChallenges = getPendingChallenges($scope.vm.players);
+                        $scope.vm.acceptedChallenges = getAcceptedChallenges($scope.vm.players);
                     },
                     function (errorMessage) {
                         showErrorMessage(errorMessage);
                         markAppAsInitialized();
                     });
-
             }
 
             function markAppAsInitialized() {

@@ -29,8 +29,8 @@ public class PlayerClientTest {
         assertNotNull(players);
 
         for (Player player : players) {
-            assertNotNull(player.getMatches());
-            assertFalse(player.getMatches().isEmpty());
+            assertNotNull(player.getTeamMatches());
+            assertFalse(player.getTeamMatches().isEmpty());
         }
     }
 

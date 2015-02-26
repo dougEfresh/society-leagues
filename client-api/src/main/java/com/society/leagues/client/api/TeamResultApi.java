@@ -1,10 +1,8 @@
 package com.society.leagues.client.api;
 
-import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.TeamResult;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -20,6 +18,6 @@ public interface TeamResultApi extends ClientApi<TeamResult> {
     @RequestMapping(value = "/api/client/teamresult/list" , method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     List<TeamResult> get();
 
-    @RequestMapping(value = "/api/client/teamresult/team" , method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    List<TeamResult> getByTeam(@RequestBody Team team);
+    @RequestMapping(value = "/api/client/teamresult/match/{id}" , method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    TeamResult getByMatch(@PathVariable(value = "id") Integer id);
 }

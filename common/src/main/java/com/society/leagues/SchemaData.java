@@ -9,14 +9,11 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @Component
@@ -59,6 +56,15 @@ public class SchemaData {
             teamApi.create(team);
         }
 
+        createUsers();
+        createPlayers();
+        createChallengeMatches(DivisionType.EIGHT_BALL_CHALLENGE);
+        createChallengeMatches(DivisionType.NINE_BALL_CHALLENGE);
+        createMatchResults();
+        createChallengeRequests();
+    }
+
+    private void createUsers() {
         for (int i = 1 ; i <= NUM_PLAYERS ; i++){
             User user = new User();
             user.setFirstName("player_"+ i);
@@ -69,7 +75,53 @@ public class SchemaData {
             user.addRole(Role.PLAYER);
             userApi.create(user);
         }
+    }
 
+    private void createChallengeRequests() {
+        for (Player player : playerApi.get().stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList())) {
+            List<User> potentials = challengeApi.getPotentials(player.getUserId());
+            int slot = (int) Math.round(Math.random() * potentials.size())-1;
+            List<Player> opponents = potentials.get(slot == -1 ? 0 : slot).getPlayers().stream().collect(Collectors.toList());
+            slot = (int) Math.round(Math.random() * opponents.size())-1;
+            Player opponent = opponents.get(slot == -1 ? 0 : slot);
+            Challenge challenge = new Challenge();
+            TeamMatch teamMatch = new TeamMatch();
+            teamMatch.setDivision(player.getDivision());
+            teamMatch.setSeason(player.getSeason());
+            teamMatch.setHome(player.getTeam());
+            teamMatch.setAway(opponent.getTeam());
+            challenge.setTeamMatch(teamMatch);
+            challenge.setChallengeDate(Slot.getDefault(new DateTime().plusDays(14).toDate()).get(2).getDate());
+            challenge.setStatus(Status.PENDING);
+            challengeApi.requestChallenge(challenge);
+        }
+        logger.info("Created " + challengeApi.get().stream().filter(c -> c.getStatus() == Status.PENDING).collect(Collectors.toList()).size() + " challenges");
+    }
+
+    private void createMatchResults() {
+        Date before = new DateTime().minusDays(8).toDate();
+        logger.info("Creating match results before " + before);
+
+        List<TeamMatch> teamMatches = matchApi.get().stream().filter(m -> m.getMatchDate().before(before)).collect(Collectors.toList());
+
+        for (TeamMatch teamMatch : teamMatches) {
+            TeamResult result = new TeamResult();
+            result.setTeamMatchId(teamMatch.getId());
+
+            long home = Math.round(Math.random() * 10);
+            long away = Math.round(Math.random() * 10);
+            if (home == away)
+                home++;
+
+            result.setHomeRacks((int) home);
+            result.setAwayRacks((int) away);
+            teamResultApi.create(result);
+        }
+
+        logger.info("Created  " + teamResultApi.get().size() + " match results");
+    }
+
+    private void createPlayers() {
         for (int i = 1 ; i <= NUM_PLAYERS ; i++) {
             for (Division division : divisionApi.get().stream().filter(d -> !d.isChallenge()).collect(Collectors.toList())) {
                 Player player = new Player();
@@ -101,53 +153,9 @@ public class SchemaData {
             }
         }
         logger.info("Created " + playerApi.get().size() + " players");
-
-        /*
-        createChallengeMatches(DivisionType.EIGHT_BALL_CHALLENGE);
-        createChallengeMatches(DivisionType.NINE_BALL_CHALLENGE);
-        Date before = new DateTime().minusDays(8).toDate();
-        logger.info("Creating match results before " + before);
-
-        List<Match> matches = matchApi.get().stream().filter(m -> m.getMatchDate().before(before)).collect(Collectors.toList());
-
-        for (Match match : matches) {
-            TeamResult result = new TeamResult();
-            result.setMatch(match);
-
-            long home = Math.round(Math.random() * 10);
-            long away = Math.round(Math.random() * 10);
-            if (home == away)
-                home++;
-
-            result.setHomeRacks((int) home);
-            result.setAwayRacks((int) away);
-            teamResultApi.create(result);
-        }
-
-        logger.info("Created  " + teamResultApi.get().size() + " match results");
-
-        for (Player player : playerApi.get().stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList())) {
-            List<User> potentials = challengeApi.getPotentials(player.getUserId());
-            int slot = (int) Math.round(Math.random() * potentials.size())-1;
-            List<Player> opponents = potentials.get(slot == -1 ? 0 : slot).getPlayers().stream().collect(Collectors.toList());
-            slot = (int) Math.round(Math.random() * opponents.size())-1;
-            Player opponent = opponents.get(slot == -1 ? 0 : slot);
-            Challenge challenge = new Challenge();
-            Match match = new Match();
-            match.setDivision(player.getDivision());
-            match.setSeason(player.getSeason());
-            match.setHome(player.getTeam());
-            match.setAway(opponent.getTeam());
-            challenge.setMatch(match);
-            challenge.setSlot(Slot.getDefault(new DateTime().plusDays(14).toDate()).get(2));
-            challenge.setStatus(Status.PENDING);
-            challengeApi.requestChallenge(challenge);
-        }
-        logger.info("Created " + challengeApi.get().stream().filter(c -> c.getStatus() == Status.PENDING).collect(Collectors.toList()).size() + " challenges");
-        */
     }
 
-   private void createChallengeMatches(DivisionType divisionType) {
+    private void createChallengeMatches(DivisionType divisionType) {
        List<Player> challengers = playerApi.get().stream().filter(p -> p.getDivision().getType() == divisionType).collect(Collectors.toList());
         int size = challengers.size();
         logger.info("Have " + size + " player matches to generate");
@@ -155,15 +163,15 @@ public class SchemaData {
             Player challenger = challengers.get(i);
             List<Player> potentials = challengers.stream().filter(p -> !p.getId().equals(challenger.getId())).collect(Collectors.toList());
             for (int j = 1; j <= 5; j++) {
-                Match match = new Match();
-                match.setHome(challenger.getTeam());
-                match.setDivision(challenger.getDivision());
-                match.setSeason(challenger.getSeason());
-                match.setMatchDate(new DateTime().minusDays(j * 7).toDate());
+                TeamMatch teamMatch = new TeamMatch();
+                teamMatch.setHome(challenger.getTeam());
+                teamMatch.setDivision(challenger.getDivision());
+                teamMatch.setSeason(challenger.getSeason());
+                teamMatch.setMatchDate(new DateTime().minusDays(j * 7).toDate());
                 int slot = (int) Math.round(Math.random() * potentials.size())-1;
                 Player opponent = potentials.get(slot == -1 ? 0 : slot);
-                match.setAway(opponent.getTeam());
-                matchApi.create(match);
+                teamMatch.setAway(opponent.getTeam());
+                matchApi.create(teamMatch);
             }
         }
         logger.info("Create a total of " + matchApi.get().size() + " matches");

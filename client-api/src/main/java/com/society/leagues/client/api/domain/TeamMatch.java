@@ -6,21 +6,22 @@ import com.society.leagues.client.api.domain.division.Division;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-public class Match extends LeagueObject  {
+public class TeamMatch extends LeagueObject  {
     @NotNull Team home;
     @NotNull Team away;
     @NotNull Season season;
     @NotNull Division division;
     Date matchDate;
+    TeamResult result;
 
-    public Match(Team home, Team away, Season season, Date matchDate) {
+    public TeamMatch(Team home, Team away, Season season, Date matchDate) {
         this.home = home;
         this.away = away;
         this.season = season;
         this.matchDate = matchDate;
     }
 
-    public Match() {
+    public TeamMatch() {
     }
 
     public Team getHome() {
@@ -62,4 +63,35 @@ public class Match extends LeagueObject  {
     public void setDivision(Division division) {
         this.division = division;
     }
+
+    public TeamResult getResult() {
+        return result;
+    }
+
+    public void setResult(TeamResult result) {
+        this.result = result;
+    }
+
+    public Team getWinner() {
+        if (result == null)
+            return null;
+
+        if (result.getHomeRacks() > result.getAwayRacks()) {
+            return home;
+        }
+
+        return away;
+    }
+
+    public Team getLoser() {
+        if (result == null)
+            return null;
+
+        if (result.getHomeRacks() < result.getAwayRacks()) {
+            return home;
+        }
+
+        return away;
+    }
+
 }

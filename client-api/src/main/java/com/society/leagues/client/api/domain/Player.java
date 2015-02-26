@@ -1,7 +1,6 @@
 package com.society.leagues.client.api.domain;
 
 import com.society.leagues.client.api.domain.division.Division;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -18,8 +17,7 @@ public class Player extends LeagueObject {
     Team team;
     @NotNull
     Handicap handicap;
-    List<Match> matches;
-    List<TeamResult> teamResults;
+    List<TeamMatch> teamMatches;
     List<Challenge> challenges;
     Date start;
     Date end;
@@ -68,12 +66,12 @@ public class Player extends LeagueObject {
         this.handicap = handicap;
     }
 
-    public List<Match> getMatches() {
-        return matches;
+    public List<TeamMatch> getTeamMatches() {
+        return teamMatches;
     }
 
-    public void setMatches(List<Match> matches) {
-        this.matches = matches;
+    public void setTeamMatches(List<TeamMatch> teamMatches) {
+        this.teamMatches = teamMatches;
     }
 
     public Status status() {
@@ -119,14 +117,6 @@ public class Player extends LeagueObject {
         this.userId = userId;
     }
 
-    public List<TeamResult> getTeamResults() {
-        return teamResults;
-    }
-
-    public void setTeamResults(List<TeamResult> teamResults) {
-        this.teamResults = teamResults;
-    }
-
     public List<Challenge> getChallenges() {
         return challenges;
     }
@@ -143,7 +133,7 @@ public class Player extends LeagueObject {
                 ", user=" + userId +
                 ", team=" + team +
                 ", handicap=" + handicap +
-                ", matches=" + matches +
+                ", matches=" + teamMatches +
                 ", start=" + start +
                 ", end=" + end +
                 '}';

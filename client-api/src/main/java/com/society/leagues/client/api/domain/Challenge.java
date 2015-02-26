@@ -1,33 +1,35 @@
 package com.society.leagues.client.api.domain;
 
+import java.util.Date;
+
 public class Challenge extends LeagueObject {
-    
-    Slot slot;
     Status status;
-    Match match;
+    TeamMatch teamMatch;
+    Date challengeDate;
 
     public Challenge() {
     }
 
-    public Challenge(Match match, Slot slot) {
-        this.match = match;
-        this.slot = slot;
+    public Challenge(TeamMatch teamMatch, Status status, Date date) {
+        this.teamMatch = teamMatch;
+        this.status = status;
+        this.challengeDate = date;
     }
 
-    public Slot getSlot() {
-        return slot;
+    public Date getChallengeDate() {
+        return challengeDate;
     }
 
-    public void setSlot(Slot slot) {
-        this.slot = slot;
+    public void setChallengeDate(Date challengeDate) {
+        this.challengeDate = challengeDate;
     }
 
-    public Match getMatch() {
-        return match;
+    public TeamMatch getTeamMatch() {
+        return teamMatch;
     }
 
-    public void setMatch(Match match) {
-        this.match = match;
+    public void setTeamMatch(TeamMatch teamMatch) {
+        this.teamMatch = teamMatch;
     }
 
     public Status getStatus() {

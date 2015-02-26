@@ -1,7 +1,7 @@
 package com.society.leagues.resource;
 
 import com.society.leagues.client.api.MatchApi;
-import com.society.leagues.client.api.domain.Match;
+import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.dao.MatchDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,22 +15,22 @@ public class MatchResource extends ApiResource implements MatchApi {
     @Autowired MatchDao dao;
 
     @Override
-    public Match get(Integer id) {
+    public TeamMatch get(Integer id) {
         return dao.get(id);
     }
 
     @Override
-    public List<Match> get() {
+    public List<TeamMatch> get() {
         return dao.get();
     }
 
     @Override
-    public List<Match> get(List<Integer> id) {
+    public List<TeamMatch> get(List<Integer> id) {
         return dao.get(id);
     }
 
     @Override
-    public List<Match> getByTeam(Team team) {
+    public List<TeamMatch> getByTeam(Team team) {
         return dao.getByTeam(team);
     }
 }
