@@ -171,10 +171,13 @@ public class Player extends LeagueObject {
     }
 
     public void addLost() {
-        loses++
+        loses++;
     }
 
-    public void addRaks(Integer r) {
+    public void addRacks(Integer r) {
+        if (r == null)
+            return;
+
         this.racks += r;
     }
 

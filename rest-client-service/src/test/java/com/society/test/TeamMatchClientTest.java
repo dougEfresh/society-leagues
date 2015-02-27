@@ -61,12 +61,8 @@ public class TeamMatchClientTest implements MatchApi {
             List<TeamMatch> teamTeamMatches = getByTeam(match.getHome());
             assertNotNull(teamTeamMatches);
             assertFalse(teamTeamMatches.isEmpty());
-            boolean found = false;
-            for (TeamMatch teamTeamMatch : teamTeamMatches) {
-                if (teamTeamMatch.getId().equals(match.getId()))
-                    found = true;
-            }
-            assertTrue(found);
+            TeamMatch found  = teamTeamMatches.stream().filter(tm -> tm.getMatchDate() != null).filter(tm -> tm.getId().equals(match.getId())).findFirst().orElse(null);
+            assertNotNull(found);
         }
     }
 

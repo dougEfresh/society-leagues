@@ -38,8 +38,6 @@ public class UserClientTest {
 
             for (Player player : players) {
                 assertNotNull(player.getTeam());
-                assertNotNull(player.getTeamResults());
-                assertFalse(player.getTeamResults().isEmpty());
 
                 assertNotNull(player.getChallenges());
                 assertFalse(player.getChallenges().isEmpty());

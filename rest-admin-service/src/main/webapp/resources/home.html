@@ -4,30 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Society Leagues</title>
-    <link rel="stylesheet" href="/resources/bower_components/pure/pure.css">
-    <link rel="stylesheet" href="/resources/bower_components/pure/grids-responsive.css">
-    <link rel="stylesheet" href="/resources/public/css/pure-theme.css">
     <link rel="stylesheet" href="/resources/public/css/calories-tracker.css">
+    <link rel="stylesheet" href="/resources/bower_components/bootstrap-css/css/bootstrap.css">
     <link rel="stylesheet" href="/resources/css/jquery.datetimepicker.css">
 </head>
 
-<body class="pure-skin-theme" id="caloriesCounterApp" ng-controller="CaloriesTrackerCtrl">
+<body id="caloriesCounterApp" ng-controller="CaloriesTrackerCtrl">
 
 <div class="please-wait-dialog" ng-hide="vm.appReady">
     <img class="please-wait-spinner" src="/resources/img/loading.gif">
 </div>
 
-<header class="page-header pure-g not-ready" ng-class="{'app-ready': vm.appReady}">
-    <div class="pure-u-lg-1-2 pure-u-1">
+<header ng-class="{'app-ready': vm.appReady}">
+    <div >
 
-        <a class="pure-menu-heading" href="#">
+        <a href="#">
             <img class="logo" src="/resources/img/logo.png">
         </a>
-        <span class="header-element page-title">League</span>
+        <span>League</span>
     </div>
 
-    <div class="pure-u-lg-1-2 pure-u-1 utilities">
-        <div class="header-element username">
+    <div>
+        <div>
             <div class="username-placeholder" ng-hide="vm.userName"></div>
             <span ng-cloak>{{vm.userName}}</span>
         </div>
@@ -48,7 +46,7 @@
         </div>
     </div>
      <div id="match-history">
-        <table class="pure-table">
+        <table>
             <thead>
             <tr>
                 <th>Challenger</th>
@@ -56,6 +54,7 @@
             </tr>
             </thead>
             <tbody>
+            <!--<tr ng-repeat="match in vm.matches" ng-class="{'pure-table-odd': $index % 2 == 1, 'pure-table-even': $index % 2 == 0}">-->
             <tr ng-repeat="match in vm.matches" ng-class="{'pure-table-odd': $index % 2 == 1, 'pure-table-even': $index % 2 == 0}">
                 <td>{{match.home.name}}</td>
                 <td>{{match.away.name}}</td>
@@ -63,26 +62,23 @@
             </tbody>
         </table>
 
-        <ul class="pure-paginator paginator">
+        <ul>
             <li>
-                <a ng-enabled="vm.totalPages > 0" class="pure-button prev" ng-click="previous()"
+                <a ng-enabled="vm.totalPages > 0" ng-click="previous()"
                    ng-disabled="vm.currentPage == 1">&#171;</a>
             </li>
-
             <li ng-repeat="page in pages()">
-                <a ng-enabled="vm.totalPages > 0" class="pure-button" ng-click="goToPage($index + 1)"
-                   ng-class="{'pure-button-active': page == vm.currentPage}">{{page}}</a></li>
-
+                <!--<a ng-enabled="vm.totalPages > 0" ng-click="goToPage($index + 1)" ng-class="{'pure-button-active': page == vm.currentPage}">{{page}}</a></li>-->
+                <a ng-enabled="vm.totalPages > 0" ng-click="goToPage($index + 1)">{{page}}</a>
+            </li>
             <li>
-                <a ng-enabled="vm.totalPages > 0" ng-disabled="vm.currentPage == vm.totalPages"
-                   class="pure-button next" ng-click="next()">&#187;</a>
+                <a ng-enabled="vm.totalPages > 0" ng-disabled="vm.currentPage == vm.totalPages" ng-click="next()">&#187;</a>
             </li>
         </ul>
 
     </div>
 </main>
 
-<body>
 <script type="text/javascript"
         data-main="/resources/js/run-calories-tracker"
         src="/resources/bower_components/requirejs/require.js">

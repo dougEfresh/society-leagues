@@ -73,10 +73,6 @@ public class TeamMatch extends LeagueObject  {
         this.result = result;
     }
 
-    public Boolean isWinner() {
-        return winner;
-    }
-
     public void setWinner(Boolean winner) {
         this.winner = winner;
     }
@@ -105,9 +101,15 @@ public class TeamMatch extends LeagueObject  {
 
     public Integer getWinnerRacks() {
         if (getWinner() == null)
-            return 0;
+            return null;
 
-
+        return result.getWinnerRacks();
     }
 
+    public Integer getLoserRacks() {
+        if (getLoser() == null)
+            return null;
+
+        return result.getLoserRacks();
+    }
 }

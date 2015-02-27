@@ -57,7 +57,7 @@ public class ChallengeTest implements ChallengeApi {
         teamMatch.setSeason(ch.getSeason());
         challenge.setStatus(Status.PENDING);
         challenge.setTeamMatch(teamMatch);
-
+        challenge.setChallengeDate(new Date());
         challenge = requestChallenge(challenge);
         assertNotNull(challenge);
         assertNotNull(challenge.getId());
@@ -132,16 +132,6 @@ public class ChallengeTest implements ChallengeApi {
         return null;
     }
 
-    @Test
-    public void testByPlayer() throws Exception {
-        List<Player> challengers = playerApi.get().stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList());
-        for (Player challenger : challengers) {
-            List<Challenge> challenges = getByTeam(challenger.getId());
-            assertNotNull(challenges);
-            assertFalse(challenges.isEmpty());
-        }
-    }
-
     @Override
     public List<Challenge> getByTeam(@PathVariable(value = "id") Integer id) {
         return api.getByTeam(id);
@@ -164,6 +154,7 @@ public class ChallengeTest implements ChallengeApi {
         teamMatch.setSeason(challenger.getSeason());
         challenge.setStatus(Status.PENDING);
         challenge.setTeamMatch(teamMatch);
+        challenge.setChallengeDate(new Date());
         challenge = requestChallenge(challenge);
         assertNotNull(challenge);
         assertNotNull(challenge.getId());

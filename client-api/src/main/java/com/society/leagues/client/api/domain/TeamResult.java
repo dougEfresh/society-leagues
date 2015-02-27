@@ -32,4 +32,12 @@ public class TeamResult extends LeagueObject {
     public void setTeamMatchId(Integer teamMatchId) {
         this.teamMatchId = teamMatchId;
     }
+
+    public Integer getWinnerRacks() {
+        return homeRacks > awayRacks ? homeRacks : awayRacks;
+    }
+
+    public Integer getLoserRacks() {
+        return homeRacks > awayRacks ? awayRacks : homeRacks;
+    }
 }
