@@ -13,6 +13,7 @@ public class TeamMatch extends LeagueObject  {
     @NotNull Division division;
     Date matchDate;
     TeamResult result;
+    Boolean winner;
 
     public TeamMatch(Team home, Team away, Season season, Date matchDate) {
         this.home = home;
@@ -72,6 +73,14 @@ public class TeamMatch extends LeagueObject  {
         this.result = result;
     }
 
+    public Boolean isWinner() {
+        return winner;
+    }
+
+    public void setWinner(Boolean winner) {
+        this.winner = winner;
+    }
+
     public Team getWinner() {
         if (result == null)
             return null;
@@ -92,6 +101,13 @@ public class TeamMatch extends LeagueObject  {
         }
 
         return away;
+    }
+
+    public Integer getWinnerRacks() {
+        if (getWinner() == null)
+            return 0;
+
+
     }
 
 }
