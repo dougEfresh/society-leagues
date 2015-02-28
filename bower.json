@@ -11,6 +11,6 @@
     "spring-security-csrf-token-interceptor": "0.1.5",
     "lodash": "3.3.1",
     "requirejs": "2.1.16",
-    "bootstrap-css": "3.2.0"
+    "bootstrap": "3.3.2"
   }
 }

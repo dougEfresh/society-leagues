@@ -8,7 +8,6 @@ public class TeamResult extends LeagueObject {
     Integer homeRacks;
     Integer awayRacks;
 
-
     public Integer getHomeRacks() {
         return homeRacks;
     }
