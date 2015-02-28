@@ -14,7 +14,7 @@ require.config({
         datetimepicker: './datetimepicker/jquery.datetimepicker',
         editableTableWidgets: '../public/js/editable-table-widgets',
         frontendServices: 'frontend-services',
-        caloriesCounterApp: "calories-counter-app"
+        caloriesCounterApp: "home-app"
     },
     shim: {
         jQuery: {

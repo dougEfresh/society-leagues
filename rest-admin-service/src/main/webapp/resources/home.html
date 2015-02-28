@@ -45,12 +45,17 @@
             <div ng-repeat="info in vm.infoMessages">{{info.description}}</div>
         </div>
     </div>
-     <div id="match-history">
+
+    <div id="user-stats">
         <table>
             <thead>
             <tr>
                 <th>Challenger</th>
                 <th>Opponent</th>
+                <th>Win</th>
+                <th>Winner Racks</th>
+                <th>loser Racks</th>
+                <th>MatchDate</th>
             </tr>
             </thead>
             <tbody>
@@ -58,6 +63,36 @@
             <tr ng-repeat="match in vm.matches" ng-class="{'pure-table-odd': $index % 2 == 1, 'pure-table-even': $index % 2 == 0}">
                 <td>{{match.home.name}}</td>
                 <td>{{match.away.name}}</td>
+                <td>{{match.win}}</td>
+                <td>{{match.winnerRacks}}</td>
+                <td>{{match.loserRacks}}</td>
+                <td>{{match.matchDate}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+     <div id="match-history">
+        <table>
+            <thead>
+            <tr>
+                <th>Challenger</th>
+                <th>Opponent</th>
+                <th>Win</th>
+                <th>Winner Racks</th>
+                <th>loser Racks</th>
+                <th>MatchDate</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!--<tr ng-repeat="match in vm.matches" ng-class="{'pure-table-odd': $index % 2 == 1, 'pure-table-even': $index % 2 == 0}">-->
+            <tr ng-repeat="match in vm.matches" ng-class="{'pure-table-odd': $index % 2 == 1, 'pure-table-even': $index % 2 == 0}">
+                <td>{{match.home.name}}</td>
+                <td>{{match.away.name}}</td>
+                <td>{{match.win}}</td>
+                <td>{{match.winnerRacks}}</td>
+                <td>{{match.loserRacks}}</td>
+                <td>{{match.matchDate}}</td>
             </tr>
             </tbody>
         </table>
@@ -75,7 +110,6 @@
                 <a ng-enabled="vm.totalPages > 0" ng-disabled="vm.currentPage == vm.totalPages" ng-click="next()">&#187;</a>
             </li>
         </ul>
-
     </div>
 </main>
 

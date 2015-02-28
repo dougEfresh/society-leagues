@@ -109,7 +109,11 @@ public class TeamMatch extends LeagueObject  {
         return result.getLoserRacks();
     }
 
-    public Integer isWin() {
+    public Boolean isWin() {
         return win;
+    }
+
+    public void setWin(Boolean win) {
+        this.win = win;
     }
 }

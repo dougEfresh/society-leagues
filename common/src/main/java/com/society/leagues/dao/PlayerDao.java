@@ -47,7 +47,7 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
                 continue;
 
             if (teamMatch.getWinner().equals(player.getTeam())) {
-                    teamMatch.setWinner(true);
+                    teamMatch.setWin(true);
                     player.addWin();
                     player.addRacks(teamMatch.getWinnerRacks());
                 } else {
