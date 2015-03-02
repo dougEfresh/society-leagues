@@ -1,5 +1,0 @@
-dependencies {
-    compile(project(':client-api'))
-    compile(project(':common'))
-    compile 'junit:junit:4.12'
-}
