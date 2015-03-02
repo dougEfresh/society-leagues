@@ -1,4 +1,4 @@
-package com.society.leagues.resource;
+package com.society.leagues.resource.client;
 
 import com.society.leagues.dao.SchedulerDao;
 import com.wordnik.swagger.annotations.Api;

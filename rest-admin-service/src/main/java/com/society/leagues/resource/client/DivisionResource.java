@@ -1,9 +1,10 @@
-package com.society.leagues.resource;
+package com.society.leagues.resource.client;
 
 import com.society.leagues.client.api.DivisionClientApi;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.dao.DivisionDao;
+import com.society.leagues.resource.ApiResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;

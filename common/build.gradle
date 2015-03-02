@@ -1,9 +1,3 @@
-apply plugin: 'spring-boot'
-
-springBoot {
-    mainClass = 'com.society.leagues.Main'
-}
-
 dependencies {
     compile(project(':client-api'))
 

@@ -1,4 +1,4 @@
-package com.society.test;
+package com.society.test.client;
 
 import com.society.leagues.Main;
 import com.society.leagues.client.api.ChallengeApi;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

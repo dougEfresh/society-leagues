@@ -12,7 +12,8 @@ import org.springframework.context.annotation.Configuration;
 @EnableAutoConfiguration
 public class Main implements CommandLineRunner {
 
-    @Autowired ServerControl serverControl;
+    @Autowired
+    ServerControl serverControl;
 
     public static void main(String[] args) throws Exception {
         SpringApplication app = new SpringApplication(Main.class);

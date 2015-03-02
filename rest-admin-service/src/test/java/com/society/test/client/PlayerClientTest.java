@@ -1,7 +1,8 @@
-package com.society.test;
+package com.society.test.client;
 
 import com.society.leagues.Main;
 import com.society.leagues.client.api.domain.Player;
+import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.dao.PlayerDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class})
@@ -31,6 +33,11 @@ public class PlayerClientTest {
         for (Player player : players) {
             assertNotNull(player.getTeamMatches());
             assertFalse(player.getTeamMatches().isEmpty());
+            for (TeamMatch teamMatch : player.getTeamMatches()) {
+                assertTrue(teamMatch.getWinnerRacks() > 0);
+                assertTrue(teamMatch.getLoserRacks() > 0);
+            }
+            assertNotNull(player.getTeamMatches());
         }
     }
 

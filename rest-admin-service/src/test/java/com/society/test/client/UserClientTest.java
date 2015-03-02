@@ -1,4 +1,4 @@
-package com.society.test;
+package com.society.test.client;
 
 import com.society.leagues.Main;
 import com.society.leagues.client.api.domain.Player;

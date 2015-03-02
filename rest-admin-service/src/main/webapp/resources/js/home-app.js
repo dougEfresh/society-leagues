@@ -1,6 +1,6 @@
 angular.module('caloriesCounterApp',
     ['editableTableWidgets', 'frontendServices', 'spring-security-csrf-token-interceptor'])
-    .controller('CaloriesTrackerCtrl',['$scope' , 'MealService', 'UserService', '$timeout',
+    .controller('CaloriesTrackerCtrl',['$scope' , 'UserService', '$timeout',
     function ($scope, MealService, UserService, $timeout) {
 
         $scope.vm = {
@@ -12,7 +12,8 @@ angular.module('caloriesCounterApp',
             matches: [],
             pendingChallenges: [],
             acceptedChallenges: [],
-            players: []
+            players: [],
+            stats: {}
         };
 
         function updateUserInfo() {

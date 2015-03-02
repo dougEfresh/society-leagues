@@ -6,12 +6,10 @@ import com.society.leagues.client.api.DivisionApi;
 import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
-import com.society.leagues.client.api.domain.division.LeagueType;
 import com.society.leagues.client.exception.Unauthorized;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 

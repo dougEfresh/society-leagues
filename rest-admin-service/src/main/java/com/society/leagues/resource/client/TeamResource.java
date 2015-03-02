@@ -1,9 +1,10 @@
-package com.society.leagues.resource;
+package com.society.leagues.resource.client;
 
 import com.society.leagues.client.api.TeamClientApi;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.dao.TeamDao;
+import com.society.leagues.resource.ApiResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

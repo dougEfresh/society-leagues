@@ -110,6 +110,9 @@ public class SchemaData {
 
             long home = Math.round(Math.random() * 10);
             long away = Math.round(Math.random() * 10);
+            home = home == 0 ? 1 : home;
+            away = away == 0 ? 1 : away;
+
             if (home == away)
                 home++;
 
