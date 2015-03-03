@@ -3,7 +3,7 @@ package com.society.leagues.resource.client;
 import com.society.leagues.client.api.MatchApi;
 import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.client.api.domain.Team;
-import com.society.leagues.dao.MatchDao;
+import com.society.leagues.dao.TeamMatchDao;
 import com.society.leagues.resource.ApiResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,8 @@ import java.util.List;
 @Component
 @SuppressWarnings("unused")
 public class MatchResource extends ApiResource implements MatchApi {
-    @Autowired MatchDao dao;
+    @Autowired
+    TeamMatchDao dao;
 
     @Override
     public TeamMatch get(Integer id) {

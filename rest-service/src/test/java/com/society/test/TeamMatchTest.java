@@ -7,7 +7,7 @@ import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.dao.DivisionDao;
-import com.society.leagues.dao.MatchDao;
+import com.society.leagues.dao.TeamMatchDao;
 import com.society.leagues.dao.SeasonDao;
 import com.society.leagues.dao.TeamDao;
 import org.junit.Before;
@@ -24,7 +24,8 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class TeamMatchTest extends TestBase implements MatchAdminApi {
-    @Autowired MatchDao api;
+    @Autowired
+    TeamMatchDao api;
     @Autowired SeasonDao seasonApi;
     @Autowired DivisionDao divisionApi;
     @Autowired TeamDao teamApi;

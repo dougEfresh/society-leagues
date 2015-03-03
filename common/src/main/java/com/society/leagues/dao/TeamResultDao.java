@@ -2,8 +2,6 @@ package com.society.leagues.dao;
 
 import com.society.leagues.client.api.TeamResultApi;
 import com.society.leagues.client.api.admin.TeamResultAdminApi;
-import com.society.leagues.client.api.domain.TeamMatch;
-import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.TeamResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -13,12 +11,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class TeamResultDao extends Dao<TeamResult> implements TeamResultAdminApi, TeamResultApi {
-    @Autowired MatchDao matchDao;
+    @Autowired
+    TeamMatchDao teamMatchDao;
 
     public RowMapper<TeamResult> rowMapper = (rs, rowNum) -> {
         TeamResult result = new TeamResult();

@@ -4,7 +4,9 @@ package com.society.leagues.client.api.domain;
 import com.society.leagues.client.api.domain.division.Division;
 
 import javax.validation.constraints.NotNull;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 public class TeamMatch extends LeagueObject  {
     @NotNull Team home;
@@ -14,6 +16,8 @@ public class TeamMatch extends LeagueObject  {
     Date matchDate;
     TeamResult result;
     Boolean win;
+    List<Player> homePlayers = Collections.emptyList();
+    List<Player> awayPlayers = Collections.emptyList();
 
     public TeamMatch(Team home, Team away, Season season, Date matchDate) {
         this.home = home;
@@ -115,5 +119,21 @@ public class TeamMatch extends LeagueObject  {
 
     public void setWin(Boolean win) {
         this.win = win;
+    }
+
+    public List<Player> getHomePlayers() {
+        return homePlayers;
+    }
+
+    public void setHomePlayers(List<Player> homePlayers) {
+        this.homePlayers = homePlayers;
+    }
+
+    public List<Player> getAwayPlayers() {
+        return awayPlayers;
+    }
+
+    public void setAwayPlayers(List<Player> awayPlayers) {
+        this.awayPlayers = awayPlayers;
     }
 }

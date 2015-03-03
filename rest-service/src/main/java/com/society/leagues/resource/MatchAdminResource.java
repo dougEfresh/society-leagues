@@ -2,7 +2,7 @@ package com.society.leagues.resource;
 
 import com.society.leagues.client.api.admin.MatchAdminApi;
 import com.society.leagues.client.api.domain.TeamMatch;
-import com.society.leagues.dao.MatchDao;
+import com.society.leagues.dao.TeamMatchDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +12,8 @@ import javax.annotation.security.RolesAllowed;
 @RolesAllowed(value = {"ADMIN"})
 @SuppressWarnings("unused")
 public class MatchAdminResource extends AdminApiResource implements MatchAdminApi {
-    @Autowired MatchDao dao;
+    @Autowired
+    TeamMatchDao dao;
 
     @Override
     public TeamMatch create(TeamMatch teamMatch) {

@@ -18,6 +18,7 @@ public class Player extends LeagueObject {
     @NotNull
     Handicap handicap;
     List<TeamMatch> teamMatches;
+    List<PlayerResult> playerResults;
     List<Challenge> challenges;
     Date start;
     Date end;

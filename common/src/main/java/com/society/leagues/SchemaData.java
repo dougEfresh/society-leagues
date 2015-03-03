@@ -4,7 +4,6 @@ import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
-import com.society.leagues.conf.DaoConfig;
 import com.society.leagues.dao.*;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -32,7 +31,8 @@ public class SchemaData {
     @Autowired TeamDao teamApi;
     @Autowired PlayerDao playerApi;
     @Autowired UserDao userApi;
-    @Autowired MatchDao matchApi;
+    @Autowired
+    TeamMatchDao matchApi;
     @Autowired TeamResultDao teamResultApi;
     @Autowired ChallengeDao challengeApi;
 

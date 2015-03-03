@@ -3,7 +3,7 @@ package com.society.test.client;
 import com.society.leagues.client.api.MatchApi;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.TeamMatch;
-import com.society.leagues.dao.MatchDao;
+import com.society.leagues.dao.TeamMatchDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,8 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class TeamMatchClientTest extends TestClientBase implements MatchApi {
 
-    @Autowired MatchDao matchDao;
+    @Autowired
+    TeamMatchDao teamMatchDao;
 
     @Test
     public void testGet() throws Exception {
@@ -29,7 +30,7 @@ public class TeamMatchClientTest extends TestClientBase implements MatchApi {
 
     @Override
     public List<TeamMatch> get() {
-        return matchDao.get();
+        return teamMatchDao.get();
     }
 
     @Test
@@ -45,7 +46,7 @@ public class TeamMatchClientTest extends TestClientBase implements MatchApi {
 
     @Override
     public TeamMatch get(Integer id) {
-        return matchDao.get(id);
+        return teamMatchDao.get(id);
     }
 
     @Test
@@ -69,7 +70,7 @@ public class TeamMatchClientTest extends TestClientBase implements MatchApi {
 
     @Override
     public List<TeamMatch> getByTeam(Team team) {
-        return matchDao.getByTeam(team);
+        return teamMatchDao.getByTeam(team);
     }
 
     @Test
@@ -83,6 +84,6 @@ public class TeamMatchClientTest extends TestClientBase implements MatchApi {
 
     @Override
     public List<TeamMatch> get(List<Integer> id) {
-        return matchDao.get(id);
+        return teamMatchDao.get(id);
     }
 }

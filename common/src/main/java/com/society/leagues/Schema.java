@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 @Component
+@SuppressWarnings("unused")
 public class Schema {
     @Value("${embedded:true}")
     boolean embedded;
@@ -102,6 +103,16 @@ public class Schema {
               " away_racks int NOT NULL" +
             ")\n";
 
+    static final String player_result = "create table player_result (\n" +
+              " player_result_id int NOT NULL AUTO_INCREMENT(50000) PRIMARY KEY,\n" +
+            " team_match_id int NOT NULL CONSTRAINT TEAM_MATCH_FK REFERENCES team_match ON DELETE CASCADE,\n" +
+            " home_player_id int NOT NULL CONSTRAINT HOME_MATCH_FK REFERENCES player ON DELETE CASCADE,\n" +
+            " away_player_id int NOT NULL CONSTRAINT AWAY_MATCH_FK REFERENCES player" +
+            " ON DELETE CASCADE,\n" +
+            " home_racks int NOT NULL," +
+            " away_racks int NOT NULL" +
+            ")\n";
+
     static final String challenge = "create table challenge  (\n" +
               " challenge_id int NOT NULL AUTO_INCREMENT(40000) PRIMARY KEY,\n" +
               " team_match_id int NOT NULL CONSTRAINT PM_S_K REFERENCES team_match ON DELETE CASCADE,\n" +
@@ -131,6 +142,7 @@ public class Schema {
         jdbcTemplate.update(player);
         jdbcTemplate.update(team_match);
         jdbcTemplate.update(team_result);
+        jdbcTemplate.update(player_result);
         jdbcTemplate.update(challenge);
 
     }

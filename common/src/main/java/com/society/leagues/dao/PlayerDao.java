@@ -19,7 +19,8 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
     @Autowired SeasonDao seasonDao;
     @Autowired TeamDao teamDao;
     @Autowired DivisionDao divisionDao;
-    @Autowired MatchDao matchDao;
+    @Autowired
+    TeamMatchDao teamMatchDao;
     @Autowired TeamResultDao teamResultDao;
     @Autowired ChallengeDao challengeDao;
 
@@ -38,7 +39,8 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
         player.setUserId(rs.getInt("user_id"));
         player.setId(rs.getInt("player_id"));
 
-        player.setTeamMatches(matchDao.getByTeam(player.getTeam()));
+        player.setTeamMatches(teamMatchDao.getByTeam(player.getTeam()));
+
         for (TeamMatch teamMatch : player.getTeamMatches()) {
             teamMatch.setResult(teamResultDao.getByMatch(teamMatch.getId()));
 

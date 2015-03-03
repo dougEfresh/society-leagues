@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class MatchDao extends Dao<TeamMatch> implements MatchApi, MatchAdminApi {
+public class TeamMatchDao extends Dao<TeamMatch> implements MatchApi, MatchAdminApi {
     @Autowired SeasonDao seasonDao;
     @Autowired TeamDao teamDao;
     @Autowired DivisionDao divisionDao;

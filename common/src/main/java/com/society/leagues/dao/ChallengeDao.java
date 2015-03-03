@@ -22,7 +22,8 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
     private static Logger logger = LoggerFactory.getLogger(ChallengeDao.class);
     @Autowired PlayerDao playerDao;
     @Autowired JdbcTemplate jdbcTemplate;
-    @Autowired MatchDao matchDao;
+    @Autowired
+    TeamMatchDao teamMatchDao;
     @Autowired UserDao userDao;
 
     @Value("${email-override:}") String emailOverride;
@@ -57,7 +58,7 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
     
     @Override
     public Challenge requestChallenge(final Challenge challenge) {
-        TeamMatch teamMatch = matchDao.create(challenge.getTeamMatch());
+        TeamMatch teamMatch = teamMatchDao.create(challenge.getTeamMatch());
         if (teamMatch == null)
             return null;
 
@@ -167,7 +168,7 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         challenge.setChallengeDate(rs.getDate("challenge_date"));
         challenge.setStatus(Status.valueOf(rs.getString("status")));
         challenge.setId(rs.getInt("challenge_id"));
-        challenge.setTeamMatch(matchDao.get(rs.getInt("team_match_id")));
+        challenge.setTeamMatch(teamMatchDao.get(rs.getInt("team_match_id")));
         return challenge;
     };
     
