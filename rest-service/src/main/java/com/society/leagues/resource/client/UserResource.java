@@ -13,7 +13,6 @@ import java.util.List;
 
 import java.security.Principal;
 
-@Component
 @RestController
 @SuppressWarnings("unused")
 public class UserResource extends ApiResource implements UserClientApi {

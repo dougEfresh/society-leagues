@@ -1,26 +1,50 @@
 package com.society.leagues.resource.client;
 
 import com.society.leagues.client.api.ChallengeApi;
-import com.society.leagues.client.api.domain.Challenge;
-import com.society.leagues.client.api.domain.Slot;
-import com.society.leagues.client.api.domain.User;
+import com.society.leagues.client.api.domain.*;
 import com.society.leagues.dao.ChallengeDao;
-import com.society.leagues.resource.ApiResource;
+import com.society.leagues.dao.PlayerDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.security.RolesAllowed;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
-@Component
 @SuppressWarnings("unused")
-@RolesAllowed(value = {"ADMIN","PLAYER"})
-public class ChallengeResource extends ApiResource implements ChallengeApi {
-    
+@RestController
+//@RolesAllowed(value = {"ADMIN","PLAYER"})
+public class ChallengeResource  implements ChallengeApi {
+
     @Autowired ChallengeDao dao;
-    
+    @Autowired PlayerDao playerDao;
+
+    @RequestMapping(value = "/leaderBoard", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PlayerStats> leaderBoard() {
+        List<PlayerStats> stats = new ArrayList<>();
+        Map<Integer,PlayerStats> userStats = new HashMap<>();
+        List<Player> players = playerDao.get().stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList());
+
+        for (Player player : players) {
+            for (TeamMatch m : player.getTeamMatches().stream().filter(p -> p.getResult() != null).collect(Collectors.toList())) {
+                if (!userStats.containsKey(player.getId())) {
+                    userStats.put(player.getId(),new PlayerStats(player.getId()));
+                }
+
+                PlayerStats s = userStats.get(player.getId());
+                
+            }
+        }
+
+        for (Challenge challenge : dao.get()) {
+            if (challenge.getTeamMatch().getResult() == null)
+                continue;
+            TeamMatch
+        }
+    }
+
     @Override
     public List<User> getPotentials(Integer id) {
         return dao.getPotentials(id);
@@ -57,7 +81,7 @@ public class ChallengeResource extends ApiResource implements ChallengeApi {
     }
 
     @Override
-    public List<Challenge> getByTeam(@PathVariable(value = "id") Integer id) {
-        return dao.getByTeam(id);
+    public List<Challenge> getByPlayer(Player p) {
+        return null;
     }
 }

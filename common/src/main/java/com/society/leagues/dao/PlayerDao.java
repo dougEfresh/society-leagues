@@ -13,7 +13,6 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdminApi {
@@ -56,7 +55,7 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
                 }
         }
 
-        player.setChallenges(challengeDao.getByTeam(player.getTeam().getId()));
+        player.setChallenges(challengeDao.getByPlayer(player));
 
         return player;
     };

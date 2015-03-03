@@ -110,7 +110,7 @@ public class ChallengeTest extends TestClientBase implements ChallengeApi {
     public void testModify() throws Exception {
         Challenge challenge = create();
         Date d = new Date();
-        challenge.setStatus(Status.ACTIVE);
+        challenge.setStatus(Status.ACCEPTED);
         challenge = modifyChallenge(challenge);
         assertNotNull(challenge);
         assertTrue(challenge.getStatus() == Status.ACTIVE);
@@ -127,8 +127,8 @@ public class ChallengeTest extends TestClientBase implements ChallengeApi {
     }
 
     @Override
-    public List<Challenge> getByTeam(@PathVariable(value = "id") Integer id) {
-        return api.getByTeam(id);
+    public List<Challenge> getByPlayer(Player p) {
+        return api.getByPlayer(p);
     }
 
     static int COUNTER = 1;

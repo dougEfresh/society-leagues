@@ -14,7 +14,7 @@ require.config({
         datetimepicker: './datetimepicker/jquery.datetimepicker',
         editableTableWidgets: '../public/js/editable-table-widgets',
         frontendServices: 'frontend-services',
-        caloriesCounterApp: "home-app"
+        leagueApp: "home-app"
     },
     shim: {
         jQuery: {
@@ -38,14 +38,14 @@ require.config({
         frontendServices: {
             deps: ['angular', 'lodash', 'csrfInterceptor']
         },
-        caloriesCounterApp: {
+        leagueApp: {
             deps: [ 'lodash', 'angular', 'angularMessages', 'editableTableWidgets' , 'frontendServices']
         }
     }
 });
 
-require(['caloriesCounterApp'], function () {
+require(['leagueApp'], function () {
 
-    angular.bootstrap(document.getElementById('caloriesCounterApp'), ['caloriesCounterApp']);
+    angular.bootstrap(document.getElementById('leagueApp'), ['leagueApp']);
 
 });

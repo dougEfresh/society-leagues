@@ -77,8 +77,8 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
     public Challenge acceptChallenge(Challenge challenge) {
         try {
             jdbcTemplate.update("UPDATE challenge SET status  = ? WHERE challenge_id = ?", 
-                    Status.ACTIVE.name(), challenge.getId());
-            challenge.setStatus(Status.ACTIVE);
+                    Status.ACCEPTED.name(), challenge.getId());
+            challenge.setStatus(Status.ACCEPTED);
         } catch (Throwable t ){ 
             logger.error(t.getLocalizedMessage(),t);
             return null;
@@ -131,7 +131,7 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
 
     @Override
     public List<Slot> slots(Date date) {
-        return Slot.getDefault(date);
+        return null;
     }
 
     private List<Player> findChallengeUsers(Division division,Handicap handicap, List<Player> players) {
@@ -143,10 +143,17 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
     }
 
     @Override
-    public List<Challenge> getByTeam(Integer id) {
-        return get().stream().filter(c ->
-                c.getTeamMatch().getHome().getId().equals(id) ||
-                c.getTeamMatch().getAway().equals(id)).
+    public List<Challenge> getByPlayer(Player p) {
+        if (p == null) {
+            return Collections.emptyList();
+        }
+        Team t = p.getTeam();
+
+        return get().stream().
+                filter(c -> c.getTeamMatch().getHome().equals(t) ||
+                        c.getTeamMatch().getAway().equals(t)
+                ).
+                filter(c -> c.getTeamMatch().getDivision().equals(p.getDivision())).
                 collect(Collectors.toList());
     }
 

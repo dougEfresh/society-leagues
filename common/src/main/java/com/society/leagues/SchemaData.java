@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -79,6 +80,28 @@ public class SchemaData {
         }
     }
 
+    private void createChallengePlayers() {
+        for (int i = 1 ; i <= NUM_PLAYERS ; i++) {
+            for (Division division : divisionApi.get().stream().filter(d -> d.isChallenge()).collect(Collectors.toList())) {
+                Player player = new Player();
+                player.setUserId(userApi.getWithNoPlayer("login"+i).getId());
+                String teamName ="login"+i;
+                Team team = teamApi.get(teamName);
+                if (team == null)
+                    player.setTeam(teamApi.create(new Team(teamName)));
+                else
+                    player.setTeam(team);
+
+                player.setDivision(division);
+                player.setSeason(seasonApi.get(division.getType().name()));
+                player.setStart(new Date());
+                player.setHandicap(getRandomHandicap(i,division.getType()));
+                playerApi.create(player);
+            }
+        }
+        logger.info("Created " + playerApi.get().size() + " challenge players");
+    }
+
     private void createChallengeRequests() {
         List<Player> players = playerApi.get().stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList());
         for (Player player : players) {
@@ -94,15 +117,26 @@ public class SchemaData {
             teamMatch.setHome(player.getTeam());
             teamMatch.setAway(opponent.getTeam());
             challenge.setTeamMatch(teamMatch);
-            challenge.setChallengeDate(Slot.getDefault(new DateTime().plusDays(14).toDate()).get(2).getDate());
+            challenge.setChallengeDate(Slot.getDefault(LocalDateTime.now().plusDays(14)).get(2).getDate());
             challenge.setStatus(Status.PENDING);
             challengeApi.requestChallenge(challenge);
         }
-        logger.info("Created " + challengeApi.get().stream().filter(c -> c.getStatus() == Status.PENDING).collect(Collectors.toList()).size() + " challenges");
+        List<Challenge> pending = challengeApi.get().stream().filter(c -> c.getStatus() == Status.PENDING).collect(Collectors.toList());
+
+        logger.info("Created " + pending.size() + " challenges");
+
+        int i = 0;
+        for (Challenge c: pending) {
+            i++;
+            if (i % 2 == 0)
+                challengeApi.acceptChallenge(c);
+        }
+
+         logger.info("Accepted " + challengeApi.get().stream().filter(c -> c.getStatus() == Status.ACCEPTED).count() + " challenges");
     }
 
     private void createMatchResults() {
-        Date before = new DateTime().minusDays(8).toDate();
+        Date before = new DateTime().plusDays(1).toDate();
         logger.info("Creating match results before " + before);
 
         List<TeamMatch> teamMatches = matchApi.get().stream().filter(m -> m.getMatchDate().before(before)).collect(Collectors.toList());
@@ -125,28 +159,6 @@ public class SchemaData {
         }
 
         logger.info("Created  " + teamResultApi.get().size() + " match results");
-    }
-
-    private void createChallengePlayers() {
-        for (int i = 1 ; i <= NUM_PLAYERS ; i++) {
-            for (Division division : divisionApi.get().stream().filter(d -> d.isChallenge()).collect(Collectors.toList())) {
-                Player player = new Player();
-                player.setUserId(userApi.getWithNoPlayer("login"+i).getId());
-                String teamName ="login"+i;
-                Team team = teamApi.get(teamName);
-                if (team == null)
-                    player.setTeam(teamApi.create(new Team(teamName)));
-                else
-                    player.setTeam(team);
-
-                player.setDivision(division);
-                player.setSeason(seasonApi.get(division.getType().name()));
-                player.setStart(new Date());
-                player.setHandicap(getRandomHandicap(i,division.getType()));
-                playerApi.create(player);
-            }
-        }
-        logger.info("Created " + playerApi.get().size() + " challenge players");
     }
 
     private void createChallengeMatches(DivisionType divisionType) {

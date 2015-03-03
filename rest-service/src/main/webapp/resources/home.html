@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Society Leagues</title>
-    <link rel="stylesheet" href="/resources/public/css/calories-tracker.css">
-    <link rel="stylesheet" href="/resources/bower_components/bootstrap-css/css/bootstrap.css">
+    <link rel="stylesheet" href="/resources/public/css/society.css">
+    <link rel="stylesheet" href="/resources/bower_components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="/resources/css/jquery.datetimepicker.css">
 </head>
 
-<body id="caloriesCounterApp" ng-controller="CaloriesTrackerCtrl">
+<body id="leagueApp" ng-controller="HomeCtrl">
 
 <div class="please-wait-dialog" ng-hide="vm.appReady">
     <img class="please-wait-spinner" src="/resources/img/loading.gif">
@@ -46,30 +46,38 @@
         </div>
     </div>
 
-    <div id="user-stats">
+
+    <div id ="leader">
         <table>
             <thead>
             <tr>
-                <th>Challenger</th>
-                <th>Opponent</th>
-                <th>Win</th>
-                <th>Winner Racks</th>
-                <th>loser Racks</th>
-                <th>MatchDate</th>
+                <th>Name</th>
+                <th>Matches</th>
+                <th>Wins</th>
+                <th>Loses</th>
+                <th>Racks</th>
+                <th>Percentage</th>
             </tr>
             </thead>
             <tbody>
-            <!--<tr ng-repeat="match in vm.matches" ng-class="{'pure-table-odd': $index % 2 == 1, 'pure-table-even': $index % 2 == 0}">-->
-            <tr ng-repeat="match in vm.matches" ng-class="{'pure-table-odd': $index % 2 == 1, 'pure-table-even': $index % 2 == 0}">
-                <td>{{match.home.name}}</td>
-                <td>{{match.away.name}}</td>
-                <td>{{match.win}}</td>
-                <td>{{match.winnerRacks}}</td>
-                <td>{{match.loserRacks}}</td>
-                <td>{{match.matchDate}}</td>
+            <tr ng-repeat="player in vm.leaderboard" ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
+                <td>{{player.name}}</td>
+                <td>{{player.matches}}</td>
+                <td>{{player.wins}}</td>
+                <td>{{player.loses}}</td>
+                <td>{{player.racks}}</td>
+                <td>{{player.percentage}}</td>
             </tr>
             </tbody>
         </table>
+    </div>
+
+    <div id="user-stats">
+        Matches <span ng-bind="vm.stats.matches"></span>
+        Wins <span ng-bind="vm.stats.wins"></span>
+        Loses <span ng-bind="vm.stats.loses"></span>
+        Racks <span ng-bind="vm.stats.racks"></span>
+        Percentage <span ng-bind="vm.stats.percentage"></span>
     </div>
 
      <div id="match-history">
@@ -85,8 +93,7 @@
             </tr>
             </thead>
             <tbody>
-            <!--<tr ng-repeat="match in vm.matches" ng-class="{'pure-table-odd': $index % 2 == 1, 'pure-table-even': $index % 2 == 0}">-->
-            <tr ng-repeat="match in vm.matches" ng-class="{'pure-table-odd': $index % 2 == 1, 'pure-table-even': $index % 2 == 0}">
+            <tr ng-repeat="match in vm.matches" ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
                 <td>{{match.home.name}}</td>
                 <td>{{match.away.name}}</td>
                 <td>{{match.win}}</td>
@@ -111,10 +118,52 @@
             </li>
         </ul>
     </div>
+
+    <div id="pending">
+         <table>
+            <thead>
+            <tr>
+                <th>Challenger</th>
+                <th>Opponent</th>
+                <th>MatchDate</th>
+                <th>Type</th>
+            </tr>
+            </thead>
+             <tbody>
+             <tr ng-repeat="c in vm.pendingChallenges" ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
+                <td>{{c.teamMatch.home.name}}</td>
+                <td>{{c.teamMatch.away.name}}</td>
+                <td>{{c.challengeDate}}</td>
+                <td>{{c.teamMatch.division.type}}</td>
+            </tr>
+            </tbody>
+         </table>
+    </div>
+
+      <div id="accepted">
+         <table>
+            <thead>
+            <tr>
+                <th>Challenger</th>
+                <th>Opponent</th>
+                <th>MatchDate</th>
+                <th>Type</th>
+            </tr>
+            </thead>
+             <tbody>
+            <tr ng-repeat="c in vm.acceptedChallenges" ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
+                <td>{{c.teamMatch.home.name}}</td>
+                <td>{{c.teamMatch.away.name}}</td>
+                <td>{{c.challengeDate}}</td>
+                <td>{{c.teamMatch.division.type}}</td>
+            </tr>
+            </tbody>
+         </table>
+    </div>
 </main>
 
 <script type="text/javascript"
-        data-main="/resources/js/run-calories-tracker"
+        data-main="/resources/js/run-home-app"
         src="/resources/bower_components/requirejs/require.js">
 </script>
 </body>

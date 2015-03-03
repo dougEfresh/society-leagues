@@ -1,7 +1,7 @@
-angular.module('caloriesCounterApp',
+angular.module('leagueApp',
     ['editableTableWidgets', 'frontendServices', 'spring-security-csrf-token-interceptor'])
-    .controller('CaloriesTrackerCtrl',['$scope' , 'UserService', '$timeout',
-    function ($scope, MealService, UserService, $timeout) {
+    .controller('HomeCtrl',['$scope' , 'UserService', '$timeout',
+    function ($scope, UserService, $timeout) {
 
         $scope.vm = {
             currentPage: 1,
@@ -13,7 +13,8 @@ angular.module('caloriesCounterApp',
             pendingChallenges: [],
             acceptedChallenges: [],
             players: [],
-            stats: {}
+            stats: {},
+            leaderBoard: []
         };
 
         function updateUserInfo() {
@@ -29,6 +30,7 @@ angular.module('caloriesCounterApp',
                     console.log(JSON.stringify($scope.vm.stats));
                     $scope.vm.pendingChallenges = getPendingChallenges($scope.vm.players);
                     $scope.vm.acceptedChallenges = getAcceptedChallenges($scope.vm.players);
+                    $scope.vm.leaderBoard = userInfo.leaderBoard;
                 },
                 function (errorMessage) {
                     showErrorMessage(errorMessage);
@@ -42,22 +44,47 @@ angular.module('caloriesCounterApp',
             });
         }
 
+
+
         function getMatches(players) {
             var m = [];
-            _.forEach(players, function (p) {m = m.concat(p.teamMatches)});
-            return m;
+            _.forEach(players,
+                function (p) {
+                    m = m.concat(p.teamMatches);
+                }
+            );
+            return _.filter(m, function(match) {
+                return match.result !== null;
+            });
         }
 
         function getPendingChallenges(players) {
-            return _.chain(players).map(function(p) {
-                return _.chain(p.challenges).filter(function (c) {c.status == 'PENDING'} )
-            });
+            var c = [];
+
+            _.forEach(players, function(p) {
+                    c = c.concat(p.challenges);
+                }
+            );
+
+            return _.filter(c,function(challenge){
+                    return challenge.status == 'PENDING';
+                }
+            );
         }
 
         function getAcceptedChallenges(players) {
-            return _.chain(players).map(function(p) {
-                return _.chain(p.challenges).filter(function (c) {c.status == 'ACCEPTED'} )
-            });
+              var c = [];
+
+            _.forEach(players, function(p) {
+                    c = c.concat(p.challenges);
+                }
+            );
+
+            return _.filter(c,function(challenge){
+                    return challenge.status == 'ACCEPTED' && challenge.teamMatch.result === null;
+                }
+            );
+
         }
 
         function getStats(matches) {
@@ -83,7 +110,7 @@ angular.module('caloriesCounterApp',
             });
 
             if (stats.matches >0) {
-                stats.percentage = stats.loses == 0 ? 1 : stats.wins / stats.loses;
+                stats.percentage = stats.loses == 0 ? 1 : Math.round((stats.loses/ stats.matches)*100) ;
             }
 
             return stats;

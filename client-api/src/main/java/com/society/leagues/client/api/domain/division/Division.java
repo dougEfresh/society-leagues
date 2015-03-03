@@ -5,8 +5,7 @@ import com.society.leagues.client.api.domain.LeagueObject;
 import javax.validation.constraints.NotNull;
 
 public class Division extends LeagueObject {
-    @NotNull
-    DivisionType type;
+    @NotNull DivisionType type;
 
     public Division(DivisionType type) {
         this.type = type;

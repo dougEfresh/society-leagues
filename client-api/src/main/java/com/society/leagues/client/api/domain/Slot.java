@@ -36,11 +36,11 @@ public class Slot {
         this.id = id;
     }
     
-    public static List<Slot> getDefault(Date date) {
+    public static List<Slot> getDefault(LocalDateTime date) {
         List<Slot> slots = new ArrayList<>();
+        LocalDateTime startDateNoon = date.withHour(12).withMinute(0).withSecond(0);
         for (int i = 0; i< 10; i++) {
-            LocalDateTime dt = LocalDateTime.of(date.getYear(),date.getMonth()+1,date.getDate(),12,0,0);
-            dt = dt.plusMinutes(i * 30);
+            LocalDateTime dt = startDateNoon.plusMinutes(i*30);
             Slot slot = new Slot();
             slot.setId(i);
             slot.setDate(java.util.Date.from(dt.toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));

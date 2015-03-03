@@ -46,6 +46,6 @@ public interface ChallengeApi {
     @Path(value = "/api/challenge/slots")
     List<Slot> slots(Date date);
 
-    @RequestMapping(value = "/api/challenge/team/{id}", produces = MediaType.APPLICATION_ATOM_XML, method = RequestMethod.GET)
-    List<Challenge> getByTeam(@PathVariable(value = "id") Integer id);
+    @RequestMapping(value = "/api/challenge/player", produces = MediaType.APPLICATION_ATOM_XML, method = RequestMethod.POST)
+    List<Challenge> getByPlayer(Player p);
 }
