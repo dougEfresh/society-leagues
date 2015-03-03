@@ -34,15 +34,15 @@ public class ChallengeResource  implements ChallengeApi {
                 }
 
                 PlayerStats s = userStats.get(player.getId());
-                
+
             }
         }
 
         for (Challenge challenge : dao.get()) {
             if (challenge.getTeamMatch().getResult() == null)
                 continue;
-            TeamMatch
         }
+        return null;
     }
 
     @Override
