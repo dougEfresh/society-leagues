@@ -56,13 +56,13 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
                 }
         }
 
-        player.setChallenges(challengeDao.getByTeam(player.getId()));
+        player.setChallenges(challengeDao.getByTeam(player.getTeam().getId()));
 
         return player;
     };
 
     public List<Player> getByUser(User user) {
-        return  get().stream().filter(p -> p.getUserId().equals(user.getId())).collect(Collectors.toList());
+        return list("select * from player where user_id = ?",user.getId());
     }
 
     @Override
@@ -85,12 +85,9 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
     }
 
     @Override
-    public List<Player> get(List<Integer> id) {
-        return list(getSql());
-    }
-
-    @Override
     public List<Player> get() {
+        //logger.info("Calling get players from " + Thread.currentThread().getStackTrace()[2].getClassName() + ":" +
+       //      Thread.currentThread().getStackTrace()[2].getMethodName());
         return list(getSql());
     }
 

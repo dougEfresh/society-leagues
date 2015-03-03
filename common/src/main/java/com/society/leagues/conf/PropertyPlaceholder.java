@@ -8,6 +8,7 @@ import org.springframework.core.annotation.Order;
 
 @Configuration
 @Order(Ordered.HIGHEST_PRECEDENCE)
+@SuppressWarnings("unused")
 public class PropertyPlaceholder {
 
     @Bean

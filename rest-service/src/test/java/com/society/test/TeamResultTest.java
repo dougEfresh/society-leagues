@@ -1,11 +1,9 @@
 package com.society.test;
 
-import com.society.leagues.Main;
 import com.society.leagues.client.ApiFactory;
-import com.society.leagues.client.api.AuthApi;
-import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Team;
+import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.client.api.domain.TeamResult;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
@@ -14,9 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Date;
@@ -26,27 +21,19 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Main.class})
-@WebIntegrationTest(randomPort = true, value = {"embedded=true", "generate=false"})
-public class TeamResultTest {
+public class TeamResultTest extends TestBase {
 
     @Autowired TeamResultDao api;
-    AuthApi authApi;
     @Autowired MatchDao matchApi;
     @Autowired SeasonDao seasonApi;
     @Autowired DivisionDao divisionApi;
     @Autowired TeamDao teamApi;
     @Autowired ApiFactory apiFactory;
-    @Value("${local.server.port}")
-    public int port;
+
 
     @Before
     public void setup() throws Exception {
-        /*
-        authApi = apiFactory.getApi(AuthApi.class,"http://localhost:" + port,true);
-        authApi.login(Schema.ADMIN_USER,Schema.ADMIN_PASS);
-        api = apiFactory.getApi(TeamResultAdminApi.class,"http://localhost:" + port,true);
-        */
+
     }
 
     @Test
@@ -76,7 +63,7 @@ public class TeamResultTest {
         assertNotNull(teamMatch.getId());
 
         TeamResult result = new TeamResult();
-        result.setTeamMatch(teamMatch);
+        result.setTeamMatchId(teamMatch.getId());
         result.setHomeRacks(5);
         result.setAwayRacks(4);
 
@@ -114,7 +101,7 @@ public class TeamResultTest {
         assertNotNull(teamMatch.getId());
 
         TeamResult result = new TeamResult();
-        result.setTeamMatch(teamMatch);
+        result.setTeamMatchId(teamMatch.getId());
         result.setHomeRacks(5);
         result.setAwayRacks(4);
 

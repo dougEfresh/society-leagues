@@ -35,8 +35,9 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
             List<Player> challengePlayers = challenger.getPlayers().stream().filter(
                     p -> p.getDivision().isChallenge()).collect(Collectors.toList()
             );
+            List<Player> players = playerDao.get();
             for (Player challengePlayer : challengePlayers) {
-                potentials.addAll(findChallengeUsers(challengePlayer.getDivision(),challengePlayer.getHandicap()));
+                potentials.addAll(findChallengeUsers(challengePlayer.getDivision(),challengePlayer.getHandicap(),players));
             }
             potentials = potentials.stream().filter(p -> !Objects.equals(p.getUserId(), id)).collect(Collectors.toList());
             Map<Integer,User> opponents = new HashMap<>();
@@ -45,10 +46,8 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
                 if (!opponents.containsKey(potential.getUserId())) {
                     opponents.put(potential.getUserId(), new User(potential.getUserId()));
                 }
-
                 opponents.get(potential.getUserId()).addPlayer(potential);
             }
-
             return  Arrays.asList(opponents.values().toArray(new User[]{}));
         } catch (Throwable t) {
             logger.error(t.getLocalizedMessage(),t);
@@ -89,11 +88,26 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
     
     @Override
     public List<Challenge> listChallenges(Integer userId) {
-        //List<Challenge> challenges = get().stream().filter(
-          //      c -> Objects.equals(c.getChallenger().getUserId(), userId) ||
-            //            Objects.equals(c.getOpponent().getUserId(), userId)).
-              //  collect(Collectors.toList());
-        return null;
+        User u  = userDao.get(userId);
+        if (u == null)
+            return Collections.emptyList();
+
+        Set<Player> players = u.getPlayers();
+
+        if (players == null || players.isEmpty())
+            return Collections.emptyList();
+
+        players = players.stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toSet());
+        List<Challenge> challenges = new ArrayList<>();
+
+        for (final Player p: players) {
+            challenges.addAll(get().stream().filter(c ->
+                            c.getTeamMatch().getHome().equals(p.getTeam()) ||
+                                    c.getTeamMatch().getAway().equals(p.getTeam())
+            ).collect(Collectors.toList()));
+
+        }
+        return challenges;
     }
 
     @Override
@@ -120,8 +134,8 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         return Slot.getDefault(date);
     }
 
-    private List<Player> findChallengeUsers(Division division,Handicap handicap) {
-        return playerDao.get().stream().
+    private List<Player> findChallengeUsers(Division division,Handicap handicap, List<Player> players) {
+        return players.stream().
                 filter(p -> p.getDivision().getId().equals(division.getId()) &&
                         p.getHandicap().ordinal() >= handicap.ordinal()-3 &&
                         p.getHandicap().ordinal() <= handicap.ordinal()+3).

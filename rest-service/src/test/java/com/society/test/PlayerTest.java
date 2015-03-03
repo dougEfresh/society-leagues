@@ -1,16 +1,10 @@
 package com.society.test;
 
 import com.society.leagues.Main;
-import com.society.leagues.client.ApiFactory;
-import com.society.leagues.client.api.admin.*;
-import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
-import com.society.leagues.dao.DivisionDao;
-import com.society.leagues.dao.SeasonDao;
-import com.society.leagues.dao.TeamDao;
-import com.society.leagues.dao.UserDao;
+import com.society.leagues.dao.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +22,7 @@ import static org.junit.Assert.assertNotNull;
 @SpringApplicationConfiguration(classes = {Main.class,TestBase.class})
 @Component
 public class PlayerTest extends TestBase {
-    PlayerAdminApi api;
+    @Autowired PlayerDao api;
     @Autowired SeasonDao seasonApi;
     @Autowired DivisionDao divisionApi;
     @Autowired TeamDao teamApi;
@@ -37,8 +31,6 @@ public class PlayerTest extends TestBase {
     @Before
     public void setup() throws Exception {
         super.setup();
-        String token = authenticate(Role.ADMIN);
-        api = ApiFactory.createApi(PlayerAdminApi.class, token, baseURL);
     }
 
     @Test

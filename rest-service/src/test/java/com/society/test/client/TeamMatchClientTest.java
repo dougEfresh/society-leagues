@@ -1,28 +1,22 @@
 package com.society.test.client;
 
-import com.society.leagues.Main;
 import com.society.leagues.client.api.MatchApi;
-import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.client.api.domain.Team;
+import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.dao.MatchDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Main.class})
-@WebIntegrationTest(randomPort = true, value = {"embedded=true", "generate=true"})
-public class TeamMatchClientTest implements MatchApi {
+public class TeamMatchClientTest extends TestClientBase implements MatchApi {
 
     @Autowired MatchDao matchDao;
 
@@ -56,12 +50,19 @@ public class TeamMatchClientTest implements MatchApi {
 
     @Test
     public void testTeam() throws Exception {
-        List<TeamMatch> matches = get();
+        List<TeamMatch> matches = get().stream().filter(tm -> tm.getMatchDate() != null).collect(Collectors.toList());
         for (TeamMatch match : matches) {
-            List<TeamMatch> teamTeamMatches = getByTeam(match.getHome());
-            assertNotNull(teamTeamMatches);
-            assertFalse(teamTeamMatches.isEmpty());
-            TeamMatch found  = teamTeamMatches.stream().filter(tm -> tm.getMatchDate() != null).filter(tm -> tm.getId().equals(match.getId())).findFirst().orElse(null);
+            List<TeamMatch> teamMatches = getByTeam(match.getHome());
+            assertNotNull(teamMatches);
+            assertFalse(teamMatches.isEmpty());
+            TeamMatch found  = teamMatches.stream().
+                    filter(tm -> tm.getMatchDate() != null).
+                    filter(tm -> tm.getId().equals(match.getId())).
+                    findFirst().orElse(null);
+
+            if (found == null) {
+                assertNotNull(found);
+            }
             assertNotNull(found);
         }
     }

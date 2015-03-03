@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
 @Component
+@SuppressWarnings("unused")
 public class WebAppInitializer implements ServletContextInitializer {
 
     @Override

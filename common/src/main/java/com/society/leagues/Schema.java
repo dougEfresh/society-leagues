@@ -1,6 +1,5 @@
 package com.society.leagues;
 
-import com.society.leagues.client.api.domain.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,12 +20,11 @@ public class Schema {
             return;
 
         createDb(jdbcTemplate);
-        createAccounts(jdbcTemplate);
         schemaData.generateData();
     }
 
-    static boolean createdSchema;
-    static boolean createdAccounts;
+    public static boolean createdSchema;
+
     static final String token = "create table token_cache(token varchar(64),\n" +
             "  player varchar(4096) NOT NULL ,\n" +
             "  created_date timestamp,\n" +
@@ -135,27 +133,5 @@ public class Schema {
         jdbcTemplate.update(team_result);
         jdbcTemplate.update(challenge);
 
-    }
-
-    public static final String NORMAL_USER = "email_608@domain.com";
-    public static final String NORMAL_PASS = "password_608";
-    public static final String ADMIN_USER =  "email_528@domain.com";
-    public static final String ADMIN_PASS =  "password_528";
-    
-    public static void createAccounts(JdbcTemplate jdbcTemplate) {
-        if (createdAccounts)
-            return;
-
-        createdAccounts = true;
-
-        jdbcTemplate.update("INSERT INTO users (login,role,passwd)" +
-                        " VALUES (?,?,?)",
-                ADMIN_USER, Role.ADMIN.name(),ADMIN_PASS);
-
-        jdbcTemplate.update("INSERT INTO users (login,role,passwd) " +
-                        "VALUES (?,?,?)",
-                NORMAL_USER, Role.PLAYER.name(), NORMAL_PASS);
-
-        createdAccounts = true;
     }
 }

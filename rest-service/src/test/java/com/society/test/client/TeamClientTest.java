@@ -1,23 +1,19 @@
 package com.society.test.client;
 
-import com.society.leagues.Main;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.dao.TeamDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Main.class})
-@WebIntegrationTest(randomPort = true, value = {"embedded=true", "generate=true"})
-public class TeamClientTest  {
+public class TeamClientTest extends TestClientBase {
     @Autowired TeamDao api;
 
     /*

@@ -1,6 +1,5 @@
 package com.society.test.client;
 
-import com.society.leagues.Main;
 import com.society.leagues.client.api.ChallengeApi;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.DivisionType;
@@ -12,26 +11,22 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Main.class})
-@WebIntegrationTest(randomPort = true, value = {"embedded=true", "generate=true"})
-public class ChallengeTest implements ChallengeApi {
+public class ChallengeTest extends TestClientBase implements ChallengeApi {
     private static Logger logger = LoggerFactory.getLogger(ChallengeTest.class);
     @Autowired ChallengeDao api;
     @Autowired UserDao userApi;
     @Autowired PlayerDao playerApi;
+
+    static String LOGIN = "login10";
 
     @Test
     public void testPotentials() throws Exception {
@@ -40,7 +35,7 @@ public class ChallengeTest implements ChallengeApi {
 
     @Test
     public void testRequestChallenge() throws Exception {
-        User challenger = userApi.get("login4@example.com");
+        User challenger = userApi.get(LOGIN);
         List<User> users = getPotentials(challenger.getId());
         assertNotNull(users);
         assertFalse(users.isEmpty());
@@ -48,8 +43,7 @@ public class ChallengeTest implements ChallengeApi {
         Player ch = challenger.getPlayers().stream().filter(p -> p.getDivision().getType() == DivisionType.NINE_BALL_CHALLENGE).findFirst().get();
         Player op = opponent.getPlayers().stream().filter(p -> p.getDivision().getType() == ch.getDivision().getType()).findFirst().orElseGet(null);
         Challenge challenge = new Challenge();
-        Slot slot = Slot.getDefault(new Date()).get(0);
-         TeamMatch teamMatch = new TeamMatch();
+        TeamMatch teamMatch = new TeamMatch();
         teamMatch.setHome(ch.getTeam());
         teamMatch.setAway(op.getTeam());
         teamMatch.setDivision(ch.getDivision());
@@ -80,15 +74,16 @@ public class ChallengeTest implements ChallengeApi {
         return api.acceptChallenge(challenge);
     }
 
-    @Test
+    //TODO Add test
     public void testList() throws Exception {
         Challenge challenge = create();
-        List<Challenge> challenges = listChallenges(challenge.getTeamMatch().getHome().getId());
+        User user = userApi.get(LOGIN);
+        List<Challenge> challenges = listChallenges(user.getId());
         assertNotNull(challenges);
         assertFalse(challenges.isEmpty());
         boolean found = false;
         for (Challenge c : challenges) {
-            if (c.equals(challenge))
+            if (c.getId().equals(challenge.getId()))
                 found = true;
         }
 
@@ -139,7 +134,7 @@ public class ChallengeTest implements ChallengeApi {
     static int COUNTER = 1;
     
     private Challenge create() {
-        User user = userApi.get("login" + COUNTER++ + "@example.com");
+        User user = userApi.get("login" + COUNTER++);
         List<User> users = getPotentials(user.getId());
         assertNotNull(users);
         assertFalse(users.isEmpty());

@@ -4,12 +4,14 @@ import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
+import com.society.leagues.conf.DaoConfig;
 import com.society.leagues.dao.*;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -23,7 +25,7 @@ public class SchemaData {
     private static Logger logger = LoggerFactory.getLogger(SchemaData.class);
     @Value("${generate}")
     boolean generate = false;
-
+    @Autowired JdbcTemplate jdbcTemplate;
     @Autowired SeasonDao seasonApi;
     @Autowired DivisionDao divisionApi;
     @Autowired TeamDao teamApi;
@@ -57,7 +59,7 @@ public class SchemaData {
         }
 
         createUsers();
-        createPlayers();
+        createChallengePlayers();
         createChallengeMatches(DivisionType.EIGHT_BALL_CHALLENGE);
         createChallengeMatches(DivisionType.NINE_BALL_CHALLENGE);
         createMatchResults();
@@ -70,15 +72,16 @@ public class SchemaData {
             user.setFirstName("player_"+ i);
             user.setLastName("lastname_" + i);
             user.setEmail(i + "@example.com");
-            user.setPassword("password" + i);
-            user.setLogin("login" + i + "@example.com");
+            user.setPassword("login" + i);
+            user.setLogin("login" + i);
             user.addRole(Role.PLAYER);
             userApi.create(user);
         }
     }
 
     private void createChallengeRequests() {
-        for (Player player : playerApi.get().stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList())) {
+        List<Player> players = playerApi.get().stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList());
+        for (Player player : players) {
             List<User> potentials = challengeApi.getPotentials(player.getUserId());
             int slot = (int) Math.round(Math.random() * potentials.size())-1;
             List<Player> opponents = potentials.get(slot == -1 ? 0 : slot).getPlayers().stream().collect(Collectors.toList());
@@ -124,24 +127,12 @@ public class SchemaData {
         logger.info("Created  " + teamResultApi.get().size() + " match results");
     }
 
-    private void createPlayers() {
+    private void createChallengePlayers() {
         for (int i = 1 ; i <= NUM_PLAYERS ; i++) {
-            for (Division division : divisionApi.get().stream().filter(d -> !d.isChallenge()).collect(Collectors.toList())) {
-                Player player = new Player();
-                player.setUserId(userApi.getWithNoPlayer("login"+i+"@example.com").getId());
-                String teamName = "team " + ((i % 8) + 1);
-                player.setTeam(teamApi.get(teamName));
-                player.setDivision(division);
-                player.setSeason(seasonApi.get(division.getType().name()));
-                player.setStart(new Date());
-                player.setHandicap(getRandomHandicap(i,division.getType()));
-                playerApi.create(player);
-            }
-
             for (Division division : divisionApi.get().stream().filter(d -> d.isChallenge()).collect(Collectors.toList())) {
                 Player player = new Player();
-                player.setUserId(userApi.getWithNoPlayer("login"+i+"@example.com").getId());
-                String teamName ="login"+i+"@example.com";
+                player.setUserId(userApi.getWithNoPlayer("login"+i).getId());
+                String teamName ="login"+i;
                 Team team = teamApi.get(teamName);
                 if (team == null)
                     player.setTeam(teamApi.create(new Team(teamName)));
@@ -155,11 +146,11 @@ public class SchemaData {
                 playerApi.create(player);
             }
         }
-        logger.info("Created " + playerApi.get().size() + " players");
+        logger.info("Created " + playerApi.get().size() + " challenge players");
     }
 
     private void createChallengeMatches(DivisionType divisionType) {
-       List<Player> challengers = playerApi.get().stream().filter(p -> p.getDivision().getType() == divisionType).collect(Collectors.toList());
+        List<Player> challengers = playerApi.get().stream().filter(p -> p.getDivision().getType() == divisionType).collect(Collectors.toList());
         int size = challengers.size();
         logger.info("Have " + size + " player matches to generate");
         for(int i=0; i<challengers.size(); i++) {

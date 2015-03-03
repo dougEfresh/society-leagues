@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import javax.sql.DataSource;
 
 @Configuration
+@SuppressWarnings("unused")
 public class DaoConfig {
     private static Logger logger = LoggerFactory.getLogger(DaoConfig.class);
     @Value("${db-host:localhost}")
@@ -25,7 +26,7 @@ public class DaoConfig {
     @Value("${embedded:false}")
     boolean useEmbedded = false;
 
-    static String dbName = System.currentTimeMillis() + "";
+    public static String dbName = System.currentTimeMillis() + "";
 
     @Bean
     DataSource getDataSource() {

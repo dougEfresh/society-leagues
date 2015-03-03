@@ -123,7 +123,7 @@ public class UserDao extends Dao<User> implements UserClientApi, UserAdminApi{
     }
 
     public User getWithNoPlayer(Integer id) {
-        return super.get(id);
+        return super.get().stream().filter(u->u.getId().equals(id)).findFirst().orElse(null);
     }
 
     public User getWithNoPlayer(String login) {
@@ -139,6 +139,9 @@ public class UserDao extends Dao<User> implements UserClientApi, UserAdminApi{
 
     //TODO Move to constructor?
     private User copy(User u) {
+        if (u == null)
+            return null;
+
         User hydratedUser = new User();
         hydratedUser.setId(u.getId());
         hydratedUser.setFirstName(u.getFirstName());

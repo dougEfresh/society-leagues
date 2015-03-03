@@ -1,32 +1,26 @@
 package com.society.test;
 
 import com.society.leagues.Main;
-import com.society.leagues.client.ApiFactory;
-import com.society.leagues.client.api.DivisionApi;
-import com.society.leagues.client.api.domain.Role;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
-import com.society.leagues.client.exception.Unauthorized;
+import com.society.leagues.dao.DivisionDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.ws.rs.ProcessingException;
-
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class,TestBase.class})
 public class DivisionTest extends TestBase {
-    DivisionApi api;
+    @Autowired DivisionDao api;
 
     @Before
     public void setup() throws Exception {
         super.setup();
-        api = ApiFactory.createApi(DivisionApi.class, authenticate(Role.ADMIN), baseURL);
     }
 
     @Test
@@ -65,16 +59,6 @@ public class DivisionTest extends TestBase {
 
         returned.setId(null);
         assertNull(api.modify(returned));
-    }
-
-    @Test
-    public void testNoAccess() {
-        try {
-            api = ApiFactory.createApi(DivisionApi.class, baseURL);
-            api.create(new Division());
-        } catch (ProcessingException exception) {
-            assertTrue(exception.getCause() instanceof Unauthorized);
-        }
     }
 
 }

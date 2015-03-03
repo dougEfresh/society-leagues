@@ -7,6 +7,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+@SuppressWarnings("unused")
 public class NotAuthorizedResponse {
     final OutboundJaxrsResponse response;
 

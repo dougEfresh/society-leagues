@@ -1,14 +1,13 @@
 package com.society.test;
 
 import com.society.leagues.Main;
-import com.society.leagues.client.ApiFactory;
-import com.society.leagues.client.api.domain.Role;
-import com.society.leagues.client.api.admin.DivisionAdminApi;
-import com.society.leagues.client.api.admin.SeasonAdminApi;
 import com.society.leagues.client.api.domain.Season;
+import com.society.leagues.dao.DivisionDao;
+import com.society.leagues.dao.SeasonDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -19,15 +18,12 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class,TestBase.class,TestBase.class})
 public class SeasonTest extends TestBase {
-    DivisionAdminApi divisionApi;
-    SeasonAdminApi api;
+    @Autowired DivisionDao divisionApi;
+    @Autowired SeasonDao api;
 
     @Before
     public void setup() throws Exception {
         super.setup();
-        String token = authenticate(Role.ADMIN);
-        divisionApi = ApiFactory.createApi(DivisionAdminApi.class, token, baseURL, true);
-        api = ApiFactory.createApi(SeasonAdminApi.class, token, baseURL,true);
     }
 
     @Test

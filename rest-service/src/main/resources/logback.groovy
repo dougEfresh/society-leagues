@@ -35,4 +35,5 @@ logger("org.glassfish",INFO)
 logger("log4jdbc.log4j2",DEBUG)
 logger("com.wordnik",INFO)
 logger("feign",DEBUG)
+
 root(INFO, ["FILE", "CONSOLE"])
