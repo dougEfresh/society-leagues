@@ -1,38 +1,38 @@
 package com.society.leagues.client.api.domain;
 
 public class PlayerResult extends LeagueObject {
-    Integer teamMatchId;
-    Integer playerHomeId;
-    Integer playerAwayId;
+    TeamMatch teamMatch;
+    Player playerHome;
+    Player playerAway;
     Integer homeRacks;
     Integer awayRacks;
 
+    public TeamMatch getTeamMatch() {
+        return teamMatch;
+    }
+
+    public void setTeamMatch(TeamMatch teamMatch) {
+        this.teamMatch = teamMatch;
+    }
+
+    public Player getPlayerHome() {
+        return playerHome;
+    }
+
+    public void setPlayerHome(Player playerHome) {
+        this.playerHome = playerHome;
+    }
+
+    public Player getPlayerAway() {
+        return playerAway;
+    }
+
+    public void setPlayerAway(Player playerAway) {
+        this.playerAway = playerAway;
+    }
+
     public Integer getHomeRacks() {
         return homeRacks;
-    }
-
-    public Integer getTeamMatchId() {
-        return teamMatchId;
-    }
-
-    public void setTeamMatchId(Integer teamMatchId) {
-        this.teamMatchId = teamMatchId;
-    }
-
-    public Integer getPlayerHomeId() {
-        return playerHomeId;
-    }
-
-    public void setPlayerHomeId(Integer playerHomeId) {
-        this.playerHomeId = playerHomeId;
-    }
-
-    public Integer getPlayerAwayId() {
-        return playerAwayId;
-    }
-
-    public void setPlayerAwayId(Integer playerAwayId) {
-        this.playerAwayId = playerAwayId;
     }
 
     public void setHomeRacks(Integer homeRacks) {
@@ -45,5 +45,16 @@ public class PlayerResult extends LeagueObject {
 
     public void setAwayRacks(Integer awayRacks) {
         this.awayRacks = awayRacks;
+    }
+
+    @Override
+    public String toString() {
+        return "PlayerResult{" +
+                "teamMatch=" + teamMatch +
+                ", playerHome=" + playerHome.getId() +
+                ", playerAway=" + playerAway.getId() +
+                ", homeRacks=" + homeRacks +
+                ", awayRacks=" + awayRacks +
+                '}';
     }
 }

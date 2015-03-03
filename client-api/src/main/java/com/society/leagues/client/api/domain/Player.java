@@ -5,8 +5,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.society.leagues.client.api.domain.division.Division;
 
 import javax.validation.constraints.NotNull;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,
                   property = "@id")
@@ -21,9 +20,9 @@ public class Player extends LeagueObject {
     Team team;
     @NotNull
     Handicap handicap;
-    List<TeamMatch> teamMatches;
-    List<PlayerResult> playerResults;
-    List<Challenge> challenges;
+    List<TeamMatch> teamMatches = new ArrayList<>();
+    HashSet<PlayerResult> playerResults = new HashSet<>();
+    List<Challenge> challenges = new ArrayList<>();
     Date start;
     Date end;
     Integer wins = 0;
@@ -195,4 +194,19 @@ public class Player extends LeagueObject {
         this.racks += r;
     }
 
+    public HashSet<PlayerResult> getPlayerResults() {
+        return playerResults;
+    }
+
+    public void setPlayerResults(HashSet<PlayerResult> playerResults) {
+        this.playerResults = playerResults;
+    }
+
+    public void addResult(PlayerResult result) {
+        playerResults.add(result);
+    }
+
+    public void addResults(List<PlayerResult> results) {
+        playerResults.addAll(results);
+    }
 }

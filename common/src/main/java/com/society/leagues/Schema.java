@@ -106,8 +106,8 @@ public class Schema {
     static final String player_result = "create table player_result (\n" +
               " player_result_id int NOT NULL AUTO_INCREMENT(50000) PRIMARY KEY,\n" +
             " team_match_id int NOT NULL CONSTRAINT TEAM_PLAYER_MATCH_FK REFERENCES team_match ON DELETE CASCADE,\n" +
-            " home_player_id int NOT NULL CONSTRAINT HOME_MATCH_FK REFERENCES player ON DELETE CASCADE,\n" +
-            " away_player_id int NOT NULL CONSTRAINT AWAY_MATCH_FK REFERENCES player ON DELETE CASCADE,\n" +
+            " player_home_id int NOT NULL CONSTRAINT HOME_MATCH_FK REFERENCES player ON DELETE CASCADE,\n" +
+            " player_away_id int NOT NULL CONSTRAINT AWAY_MATCH_FK REFERENCES player ON DELETE CASCADE,\n" +
             " home_racks int NOT NULL," +
             " away_racks int NOT NULL" +
             ")\n";

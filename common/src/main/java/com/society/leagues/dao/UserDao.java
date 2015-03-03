@@ -108,33 +108,17 @@ public class UserDao extends Dao<User> implements UserClientApi, UserAdminApi{
         return rowMapper;
     }
 
-    @Override
-    public User get(String login) {
-        return hydrateUser(super.get().stream().filter(user -> user.getLogin() != null && user.getLogin().equalsIgnoreCase(login)).findFirst().orElse(null));
-    }
-
     public String getPassword(Integer id) {
         return jdbcTemplate.queryForObject("select passwd from users where user_id = ?",String.class,id);
     }
 
-    @Override
-    public User get(Integer id) {
-        return hydrateUser(copy(super.get(id)));
-    }
-
-    public User getWithNoPlayer(Integer id) {
-        return super.get().stream().filter(u->u.getId().equals(id)).findFirst().orElse(null);
+     @Override
+    public User get(String login) {
+        return get().stream().filter(u -> u.getLogin().equals(login)).findFirst().orElse(null);
     }
 
     public User getWithNoPlayer(String login) {
         return super.get().stream().filter(u -> u.getLogin().equalsIgnoreCase(login)).findFirst().orElseGet(null);
-    }
-
-    @Override
-    public List<User> get() {
-        List<User> users = new ArrayList<>(500);
-        users.addAll(super.get().stream().map(u -> hydrateUser(copy(u))).collect(Collectors.toList()));
-        return users;
     }
 
     //TODO Move to constructor?

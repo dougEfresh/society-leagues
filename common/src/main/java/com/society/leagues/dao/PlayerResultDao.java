@@ -11,14 +11,16 @@ import java.sql.Statement;
 
 @Component
 public class PlayerResultDao extends Dao<PlayerResult> {
+    @Autowired PlayerDao playerDao;
+    @Autowired TeamMatchDao teamMatchDao;
 
     RowMapper<PlayerResult> rowMapper = (rs, rowNum) -> {
         PlayerResult result = new PlayerResult();
         result.setAwayRacks(rs.getInt("away_racks"));
         result.setHomeRacks(rs.getInt("home_racks"));
-        result.setPlayerAwayId(rs.getInt("player_away_id"));
-        result.setPlayerHomeId(rs.getInt("player_home_id"));
-        result.setTeamMatchId(rs.getInt("team_matc_id"));
+        result.setPlayerAway(playerDao.get(rs.getInt("player_away_id")));
+        result.setPlayerHome(playerDao.get(rs.getInt("player_home_id")));
+        result.setTeamMatch(teamMatchDao.get(rs.getInt("team_match_id")));
         return result;
     };
 
@@ -26,11 +28,11 @@ public class PlayerResultDao extends Dao<PlayerResult> {
         return con -> {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             int j=0;
-            ps.setInt(++j,result.getTeamMatchId());
-            ps.setInt(++j,result.getPlayerHomeId());
-            ps.setInt(++j,result.getPlayerAwayId());
-            ps.setInt(++j,result.getHomeRacks());
-            ps.setInt(++j,result.getAwayRacks());
+            ps.setInt(1,result.getTeamMatch().getId());
+            ps.setInt(2,result.getPlayerHome().getId());
+            ps.setInt(3,result.getPlayerAway().getId());
+            ps.setInt(4,result.getHomeRacks());
+            ps.setInt(5,result.getAwayRacks());
             return ps;
         };
     }
@@ -49,9 +51,9 @@ public class PlayerResultDao extends Dao<PlayerResult> {
                         "home_racks=?," +
                         "away_racks=? " +
                         "where player_result_id = ?",
-                playerResult.getTeamMatchId(),
-                playerResult.getPlayerHomeId(),
-                playerResult.getPlayerAwayId(),
+                playerResult.getTeamMatch().getId(),
+                playerResult.getPlayerHome().getId(),
+                playerResult.getPlayerAway().getId(),
                 playerResult.getHomeRacks(),
                 playerResult.getAwayRacks(),
                 playerResult.getId());
@@ -67,5 +69,5 @@ public class PlayerResultDao extends Dao<PlayerResult> {
         return rowMapper;
     }
 
-    static String CREATE = "insert into player_result VALUES(?,?,?,?)";
+    static String CREATE = "insert into player_result (team_match_id,player_home_id,player_away_id,home_racks,away_racks) VALUES(?,?,?,?,?)";
 }

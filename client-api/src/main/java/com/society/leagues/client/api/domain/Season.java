@@ -72,4 +72,12 @@ public class Season extends LeagueObject {
     public void setRounds(Integer rounds) {
         this.rounds = rounds;
     }
+
+    @Override
+    public String toString() {
+        return "Season{" +
+                "name='" + name + '\'' +
+                ", startDate=" + startDate +
+                '}';
+    }
 }

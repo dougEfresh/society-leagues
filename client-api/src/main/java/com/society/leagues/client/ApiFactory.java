@@ -24,7 +24,7 @@ public class ApiFactory {
     @Autowired SpringEncoder feignEncoder;
     @Autowired SpringDecoder feignDecoder;
     @Autowired Logger feignLogger;
-    @Value("${debug:false}")
+    //@Value("${debug:false}")
     boolean debug;
 
     public <T> T getApi(Class<T> api, String url) {

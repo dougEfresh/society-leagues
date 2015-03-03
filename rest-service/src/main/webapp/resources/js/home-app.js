@@ -17,20 +17,28 @@ angular.module('leagueApp',
             leaderBoard: []
         };
 
+        function updatePlayerInfo() {
+            UserService.getPlayerInfo().then (function (playerInfo) {
+                console.log(JSON.stringify(playerInfo));
+                window.playerInfo = playerInfo;
+                $scope.vm.players = filterPlayers(playerInfo);
+                $scope.vm.matches = getMatches($scope.vm.players);
+                $scope.vm.stats = getStats($scope.vm.matches);
+                $scope.vm.pendingChallenges = getPendingChallenges($scope.vm.players);
+                $scope.vm.acceptedChallenges = getAcceptedChallenges($scope.vm.players);
+            }, function (errorMessage) {
+                showErrorMessage(errorMessage);
+                markAppAsInitialized();
+            });
+        }
+
         function updateUserInfo() {
             UserService.getUserInfo()
                 .then(function (userInfo) {
                     //console.log(JSON.stringify(userInfo));
                     window.userInfo = userInfo;
                     $scope.vm.userName = userInfo.firstName;
-                    $scope.vm.players = filterPlayers(userInfo.players);
-                    $scope.vm.matches = getMatches($scope.vm.players);
-                    $scope.vm.stats = getStats($scope.vm.matches);
-                    console.log(JSON.stringify($scope.vm.matches));
-                    console.log(JSON.stringify($scope.vm.stats));
-                    $scope.vm.pendingChallenges = getPendingChallenges($scope.vm.players);
-                    $scope.vm.acceptedChallenges = getAcceptedChallenges($scope.vm.players);
-                    $scope.vm.leaderBoard = userInfo.leaderBoard;
+                    //$scope.vm.leaderBoard = userInfo.leaderBoard;
                 },
                 function (errorMessage) {
                     showErrorMessage(errorMessage);
@@ -253,6 +261,7 @@ angular.module('leagueApp',
             UserService.logout();
         }
 
+        updatePlayerInfo();
         updateUserInfo();
         markAppAsInitialized();
     }]);

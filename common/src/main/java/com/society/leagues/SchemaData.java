@@ -95,7 +95,7 @@ public class SchemaData {
                 player.setSeason(seasonApi.get(division.getType().name()));
                 player.setStart(new Date());
                 player.setHandicap(getRandomHandicap(i, division.getType()));
-                player.setUser(userApi.getWithNoPlayer("login"+i));
+                player.setUser(userApi.getWithNoPlayer("login" + i));
                 if (player.getUser() == null) {
                     throw new RuntimeException("Error find login for login" +i + " player: "+ player);
                 }
@@ -109,6 +109,7 @@ public class SchemaData {
         List<Player> players = playerApi.get().stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList());
         for (Player player : players) {
             List<User> potentials = challengeApi.getPotentials(player.getUserId());
+
             int slot = (int) Math.round(Math.random() * potentials.size())-1;
             List<Player> opponents = potentials.get(slot == -1 ? 0 : slot).getPlayers().stream().collect(Collectors.toList());
             slot = (int) Math.round(Math.random() * opponents.size())-1;
@@ -160,9 +161,27 @@ public class SchemaData {
             result.setHomeRacks((int) home);
             result.setAwayRacks((int) away);
             result = teamResultApi.create(result);
-            //PlayerResult playerResult = new PlayerResult();
-            //playerResult.setPlayerAwayId();
-            //playerResultApi.create()
+            PlayerResult playerResult = new PlayerResult();
+
+            Player playerHome = players.stream().filter(p -> p.getDivision().equals(teamMatch.getDivision()) &&
+                    (teamMatch.getHome().equals(p.getTeam()))).
+                    findFirst().orElse(null);
+
+            Player playerAway = players.stream().filter(p -> p.getDivision().equals(teamMatch.getDivision()) &&
+                    teamMatch.getAway().equals(p.getTeam())).
+                    findFirst().orElse(null);
+
+            playerResult.setPlayerAway(playerAway);
+            playerResult.setPlayerHome(playerHome);
+            playerResult.setAwayRacks(result.getAwayRacks());
+            playerResult.setHomeRacks(result.getHomeRacks());
+            playerResult.setTeamMatch(teamMatch);
+
+            PlayerResult savedResult  = playerResultApi.create(playerResult);
+
+            if (savedResult == null) {
+                throw new RuntimeException("Could not create player result for " + playerResult);
+            }
 
         }
 

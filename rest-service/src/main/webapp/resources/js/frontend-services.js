@@ -17,7 +17,23 @@ angular.module('frontendServices', [])
                 return deferred.promise;
             },
 
-            getLeaderBoard: function() {
+            getPlayerInfo: function() {
+                var deferred = $q.defer();
+
+                $http.get('/players')
+                    .then(function (response) {
+                        if (response.status == 200) {
+                            deferred.resolve(response.data);
+                        }
+                        else {
+                            deferred.reject('Error retrieving user info');
+                        }
+                    });
+
+                return deferred.promise;
+            },
+
+        getLeaderBoard: function() {
                  var deferred = $q.defer();
 
                 $http.get('/leaderboard')

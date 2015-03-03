@@ -6,11 +6,14 @@ import com.society.leagues.client.api.domain.User;
 import com.society.leagues.dao.PlayerDao;
 import com.society.leagues.dao.UserDao;
 import com.society.leagues.resource.ApiResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 import java.security.Principal;
@@ -20,6 +23,7 @@ import java.security.Principal;
 public class UserResource extends ApiResource implements UserClientApi {
     @Autowired UserDao dao;
     @Autowired PlayerDao playerDao;
+    private static Logger logger = LoggerFactory.getLogger(UserResource.class);
 
     @RequestMapping(value = "/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public User get(Principal principal) {
@@ -28,11 +32,12 @@ public class UserResource extends ApiResource implements UserClientApi {
         return u;
     }
 
-
     @RequestMapping(value = "/players", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Player> getPlayers(Principal principal) {
         User u = get(principal.getName());
-        return playerDao.getByUser(u);
+        List<Player> players = playerDao.getByUser(u);
+        logger.info(Arrays.deepToString(new Object[] {players}));
+        return players;
     }
 
     @Override

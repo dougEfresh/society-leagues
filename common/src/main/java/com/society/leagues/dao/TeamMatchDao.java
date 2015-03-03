@@ -65,6 +65,9 @@ public class TeamMatchDao extends Dao<TeamMatch> implements MatchApi, MatchAdmin
 
     @Override
     public List<TeamMatch> getByTeam(Team team) {
+
+        //TODO Why the filter?
+
         return get().stream().filter(m -> m.getHome().equals(team) || m.getAway().equals(team)).
                 filter(m -> m.getMatchDate() != null).
                 collect(Collectors.toList());

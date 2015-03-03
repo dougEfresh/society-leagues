@@ -24,6 +24,7 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
     @Autowired TeamResultDao teamResultDao;
     @Autowired ChallengeDao challengeDao;
     @Autowired UserDao userDao;
+    @Autowired PlayerResultDao playerResultDao;
 
 
     RowMapper<Player> rowMapper = (rs, rowNum) -> {
@@ -38,7 +39,7 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
         player.setEnd(rs.getDate("end_date"));
         player.setTeam(team);
         player.setSeason(season);
-        player.setUser(userDao.getWithNoPlayer(rs.getInt("user_id")));
+        player.setUser(userDao.get(rs.getInt("user_id")));
         player.setId(rs.getInt("player_id"));
 
         player.setTeamMatches(teamMatchDao.getByTeam(player.getTeam()));
@@ -65,7 +66,7 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
     };
 
     public List<Player> getByUser(User user) {
-        return get().stream().filter(p -> p.getUser().equals(user)).collect(Collectors.toList());
+        return getStats().stream().filter(p -> p.getUser().equals(user)).collect(Collectors.toList());
     }
 
     @Override
@@ -89,9 +90,9 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
 
     public List<Player> getStats() {
         List<Player> players = get();
-
+        List<PlayerResult> results = playerResultDao.get();
         for (Player player : players) {
-
+            player.addResults(results.stream().filter(r -> r.getPlayerHome().equals(player) || r.getPlayerAway().equals(player)).collect(Collectors.toList()));
         }
         return players;
     }

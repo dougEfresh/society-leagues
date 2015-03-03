@@ -22,8 +22,7 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
     private static Logger logger = LoggerFactory.getLogger(ChallengeDao.class);
     @Autowired PlayerDao playerDao;
     @Autowired JdbcTemplate jdbcTemplate;
-    @Autowired
-    TeamMatchDao teamMatchDao;
+    @Autowired TeamMatchDao teamMatchDao;
     @Autowired UserDao userDao;
 
     @Value("${email-override:}") String emailOverride;
@@ -32,8 +31,9 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
     public List<User> getPotentials(Integer id) {
         try {
             User challenger = userDao.get(id);
+
             List<Player> potentials = new ArrayList<>();
-            List<Player> challengePlayers = challenger.getPlayers().stream().filter(
+            List<Player> challengePlayers = playerDao.getByUser(challenger).stream().filter(
                     p -> p.getDivision().isChallenge()).collect(Collectors.toList()
             );
             List<Player> players = playerDao.get();
