@@ -24,8 +24,7 @@ import static org.junit.Assert.assertTrue;
 public class TeamResultTest extends TestBase {
 
     @Autowired TeamResultDao api;
-    @Autowired
-    TeamMatchDao matchApi;
+    @Autowired TeamMatchDao matchApi;
     @Autowired SeasonDao seasonApi;
     @Autowired DivisionDao divisionApi;
     @Autowired TeamDao teamApi;

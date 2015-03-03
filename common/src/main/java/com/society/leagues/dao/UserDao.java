@@ -160,7 +160,6 @@ public class UserDao extends Dao<User> implements UserClientApi, UserAdminApi{
             if (players == null || players.isEmpty())
                 return u;
 
-
             for (Player p : players) {
                 if (p.getSeason().getSeasonStatus() == Status.ACTIVE) {
                     u.addPlayers(Arrays.asList(p));

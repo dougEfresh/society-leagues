@@ -13,16 +13,18 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdminApi {
     @Autowired SeasonDao seasonDao;
     @Autowired TeamDao teamDao;
     @Autowired DivisionDao divisionDao;
-    @Autowired
-    TeamMatchDao teamMatchDao;
+    @Autowired TeamMatchDao teamMatchDao;
     @Autowired TeamResultDao teamResultDao;
     @Autowired ChallengeDao challengeDao;
+    @Autowired UserDao userDao;
+
 
     RowMapper<Player> rowMapper = (rs, rowNum) -> {
         Season season = seasonDao.get(rs.getInt("season_id"));
@@ -36,7 +38,7 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
         player.setEnd(rs.getDate("end_date"));
         player.setTeam(team);
         player.setSeason(season);
-        player.setUserId(rs.getInt("user_id"));
+        player.setUser(userDao.getWithNoPlayer(rs.getInt("user_id")));
         player.setId(rs.getInt("player_id"));
 
         player.setTeamMatches(teamMatchDao.getByTeam(player.getTeam()));
@@ -63,17 +65,17 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
     };
 
     public List<Player> getByUser(User user) {
-        return list("select * from player where user_id = ?",user.getId());
+        return get().stream().filter(p -> p.getUser().equals(user)).collect(Collectors.toList());
     }
 
     @Override
     public Player create(final Player player) {
-        return create(player,getCreateStatement(player));
+        return create(player, getCreateStatement(player));
     }
 
     @Override
     public Boolean delete(final Player player) {
-        return delete(player,"update player set end_date = CURRENT_TIMESTAMP WHERE player_id = ?");
+        return delete(player, "update player set end_date = CURRENT_TIMESTAMP WHERE player_id = ?");
     }
 
     @Override
@@ -85,11 +87,13 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
         return players.get(0);
     }
 
-    @Override
-    public List<Player> get() {
-        //logger.info("Calling get players from " + Thread.currentThread().getStackTrace()[2].getClassName() + ":" +
-       //      Thread.currentThread().getStackTrace()[2].getMethodName());
-        return list(getSql());
+    public List<Player> getStats() {
+        List<Player> players = get();
+
+        for (Player player : players) {
+
+        }
+        return players;
     }
 
     @Override
@@ -102,6 +106,13 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
                 player.getId()
         );
 
+    }
+
+    public List<Player> get(boolean nocache) {
+        if (nocache)
+            return list(getSql());
+
+        return super.get();
     }
 
     protected PreparedStatementCreator getCreateStatement(final Player player) {

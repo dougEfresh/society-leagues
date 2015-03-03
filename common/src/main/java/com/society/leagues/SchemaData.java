@@ -25,14 +25,14 @@ public class SchemaData {
     private static Logger logger = LoggerFactory.getLogger(SchemaData.class);
     @Value("${generate}")
     boolean generate = false;
-    @Autowired JdbcTemplate jdbcTemplate;
+
     @Autowired SeasonDao seasonApi;
     @Autowired DivisionDao divisionApi;
     @Autowired TeamDao teamApi;
     @Autowired PlayerDao playerApi;
     @Autowired UserDao userApi;
-    @Autowired
-    TeamMatchDao matchApi;
+    @Autowired TeamMatchDao matchApi;
+    @Autowired PlayerResultDao playerResultApi;
     @Autowired TeamResultDao teamResultApi;
     @Autowired ChallengeDao challengeApi;
 
@@ -84,7 +84,6 @@ public class SchemaData {
         for (int i = 1 ; i <= NUM_PLAYERS ; i++) {
             for (Division division : divisionApi.get().stream().filter(d -> d.isChallenge()).collect(Collectors.toList())) {
                 Player player = new Player();
-                player.setUserId(userApi.getWithNoPlayer("login"+i).getId());
                 String teamName ="login"+i;
                 Team team = teamApi.get(teamName);
                 if (team == null)
@@ -95,7 +94,11 @@ public class SchemaData {
                 player.setDivision(division);
                 player.setSeason(seasonApi.get(division.getType().name()));
                 player.setStart(new Date());
-                player.setHandicap(getRandomHandicap(i,division.getType()));
+                player.setHandicap(getRandomHandicap(i, division.getType()));
+                player.setUser(userApi.getWithNoPlayer("login"+i));
+                if (player.getUser() == null) {
+                    throw new RuntimeException("Error find login for login" +i + " player: "+ player);
+                }
                 playerApi.create(player);
             }
         }
@@ -140,6 +143,7 @@ public class SchemaData {
         logger.info("Creating match results before " + before);
 
         List<TeamMatch> teamMatches = matchApi.get().stream().filter(m -> m.getMatchDate().before(before)).collect(Collectors.toList());
+        List<Player> players = playerApi.get();
 
         for (TeamMatch teamMatch : teamMatches) {
             TeamResult result = new TeamResult();
@@ -155,7 +159,11 @@ public class SchemaData {
 
             result.setHomeRacks((int) home);
             result.setAwayRacks((int) away);
-            teamResultApi.create(result);
+            result = teamResultApi.create(result);
+            //PlayerResult playerResult = new PlayerResult();
+            //playerResult.setPlayerAwayId();
+            //playerResultApi.create()
+
         }
 
         logger.info("Created  " + teamResultApi.get().size() + " match results");

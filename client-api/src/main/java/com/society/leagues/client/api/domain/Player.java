@@ -1,18 +1,22 @@
 package com.society.leagues.client.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.society.leagues.client.api.domain.division.Division;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,
+                  property = "@id")
 public class Player extends LeagueObject {
     @NotNull
     Season season;
     @NotNull
     Division division;
     @NotNull
-    Integer userId;
+    User user;
     @NotNull
     Team team;
     @NotNull
@@ -28,7 +32,7 @@ public class Player extends LeagueObject {
 
     public Player(Season season, User user, Team team, Handicap handicap, Division division) {
         this.season = season;
-        this.userId = user.getId();
+        this.user = user;
         this.team = team;
         this.handicap = handicap;
         this.division = division;
@@ -36,7 +40,7 @@ public class Player extends LeagueObject {
 
     public Player(Season season, User user, Team team, Handicap handicap, Division division, Date start) {
         this.season = season;
-        this.userId = user.getId();
+        this.user = user;
         this.team = team;
         this.handicap = handicap;
         this.division = division;
@@ -114,11 +118,11 @@ public class Player extends LeagueObject {
     }
 
     public Integer getUserId() {
-        return userId;
+        return user.getId();
     }
 
     public void setUserId(Integer userId) {
-        this.userId = userId;
+        this.user = new User(id);
     }
 
     public List<Challenge> getChallenges() {
@@ -129,12 +133,21 @@ public class Player extends LeagueObject {
         this.challenges = challenges;
     }
 
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public String toString() {
         return "Player{" +
                 "season=" + season +
                 ", division=" + division +
-                ", user=" + userId +
+                ", user=" + user +
                 ", team=" + team +
                 ", handicap=" + handicap +
                 ", matches=" + teamMatches +

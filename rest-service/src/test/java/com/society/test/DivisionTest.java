@@ -1,6 +1,5 @@
 package com.society.test;
 
-import com.society.leagues.Main;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.dao.DivisionDao;
@@ -8,13 +7,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Main.class,TestBase.class})
 public class DivisionTest extends TestBase {
     @Autowired DivisionDao api;
 

@@ -1,7 +1,9 @@
 package com.society.leagues.resource.client;
 
 import com.society.leagues.client.api.UserClientApi;
+import com.society.leagues.client.api.domain.Player;
 import com.society.leagues.client.api.domain.User;
+import com.society.leagues.dao.PlayerDao;
 import com.society.leagues.dao.UserDao;
 import com.society.leagues.resource.ApiResource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +19,20 @@ import java.security.Principal;
 @SuppressWarnings("unused")
 public class UserResource extends ApiResource implements UserClientApi {
     @Autowired UserDao dao;
+    @Autowired PlayerDao playerDao;
 
     @RequestMapping(value = "/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public User get(Principal principal) {
         User u = get(principal.getName());
 
         return u;
+    }
+
+
+    @RequestMapping(value = "/players", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Player> getPlayers(Principal principal) {
+        User u = get(principal.getName());
+        return playerDao.getByUser(u);
     }
 
     @Override

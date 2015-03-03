@@ -1,5 +1,7 @@
 package com.society.leagues.client.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.society.leagues.client.api.domain.division.Division;
 
 import javax.annotation.security.DenyAll;
@@ -9,7 +11,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-@SuppressWarnings("unused")
+
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,
+                  property = "@id")
 public class User extends LeagueObject {
 
     @NotNull

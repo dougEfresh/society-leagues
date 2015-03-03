@@ -1,8 +1,7 @@
 package com.society.leagues.client.api.domain;
 
 public class PlayerResult extends LeagueObject {
-    TeamMatch teamMatch;
-
+    Integer teamMatchId;
     Integer playerHomeId;
     Integer playerAwayId;
     Integer homeRacks;
@@ -12,12 +11,12 @@ public class PlayerResult extends LeagueObject {
         return homeRacks;
     }
 
-    public TeamMatch getTeamMatch() {
-        return teamMatch;
+    public Integer getTeamMatchId() {
+        return teamMatchId;
     }
 
-    public void setTeamMatch(TeamMatch teamMatch) {
-        this.teamMatch = teamMatch;
+    public void setTeamMatchId(Integer teamMatchId) {
+        this.teamMatchId = teamMatchId;
     }
 
     public Integer getPlayerHomeId() {
