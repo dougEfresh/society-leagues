@@ -1,1 +1,1 @@
-include 'client-api', 'common','rest-service'
+include 'client-api', 'common','webapp'
