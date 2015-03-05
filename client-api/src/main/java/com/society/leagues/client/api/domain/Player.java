@@ -1,14 +1,11 @@
 package com.society.leagues.client.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.society.leagues.client.api.domain.division.Division;
 
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,
-                  property = "@id")
 public class Player extends LeagueObject {
     @NotNull
     Season season;
@@ -20,14 +17,8 @@ public class Player extends LeagueObject {
     Team team;
     @NotNull
     Handicap handicap;
-    List<TeamMatch> teamMatches = new ArrayList<>();
-    HashSet<PlayerResult> playerResults = new HashSet<>();
-    List<Challenge> challenges = new ArrayList<>();
     Date start;
     Date end;
-    Integer wins = 0;
-    Integer loses = 0;
-    Integer racks = 0;
 
     public Player(Season season, User user, Team team, Handicap handicap, Division division) {
         this.season = season;
@@ -73,14 +64,6 @@ public class Player extends LeagueObject {
         this.handicap = handicap;
     }
 
-    public List<TeamMatch> getTeamMatches() {
-        return teamMatches;
-    }
-
-    public void setTeamMatches(List<TeamMatch> teamMatches) {
-        this.teamMatches = teamMatches;
-    }
-
     public Status status() {
         if (end == null)
             return Status.ACTIVE;
@@ -124,15 +107,6 @@ public class Player extends LeagueObject {
         this.user = new User(id);
     }
 
-    public List<Challenge> getChallenges() {
-        return challenges;
-    }
-
-    public void setChallenges(List<Challenge> challenges) {
-        this.challenges = challenges;
-    }
-
-
     public User getUser() {
         return user;
     }
@@ -149,64 +123,8 @@ public class Player extends LeagueObject {
                 ", user=" + user +
                 ", team=" + team +
                 ", handicap=" + handicap +
-                ", matches=" + teamMatches +
                 ", start=" + start +
                 ", end=" + end +
                 '}';
-    }
-
-    public Integer getWins() {
-        return wins;
-    }
-
-    public void setWins(Integer wins) {
-        this.wins = wins;
-    }
-
-    public Integer getLoses() {
-        return loses;
-    }
-
-    public void setLoses(Integer loses) {
-        this.loses = loses;
-    }
-
-    public Integer getRacks() {
-        return racks;
-    }
-
-    public void setRacks(Integer racks) {
-        this.racks = racks;
-    }
-
-    public void addWin() {
-        wins++;
-    }
-
-    public void addLost() {
-        loses++;
-    }
-
-    public void addRacks(Integer r) {
-        if (r == null)
-            return;
-
-        this.racks += r;
-    }
-
-    public HashSet<PlayerResult> getPlayerResults() {
-        return playerResults;
-    }
-
-    public void setPlayerResults(HashSet<PlayerResult> playerResults) {
-        this.playerResults = playerResults;
-    }
-
-    public void addResult(PlayerResult result) {
-        playerResults.add(result);
-    }
-
-    public void addResults(List<PlayerResult> results) {
-        playerResults.addAll(results);
     }
 }

@@ -22,7 +22,7 @@ public class TeamResultDao extends Dao<TeamResult> implements TeamResultAdminApi
         result.setId(rs.getInt("team_result_id"));
         result.setAwayRacks(rs.getInt("away_racks"));
         result.setHomeRacks(rs.getInt("home_racks"));
-        result.setTeamMatchId(rs.getInt("team_match_id"));
+        result.setTeamMatch(teamMatchDao.get(rs.getInt("team_match_id")));
         return result;
     };
 
@@ -43,18 +43,18 @@ public class TeamResultDao extends Dao<TeamResult> implements TeamResultAdminApi
 
     @Override
     public TeamResult modify(TeamResult teamResult) {
-        return modify(teamResult,MODIFY,teamResult.getTeamMatchId(),teamResult.getHomeRacks(),teamResult.getAwayRacks(),teamResult.getId());
+        return modify(teamResult,MODIFY,teamResult.getTeamMatch().getId(),teamResult.getHomeRacks(),teamResult.getAwayRacks(),teamResult.getId());
     }
 
     @Override
     public TeamResult getByMatch(@PathVariable(value = "id") Integer id) {
-        return get().stream().filter(r -> r.getTeamMatchId().equals(id)).findFirst().orElse(null);
+        return get().stream().filter(r -> r.getTeamMatch().getId().equals(id)).findFirst().orElse(null);
     }
 
     private PreparedStatementCreator getCreateStatement(final TeamResult teamResult, String sql) {
         return con -> {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1,teamResult.getTeamMatchId());
+            ps.setInt(1,teamResult.getTeamMatch().getId());
             ps.setInt(2,teamResult.getHomeRacks());
             ps.setInt(3,teamResult.getAwayRacks());
             return ps;

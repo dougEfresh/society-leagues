@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -95,7 +94,7 @@ public class SchemaData {
                 player.setSeason(seasonApi.get(division.getType().name()));
                 player.setStart(new Date());
                 player.setHandicap(getRandomHandicap(i, division.getType()));
-                player.setUser(userApi.getWithNoPlayer("login" + i));
+                player.setUser(userApi.get("login" + i));
                 if (player.getUser() == null) {
                     throw new RuntimeException("Error find login for login" +i + " player: "+ player);
                 }
@@ -108,12 +107,9 @@ public class SchemaData {
     private void createChallengeRequests() {
         List<Player> players = playerApi.get().stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList());
         for (Player player : players) {
-            List<User> potentials = challengeApi.getPotentials(player.getUserId());
-
+            List<Player> potentials = challengeApi.getPotentials(player.getUserId()).stream().filter(p -> p.getDivision().equals(player.getDivision())).collect(Collectors.toList());
             int slot = (int) Math.round(Math.random() * potentials.size())-1;
-            List<Player> opponents = potentials.get(slot == -1 ? 0 : slot).getPlayers().stream().collect(Collectors.toList());
-            slot = (int) Math.round(Math.random() * opponents.size())-1;
-            Player opponent = opponents.get(slot == -1 ? 0 : slot);
+            Player opponent = potentials.get(slot == -1 ? 0 : slot);
             Challenge challenge = new Challenge();
             TeamMatch teamMatch = new TeamMatch();
             teamMatch.setDivision(player.getDivision());
@@ -148,7 +144,7 @@ public class SchemaData {
 
         for (TeamMatch teamMatch : teamMatches) {
             TeamResult result = new TeamResult();
-            result.setTeamMatchId(teamMatch.getId());
+            result.setTeamMatch(teamMatch);
 
             long home = Math.round(Math.random() * 10);
             long away = Math.round(Math.random() * 10);
@@ -161,6 +157,7 @@ public class SchemaData {
             result.setHomeRacks((int) home);
             result.setAwayRacks((int) away);
             result = teamResultApi.create(result);
+
             PlayerResult playerResult = new PlayerResult();
 
             Player playerHome = players.stream().filter(p -> p.getDivision().equals(teamMatch.getDivision()) &&
@@ -178,14 +175,12 @@ public class SchemaData {
             playerResult.setTeamMatch(teamMatch);
 
             PlayerResult savedResult  = playerResultApi.create(playerResult);
-
             if (savedResult == null) {
                 throw new RuntimeException("Could not create player result for " + playerResult);
             }
-
         }
 
-        logger.info("Created  " + teamResultApi.get().size() + " match results");
+        logger.info("Created  " + playerResultApi.get().size() + " match results");
     }
 
     private void createChallengeMatches(DivisionType divisionType) {

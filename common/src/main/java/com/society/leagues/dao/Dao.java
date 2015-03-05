@@ -17,8 +17,6 @@ import java.util.stream.Collectors;
 
 public abstract class Dao<Q extends LeagueObject> implements ClientApi<Q> {
 
-    public static Boolean disableCache = false;
-
     @Autowired JdbcTemplate jdbcTemplate;
     static Logger logger = LoggerFactory.getLogger(Dao.class);
     protected LeagueCache<Q> cache = new LeagueCache<>();
@@ -46,9 +44,6 @@ public abstract class Dao<Q extends LeagueObject> implements ClientApi<Q> {
 
     @Override
     public List<Q> get() {
-        if (disableCache)
-            return list(getSql());
-
         if (cache.isEmpty()) {
             refreshCache();
         }
@@ -108,9 +103,6 @@ public abstract class Dao<Q extends LeagueObject> implements ClientApi<Q> {
     static final int HALF_AN_HOUR_IN_MILLISECONDS = 30 * 60 * 1000;
     @Scheduled(fixedRate = HALF_AN_HOUR_IN_MILLISECONDS)
     protected synchronized void refreshCache() {
-        if (disableCache)
-            return;
-
         cache.clear();
         cache.set(list(getSql()));
     }

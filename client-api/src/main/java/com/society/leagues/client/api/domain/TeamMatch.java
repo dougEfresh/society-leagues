@@ -16,7 +16,8 @@ public class TeamMatch extends LeagueObject  {
     Date matchDate;
     TeamResult result;
     Boolean win;
-    List<PlayerResult> playerResults = Collections.emptyList();
+    List<Player> playersHome = Collections.emptyList();
+    List<Player> playersAway = Collections.emptyList();
 
     public TeamMatch(Team home, Team away, Season season, Date matchDate) {
         this.home = home;
@@ -120,11 +121,29 @@ public class TeamMatch extends LeagueObject  {
         this.win = win;
     }
 
-    public List<PlayerResult> getPlayerResults() {
-        return playerResults;
+    public List<Player> getPlayersHome() {
+        return playersHome;
     }
 
-    public void setPlayerResults(List<PlayerResult> playerResults) {
-        this.playerResults = playerResults;
+    public List<Player> getPlayersAway() {
+        return playersAway;
+    }
+
+    public void setPlayersHome(List<Player> playersHome) {
+        this.playersHome = playersHome;
+    }
+
+    public void setPlayersAway(List<Player> playersAway) {
+        this.playersAway = playersAway;
+    }
+
+    @Override
+    public String toString() {
+        return "TeamMatch{" +
+                "home=" + home +
+                ", away=" + away +
+                ", division=" + division +
+                ", matchDate=" + matchDate +
+                '}';
     }
 }

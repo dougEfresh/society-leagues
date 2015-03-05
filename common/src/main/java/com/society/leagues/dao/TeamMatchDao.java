@@ -21,6 +21,7 @@ public class TeamMatchDao extends Dao<TeamMatch> implements MatchApi, MatchAdmin
     @Autowired SeasonDao seasonDao;
     @Autowired TeamDao teamDao;
     @Autowired DivisionDao divisionDao;
+    @Autowired PlayerDao playerDao;
 
     @Override
     public String getSql() {
@@ -40,6 +41,8 @@ public class TeamMatchDao extends Dao<TeamMatch> implements MatchApi, MatchAdmin
          m.setSeason(season);
          m.setDivision(division);
          m.setId(rs.getInt("team_match_id"));
+         m.setPlayersHome(playerDao.findHomeTeamPlayers(m));
+         m.setPlayersAway(playerDao.findAwayTeamPlayers(m));
          return m;
     };
 

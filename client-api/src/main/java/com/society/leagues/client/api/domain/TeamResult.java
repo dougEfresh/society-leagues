@@ -4,7 +4,7 @@ import javax.validation.constraints.NotNull;
 
 public class TeamResult extends LeagueObject {
     @NotNull
-    Integer teamMatchId;
+    TeamMatch teamMatch;
     Integer homeRacks;
     Integer awayRacks;
 
@@ -24,12 +24,12 @@ public class TeamResult extends LeagueObject {
         this.awayRacks = awayRacks;
     }
 
-    public Integer getTeamMatchId() {
-        return teamMatchId;
+    public TeamMatch getTeamMatch() {
+        return teamMatch;
     }
 
-    public void setTeamMatchId(Integer teamMatchId) {
-        this.teamMatchId = teamMatchId;
+    public void setTeamMatch(TeamMatch teamMatch) {
+        this.teamMatch = teamMatch;
     }
 
     public Integer getWinnerRacks() {

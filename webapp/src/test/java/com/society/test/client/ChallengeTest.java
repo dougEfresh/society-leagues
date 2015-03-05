@@ -194,7 +194,7 @@ public class ChallengeTest extends TestClientBase implements ChallengeApi {
     }
 
     @Override
-    public List<User> getPotentials(Integer id) {
+    public List<Player> getPotentials(Integer id) {
         return api.getPotentials(id);
     }
 }

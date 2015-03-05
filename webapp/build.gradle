@@ -5,12 +5,12 @@ jar {
     version = '1.0.0'
 }
 
-springBoot {
-    mainClass = 'com.society.leagues.Main'
-}
-
 bootRun {
-    jvmArgs [ '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005' ]
+    if ( project.hasProperty('args') ) {
+        args project.args.split('\\s+')
+    }
+
+    jvmArgs = [ '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005', '-Dembedded=true' ]
 }
 
 dependencies {

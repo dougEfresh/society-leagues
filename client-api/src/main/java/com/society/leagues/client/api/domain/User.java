@@ -12,8 +12,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,
-                  property = "@id")
 public class User extends LeagueObject {
 
     @NotNull
@@ -27,15 +25,6 @@ public class User extends LeagueObject {
     @NotNull
     Role role;
 
-    Set<Division> divisions = new TreeSet<>();
-    Set<Season> seasons = new TreeSet<>();
-    Set<Team> teams = new TreeSet<>();
-    Set<Player> players = new TreeSet<>();
-
-    Set<Division> pastDivision = new TreeSet<>();
-    Set<Season> pastSeasons = new TreeSet<>();
-    Set<Team> pastTeams = new TreeSet<>();
-    Set<Player> pastPlayers = new TreeSet<>();
 
     public User(String login, String password, Role role) {
         this.login = login;
@@ -120,119 +109,6 @@ public class User extends LeagueObject {
 
     public boolean isAdmin() {
         return Role.isAdmin(role);
-    }
-
-    public Set<Team> getTeams() {
-        return teams;
-    }
-
-    public void setTeams(Set<Team> Teams) {
-        this.teams = Teams;
-    }
-
-    public void addDivisions(List<Division> divisions) {
-        if (this.divisions == null) {
-            this.divisions = new TreeSet<>();
-        }
-        this.divisions.addAll(divisions);
-    }
-
-    public void addTeams(List<Team> teams) {
-        if (this.teams == null) {
-            this.teams = new TreeSet<>();
-        }
-        this.teams.addAll(teams);
-    }
-
-    public void addSeasons(List<Season> seasons) {
-        if (this.seasons == null) {
-            this.seasons = new TreeSet<>();
-        }
-        this.seasons.addAll(seasons);
-    }
-
-    public void addPlayers(List<Player> players) {
-        if (this.players == null) {
-            this.players = new TreeSet<>();
-        }
-        this.players.addAll(players);
-    }
-    
-    public void addPlayer(Player player) {
-        this.players.add(player);
-    }
-
-
-    public Set<Division> getPastDivision() {
-        return pastDivision;
-    }
-
-    public void  addPastDivisions(List<Division> pastDivision) {
-        this.pastDivision.addAll(pastDivision);
-    }
-
-    public Set<Season> getPastSeasons() {
-        return pastSeasons;
-    }
-
-    public void addPastSeasons(List<Season> pastSeasons) {
-        this.pastSeasons.addAll(pastSeasons);
-    }
-
-    public Set<Team> getPastTeams() {
-        return pastTeams;
-    }
-
-    public void addPastTeams(List<Team> pastTeams) {
-        this.pastTeams.addAll(pastTeams);
-    }
-
-    public Set<Player> getPastPlayers() {
-        return pastPlayers;
-    }
-
-    public void addPastPlayers(List<Player> pastPlayers) {
-        this.pastPlayers.addAll(pastPlayers);
-    }
-
-    public void setPastDivision(Set<Division> pastDivision) {
-        this.pastDivision = pastDivision;
-    }
-
-    public void setPastSeasons(Set<Season> pastSeasons) {
-        this.pastSeasons = pastSeasons;
-    }
-
-    public void setPastTeams(Set<Team> pastTeams) {
-        this.pastTeams = pastTeams;
-    }
-
-    public void setPastPlayers(Set<Player> pastPlayers) {
-        this.pastPlayers = pastPlayers;
-    }
-
-    public Set<Division> getDivisions() {
-        return divisions;
-    }
-
-    public void setDivisions(Set<Division> Divisions) {
-        this.divisions = Divisions;
-    }
-
-    public Set<Season> getSeasons() {
-        return seasons;
-    }
-
-    public void setSeasons(Set<Season> Seasons) {
-        this.seasons = Seasons;
-    }
-
-    public Set<Player> getPlayers() {
-        return players;
-    }
-
-    public void setPlayers(Set<Player> Players) {
-        this.players = Players;
     }
 
     @Override

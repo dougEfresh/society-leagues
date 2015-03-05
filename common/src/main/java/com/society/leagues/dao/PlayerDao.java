@@ -42,31 +42,12 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
         player.setUser(userDao.get(rs.getInt("user_id")));
         player.setId(rs.getInt("player_id"));
 
-        player.setTeamMatches(teamMatchDao.getByTeam(player.getTeam()));
-
-        for (TeamMatch teamMatch : player.getTeamMatches()) {
-            teamMatch.setResult(teamResultDao.getByMatch(teamMatch.getId()));
-
-            if (teamMatch.getResult() == null)
-                continue;
-
-            if (teamMatch.getWinner().equals(player.getTeam())) {
-                    teamMatch.setWin(true);
-                    player.addWin();
-                    player.addRacks(teamMatch.getWinnerRacks());
-                } else {
-                    player.addLost();
-                    player.addRacks(teamMatch.getLoserRacks());
-                }
-        }
-
-        player.setChallenges(challengeDao.getByPlayer(player));
-
         return player;
     };
 
     public List<Player> getByUser(User user) {
-        return getStats().stream().filter(p -> p.getUser().equals(user)).collect(Collectors.toList());
+        List<Player> players = get().stream().filter(p -> p.getUser().equals(user)).collect(Collectors.toList());
+        return players;
     }
 
     @Override
@@ -88,15 +69,6 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
         return players.get(0);
     }
 
-    public List<Player> getStats() {
-        List<Player> players = get();
-        List<PlayerResult> results = playerResultDao.get();
-        for (Player player : players) {
-            player.addResults(results.stream().filter(r -> r.getPlayerHome().equals(player) || r.getPlayerAway().equals(player)).collect(Collectors.toList()));
-        }
-        return players;
-    }
-
     @Override
     public Player modify(final Player player) {
         return modify(player,MODIFY,
@@ -114,6 +86,20 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
             return list(getSql());
 
         return super.get();
+    }
+
+    public List<Player> findHomeTeamPlayers(TeamMatch match) {
+        return get().stream().filter(p -> p.getTeam().equals(match.getHome()) &&
+                        p.getDivision().equals(match.getDivision()) &&
+                        p.getSeason().equals(match.getSeason())
+        ).collect(Collectors.toList());
+    }
+
+    public List<Player> findAwayTeamPlayers(TeamMatch match) {
+        return get().stream().filter(p -> p.getTeam().equals(match.getAway()) &&
+                        p.getDivision().equals(match.getDivision()) &&
+                        p.getSeason().equals(match.getSeason())
+        ).collect(Collectors.toList());
     }
 
     protected PreparedStatementCreator getCreateStatement(final Player player) {

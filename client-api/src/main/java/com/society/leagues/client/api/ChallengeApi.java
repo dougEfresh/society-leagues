@@ -20,7 +20,7 @@ public interface ChallengeApi {
     
     @Path("/api/challenge/potential/{id}")
     @GET
-    List<User> getPotentials(@PathParam(value = "id") Integer id);
+    List<Player> getPotentials(@PathParam(value = "id") Integer id);
     
     @POST
     @Path(value = "/api/challenge/request")

@@ -2,6 +2,7 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Society Leagues</title>
     <link rel="stylesheet" href="/resources/public/css/society.css">
@@ -14,26 +15,31 @@
 <div class="please-wait-dialog" ng-hide="vm.appReady">
     <img class="please-wait-spinner" src="/resources/img/loading.gif">
 </div>
-
-<header ng-class="{'app-ready': vm.appReady}">
-    <div >
-
-        <a href="#">
-            <img class="logo" src="/resources/img/logo.png">
-        </a>
-        <span>League</span>
-    </div>
-
-    <div>
-        <div>
-            <div class="username-placeholder" ng-hide="vm.userName"></div>
-            <span ng-cloak>{{vm.userName}}</span>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Society League</a>
         </div>
-        <div class="header-element">
-            <a class="logout" href="#" ng-click="logout()">Logout</a>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Home</a></li>
+                <li ><a href="#requestChallenge">Request Challenge</a></li>
+                <li><a href="#contact">{{vm.userName}}</a></li>
+                <li><a ng-click="logout()" href="/logout">Logout </a></li>
+            </ul>
         </div>
+        <!--/.nav-collapse -->
     </div>
-</header>
+</nav>
+
+<header ng-class="{'app-ready': vm.appReady}"></header>
 
 <main class="container not-ready" ng-class="{'app-ready': vm.appReady}" ng-cloak>
     <tt-error-messages></tt-error-messages>
@@ -47,118 +53,187 @@
     </div>
 
 
-    <div id ="leader">
-        <table>
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Matches</th>
-                <th>Wins</th>
-                <th>Loses</th>
-                <th>Racks</th>
-                <th>Percentage</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="player in vm.leaderboard" ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
-                <td>{{player.name}}</td>
-                <td>{{player.matches}}</td>
-                <td>{{player.wins}}</td>
-                <td>{{player.loses}}</td>
-                <td>{{player.racks}}</td>
-                <td>{{player.percentage}}</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+    <div class="container">
+        <div id="leader">
+            <h3>Leaders</h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Points</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="user in vm.leaderBoard | orderBy:points | limitTo: 10"
+                    ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
+                    <td>{{user.firstName}}</td>
+                    <td>{{user.points}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-    <div id="user-stats">
-        Matches <span ng-bind="vm.stats.matches"></span>
-        Wins <span ng-bind="vm.stats.wins"></span>
-        Loses <span ng-bind="vm.stats.loses"></span>
-        Racks <span ng-bind="vm.stats.racks"></span>
-        Percentage <span ng-bind="vm.stats.percentage"></span>
-    </div>
 
-     <div id="match-history">
-        <table>
-            <thead>
-            <tr>
-                <th>Challenger</th>
-                <th>Opponent</th>
-                <th>Win</th>
-                <th>Winner Racks</th>
-                <th>loser Racks</th>
-                <th>MatchDate</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="match in vm.matches" ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
-                <td>{{match.home.name}}</td>
-                <td>{{match.away.name}}</td>
-                <td>{{match.win}}</td>
-                <td>{{match.winnerRacks}}</td>
-                <td>{{match.loserRacks}}</td>
-                <td>{{match.matchDate}}</td>
-            </tr>
-            </tbody>
-        </table>
+        <div id="user-stats">
+            <h3> User stats </h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Matches</th>
+                    <th>Wins</th>
+                    <th>Loses</th>
+                    <th>Racks</th>
+                    <th>Percentage</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td ng-bind="vm.stats.matches"></td>
+                    <td ng-bind="vm.stats.wins"></td>
+                    <td ng-bind="vm.stats.loses"></td>
+                    <td ng-bind="vm.stats.racks"></td>
+                    <td ng-bind="vm.stats.percentage"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-        <ul>
-            <li>
-                <a ng-enabled="vm.totalPages > 0" ng-click="previous()"
-                   ng-disabled="vm.currentPage == 1">&#171;</a>
-            </li>
-            <li ng-repeat="page in pages()">
-                <!--<a ng-enabled="vm.totalPages > 0" ng-click="goToPage($index + 1)" ng-class="{'pure-button-active': page == vm.currentPage}">{{page}}</a></li>-->
-                <a ng-enabled="vm.totalPages > 0" ng-click="goToPage($index + 1)">{{page}}</a>
-            </li>
-            <li>
-                <a ng-enabled="vm.totalPages > 0" ng-disabled="vm.currentPage == vm.totalPages" ng-click="next()">&#187;</a>
-            </li>
-        </ul>
-    </div>
+        <div id="user-match-history">
+            <h3> Match History </h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Opponent</th>
+                    <th>Win</th>
+                    <th>Racks</th>
+                    <th>Opponent Racks</th>
+                    <th>Type</th>
+                    <th>MatchDate</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="match in vm.results"
+                    ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
+                    <td>{{vm.getOpponent(match).user.firstName}}</td>
+                    <td>{{vm.isWin(match)}}</td>
+                    <td>{{vm.getRacks(match)}}</td>
+                    <td>{{vm.getOpponentRacks(match)}}</td>
+                    <td>{{vm.getDivision(match.teamMatch)}}</td>
+                    <td>{{match.teamMatch.matchDate}}</td>
+                </tr>
+                </tbody>
+            </table>
 
-    <div id="pending">
-         <table>
-            <thead>
-            <tr>
-                <th>Challenger</th>
-                <th>Opponent</th>
-                <th>MatchDate</th>
-                <th>Type</th>
-            </tr>
-            </thead>
-             <tbody>
-             <tr ng-repeat="c in vm.pendingChallenges" ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
-                <td>{{c.teamMatch.home.name}}</td>
-                <td>{{c.teamMatch.away.name}}</td>
-                <td>{{c.challengeDate}}</td>
-                <td>{{c.teamMatch.division.type}}</td>
-            </tr>
-            </tbody>
-         </table>
-    </div>
+            <ul>
+                <li>
+                    <a ng-enabled="vm.totalPages > 0" ng-click="previous()"
+                       ng-disabled="vm.currentPage == 1">&#171;</a>
+                </li>
+                <li ng-repeat="page in pages()">
+                    <!--<a ng-enabled="vm.totalPages > 0" ng-click="goToPage($index + 1)" ng-class="{'pure-button-active': page == vm.currentPage}">{{page}}</a></li>-->
+                    <a ng-enabled="vm.totalPages > 0" ng-click="goToPage($index + 1)">{{page}}</a>
+                </li>
+                <li>
+                    <a ng-enabled="vm.totalPages > 0" ng-disabled="vm.currentPage == vm.totalPages" ng-click="next()">
+                        &#187;</a>
+                </li>
+            </ul>
+        </div>
 
-      <div id="accepted">
-         <table>
-            <thead>
-            <tr>
-                <th>Challenger</th>
-                <th>Opponent</th>
-                <th>MatchDate</th>
-                <th>Type</th>
-            </tr>
-            </thead>
-             <tbody>
-            <tr ng-repeat="c in vm.acceptedChallenges" ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
-                <td>{{c.teamMatch.home.name}}</td>
-                <td>{{c.teamMatch.away.name}}</td>
-                <td>{{c.challengeDate}}</td>
-                <td>{{c.teamMatch.division.type}}</td>
-            </tr>
-            </tbody>
-         </table>
+        <div id="pending">
+            <h3> Pending Challenges </h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Challenger</th>
+                    <th>Opponent</th>
+                    <th>MatchDate</th>
+                    <th>Type</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="c in vm.pendingChallenges"
+                    ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
+                    <td>{{c.teamMatch.playersHome[0].user.firstName}}</td>
+                    <td>{{c.teamMatch.playersAway[0].user.firstName}}</td>
+                    <td>{{c.challengeDate}}</td>
+                    <td>{{vm.getDivision(c.teamMatch)}}</td>
+                </tr>
+                </tbody>
+                <tfoot></tfoot>
+            </table>
+        </div>
+
+        <div id="accepted">
+            <h3> Accepted Challenges </h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Challenger</th>
+                    <th>Opponent</th>
+                    <th>MatchDate</th>
+                    <th>Type</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="c in vm.acceptedChallenges"
+                    ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
+                    <td>{{c.teamMatch.home.name}}</td>
+                    <td>{{c.teamMatch.away.name}}</td>
+                    <td>{{c.challengeDate}}</td>
+                    <td>{{vm.getDivision(c.teamMatch)}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="challengeForm">
+
+        </div>
+
+        <div id="results">
+            <h3> All Results (Limited to 15 at the moment) </h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Challenger</th>
+                    <th>Opponent</th>
+                    <th>Challenger Racks</th>
+                    <th>Opponent Racks</th>
+                    <th>Winner</th>
+                    <th>Type</th>
+                    <th>MatchDate</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="match in vm.allResults | limitTo: 15"
+                    ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
+                    <td>{{match.playerHome.user.firstName}}</td>
+                    <td>{{match.playerAway.user.firstName}}</td>
+                    <td>{{match.homeRacks}}</td>
+                    <td>{{match.awayRacks}}</td>
+                    <td>{{vm.getWinner(match).user.firstName}}</td>
+                    <td>{{vm.getDivision(match.teamMatch)}}</td>
+                    <td>{{match.teamMatch.matchDate}}</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <ul>
+                <li>
+                    <a ng-enabled="vm.totalPages > 0" ng-click="previous()"
+                       ng-disabled="vm.currentPage == 1">&#171;</a>
+                </li>
+                <li ng-repeat="page in pages()">
+                    <!--<a ng-enabled="vm.totalPages > 0" ng-click="goToPage($index + 1)" ng-class="{'pure-button-active': page == vm.currentPage}">{{page}}</a></li>-->
+                    <a ng-enabled="vm.totalPages > 0" ng-click="goToPage($index + 1)">{{page}}</a>
+                </li>
+                <li>
+                    <a ng-enabled="vm.totalPages > 0" ng-disabled="vm.currentPage == vm.totalPages" ng-click="next()">
+                        &#187;</a>
+                </li>
+            </ul>
+        </div>
     </div>
 </main>
 
@@ -166,6 +241,7 @@
         data-main="/resources/js/run-home-app"
         src="/resources/bower_components/requirejs/require.js">
 </script>
+<script src="/resources/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
 
 </html>

@@ -1,7 +1,83 @@
 angular.module('leagueApp',
     ['editableTableWidgets', 'frontendServices', 'spring-security-csrf-token-interceptor'])
-    .controller('HomeCtrl',['$scope' , 'UserService', '$timeout',
-    function ($scope, UserService, $timeout) {
+    .controller('HomeCtrl',['$scope' , 'UserService', '$timeout', '$filter',
+    function ($scope, UserService, $timeout, $filter) {
+
+        function _getPlayer(player) {
+            if (player === null) {
+                return undefined;
+            }
+            if (typeof(player) === "object") {
+                return player;
+            }
+            return $scope.vm.playerMap[player];
+        }
+
+        function _getOpponent(match) {
+            var p = _getPlayer(match.playerHome);
+            if ($scope.vm.players[p.id] === undefined)
+                return p;
+
+            return _getPlayer(match.playerAway);
+
+        }
+
+        function _isWin(match) {
+            if (match === null) {
+                return false;
+            }
+            var p  = _getPlayer(match.playerHome);
+            //Logged in user is away for this match
+            if ($scope.vm.players[p.id] === undefined) {
+                return match.homeRacks < match.awayRacks;
+            }
+            return match.homeRacks > match.awayRacks;
+        }
+
+        function _getRacks(match) {
+            if (match === null) {
+                return false;
+            }
+            var p  = _getPlayer(match.playerHome);
+            //Logged in user is away for this match
+            if ($scope.vm.players[p.id] === undefined) {
+                return  match.awayRacks;
+            }
+            return match.homeRacks ;
+        }
+
+        function _getOpponentRacks(match) {
+            if (match === null) {
+                return false;
+            }
+            var p  = _getPlayer(match.playerHome);
+            //Logged in user is away for this match
+            if ($scope.vm.players[p.id] === undefined) {
+                return  match.homeRacks;
+            }
+            return match.awayRacks;
+        }
+
+        function _getDivision(teamMatch) {
+            return teamMatch.division.type.replace("_CHALLENGE","").replace("NINE","9").replace("EIGHT","8").replace("_"," ");
+        }
+
+        function _isSessionPlayer(p) {
+            if (p === null || typeof(p) !== "object")
+                return false;
+
+              return  $scope.vm.players[p.id] !== undefined;
+        }
+
+        function _getWinner(match) {
+            var p  = _getPlayer(match.playerHome);
+            if (match.homeRacks > match.awayRacks) {
+                return p;
+            }
+
+            return _getPlayer(match.playerAway);
+
+        }
 
         $scope.vm = {
             currentPage: 1,
@@ -9,23 +85,60 @@ angular.module('leagueApp',
             isSelectionEmpty: true,
             errorMessages: [],
             infoMessages: [],
-            matches: [],
+            results: [],
             pendingChallenges: [],
             acceptedChallenges: [],
-            players: [],
+            players: {},
+            playerMap: {},
             stats: {},
-            leaderBoard: []
+            leaderBoard: [],
+            getOpponent:  _getOpponent,
+            isWin:  _isWin,
+            getRacks:  _getRacks,
+            getOpponentRacks:  _getOpponentRacks,
+            getDivision: _getDivision,
+            getWinner: _getWinner
         };
+
+        function updateChallengeInfo() {
+            UserService.getChallenges().then (function (challenges) {
+                $scope.vm.pendingChallenges = _.filter(challenges, function(c) {return c.status === 'PENDING'});
+                $scope.vm.acceptedChallenges = _.filter(challenges, function(c) {return c.status === 'ACCEPTED'});
+
+            }, function (errorMessage) {
+                showErrorMessage(errorMessage);
+                markAppAsInitialized();
+            });
+        }
 
         function updatePlayerInfo() {
             UserService.getPlayerInfo().then (function (playerInfo) {
-                console.log(JSON.stringify(playerInfo));
-                window.playerInfo = playerInfo;
                 $scope.vm.players = filterPlayers(playerInfo);
-                $scope.vm.matches = getMatches($scope.vm.players);
-                $scope.vm.stats = getStats($scope.vm.matches);
-                $scope.vm.pendingChallenges = getPendingChallenges($scope.vm.players);
-                $scope.vm.acceptedChallenges = getAcceptedChallenges($scope.vm.players);
+
+            }, function (errorMessage) {
+                showErrorMessage(errorMessage);
+                markAppAsInitialized();
+            });
+
+        }
+
+        function updatePlayerResults() {
+            UserService.getPlayerResults().then (function (playerResults) {
+
+                $scope.vm.allResults = playerResults;
+                window.allResults = playerResults;
+                _.forEach(playerResults, function(p) {
+                    addToMap(p.playerHome);
+                    addToMap(p.playerAway);
+                });
+
+                $scope.vm.results = _.filter(playerResults, function(r) {
+                    return _isSessionPlayer(r.playerHome) || _isSessionPlayer(r.playerAway);
+                });
+                $scope.vm.stats = updateStats($scope.vm.results);
+                $scope.vm.leaderBoard = updateLeaderBoard($scope.vm.allResults);
+                window.leaderBoard =  $scope.vm.leaderBoard;
+
             }, function (errorMessage) {
                 showErrorMessage(errorMessage);
                 markAppAsInitialized();
@@ -35,10 +148,7 @@ angular.module('leagueApp',
         function updateUserInfo() {
             UserService.getUserInfo()
                 .then(function (userInfo) {
-                    //console.log(JSON.stringify(userInfo));
-                    window.userInfo = userInfo;
                     $scope.vm.userName = userInfo.firstName;
-                    //$scope.vm.leaderBoard = userInfo.leaderBoard;
                 },
                 function (errorMessage) {
                     showErrorMessage(errorMessage);
@@ -46,57 +156,7 @@ angular.module('leagueApp',
                 });
         }
 
-        function filterPlayers(players) {
-            return _.filter(players,function (p) {
-                return p.division.challenge
-            });
-        }
-
-
-
-        function getMatches(players) {
-            var m = [];
-            _.forEach(players,
-                function (p) {
-                    m = m.concat(p.teamMatches);
-                }
-            );
-            return _.filter(m, function(match) {
-                return match.result !== null;
-            });
-        }
-
-        function getPendingChallenges(players) {
-            var c = [];
-
-            _.forEach(players, function(p) {
-                    c = c.concat(p.challenges);
-                }
-            );
-
-            return _.filter(c,function(challenge){
-                    return challenge.status == 'PENDING';
-                }
-            );
-        }
-
-        function getAcceptedChallenges(players) {
-              var c = [];
-
-            _.forEach(players, function(p) {
-                    c = c.concat(p.challenges);
-                }
-            );
-
-            return _.filter(c,function(challenge){
-                    return challenge.status == 'ACCEPTED' && challenge.teamMatch.result === null;
-                }
-            );
-
-        }
-
-        function getStats(matches) {
-
+        function updateStats(matches) {
             var stats = {};
             stats.wins = 0;
             stats.matches = 0;
@@ -108,13 +168,14 @@ angular.module('leagueApp',
                 if (m.result === null)
                     return;
                 stats.matches++;
-                if(m.win) {
+
+                if (_isWin(m))
                     stats.wins++;
-                    stats.racks += m.winnerRacks;
-                } else {
+                else
                     stats.loses++;
-                    stats.racks += m.loserRacks;
-                }
+
+                stats.racks += _getRacks(m);
+
             });
 
             if (stats.matches >0) {
@@ -122,6 +183,51 @@ angular.module('leagueApp',
             }
 
             return stats;
+        }
+
+        function updateLeaderBoard(matches) {
+            var stats = {};
+            _.map(matches,function(m) {
+                if (stats[m.playerHome.user.id] === undefined) {
+                    stats[m.playerHome.user.id] = m.playerHome.user;
+                    stats[m.playerHome.user.id].points = 0;
+                }
+
+                if (stats[m.playerAway.user.id] === undefined) {
+                    stats[m.playerAway.user.id] = m.playerAway.user;
+                    stats[m.playerAway.user.id].points = 0;
+                }
+
+                if (m.homeRacks > m.awayRacks) {
+                    stats[m.playerHome.user.id].points += 2;
+                    stats[m.playerAway.user.id].points += 1;
+                } else {
+                    stats[m.playerAway.user.id].points += 2;
+                    stats[m.playerHome.user.id].points += 1;
+                }
+            });
+            var statsArray = [];
+            _.map(stats , function(s) {statsArray = statsArray.concat(s)});
+            return statsArray;
+        }
+        function addToMap(p) {
+            if (p !== null && typeof(p) === "object" && $scope.vm.playerMap[p.id] === undefined ) {
+                //console.log("Adding player " + p.id + " to map");
+                $scope.vm.playerMap[p.id] = p;
+            }
+        }
+
+        function filterPlayers(players) {
+            var challengePlayers =  _.filter(players,function (p) {
+                return p.division.challenge
+            });
+
+            var players  = {};
+            _.map(challengePlayers, function(p) {
+                addToMap(p);
+                players[p.id] = p;
+            });
+            return players;
         }
 
         function showErrorMessage(errorMessage) {
@@ -253,16 +359,18 @@ angular.module('leagueApp',
                 });
         };
 
-        $scope.reset = function () {
-            $scope.vm.meals = $scope.vm.originalMeals;
-        };
-
         $scope.logout = function () {
             UserService.logout();
         }
 
-        updatePlayerInfo();
-        updateUserInfo();
+        function updateInfo() {
+            updateUserInfo();
+            updatePlayerInfo();
+            updatePlayerResults();
+            updateChallengeInfo();
+        }
+
+        updateInfo();
         markAppAsInitialized();
     }]);
 

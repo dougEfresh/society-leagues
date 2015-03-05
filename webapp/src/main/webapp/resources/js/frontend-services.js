@@ -33,6 +33,39 @@ angular.module('frontendServices', [])
                 return deferred.promise;
             },
 
+            getPlayerResults: function() {
+                var deferred = $q.defer();
+
+                $http.get('/results')
+                    .then(function (response) {
+                        if (response.status == 200) {
+                            deferred.resolve(response.data);
+                        }
+                        else {
+                            deferred.reject('Error retrieving user info');
+                        }
+                    });
+
+                return deferred.promise;
+            },
+
+            getChallenges: function() {
+                var deferred = $q.defer();
+
+                $http.get('/challenges')
+                    .then(function (response) {
+                        if (response.status == 200) {
+                            deferred.resolve(response.data);
+                        }
+                        else {
+                            deferred.reject('Error retrieving user info');
+                        }
+                    });
+
+                return deferred.promise;
+            },
+
+
         getLeaderBoard: function() {
                  var deferred = $q.defer();
 
@@ -47,7 +80,7 @@ angular.module('frontendServices', [])
                 });
 
                 return deferred.promise;
-            },
+        },
 
             logout: function () {
                 $http({

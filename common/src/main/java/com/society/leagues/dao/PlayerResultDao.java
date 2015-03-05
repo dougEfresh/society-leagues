@@ -1,6 +1,8 @@
 package com.society.leagues.dao;
 
+import com.society.leagues.client.api.domain.Player;
 import com.society.leagues.client.api.domain.PlayerResult;
+import com.society.leagues.client.api.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -8,6 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Component
 public class PlayerResultDao extends Dao<PlayerResult> {
@@ -16,6 +21,7 @@ public class PlayerResultDao extends Dao<PlayerResult> {
 
     RowMapper<PlayerResult> rowMapper = (rs, rowNum) -> {
         PlayerResult result = new PlayerResult();
+        result.setId(rs.getInt("player_result_id"));
         result.setAwayRacks(rs.getInt("away_racks"));
         result.setHomeRacks(rs.getInt("home_racks"));
         result.setPlayerAway(playerDao.get(rs.getInt("player_away_id")));
@@ -24,7 +30,7 @@ public class PlayerResultDao extends Dao<PlayerResult> {
         return result;
     };
 
-     protected PreparedStatementCreator getCreateStatement(final PlayerResult result, String sql) {
+    protected PreparedStatementCreator getCreateStatement(final PlayerResult result, String sql) {
         return con -> {
             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             int j=0;
@@ -37,9 +43,8 @@ public class PlayerResultDao extends Dao<PlayerResult> {
         };
     }
 
-
-    public PlayerResult create(PlayerResult thing) {
-        return super.create(thing, getCreateStatement(thing,CREATE));
+    public PlayerResult create(PlayerResult playerResult) {
+        return create(playerResult, getCreateStatement(playerResult,CREATE));
     }
 
     public PlayerResult modify(PlayerResult playerResult) {

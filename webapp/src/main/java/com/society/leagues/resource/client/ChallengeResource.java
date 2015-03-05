@@ -26,7 +26,7 @@ public class ChallengeResource  implements ChallengeApi {
         List<PlayerStats> stats = new ArrayList<>();
         Map<Integer,PlayerStats> userStats = new HashMap<>();
         List<Player> players = playerDao.get().stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList());
-
+        /*
         for (Player player : players) {
             for (TeamMatch m : player.getTeamMatches().stream().filter(p -> p.getResult() != null).collect(Collectors.toList())) {
                 if (!userStats.containsKey(player.getId())) {
@@ -42,11 +42,12 @@ public class ChallengeResource  implements ChallengeApi {
             if (challenge.getTeamMatch().getResult() == null)
                 continue;
         }
+        */
         return null;
     }
 
     @Override
-    public List<User> getPotentials(Integer id) {
+    public List<Player> getPotentials(Integer id) {
         return dao.getPotentials(id);
     }
 
