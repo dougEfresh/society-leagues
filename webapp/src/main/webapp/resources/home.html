@@ -56,7 +56,7 @@
 
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
-            <div class="panel panel-default">
+            <div id="userStatsPanel" class="panel panel-default">
                 <div class="panel-heading" role="tab" id="headingUserStats">
                     <h4 class="panel-title">
                         <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseUserStats"
@@ -65,7 +65,7 @@
                         </a>
                     </h4>
                 </div>
-                <div id="collapseUserStats" class="panel-collapse collapse" role="tabpanel"
+                <div id="collapseUserStats" class="panel-collapse collapse in" role="tabpanel"
                      aria-labelledby="headingUserStats">
                     <div class="panel-body">
                         <div id="user-stats">
@@ -94,7 +94,7 @@
                 </div>
             </div>
 
-            <div class="panel panel-default">
+            <div id="leaderPanel" class="panel panel-default">
                 <div class="panel-heading" role="tab" id="headingLeader">
                     <h4 class="panel-title">
                         <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#leaderCollapse"
@@ -129,7 +129,7 @@
                 </div>
             </div>
 
-            <div class="panel panel-default">
+            <div id="userMatchesPanel" class="panel panel-default">
                 <div class="panel-heading" role="tab" id="headingUserMatches">
                     <h4 class="panel-title">
                         <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#userMatchesCollapse"
@@ -188,105 +188,144 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        
-                    <div id="pending">
-                        <h3> Pending Challenges </h3>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>Challenger</th>
-                                <th>Opponent</th>
-                                <th>MatchDate</th>
-                                <th>Type</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="c in vm.pendingChallenges"
-                                ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
-                                <td>{{vm.getName(c.teamMatch.playersHome[0].user)}}</td>
-                                <td>{{vm.getName(c.teamMatch.playersAway[0].user)}}</td>
-                                <td>{{vm.getChallengeDate(c)}}</td>
-                                <td>{{vm.getDivision(c.teamMatch)}}</td>
-                            </tr>
-                            </tbody>
-                            <tfoot></tfoot>
-                        </table>
-                    </div>
+            <div id ="pendingPanel" class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingPendingChallenges">
+                    <h4 class="panel-title">
+                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#pendingCollapse"
+                           aria-expanded="false" aria-controls="pendingCollapse">
+                            Pending Challenges
+                        </a>
+                    </h4>
+                </div>
 
-                    <div id="accepted">
-                        <h3> Accepted Challenges </h3>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>Challenger</th>
-                                <th>Opponent</th>
-                                <th>MatchDate</th>
-                                <th>Type</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="c in vm.acceptedChallenges"
-                                ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
-                                <td>{{vm.getName(c.teamMatch.playersHome[0].user)}}</td>
-                                <td>{{vm.getName(c.teamMatch.playersAway[0].user)}}</td>
-                                <td>{{vm.getChallengeDate(c)}}</td>
-                                <td>{{vm.getDivision(c.teamMatch)}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div id="challengeForm">
-
-                    </div>
-
-                    <div id="results">
-                        <h3> All Results (Limited to 15 at the moment) </h3>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>Challenger</th>
-                                <th>Opponent</th>
-                                <th>Challenger Racks</th>
-                                <th>Opponent Racks</th>
-                                <th>Winner</th>
-                                <th>Type</th>
-                                <th>MatchDate</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr ng-repeat="match in vm.allResults | limitTo: 15"
-                                ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
-                                <td>{{vm.getName(match.playerHome.user)}}</td>
-                                <td>{{vm.getName(match.playerAway.user)}}</td>
-                                <td>{{match.homeRacks}}</td>
-                                <td>{{match.awayRacks}}</td>
-                                <td>{{vm.getName(vm.getWinner(match).user)}}</td>
-                                <td>{{vm.getDivision(match.teamMatch)}}</td>
-                                <td>{{vm.getMatchDate(match)}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-
-                        <ul>
-                            <li>
-                                <a ng-enabled="vm.totalPages > 0" ng-click="previous()"
-                                   ng-disabled="vm.currentPage == 1">&#171;</a>
-                            </li>
-                            <li ng-repeat="page in pages()">
-                                <!--<a ng-enabled="vm.totalPages > 0" ng-click="goToPage($index + 1)" ng-class="{'pure-button-active': page == vm.currentPage}">{{page}}</a></li>-->
-                                <a ng-enabled="vm.totalPages > 0" ng-click="goToPage($index + 1)">{{page}}</a>
-                            </li>
-                            <li>
-                                <a ng-enabled="vm.totalPages > 0" ng-disabled="vm.currentPage == vm.totalPages"
-                                   ng-click="next()">
-                                    &#187;</a>
-                            </li>
-                        </ul>
+                <div id="pendingCollapse" class="panel-collapse collapse" role="tabpanel"
+                     aria-labelledby="headingPendingChallenges">
+                    <div class="list-group">
+                        <div id="pending">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Challenger</th>
+                                    <th>Opponent</th>
+                                    <th>MatchDate</th>
+                                    <th>Type</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="c in vm.pendingChallenges"
+                                    ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
+                                    <td>{{vm.getName(c.teamMatch.playersHome[0].user)}}</td>
+                                    <td>{{vm.getName(c.teamMatch.playersAway[0].user)}}</td>
+                                    <td>{{vm.getChallengeDate(c)}}</td>
+                                    <td>{{vm.getDivision(c.teamMatch)}}</td>
+                                </tr>
+                                </tbody>
+                                <tfoot></tfoot>
+                            </table>
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <div id="acceptedPanel" class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingAcceptedChallenges">
+                    <h4 class="panel-title">
+                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
+                           href="#acceptedCollapse" aria-expanded="false" aria-controls="acceptedCollapse">
+                            Accepted Challenges
+                        </a>
+                    </h4>
+                </div>
+
+                <div id="acceptedCollapse" class="panel-collapse collapse" role="tabpanel"
+                     aria-labelledby="headingAcceptedChallenges">
+                    <div class="list-group">
+                        <div id="accepted">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Challenger</th>
+                                    <th>Opponent</th>
+                                    <th>MatchDate</th>
+                                    <th>Type</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="c in vm.acceptedChallenges"
+                                    ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
+                                    <td>{{vm.getName(c.teamMatch.playersHome[0].user)}}</td>
+                                    <td>{{vm.getName(c.teamMatch.playersAway[0].user)}}</td>
+                                    <td>{{vm.getChallengeDate(c)}}</td>
+                                    <td>{{vm.getDivision(c.teamMatch)}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="allResultsPanel" class="panel panel-default">
+                <div class="panel-heading" role="tab" id="headingAllResults">
+                    <h4 class="panel-title">
+                        <a class="collapsed" data-toggle="collapse" data-parent="#accordion"
+                           href="#allResultsCollapse" aria-expanded="false" aria-controls="allResultsCollapse">
+                            All Results
+                        </a>
+                    </h4>
+                </div>
+
+                <div id="allResultsCollapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingAllResultsCollapse">
+                    <div class="list-group">
+                        <div id="results">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Challenger</th>
+                                    <th>Opponent</th>
+                                    <th>Challenger Racks</th>
+                                    <th>Opponent Racks</th>
+                                    <th>Winner</th>
+                                    <th>Type</th>
+                                    <th>MatchDate</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="match in vm.allResults | limitTo: 15"
+                                    ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
+                                    <td>{{vm.getName(match.playerHome.user)}}</td>
+                                    <td>{{vm.getName(match.playerAway.user)}}</td>
+                                    <td>{{match.homeRacks}}</td>
+                                    <td>{{match.awayRacks}}</td>
+                                    <td>{{vm.getName(vm.getWinner(match).user)}}</td>
+                                    <td>{{vm.getDivision(match.teamMatch)}}</td>
+                                    <td>{{vm.getMatchDate(match)}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                            <ul>
+                                <li>
+                                    <a ng-enabled="vm.totalPages > 0" ng-click="previous()"
+                                       ng-disabled="vm.currentPage == 1">&#171;</a>
+                                </li>
+                                <li ng-repeat="page in pages()">
+                                    <!--<a ng-enabled="vm.totalPages > 0" ng-click="goToPage($index + 1)" ng-class="{'pure-button-active': page == vm.currentPage}">{{page}}</a></li>-->
+                                    <a ng-enabled="vm.totalPages > 0" ng-click="goToPage($index + 1)">{{page}}</a>
+                                </li>
+                                <li>
+                                    <a ng-enabled="vm.totalPages > 0" ng-disabled="vm.currentPage == vm.totalPages"
+                                       ng-click="next()">
+                                        &#187;</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </main>
 
 <script type="text/javascript"
