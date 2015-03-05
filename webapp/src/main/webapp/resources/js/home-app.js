@@ -2,6 +2,31 @@ angular.module('leagueApp',
     ['editableTableWidgets', 'frontendServices', 'spring-security-csrf-token-interceptor'])
     .controller('HomeCtrl',['$scope' , 'UserService', '$timeout', '$filter',
     function ($scope, UserService, $timeout, $filter) {
+        var orderBy = $filter('orderBy');
+
+        $scope.orderLeaders = function(predicate, reverse) {
+             $scope.vm.leaderBoard = orderBy($scope.vm.leaderBoard, predicate, reverse);
+        };
+
+        $scope.orderPlayerResults = function(predicate, reverse) {
+            $scope.vm.results = orderBy($scope.vm.results, predicate, reverse);
+        };
+
+        $scope.orderAllResults = function(predicate, reverse) {
+            $scope.vm.allResults = orderBy($scope.vm.allResults, predicate, reverse);
+        };
+
+        function _getMatchDate(match) {
+            return match.teamMatch.matchDate;
+        }
+
+        function _getChallengeDate(c) {
+            return c.challengeDate;
+        }
+
+        function _getName(user) {
+            return user.firstName ;
+        }
 
         function _getPlayer(player) {
             if (player === null) {
@@ -86,6 +111,7 @@ angular.module('leagueApp',
             errorMessages: [],
             infoMessages: [],
             results: [],
+            allResults: [],
             pendingChallenges: [],
             acceptedChallenges: [],
             players: {},
@@ -97,7 +123,10 @@ angular.module('leagueApp',
             getRacks:  _getRacks,
             getOpponentRacks:  _getOpponentRacks,
             getDivision: _getDivision,
-            getWinner: _getWinner
+            getWinner: _getWinner,
+            getName: _getName,
+            getChallengeDate: _getChallengeDate,
+            getMatchDate: _getMatchDate
         };
 
         function updateChallengeInfo() {
@@ -131,12 +160,14 @@ angular.module('leagueApp',
                     addToMap(p.playerHome);
                     addToMap(p.playerAway);
                 });
-
+                $scope.orderAllResults('teamMatch.matchDate',true);
                 $scope.vm.results = _.filter(playerResults, function(r) {
                     return _isSessionPlayer(r.playerHome) || _isSessionPlayer(r.playerAway);
                 });
+                $scope.orderPlayerResults('teamMatch.matchDate',true);
                 $scope.vm.stats = updateStats($scope.vm.results);
-                $scope.vm.leaderBoard = updateLeaderBoard($scope.vm.allResults);
+                $scope.vm.leaderBoard =  updateLeaderBoard($scope.vm.allResults);
+                $scope.orderLeaders('points',true);
                 window.leaderBoard =  $scope.vm.leaderBoard;
 
             }, function (errorMessage) {
@@ -210,6 +241,7 @@ angular.module('leagueApp',
             _.map(stats , function(s) {statsArray = statsArray.concat(s)});
             return statsArray;
         }
+
         function addToMap(p) {
             if (p !== null && typeof(p) === "object" && $scope.vm.playerMap[p.id] === undefined ) {
                 //console.log("Adding player " + p.id + " to map");
