@@ -117,13 +117,20 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="user in vm.leaderBoard | limitTo: 10"
+                                <tr ng-repeat="user in vm.leaderBoard | startFrom:leaderCurrentPage*pageSize | limitTo: pageSize"
                                     ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
                                     <td>{{vm.getName(user)}}</td>
                                     <td>{{user.points}}</td>
                                 </tr>
                                 </tbody>
                             </table>
+                            <button ng-disabled="leaderCurrentPage == 0"
+                                    ng-click="leaderCurrentPage=leaderCurrentPage-1"> &#171
+                            </button>
+                            {{leaderCurrentPage+1}}/{{numberOfPages()}}
+                            <button ng-disabled="leaderCurrentPage >= vm.leaderBoard.length/pageSize - 1"
+                                    ng-click="leaderCurrentPage=leaderCurrentPage+1"> &#187
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -157,7 +164,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="match in vm.results"
+                                <tr ng-repeat="match in vm.results | startFrom:resultsCurrentPage*pageSize  | limitTo: pageSize"
                                     ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
                                     <td>{{vm.getOpponent(match).user.firstName}}</td>
                                     <td>{{vm.isWin(match)}}</td>
@@ -168,28 +175,18 @@
                                 </tr>
                                 </tbody>
                             </table>
-
-                            <ul>
-                                <li>
-                                    <a ng-enabled="vm.totalPages > 0" ng-click="previous()"
-                                       ng-disabled="vm.currentPage == 1">&#171;</a>
-                                </li>
-                                <li ng-repeat="page in pages()">
-                                    <!--<a ng-enabled="vm.totalPages > 0" ng-click="goToPage($index + 1)" ng-class="{'pure-button-active': page == vm.currentPage}">{{page}}</a></li>-->
-                                    <a ng-enabled="vm.totalPages > 0" ng-click="goToPage($index + 1)">{{page}}</a>
-                                </li>
-                                <li>
-                                    <a ng-enabled="vm.totalPages > 0" ng-disabled="vm.currentPage == vm.totalPages"
-                                       ng-click="next()">
-                                        &#187;</a>
-                                </li>
-                            </ul>
+                            <button ng-disabled="allResultsCurrentPage == 0"
+                                    ng-click="resultsCurrentPage=resultsCurrentPage-1"> &#171
+                            </button>
+                            {{resultsCurrentPage+1}}/{{resultsNumberOfPages()}}
+                            <button ng-disabled="resultsCurrentPage >= vm.results.length/pageSize - 1"
+                                    ng-click="resultsCurrentPage=resultsCurrentPage+1"> &#187; </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id ="pendingPanel" class="panel panel-default">
+            <div id="pendingPanel" class="panel panel-default">
                 <div class="panel-heading" role="tab" id="headingPendingChallenges">
                     <h4 class="panel-title">
                         <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#pendingCollapse"
@@ -276,7 +273,8 @@
                     </h4>
                 </div>
 
-                <div id="allResultsCollapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingAllResultsCollapse">
+                <div id="allResultsCollapse" class="panel-collapse collapse" role="tabpanel"
+                     aria-labelledby="headingAllResultsCollapse">
                     <div class="list-group">
                         <div id="results">
                             <table class="table">
@@ -292,7 +290,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="match in vm.allResults | limitTo: 15"
+                                <tr ng-repeat="match in vm.allResults | startFrom:allResultsCurrentPage*pageSize  | limitTo: pageSize"
                                     ng-class="{'table-odd': $index % 2 == 1, 'table-even': $index % 2 == 0}">
                                     <td>{{vm.getName(match.playerHome.user)}}</td>
                                     <td>{{vm.getName(match.playerAway.user)}}</td>
@@ -304,22 +302,12 @@
                                 </tr>
                                 </tbody>
                             </table>
-
-                            <ul>
-                                <li>
-                                    <a ng-enabled="vm.totalPages > 0" ng-click="previous()"
-                                       ng-disabled="vm.currentPage == 1">&#171;</a>
-                                </li>
-                                <li ng-repeat="page in pages()">
-                                    <!--<a ng-enabled="vm.totalPages > 0" ng-click="goToPage($index + 1)" ng-class="{'pure-button-active': page == vm.currentPage}">{{page}}</a></li>-->
-                                    <a ng-enabled="vm.totalPages > 0" ng-click="goToPage($index + 1)">{{page}}</a>
-                                </li>
-                                <li>
-                                    <a ng-enabled="vm.totalPages > 0" ng-disabled="vm.currentPage == vm.totalPages"
-                                       ng-click="next()">
-                                        &#187;</a>
-                                </li>
-                            </ul>
+                            <button ng-disabled="allResultsCurrentPage == 0"
+                                    ng-click="allResultsCurrentPage=allResultsCurrentPage-1"> &#171
+                            </button>
+                            {{allResultsCurrentPage+1}}/{{allResultsNumberOfPages()}}
+                            <button ng-disabled="allResultsCurrentPage >= vm.allResults.length/pageSize - 1"
+                                    ng-click="allResultsCurrentPage=allResultsCurrentPage+1"> &#187; </button>
                         </div>
                     </div>
                 </div>

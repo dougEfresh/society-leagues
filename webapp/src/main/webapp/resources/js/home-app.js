@@ -1,7 +1,25 @@
-angular.module('leagueApp',
+var app = angular.module('leagueApp',
     ['editableTableWidgets', 'frontendServices', 'spring-security-csrf-token-interceptor'])
     .controller('HomeCtrl',['$scope' , 'UserService', '$timeout', '$filter',
     function ($scope, UserService, $timeout, $filter) {
+
+        $scope.leaderCurrentPage = 0;
+        $scope.allResultsCurrentPage = 0;
+        $scope.resultsCurrentPage = 0;
+        $scope.pageSize = 10;
+
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.vm.leaderBoard.length/$scope.pageSize);
+        };
+
+        $scope.allResultsNumberOfPages=function(){
+            return Math.ceil($scope.vm.allResults.length/$scope.pageSize);
+        };
+
+        $scope.resultsNumberOfPages=function(){
+            return Math.ceil($scope.vm.results.length/$scope.pageSize);
+        };
+
         var orderBy = $filter('orderBy');
 
         $scope.orderLeaders = function(predicate, reverse) {
@@ -238,7 +256,7 @@ angular.module('leagueApp',
                 }
             });
             var statsArray = [];
-            _.map(stats , function(s) {statsArray = statsArray.concat(s)});
+            _.map(stats , function(s) {statsArray.push(s)});
             return statsArray;
         }
 
@@ -406,3 +424,12 @@ angular.module('leagueApp',
         markAppAsInitialized();
     }]);
 
+
+//We already have a limitTo filter built-in to angular,
+//let's make a startFrom filter
+app.filter('startFrom', function() {
+    return function(input, start) {
+        start = +start; //parse to int
+        return input.slice(start);
+    }
+});
