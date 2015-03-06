@@ -46,7 +46,7 @@
     <tt-error-messages extra-styles="access-screen"></tt-error-messages>
     <div class="container">
         <div class="login-container">
-            <form ng-submit="onLogin()" name="form" class="login-form" novalidate ng-controller="LoginCtrl">
+            <form ng-submit="onLogin()" id="login" name="form" class="login-form" novalidate ng-controller="LoginCtrl">
                 <fieldset>
                     <legend>Log In</legend>
                     <div class="form-field">
@@ -79,6 +79,7 @@
 
 <script type="text/javascript" data-main="/resources/public/js/run-login-app"
         src="/resources/bower_components/requirejs/require.js"></script>
+<script src="/resources/public/js/jquery.min.js"></script>
 <script src="/resources/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

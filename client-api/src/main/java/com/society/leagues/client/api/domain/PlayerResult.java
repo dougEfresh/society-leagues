@@ -1,10 +1,10 @@
 package com.society.leagues.client.api.domain;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.society.leagues.client.View;
 
 public class PlayerResult extends LeagueObject {
-
     TeamMatch teamMatch;
     Player playerHome;
     Player playerAway;

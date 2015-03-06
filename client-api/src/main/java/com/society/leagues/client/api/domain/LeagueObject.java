@@ -1,5 +1,8 @@
 package com.society.leagues.client.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.society.leagues.client.View;
+
 public class LeagueObject implements Comparable<LeagueObject>{
     protected Integer id;
 

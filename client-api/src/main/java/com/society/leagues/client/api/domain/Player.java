@@ -1,6 +1,8 @@
 package com.society.leagues.client.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.society.leagues.client.View;
 import com.society.leagues.client.api.domain.division.Division;
 
 import javax.validation.constraints.NotNull;
@@ -113,6 +115,12 @@ public class Player extends LeagueObject {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @JsonView(View.PlayerId.class)
+    @Override
+    public Integer getId() {
+        return super.getId();
     }
 
     @Override

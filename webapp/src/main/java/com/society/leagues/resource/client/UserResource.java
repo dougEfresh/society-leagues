@@ -1,5 +1,7 @@
 package com.society.leagues.resource.client;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.society.leagues.client.View;
 import com.society.leagues.client.api.UserClientApi;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.dao.*;
@@ -8,12 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import java.security.Principal;
 
@@ -34,13 +33,19 @@ public class UserResource extends ApiResource implements UserClientApi {
         return u;
     }
 
-    @RequestMapping(value = "/players", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Player> getPlayers(Principal principal) {
+    @RequestMapping(value = "/userPlayers", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Player> getUserPlayers(Principal principal) {
         User u = get(principal.getName());
         List<Player> players = playerDao.getByUser(u);
         return players;
     }
 
+    @RequestMapping(value = "/players", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Player> getPlayers() {
+        return playerDao.get();
+    }
+
+    @JsonView(value = View.PlayerId.class)
     @RequestMapping(value = "/challenges", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Challenge> getChallenges(Principal principal) {
         User u = get(principal.getName());
@@ -50,9 +55,26 @@ public class UserResource extends ApiResource implements UserClientApi {
         return challenges;
     }
 
+    @JsonView(value = View.PlayerId.class)
     @RequestMapping(value = "/results", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PlayerResult> getResults(Principal principal) {
         return playerResultDao.get();
+    }
+
+    @JsonView(value = View.PlayerId.class)
+    @RequestMapping(value = "/potentials", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Collection<User> getPotentials(Principal principal) {
+        User u = get(principal.getName());
+        List<Player> players = challengeDao.getPotentials(u.getId());
+        HashMap<Integer,User> users  = new HashMap<>();
+        for (Player player : players) {
+            if (!users.containsKey(player.getUser().getId())) {
+                users.put(player.getUser().getId(), player.getUser());
+            }
+            User user = users.get(player.getUserId());
+            user.addPlayer(player);
+        }
+        return users.values();
     }
 
     @Override

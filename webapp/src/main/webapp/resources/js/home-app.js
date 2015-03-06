@@ -35,6 +35,9 @@ var app = angular.module('leagueApp',
         };
 
         function _getMatchDate(match) {
+            if ( match === null || match === undefined || match.teamMatch === undefined)
+                return "Unknown";
+
             return match.teamMatch.matchDate;
         }
 
@@ -43,6 +46,9 @@ var app = angular.module('leagueApp',
         }
 
         function _getName(user) {
+            if (user === null || user === undefined || user.firstName == undefined)
+                return "Unknown";
+
             return user.firstName ;
         }
 
@@ -51,7 +57,7 @@ var app = angular.module('leagueApp',
                 return undefined;
             }
             if (typeof(player) === "object") {
-                return player;
+                return  $scope.vm.playerMap[player.id];
             }
             return $scope.vm.playerMap[player];
         }
@@ -70,6 +76,9 @@ var app = angular.module('leagueApp',
                 return false;
             }
             var p  = _getPlayer(match.playerHome);
+            if (p === null || p === undefined)
+                return false;
+
             //Logged in user is away for this match
             if ($scope.vm.players[p.id] === undefined) {
                 return match.homeRacks < match.awayRacks;
@@ -102,14 +111,18 @@ var app = angular.module('leagueApp',
         }
 
         function _getDivision(teamMatch) {
+            if (teamMatch === null || teamMatch === undefined ||  teamMatch.division === undefined) {
+                return "Unknown";
+            }
             return teamMatch.division.type.replace("_CHALLENGE","").replace("NINE","9").replace("EIGHT","8").replace("_"," ");
         }
 
-        function _isSessionPlayer(p) {
-            if (p === null || typeof(p) !== "object")
+        function _isCurrentLoginPlayer(p) {
+            var player = _getPlayer(p);
+            if (player === null || player === undefined)
                 return false;
 
-              return  $scope.vm.players[p.id] !== undefined;
+            return _.filter($scope.vm.players, function(pl) {return pl.id == p.id;}).length > 0;
         }
 
         function _getWinner(match) {
@@ -122,10 +135,45 @@ var app = angular.module('leagueApp',
 
         }
 
+        function _getNameByChallenge(c,home) {
+            if (c === null || c === undefined) {
+                return "Unknown";
+            }
+            var u;
+            if (home) {
+                u=_getPlayer(c.teamMatch.playersHome[0]).user;
+            } else {
+                u=_getPlayer(c.teamMatch.playersAway[0]).user;
+            }
+            return _getName(u);
+        }
+
+        function _getNameByMatch(m,home) {
+            if (m === null || m === undefined) {
+                return "Unknown";
+            }
+            var u,p;
+
+            if (home) {
+                p = _getPlayer(m.playerHome);
+                if (p === undefined || p === null){
+                    return "Unknown";
+                }
+                return  _getName(p.user);
+            } else {
+                p = _getPlayer(m.playerAway);
+                if (p === undefined || p === null)
+                    return "Unknown";
+
+                return _getName(_getPlayer(m.playerAway).user);
+            }
+        }
+
+
         $scope.vm = {
-            currentPage: 1,
-            totalPages: 0,
-            isSelectionEmpty: true,
+            request: {},
+            potentials: [ {id: 1 , name: "player1"}, { id: 2, name: "player2"} ],
+            potentialUsers: [],
             errorMessages: [],
             infoMessages: [],
             results: [],
@@ -136,6 +184,7 @@ var app = angular.module('leagueApp',
             playerMap: {},
             stats: {},
             leaderBoard: [],
+            user: {},
             getOpponent:  _getOpponent,
             isWin:  _isWin,
             getRacks:  _getRacks,
@@ -144,49 +193,63 @@ var app = angular.module('leagueApp',
             getWinner: _getWinner,
             getName: _getName,
             getChallengeDate: _getChallengeDate,
-            getMatchDate: _getMatchDate
+            getMatchDate: _getMatchDate,
+            getNameByChallenge: _getNameByChallenge,
+            getNameByMatch: _getNameByMatch
         };
+
+        function updatePotentials() {
+            UserService.getPotentials().then (function (users) {
+                console.log("Processing " + users.length);
+                $scope.vm.potentialUsers = users;
+            }, function (errorMessage) {
+                showErrorMessage(errorMessage);
+            });
+        }
+
+        function updatePlayers() {
+            UserService.getPlayers().then (function (players) {
+                console.log("Processing " + players.length);
+                var filtered = filterPlayers(players);
+                _.map(filtered,function(p){ addToMap(p);})
+                window.players  =  $scope.vm.playerMap;
+            }, function (errorMessage) {
+                showErrorMessage(errorMessage);
+            });
+        }
 
         function updateChallengeInfo() {
             UserService.getChallenges().then (function (challenges) {
                 $scope.vm.pendingChallenges = _.filter(challenges, function(c) {return c.status === 'PENDING'});
                 $scope.vm.acceptedChallenges = _.filter(challenges, function(c) {return c.status === 'ACCEPTED'});
-
+                window.challenges =     $scope.vm.pendingChallenges;
             }, function (errorMessage) {
                 showErrorMessage(errorMessage);
-                markAppAsInitialized();
             });
         }
 
         function updatePlayerInfo() {
             UserService.getPlayerInfo().then (function (playerInfo) {
                 $scope.vm.players = filterPlayers(playerInfo);
-
             }, function (errorMessage) {
                 showErrorMessage(errorMessage);
-                markAppAsInitialized();
             });
-
         }
 
         function updatePlayerResults() {
             UserService.getPlayerResults().then (function (playerResults) {
-
+                console.log("Processing Results: "  + playerResults.length);
+                window.results = playerResults;
                 $scope.vm.allResults = playerResults;
-                window.allResults = playerResults;
-                _.forEach(playerResults, function(p) {
-                    addToMap(p.playerHome);
-                    addToMap(p.playerAway);
-                });
                 $scope.orderAllResults('teamMatch.matchDate',true);
                 $scope.vm.results = _.filter(playerResults, function(r) {
-                    return _isSessionPlayer(r.playerHome) || _isSessionPlayer(r.playerAway);
+                    return _isCurrentLoginPlayer(r.playerHome) || _isCurrentLoginPlayer(r.playerAway);
                 });
+                console.log("User has " +  $scope.vm.results.length);
                 $scope.orderPlayerResults('teamMatch.matchDate',true);
                 $scope.vm.stats = updateStats($scope.vm.results);
                 $scope.vm.leaderBoard =  updateLeaderBoard($scope.vm.allResults);
                 $scope.orderLeaders('points',true);
-                window.leaderBoard =  $scope.vm.leaderBoard;
 
             }, function (errorMessage) {
                 showErrorMessage(errorMessage);
@@ -197,7 +260,7 @@ var app = angular.module('leagueApp',
         function updateUserInfo() {
             UserService.getUserInfo()
                 .then(function (userInfo) {
-                    $scope.vm.userName = userInfo.firstName;
+                    $scope.vm.user = userInfo;
                 },
                 function (errorMessage) {
                     showErrorMessage(errorMessage);
@@ -216,6 +279,7 @@ var app = angular.module('leagueApp',
             _.map(matches,function(m){
                 if (m.result === null)
                     return;
+
                 stats.matches++;
 
                 if (_isWin(m))
@@ -237,22 +301,28 @@ var app = angular.module('leagueApp',
         function updateLeaderBoard(matches) {
             var stats = {};
             _.map(matches,function(m) {
-                if (stats[m.playerHome.user.id] === undefined) {
-                    stats[m.playerHome.user.id] = m.playerHome.user;
-                    stats[m.playerHome.user.id].points = 0;
+                var h = _getPlayer(m.playerHome);
+                var a = _getPlayer(m.playerAway);
+                if (h === null || h === undefined || a === null || a === undefined) {
+                    return;
                 }
 
-                if (stats[m.playerAway.user.id] === undefined) {
-                    stats[m.playerAway.user.id] = m.playerAway.user;
-                    stats[m.playerAway.user.id].points = 0;
+                if (stats[h.user.id] === undefined) {
+                    stats[h.user.id] = h.user;
+                    stats[h.user.id].points = 0;
+                }
+
+                if (stats[a.user.id] === undefined) {
+                    stats[a.user.id] = a.user;
+                    stats[a.user.id].points = 0;
                 }
 
                 if (m.homeRacks > m.awayRacks) {
-                    stats[m.playerHome.user.id].points += 2;
-                    stats[m.playerAway.user.id].points += 1;
+                    stats[h.user.id].points += 2;
+                    stats[a.user.id].points += 1;
                 } else {
-                    stats[m.playerAway.user.id].points += 2;
-                    stats[m.playerHome.user.id].points += 1;
+                    stats[a.user.id].points += 2;
+                    stats[h.user.id].points += 1;
                 }
             });
             var statsArray = [];
@@ -268,16 +338,13 @@ var app = angular.module('leagueApp',
         }
 
         function filterPlayers(players) {
-            var challengePlayers =  _.filter(players,function (p) {
+            return _.filter(players,function (p) {
                 return p.division.challenge
             });
+        }
 
-            var players  = {};
-            _.map(challengePlayers, function(p) {
-                addToMap(p);
-                players[p.id] = p;
-            });
-            return players;
+        $scope.sendRequest = function() {
+            console.log($scope.vm.victum);
         }
 
         function showErrorMessage(errorMessage) {
@@ -414,10 +481,12 @@ var app = angular.module('leagueApp',
         }
 
         function updateInfo() {
+            updatePlayers();
             updateUserInfo();
             updatePlayerInfo();
             updatePlayerResults();
             updateChallengeInfo();
+            updatePotentials();
         }
 
         updateInfo();

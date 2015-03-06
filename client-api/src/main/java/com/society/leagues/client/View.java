@@ -1,4 +1,5 @@
 package com.society.leagues.client;
 
-public interface View {
+public class View {
+    public interface PlayerId {};
 }

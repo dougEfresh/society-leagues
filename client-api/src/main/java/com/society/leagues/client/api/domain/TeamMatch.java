@@ -1,6 +1,8 @@
 package com.society.leagues.client.api.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.society.leagues.client.View;
 import com.society.leagues.client.api.domain.division.Division;
 
 import javax.validation.constraints.NotNull;
@@ -15,7 +17,6 @@ public class TeamMatch extends LeagueObject  {
     @NotNull Division division;
     Date matchDate;
     TeamResult result;
-    Boolean win;
     List<Player> playersHome = Collections.emptyList();
     List<Player> playersAway = Collections.emptyList();
 
@@ -111,14 +112,6 @@ public class TeamMatch extends LeagueObject  {
             return null;
 
         return result.getLoserRacks();
-    }
-
-    public Boolean isWin() {
-        return win;
-    }
-
-    public void setWin(Boolean win) {
-        this.win = win;
     }
 
     public List<Player> getPlayersHome() {

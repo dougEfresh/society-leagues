@@ -20,6 +20,22 @@ angular.module('frontendServices', [])
             getPlayerInfo: function() {
                 var deferred = $q.defer();
 
+                $http.get('/userPlayers')
+                    .then(function (response) {
+                        if (response.status == 200) {
+                            deferred.resolve(response.data);
+                        }
+                        else {
+                            deferred.reject('Error retrieving user info');
+                        }
+                    });
+
+                return deferred.promise;
+            },
+
+            getPlayers: function() {
+                var deferred = $q.defer();
+
                 $http.get('/players')
                     .then(function (response) {
                         if (response.status == 200) {
@@ -32,6 +48,7 @@ angular.module('frontendServices', [])
 
                 return deferred.promise;
             },
+
 
             getPlayerResults: function() {
                 var deferred = $q.defer();
@@ -53,6 +70,22 @@ angular.module('frontendServices', [])
                 var deferred = $q.defer();
 
                 $http.get('/challenges')
+                    .then(function (response) {
+                        if (response.status == 200) {
+                            deferred.resolve(response.data);
+                        }
+                        else {
+                            deferred.reject('Error retrieving user info');
+                        }
+                    });
+
+                return deferred.promise;
+            },
+
+              getPotentials: function() {
+                var deferred = $q.defer();
+
+                $http.get('/potentials')
                     .then(function (response) {
                         if (response.status == 200) {
                             deferred.resolve(response.data);

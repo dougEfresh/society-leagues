@@ -1,15 +1,13 @@
 package com.society.leagues.client.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.society.leagues.client.api.domain.division.Division;
 
 import javax.annotation.security.DenyAll;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 
 public class User extends LeagueObject {
@@ -24,7 +22,7 @@ public class User extends LeagueObject {
     String login;
     @NotNull
     Role role;
-
+    Set<Integer> players = new TreeSet<>();
 
     public User(String login, String password, Role role) {
         this.login = login;
@@ -87,6 +85,7 @@ public class User extends LeagueObject {
         this.password = password;
     }
 
+    @JsonIgnore
     public String getLogin() {
         return login;
     }
@@ -109,6 +108,14 @@ public class User extends LeagueObject {
 
     public boolean isAdmin() {
         return Role.isAdmin(role);
+    }
+
+    public Set<Integer> getPlayers() {
+        return players;
+    }
+
+    public void addPlayer(Player player) {
+        players.add(player.getId());
     }
 
     @Override
