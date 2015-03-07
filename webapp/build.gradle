@@ -32,6 +32,7 @@ dependencies {
     compile files('libs/rest-proxy-client.jar')
     //Test
     testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile 'org.apache.httpcomponents:httpclient:4.4'
 }
 
 task integrationTest(type: Test) {

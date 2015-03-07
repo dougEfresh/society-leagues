@@ -18,7 +18,7 @@ import java.security.Principal;
 
 @RestController
 @SuppressWarnings("unused")
-public class UserResource extends ApiResource implements UserClientApi {
+public class UserResource extends ApiResource  {
     @Autowired UserDao dao;
     @Autowired PlayerDao playerDao;
     @Autowired PlayerResultDao playerResultDao;
@@ -36,6 +36,10 @@ public class UserResource extends ApiResource implements UserClientApi {
     @RequestMapping(value = "/userPlayers", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Player> getUserPlayers(Principal principal) {
         User u = get(principal.getName());
+        return getUserPlayers(u);
+    }
+
+    public List<Player> getUserPlayers(User u) {
         List<Player> players = playerDao.getByUser(u);
         return players;
     }
@@ -49,11 +53,16 @@ public class UserResource extends ApiResource implements UserClientApi {
     @RequestMapping(value = "/challenges", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Challenge> getChallenges(Principal principal) {
         User u = get(principal.getName());
+        return getChallenges(u);
+    }
+
+    public List<Challenge> getChallenges(User u) {
         List<Challenge> challenges = new ArrayList<>();
         challenges.addAll(challengeDao.getAccepted(u));
         challenges.addAll(challengeDao.getPending(u));
         return challenges;
     }
+
 
     @JsonView(value = View.PlayerId.class)
     @RequestMapping(value = "/results", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -65,6 +74,10 @@ public class UserResource extends ApiResource implements UserClientApi {
     @RequestMapping(value = "/potentials", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<User> getPotentials(Principal principal) {
         User u = get(principal.getName());
+        return getPotentials(u);
+    }
+
+    public Collection<User> getPotentials(User u) {
         List<Player> players = challengeDao.getPotentials(u.getId());
         HashMap<Integer,User> users  = new HashMap<>();
         for (Player player : players) {
@@ -77,23 +90,9 @@ public class UserResource extends ApiResource implements UserClientApi {
         return users.values();
     }
 
-    @Override
-    public User get(@PathVariable(value = "id") Integer id) {
-        return dao.get(id);
-    }
 
-    @Override
-    public List<User> get() {
-        return dao.get();
-    }
-
-    @Override
     public User get(String login) {
         return dao.get(login);
     }
 
-    @Override
-    public List<User> get(@RequestBody List<Integer> id) {
-        return dao.get(id);
-    }
 }
