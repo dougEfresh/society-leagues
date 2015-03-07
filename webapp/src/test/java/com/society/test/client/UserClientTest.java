@@ -132,7 +132,7 @@ public class UserClientTest extends TestClientBase {
         assertNull(me);
 
         List<Player> players = new ArrayList<>();
-        
+
     }
 
 }
