@@ -21,7 +21,7 @@ public interface UserClientApi extends ClientApi<User> {
     @RequestMapping(value = "/api/user/{id}",method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     User get(@PathParam(value = "id") @PathVariable(value = "id") Integer id);
 
-    @RequestMapping(value = "/api/user/{id}",method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/api/user/{login}",method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     User get(@PathParam(value = "login") String login);
 
     @Override
