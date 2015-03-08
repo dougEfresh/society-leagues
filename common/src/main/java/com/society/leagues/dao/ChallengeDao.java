@@ -47,7 +47,19 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         }
         return Collections.emptyList();
     }
-    
+
+    public Challenge requestChallenge(Player challenger, Player opponent) {
+        Challenge challenge = new Challenge();
+        challenger = playerDao.get(challenger.getId());
+        opponent = playerDao.get(opponent.getId());
+        TeamMatch teamMatch = new TeamMatch();
+        teamMatch.setHome(challenger.getTeam());
+        teamMatch.setAway(opponent.getTeam());
+        teamMatch.setSeason(challenger.getSeason());
+        teamMatch.setDivision(challenger.getDivision());
+        return null;
+    }
+
     @Override
     public Challenge requestChallenge(final Challenge challenge) {
         TeamMatch teamMatch = teamMatchDao.create(challenge.getTeamMatch());

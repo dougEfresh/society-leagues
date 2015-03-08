@@ -49,7 +49,6 @@ angular.module('frontendServices', [])
                 return deferred.promise;
             },
 
-
             getPlayerResults: function() {
                 var deferred = $q.defer();
 
@@ -82,7 +81,7 @@ angular.module('frontendServices', [])
                 return deferred.promise;
             },
 
-              getPotentials: function() {
+            getPotentials: function() {
                 var deferred = $q.defer();
 
                 $http.get('/potentials')
@@ -98,8 +97,14 @@ angular.module('frontendServices', [])
                 return deferred.promise;
             },
 
+            sendRequestChallenge: function(challenger,opponent) {
+                var challenge = {};
 
-        getLeaderBoard: function() {
+
+            },
+
+
+            getLeaderBoard: function() {
                  var deferred = $q.defer();
 
                 $http.get('/leaderboard')

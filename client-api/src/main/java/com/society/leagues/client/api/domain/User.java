@@ -118,6 +118,9 @@ public class User extends LeagueObject {
         players.add(player.getId());
     }
 
+    public String getName() {
+        return firstName + " " + lastName;
+    }
     @Override
     public String toString() {
         return "User{" +

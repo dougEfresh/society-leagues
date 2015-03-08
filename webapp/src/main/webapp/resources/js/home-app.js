@@ -169,10 +169,29 @@ var app = angular.module('leagueApp',
             }
         }
 
+        function ChallengeUtil() {
+            this.type = '8';
+            this.date = '2015-04-06';
+            this.time = '11:00:00';
+            this.victum = {};
+            this.getVictum = function () {return this.victum;};
+            this.showForm = true;
+            this.sendRequest = function() {
+                this.showForm = false;
+                console.log(JSON.stringify(this.type));
+                console.log(JSON.stringify(this.date));
+                console.log(JSON.stringify(this.showForm));
+                console.log(JSON.stringify(this.victum));
+
+            };
+            this.getTimes = function() { return ['11:00', '11:30', '12:00', '13:30']; };
+        }
+
+        $scope.challengeUtil = new ChallengeUtil();
 
         $scope.vm = {
             request: {},
-            potentials: [ {id: 1 , name: "player1"}, { id: 2, name: "player2"} ],
+            potentials: [],
             potentialUsers: [],
             errorMessages: [],
             infoMessages: [],
@@ -185,6 +204,7 @@ var app = angular.module('leagueApp',
             stats: {},
             leaderBoard: [],
             user: {},
+
             getOpponent:  _getOpponent,
             isWin:  _isWin,
             getRacks:  _getRacks,
@@ -339,12 +359,8 @@ var app = angular.module('leagueApp',
 
         function filterPlayers(players) {
             return _.filter(players,function (p) {
-                return p.division.challenge
+                return p.division.challenge;
             });
-        }
-
-        $scope.sendRequest = function() {
-            console.log($scope.vm.victum);
         }
 
         function showErrorMessage(errorMessage) {

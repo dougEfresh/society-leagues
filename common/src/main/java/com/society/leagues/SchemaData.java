@@ -5,14 +5,15 @@ import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.dao.*;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -136,10 +137,12 @@ public class SchemaData {
     }
 
     private void createMatchResults() {
-        Date before = new DateTime().plusDays(1).toDate();
+        LocalDate before =  LocalDate.now().plusDays(1);
+        Date b = new Date(before.getYear(),before.getMonthValue()-1,before.getDayOfMonth());
         logger.info("Creating match results before " + before);
 
-        List<TeamMatch> teamMatches = matchApi.get().stream().filter(m -> m.getMatchDate().before(before)).collect(Collectors.toList());
+
+        List<TeamMatch> teamMatches = matchApi.get().stream().filter(m -> m.getMatchDate().before(b)).collect(Collectors.toList());
         List<Player> players = playerApi.get();
 
         for (TeamMatch teamMatch : teamMatches) {
@@ -195,7 +198,7 @@ public class SchemaData {
                 teamMatch.setHome(challenger.getTeam());
                 teamMatch.setDivision(challenger.getDivision());
                 teamMatch.setSeason(challenger.getSeason());
-                teamMatch.setMatchDate(new DateTime().minusDays(j * 7).toDate());
+                teamMatch.setMatchDate(new Date(LocalDateTime.now().minusDays(j * 7).toEpochSecond(ZoneOffset.UTC)));
                 int slot = (int) Math.round(Math.random() * potentials.size())-1;
                 Player opponent = potentials.get(slot == -1 ? 0 : slot);
                 teamMatch.setAway(opponent.getTeam());

@@ -1,5 +1,6 @@
 package com.society.leagues.client;
 
+/*
 import feign.Contract;
 
 import java.lang.annotation.Annotation;
@@ -17,9 +18,11 @@ import feign.MethodMetadata;
 
 import static feign.Util.checkState;
 import static feign.Util.emptyToNull;
+*/
 
-public class SpringMvcContract extends Contract.BaseContract {
-
+public class SpringMvcContract  {
+        //extends Contract.BaseContract {
+    /*
     private static final String ACCEPT = "Accept";
 
     private static final String CONTENT_TYPE = "Content-Type";
@@ -143,6 +146,8 @@ public class SpringMvcContract extends Contract.BaseContract {
 			 * isHttpAnnotation = true; }
 			 */
 
+    /*
+
         }
         return isHttpAnnotation;
     }
@@ -159,5 +164,6 @@ public class SpringMvcContract extends Contract.BaseContract {
         }
         return false;
     }
+        */
 
 }

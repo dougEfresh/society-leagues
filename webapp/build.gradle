@@ -27,9 +27,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-tomcat'
 
     compile 'org.codehaus.groovy:groovy-all:2.3.8'
-    compile 'com.owlike:genson:1.2'
 
-    compile files('libs/rest-proxy-client.jar')
     //Test
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'org.apache.httpcomponents:httpclient:4.4'

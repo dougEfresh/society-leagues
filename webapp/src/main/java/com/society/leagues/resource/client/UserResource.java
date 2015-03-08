@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 import java.security.Principal;
+import java.util.stream.Collectors;
 
 @RestController
 @SuppressWarnings("unused")
@@ -23,8 +24,7 @@ public class UserResource extends ApiResource  {
     @Autowired PlayerDao playerDao;
     @Autowired PlayerResultDao playerResultDao;
     @Autowired ChallengeDao challengeDao;
-    @Autowired TeamResultDao teamResultDao;
-    private static Logger logger = LoggerFactory.getLogger(UserResource.class);
+    @Autowired TeamResultDao teamResultDao;   private static Logger logger = LoggerFactory.getLogger(UserResource.class);
 
     @RequestMapping(value = "/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public User get(Principal principal) {
@@ -50,46 +50,55 @@ public class UserResource extends ApiResource  {
     }
 
     @JsonView(value = View.PlayerId.class)
-    @RequestMapping(value = "/challenges", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Challenge> getChallenges(Principal principal) {
-        User u = get(principal.getName());
-        return getChallenges(u);
-    }
-
-    public List<Challenge> getChallenges(User u) {
-        List<Challenge> challenges = new ArrayList<>();
-        challenges.addAll(challengeDao.getAccepted(u));
-        challenges.addAll(challengeDao.getPending(u));
-        return challenges;
-    }
-
-
-    @JsonView(value = View.PlayerId.class)
     @RequestMapping(value = "/results", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PlayerResult> getResults(Principal principal) {
         return playerResultDao.get();
     }
 
-    @JsonView(value = View.PlayerId.class)
-    @RequestMapping(value = "/potentials", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Collection<User> getPotentials(Principal principal) {
+    @RequestMapping(value = "/userStats", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<UserStats> getStats(Principal principal) {
         User u = get(principal.getName());
-        return getPotentials(u);
+        UserStats stats = getStats(u);
+        stats.setUser(u);
+        return Arrays.asList(stats);
     }
-
-    public Collection<User> getPotentials(User u) {
-        List<Player> players = challengeDao.getPotentials(u.getId());
-        HashMap<Integer,User> users  = new HashMap<>();
-        for (Player player : players) {
-            if (!users.containsKey(player.getUser().getId())) {
-                users.put(player.getUser().getId(), player.getUser());
-            }
-            User user = users.get(player.getUserId());
-            user.addPlayer(player);
+    @RequestMapping(value = "/allStats", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<UserStats> getAllStats() {
+        List<UserStats> stats = new ArrayList<>();
+        for (User user : dao.get()) {
+            UserStats s = getStats(user);
+            stats.add(s);
         }
-        return users.values();
+
+        return stats;
     }
 
+    public UserStats getStats(User user) {
+
+        List<PlayerResult> results = playerResultDao.get().stream().filter(p ->
+                        p.getPlayerAway().getUser().equals(user) ||
+                                p.getPlayerHome().getUser().equals(user)
+        ).collect(Collectors.toList());
+
+        UserStats userStats = new UserStats();
+        for (PlayerResult result : results) {
+            if (result.getHomeRacks() > result.getAwayRacks()) {
+                if (result.getPlayerHome().getUser().equals(user)) {
+                    userStats.addWin(result.getHomeRacks());
+                } else {
+                    userStats.addLost(result.getHomeRacks());
+                }
+            } else {
+                if (result.getPlayerHome().getUser().equals(user)) {
+                    userStats.addLost(result.getHomeRacks());
+                } else {
+                    userStats.addWin(result.getHomeRacks());
+                }
+            }
+        }
+        userStats.setUser(user);
+        return userStats;
+    }
 
     public User get(String login) {
         return dao.get(login);

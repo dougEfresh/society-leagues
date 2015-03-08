@@ -3,6 +3,8 @@ package com.society.test.client;
 import com.society.leagues.client.api.domain.Challenge;
 import com.society.leagues.client.api.domain.Player;
 import com.society.leagues.client.api.domain.User;
+import com.society.leagues.client.api.domain.UserStats;
+import com.society.leagues.resource.client.ChallengeResource;
 import com.society.leagues.resource.client.UserResource;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
@@ -40,6 +42,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class UserClientTest extends TestClientBase {
     @Autowired UserResource userResource;
+    @Autowired  ChallengeResource challengeResource;
     RestTemplate restTemplate;
     
     @Before
@@ -72,7 +75,6 @@ public class UserClientTest extends TestClientBase {
         assertNotNull(u.getPlayers());
         assertTrue(u.getPlayers().isEmpty());
     }
-
 
     @Test
     public void testUserPlayers()  {
@@ -109,7 +111,7 @@ public class UserClientTest extends TestClientBase {
     @Test
     public void testChallenges()  {
         User u = userResource.get("login1");
-        List<Challenge> challenges = userResource.getChallenges(u);
+        List<Challenge> challenges = challengeResource.getChallenges(u);
 
         assertNotNull(challenges);
         assertFalse(challenges.isEmpty());
@@ -125,7 +127,7 @@ public class UserClientTest extends TestClientBase {
     @Test
     public void testPotentials()  {
         User u = userResource.get("login1");
-        Collection<User> users = userResource.getPotentials(u);
+        Collection<User> users = challengeResource.getPotentials(u);
         assertNotNull(users);
         assertFalse(users.isEmpty());
         User me = users.stream().filter(user -> user.getId().equals(u.getId())).findFirst().orElse(null);
@@ -133,6 +135,17 @@ public class UserClientTest extends TestClientBase {
 
         List<Player> players = new ArrayList<>();
 
+    }
+
+    @Test
+    public void testStats() {
+        User u = userResource.get("login1");
+        UserStats stats = userResource.getStats(u);
+        assertNotNull(stats);
+        assertTrue(stats.getLoses()>0);
+        assertTrue(stats.getWins()>0);
+        assertTrue(stats.getRacks()>0);
+        assertTrue(stats.getPercentage()>0);
     }
 
 }

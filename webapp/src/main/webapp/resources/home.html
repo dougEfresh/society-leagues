@@ -317,38 +317,58 @@
         <div id="requestChallenge">
 
 <!-- Button trigger modal -->
-            <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+            <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#requestChallengeModal">
                 Request Challenge
             </button>
 
 <!-- Modal -->
-            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal fade" id="requestChallengeModal" tabindex="-1" role="dialog" aria-labelledby="requestChallengeModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title" id="myModalLabel">Request Challenge </h4>
+                            <h4 class="modal-title" id="requestChallengeModalLabel">Request Challenge </h4>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body" ng-hide="!challengeUtil.showForm" >
                             <h4>Choose your destiny</h4>
-                            <form ng-submit="sendRequest()" id="requestForm" name="form" class="login-form">
-                                <span>Type</span>
-                                <input type="radio" ng-model="vm.victum.type" value="8" checked>
+                            <form ng-submit="challengeUtil.sendRequest()" id="requestForm" name="form" class="login-form">
+                                <span>Type:</span>
+                                <input ng-checked = "challengeUtil.getType() == '8'"
+                                       type="radio" ng-model="challengeUtil.type" name="8ball" value="8">
                                 8ball
-                                <input type="radio" ng-model="vm.victum.type" value="9" >
+                                <input ng-checked = "challengeUtil.getType() == '9'"  type="radio"
+                                       ng-model="challengeUtil.type" name="9ball" value="9">
                                 9ball
+                                <br/>
                                 Choose PLayer:
-                                <select ng-model="vm.victum" ng-options="opponent.firstName for opponent in vm.potentialUsers">
+                                <select ng-model="challengeUtil.victum" ng-options="opponent.firstName for opponent in vm.potentialUsers">
                                     <option value="">-- choose player --</option>
                                 </select>
                                 <br />
+                                <div id="requestDate">
+                                    Date: <input type="text" size="10" ng-model="challengeUtil.date" value="2015-04-06"/>
+                                </div>
+
+                                <div id="requestTime">
+                                    <select ng-model="challengeUtil.time" ng-options="time for time in challengeUtil.getTimes()" >
+                                        <option value="">---choose time --</option>
+                                    </select>
+                                </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Request</button>
+                                    <button type="submit" class="btn btn-primary">Verify</button>
                                 </div>
                             </form>
+                    </div>
+                        <div class="modal-body" ng-hide="challengeUtil.showForm" >
+                            <span> blah blah blah</span>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Request</button>
+                            </div>
                         </div>
-
+                    </div>
+                    -->
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->
             </div><!-- /.modal -->
