@@ -30,18 +30,39 @@ public class ChallengeResource  implements ChallengeApi {
     @Autowired UserDao userDao;
 
     @JsonView(value = View.PlayerId.class)
-    @RequestMapping(value = "/challenges", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Challenge> getChallenges(Principal principal) {
+    @RequestMapping(value = "/pendingChallenges", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PlayerChallenge> getPendingChallenges(Principal principal) {
         User u = userDao.get(principal.getName());
-        return getChallenges(u);
+        return getPendingChallenges(u);
     }
 
-    public List<Challenge> getChallenges(User u) {
-        List<Challenge> challenges = new ArrayList<>();
-        challenges.addAll(dao.getAccepted(u));
-        challenges.addAll(dao.getPending(u));
-        return challenges;
+    public List<PlayerChallenge> getPendingChallenges(User u) {
+      return getChallenges(u,Status.PENDING);
     }
+
+    public List<PlayerChallenge> getAcceptedChallenges(User u) {
+        return getChallenges(u,Status.ACCEPTED);
+    }
+
+    private List<PlayerChallenge> getChallenges(User u, Status status) {
+        List<Challenge> challenges = new ArrayList<>();
+        if (status == Status.PENDING)
+            challenges.addAll(dao.getPending(u));
+        else
+            challenges.addAll(dao.getAccepted(u));
+
+        List<PlayerChallenge> playerChallenges = new ArrayList<>(challenges.size());
+        for (Challenge challenge : challenges) {
+            PlayerChallenge playerChallenge = new PlayerChallenge();
+            playerChallenge.setChallenge(challenge);
+            //In challenge division, only one player per team
+            playerChallenge.setChallenger(playerDao.findHomeTeamPlayers(challenge.getTeamMatch()).get(0));
+            playerChallenge.setOpponent(playerDao.findAwayTeamPlayers(challenge.getTeamMatch()).get(0));
+            playerChallenges.add(playerChallenge);
+        }
+        return playerChallenges;
+    }
+
 
     @JsonView(value = View.PlayerId.class)
     @RequestMapping(value = "/potentials", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

@@ -6,8 +6,8 @@ var UserStats = React.createClass({
     $.ajax({
       url: this.props.url,
       dataType: 'json',
-      success: function(stats) {
-        this.setState({data: stats});
+      success: function(data) {
+        this.setState({data: data});
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
@@ -16,18 +16,18 @@ var UserStats = React.createClass({
   },
   render: function() {
     return (
-        <div className="userStats">
-            <UserStatsTable stats = {this.state.data}/>
+        <div className="pendingChallengList">
+            <PendingChallengeTable challenges = {this.state.data}/>
         </div>
     );
   }
 });
 
-var UserStatsTable = React.createClass({
+var PendingChallengeTable = React.createClass({
     render: function() {
         var rows = [];
-        this.props.stats.forEach(function (s) {
-            rows.push(<UserStatsRow stat={s} key={s.user.id} />);
+        this.props.challenges.forEach(function (s) {
+            rows.push(<UserStatsRow challenge={s} key={s.user.id} />);
         }.bind(this));
         return (
             <table className="table">
@@ -66,7 +66,7 @@ var UserStatsRow = React.createClass({
 });
 
 React.render(
-    <UserStats url="/allStats" />,
+    <UserStats url="/challenges" />,
     document.getElementById('content')
 );
 
