@@ -30,10 +30,12 @@ public class ChallengeResource  implements ChallengeApi {
     @Autowired UserDao userDao;
 
     @JsonView(value = View.PlayerId.class)
-    @RequestMapping(value = "/pendingChallenges", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PlayerChallenge> getPendingChallenges(Principal principal) {
+    @RequestMapping(value = "/challenges", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PlayerChallenge> getPChallenges(Principal principal) {
         User u = userDao.get(principal.getName());
-        return getPendingChallenges(u);
+        List<PlayerChallenge> challenges =  getPendingChallenges(u);
+        challenges.addAll(getAcceptedChallenges(u));
+        return challenges;
     }
 
     public List<PlayerChallenge> getPendingChallenges(User u) {

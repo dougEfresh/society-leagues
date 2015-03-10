@@ -1,4 +1,4 @@
-var PendingChallenges = React.createClass({
+var Challenges = React.createClass({
     getInitialState: function() {
         return {data: []};
     },
@@ -16,25 +16,26 @@ var PendingChallenges = React.createClass({
   },
     render: function() {
         return (
-            <div className="pendingChallengList">
-                <PendingChallengeTable challenges = {this.state.data}/>
+            <div className="challengList">
+                <ChallengeTable challenges = {this.state.data}/>
             </div>
         );
     }
 });
 
-var PendingChallengeTable = React.createClass({
+var ChallengeTable = React.createClass({
 
     render: function() {
         var rows = [];
         this.props.challenges.forEach(function (s) {
-            rows.push(<PendingChallengeRow challenge={s} key={s.challenger.id} />);
+            rows.push(<ChallengeRow challenge={s} key={s.challenger.id} />);
         }.bind(this));
         return (
             <table className="table">
                 <thead>
                 <tr>
-                    <th>Accept/Modify</th>
+                    <th>Action</th>
+                    <th>Status</th>
                     <th>Challenger</th>
                     <th>Opponent</th>
                     <th>Type</th>
@@ -49,12 +50,12 @@ var PendingChallengeTable = React.createClass({
     }
 });
 
-var PendingChallengeRow = React.createClass({
+var ChallengeRow = React.createClass({
     render: function() {
         return (
             <tr>
                 <td>
-                    <PendingChallengeAction challenge={this.props.challenge} />
+                    <ChallengeAction challenge={this.props.challenge} />
                 </td>
                 <td>{this.props.challenge.challenger.user.name}</td>
                 <td>{this.props.challenge.opponent.user.name}</td>
@@ -65,25 +66,25 @@ var PendingChallengeRow = React.createClass({
     }
 });
 
-var PendingChallengeAction = React.createClass({
+var ChallengeAction = React.createClass({
     handleAccept : function(e) {
         console.log(e);
     },
-    handlePending : function(e) {
+    handle : function(e) {
         console.log(e);
     },
     render: function () {
         return (
             <div className="pending-action">
                 <button onClick={this.handleAccept} ref="acceptButton" value={this.props.challenge.challenger.id} name="accept">Accept</button>
-                <button onClick={this.handlePending} ref="modifyButton" value={this.props.challenge.challenger.id} name="modify">Modify</button>
+                <button onClick={this.handle} ref="modifyButton" value={this.props.challenge.challenger.id} name="modify">Modify</button>
             </div>
         );
     }
 });
 
 React.render(
-    <PendingChallenges url="/pendingChallenges" />,
+    <Challenges url="/challenges" />,
     document.getElementById('content')
 );
 
