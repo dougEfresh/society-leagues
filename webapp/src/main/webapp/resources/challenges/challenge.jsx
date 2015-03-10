@@ -73,7 +73,7 @@ var ChallengeAction = React.createClass({
     },
     handlePending : function(e) {
         $.ajax({
-            url: ,
+            url: '/challenge/accept/id',
             dataType: 'json',
             method: 'POST',
             success: function(data) {
