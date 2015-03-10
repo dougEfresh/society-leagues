@@ -11,6 +11,7 @@ import com.society.leagues.dao.UserDao;
 import com.society.leagues.util.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -130,7 +131,13 @@ public class ChallengeResource  implements ChallengeApi {
     }
 
 
-    @Override
+    @RequestMapping(value = "/challenge/accept/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Challenge acceptChallenge(@PathVariable (value = "id") Integer id) {
+        Challenge c  = new Challenge();
+        c.setId(id);
+        return dao.acceptChallenge(c);
+    }
+
     public Challenge requestChallenge(Challenge challenge) {
         return dao.requestChallenge(challenge);
     }

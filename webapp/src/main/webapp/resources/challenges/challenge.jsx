@@ -57,6 +57,7 @@ var ChallengeRow = React.createClass({
                 <td>
                     <ChallengeAction challenge={this.props.challenge} />
                 </td>
+                <td>{this.props.challenge.challenge.status}</td>
                 <td>{this.props.challenge.challenger.user.name}</td>
                 <td>{this.props.challenge.opponent.user.name}</td>
                 <td>{this.props.challenge.challenger.division.type}</td>
@@ -70,16 +71,43 @@ var ChallengeAction = React.createClass({
     handleAccept : function(e) {
         console.log(e);
     },
-    handle : function(e) {
+    handlePending : function(e) {
+        $.ajax({
+            url: ,
+            dataType: 'json',
+            method: 'POST',
+            success: function(data) {
+                this.setState({data: data});
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+    });
         console.log(e);
     },
-    render: function () {
+    buttons : function() {
+        if (this.props.challenge.challenge.status == 'PENDING') {
+            return (
+                <div className="pending-action">
+                    <button onClick={this.handleAccept} ref="acceptButton"
+                            value={this.props.challenge.challenger.id}
+                            name="accept">Accept
+                    </button>
+                    <button onClick={this.handlePending} ref="modifyButton" value={this.props.challenge.challenger.id}
+                            name="modify">Modify
+                    </button>
+                </div>);
+        }
         return (
-            <div className="pending-action">
-                <button onClick={this.handleAccept} ref="acceptButton" value={this.props.challenge.challenger.id} name="accept">Accept</button>
-                <button onClick={this.handle} ref="modifyButton" value={this.props.challenge.challenger.id} name="modify">Modify</button>
-            </div>
-        );
+            <div className="accepted-action">
+                <button onClick={this.handlePending} ref="modifyButton" value={this.props.challenge.challenger.id}
+                        name="modify">Modify
+                </button>
+            </div>);
+    },
+
+    render: function () {
+        return (this.buttons());
     }
 });
 
