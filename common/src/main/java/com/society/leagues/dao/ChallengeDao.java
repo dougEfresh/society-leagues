@@ -80,15 +80,7 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
 
     @Override
     public Challenge acceptChallenge(Challenge challenge) {
-        try {
-            jdbcTemplate.update("UPDATE challenge SET status  = ? WHERE challenge_id = ?", 
-                    Status.ACCEPTED.name(), challenge.getId());
-            challenge.setStatus(Status.ACCEPTED);
-        } catch (Throwable t ){ 
-            logger.error(t.getLocalizedMessage(),t);
-            return null;
-        }
-        return challenge;
+        return modify(challenge,"UPDATE challenge SET status  = ? WHERE challenge_id = ?", Status.ACCEPTED.name(), challenge.getId());
     }
     
     @Override

@@ -115,7 +115,6 @@ public class ChallengeResource  implements ChallengeApi {
         return dao.getPotentials(id);
     }
 
-
     public Challenge requestChallenge(List<Player> players) {
         if (players == null || players.size() != 2)
             return null;
