@@ -36,6 +36,8 @@ public class ChallengeResource  implements ChallengeApi {
         User u = userDao.get(principal.getName());
         List<PlayerChallenge> challenges =  getPendingChallenges(u);
         challenges.addAll(getAcceptedChallenges(u));
+        challenges.addAll(getChallenges(u, Status.CANCELLED));
+        challenges.sort((o1, o2) -> o1.getChallenge().getId().compareTo(o2.getChallenge().getId()));
         return challenges;
     }
 
@@ -48,12 +50,7 @@ public class ChallengeResource  implements ChallengeApi {
     }
 
     private List<PlayerChallenge> getChallenges(User u, Status status) {
-        List<Challenge> challenges = new ArrayList<>();
-        if (status == Status.PENDING)
-            challenges.addAll(dao.getPending(u));
-        else
-            challenges.addAll(dao.getAccepted(u));
-
+        List<Challenge> challenges = dao.getChallenges(u,status);
         List<PlayerChallenge> playerChallenges = new ArrayList<>(challenges.size());
         for (Challenge challenge : challenges) {
             playerChallenges.add(getPlayerChallenge(challenge));
@@ -141,6 +138,15 @@ public class ChallengeResource  implements ChallengeApi {
         c = dao.acceptChallenge(c);
         return getPlayerChallenge(c);
     }
+
+
+    @RequestMapping(value = "/challenge/cancel/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public PlayerChallenge cancelChallenge(@PathVariable (value = "id") Integer id) {
+        Challenge c = dao.get(id);
+        dao.cancelChallenge(c);
+        return getPlayerChallenge(c);
+    }
+
 
     public Challenge requestChallenge(Challenge challenge) {
         return dao.requestChallenge(challenge);

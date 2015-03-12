@@ -123,7 +123,7 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         return getChallenges(u,Status.PENDING);
     }
 
-    private List<Challenge> getChallenges(User u, Status status) {
+    public List<Challenge> getChallenges(User u, Status status) {
         List<Player> players = playerDao.getByUser(u);
         List<Challenge> challenges = new ArrayList<>();
         for (Player player : players) {

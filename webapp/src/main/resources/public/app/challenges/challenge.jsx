@@ -6,6 +6,7 @@ var Challenges = React.createClass({
     getData: function() {
         console.log("Getting data...");
         $.ajax({
+            async: false,
             url: this.props.url,
             dataType: 'json',
             success: function(data) {
@@ -19,20 +20,44 @@ var Challenges = React.createClass({
     componentDidMount: function() {
         this.getData();
     },
-    onUserInput: function(action,c) {
+    accept: function(c) {
         $.ajax({
+            async: false,
             url: '/challenge/accept/' + c.challenge.id,
             dataType: 'json',
             method: 'GET',
             success: function(data) {
-                console.log("Accepted challenge " + c.challenge.id);
+                console.log("Accept challenge " + c.challenge.id);
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
             }.bind(this)
         });
+    },
+    cancel: function(c) {
+        $.ajax({
+            async: false,
+            url: '/challenge/cancel/' + c.challenge.id,
+            dataType: 'json',
+            method: 'GET',
+            success: function(data) {
+                console.log("Cancel challenge " + c.challenge.id);
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+    },
+    onUserInput: function(action,c) {
+        if (action === 'a'){
+            this.accept(c);
+        }
+
+        if (action === 'c') {
+            this.cancel(c);
+        }
+
         this.getData();
-        this.forceUpdate();
     },
     render: function() {
         return (
@@ -90,38 +115,61 @@ var ChallengeRow = React.createClass({
 });
 
 var ChallengeAction = React.createClass({
+    render: function () {
+        return (
+            <div>
+                <ChallengeAccept challenge={this.props.challenge} onUserInput={this.props.onUserInput}  />
+                <ChallengModify challenge={this.props.challenge} onUserInput={this.props.onUserInput}   />
+                <ChallengCancel challenge={this.props.challenge} onUserInput={this.props.onUserInput}   />
+            </div>
+        );
+    }
+});
+
+var ChallengeAccept = React.createClass({
+
     handleAccept : function(c) {
         this.props.onUserInput('a',c);
         this.forceUpdate();
     },
-    handlePending : function(e) {
 
-    },
-    buttons : function() {
-        if (this.props.challenge.challenge.status == 'PENDING') {
-            return (
-                <div className="pending-action">
-                    <button onClick={this.handleAccept.bind(this,this.props.challenge)} ref="acceptButton"
-                            value={this.props.challenge.challenger.id}
-                            name="accept">Accept
-                    </button>
-                    <button onClick={this.handlePending} ref="modifyButton" value={this.props.challenge.challenger.id}
-                            name="modify">Modify
-                    </button>
-                </div>);
-        }
+    render: function() {
+        var s = {
+            "display" : this.props.challenge.challenge.status == 'PENDING' ? 'on' : 'on'
+        };
         return (
-            <div className="accepted-action">
-                <button onClick={this.handlePending} ref="modifyButton" value={this.props.challenge.challenger.id}
-                        name="modify">Modify
-                </button>
-            </div>);
-    },
-
-    render: function () {
-        return (this.buttons());
+            <div style = {s} >
+                <button  onClick={this.handleAccept.bind(this,this.props.challenge)} ref="accept" name="accept">Accept</button>
+            </div>
+        );
     }
 });
+
+
+var ChallengCancel = React.createClass({
+    handleCancel: function(c) {
+        this.props.onUserInput('c',c);
+        this.forceUpdate();
+    },
+    render: function() {
+        return (
+            <button onClick={this.handleCancel.bind(this,this.props.challenge)} ref="cancel" name="cancel">Cancel</button>
+        );
+    }
+});
+
+var ChallengModify = React.createClass({
+    handleModify: function(c) {
+
+    },
+
+    render: function() {
+        return (
+            <button onClick={this.handleModify.bind(this,this.props.challenge)} ref="modify" name="modify">Modify</button>
+        );
+    }
+});
+
 
 React.render(
     <Challenges url="/challenges" />,
