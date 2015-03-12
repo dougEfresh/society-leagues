@@ -8,4 +8,28 @@ public class ChallengeRequest {
     Player opponent;
     Date date;
 
+
+    public Player getChallenger() {
+        return challenger;
+    }
+
+    public void setChallenger(Player challenger) {
+        this.challenger = challenger;
+    }
+
+    public Player getOpponent() {
+        return opponent;
+    }
+
+    public void setOpponent(Player opponent) {
+        this.opponent = opponent;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 }

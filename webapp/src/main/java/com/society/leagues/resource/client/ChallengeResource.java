@@ -126,9 +126,23 @@ public class ChallengeResource  implements ChallengeApi {
         return  null ;//requestChallenge(players.get(0),players.get(1));
     }
 
-    public Challenge requestChallenge(ChallengeRequest challenge) {
+    @RequestMapping(value = "/challenge/request", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public PlayerChallenge requestChallenge(ChallengeRequest request) {
+        Challenge c = new Challenge();
 
-        return  null ; //dao.requestChallenge(challenge);
+        Player challenger = playerDao.get(request.getChallenger().getId());
+        Player opponent = playerDao.get(request.getOpponent().getId());
+        TeamMatch m = new TeamMatch();
+        m.setHome(challenger.getTeam());
+        m.setDivision(challenger.getDivision());
+        m.setSeason(challenger.getSeason());
+        m.setAway(opponent.getTeam());
+
+        c.setChallengeDate(request.getDate());
+        c.setTeamMatch(m);
+        c.setStatus(Status.PENDING);
+        c = dao.requestChallenge(c);
+        return getPlayerChallenge(c);
     }
 
 

@@ -22,7 +22,7 @@ var Challenges = React.createClass({
     },
     accept: function(c) {
         $.ajax({
-            async: false,
+            async: true,
             url: '/challenge/accept/' + c.challenge.id,
             dataType: 'json',
             method: 'GET',
@@ -36,7 +36,7 @@ var Challenges = React.createClass({
     },
     cancel: function(c) {
         $.ajax({
-            async: false,
+            async: true,
             url: '/challenge/cancel/' + c.challenge.id,
             dataType: 'json',
             method: 'GET',
@@ -48,6 +48,7 @@ var Challenges = React.createClass({
             }.bind(this)
         });
     },
+
     onUserInput: function(action,c) {
         if (action === 'a'){
             this.accept(c);
@@ -59,10 +60,11 @@ var Challenges = React.createClass({
 
         this.getData();
     },
+
     render: function() {
         return (
             <div className="challengList">
-                <ChallengeTable challenges = {this.state.data} onUserInput={this.onUserInput}/>
+                <ChallengeTable ref="challengeForm" challenges = {this.state.data} onUserInput={this.onUserInput}/>
             </div>
         );
     }
@@ -144,7 +146,6 @@ var ChallengeAccept = React.createClass({
         );
     }
 });
-
 
 var ChallengCancel = React.createClass({
     handleCancel: function(c) {
