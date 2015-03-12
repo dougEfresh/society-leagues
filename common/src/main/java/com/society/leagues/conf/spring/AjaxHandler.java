@@ -30,7 +30,7 @@ public class AjaxHandler implements AuthenticationSuccessHandler {
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        if (request.getHeader("X-Login-Ajax-call").equals("true")) {
+        if ( request.getHeader("X-Login-Ajax-call") != null && request.getHeader("X-Login-Ajax-call").equals("true")) {
             response.getWriter().print("ok");
             response.getWriter().flush();
             return;

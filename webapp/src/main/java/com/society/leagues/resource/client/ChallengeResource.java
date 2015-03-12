@@ -56,14 +56,18 @@ public class ChallengeResource  implements ChallengeApi {
 
         List<PlayerChallenge> playerChallenges = new ArrayList<>(challenges.size());
         for (Challenge challenge : challenges) {
-            PlayerChallenge playerChallenge = new PlayerChallenge();
-            playerChallenge.setChallenge(challenge);
-            //In challenge division, only one player per team
-            playerChallenge.setChallenger(playerDao.findHomeTeamPlayers(challenge.getTeamMatch()).get(0));
-            playerChallenge.setOpponent(playerDao.findAwayTeamPlayers(challenge.getTeamMatch()).get(0));
-            playerChallenges.add(playerChallenge);
+            playerChallenges.add(getPlayerChallenge(challenge));
         }
         return playerChallenges;
+    }
+
+    private PlayerChallenge getPlayerChallenge(Challenge c) {
+        PlayerChallenge playerChallenge = new PlayerChallenge();
+        playerChallenge.setChallenge(c);
+        //In challenge division, only one player per team
+        playerChallenge.setChallenger(playerDao.findHomeTeamPlayers(c.getTeamMatch()).get(0));
+        playerChallenge.setOpponent(playerDao.findAwayTeamPlayers(c.getTeamMatch()).get(0));
+        return playerChallenge;
     }
 
 
@@ -131,11 +135,11 @@ public class ChallengeResource  implements ChallengeApi {
     }
 
 
-    @RequestMapping(value = "/challenge/accept/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Challenge acceptChallenge(@PathVariable (value = "id") Integer id) {
-        Challenge c  = new Challenge();
-        c.setId(id);
-        return dao.acceptChallenge(c);
+    @RequestMapping(value = "/challenge/accept/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public PlayerChallenge acceptChallenge(@PathVariable (value = "id") Integer id) {
+        Challenge c = dao.get(id);
+        c = dao.acceptChallenge(c);
+        return getPlayerChallenge(c);
     }
 
     public Challenge requestChallenge(Challenge challenge) {

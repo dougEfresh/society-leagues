@@ -1,0 +1,35 @@
+header.page-header {
+    background: #2d3e50;
+    color: #eee;
+}
+
+span.page-title {
+    margin-left: 0.4em;
+    font-size: 137%;
+    vertical-align: top;
+}
+
+.logo {
+    height: 3.1em;
+    padding: 0.1em;
+    margin-top: 0.5em;
+    margin-left: 0.3em;
+    margin-bottom: 0.25em;
+}
+
+header a {
+    text-decoration: none;
+}
+
+
+a.logout {
+    color: #eee;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-right: 1em;
+}
+
+
+a.logout:hover {
+    color: #3b67a7;
+}

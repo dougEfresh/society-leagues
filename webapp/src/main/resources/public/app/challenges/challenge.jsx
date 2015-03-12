@@ -4,6 +4,7 @@ var Challenges = React.createClass({
         return {data: []};
     },
     getData: function() {
+        console.log("Getting data...");
         $.ajax({
             url: this.props.url,
             dataType: 'json',
@@ -18,7 +19,6 @@ var Challenges = React.createClass({
     componentDidMount: function() {
         this.getData();
     },
-
     onUserInput: function(action,c) {
         $.ajax({
             url: '/challenge/accept/' + c.challenge.id,
@@ -32,6 +32,7 @@ var Challenges = React.createClass({
             }.bind(this)
         });
         this.getData();
+        this.forceUpdate();
     },
     render: function() {
         return (
@@ -47,7 +48,7 @@ var ChallengeTable = React.createClass({
     render: function() {
         var rows = [];
         this.props.challenges.forEach(function (s) {
-            rows.push(<ChallengeRow challenge={s} key={s.challenge.id} onUserInput={this.props.onAccept}/>);
+            rows.push(<ChallengeRow challenge={s} key={s.challenge.id} onUserInput={this.props.onUserInput}/>);
         }.bind(this));
         return (
             <table className="table">
@@ -75,7 +76,7 @@ var ChallengeRow = React.createClass({
         return (
             <tr>
                 <td>
-                    <ChallengeAction challenge={this.props.challenge} onAccept={this.props.onAccept} />
+                    <ChallengeAction challenge={this.props.challenge} onUserInput={this.props.onUserInput} />
                 </td>
                 <td>{this.props.challenge.challenge.id}</td>
                 <td>{this.props.challenge.challenge.status}</td>
@@ -90,13 +91,12 @@ var ChallengeRow = React.createClass({
 
 var ChallengeAction = React.createClass({
     handleAccept : function(c) {
-        this.props.onChange('a',c);
+        this.props.onUserInput('a',c);
         this.forceUpdate();
     },
     handlePending : function(e) {
 
     },
-
     buttons : function() {
         if (this.props.challenge.challenge.status == 'PENDING') {
             return (
