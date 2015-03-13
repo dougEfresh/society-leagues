@@ -22,7 +22,7 @@ var Challenges = React.createClass({
     },
     accept: function(c) {
         $.ajax({
-            async: true,
+            async: false,
             url: '/challenge/accept/' + c.challenge.id,
             dataType: 'json',
             method: 'GET',
@@ -36,7 +36,7 @@ var Challenges = React.createClass({
     },
     cancel: function(c) {
         $.ajax({
-            async: true,
+            async: false,
             url: '/challenge/cancel/' + c.challenge.id,
             dataType: 'json',
             method: 'GET',
@@ -100,6 +100,7 @@ var ChallengeTable = React.createClass({
 
 var ChallengeRow = React.createClass({
     render: function() {
+        var date = dt(this.props.challenge.challenge.challengeDate);
         return (
             <tr>
                 <td>
@@ -110,7 +111,7 @@ var ChallengeRow = React.createClass({
                 <td>{this.props.challenge.challenger.user.name}</td>
                 <td>{this.props.challenge.opponent.user.name}</td>
                 <td>{this.props.challenge.challenger.division.type}</td>
-                <td>{this.props.challenge.challenge.challengeDate}</td>
+                <td>{date}</td>
             </tr>
         );
     }

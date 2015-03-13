@@ -26,15 +26,24 @@ public class SchemaData {
     @Value("${generate}")
     boolean generate = false;
 
-    @Autowired SeasonDao seasonApi;
-    @Autowired DivisionDao divisionApi;
-    @Autowired TeamDao teamApi;
-    @Autowired PlayerDao playerApi;
-    @Autowired UserDao userApi;
-    @Autowired TeamMatchDao matchApi;
-    @Autowired PlayerResultDao playerResultApi;
-    @Autowired TeamResultDao teamResultApi;
-    @Autowired ChallengeDao challengeApi;
+    @Autowired
+    SeasonDao seasonApi;
+    @Autowired
+    DivisionDao divisionApi;
+    @Autowired
+    TeamDao teamApi;
+    @Autowired
+    PlayerDao playerApi;
+    @Autowired
+    UserDao userApi;
+    @Autowired
+    TeamMatchDao matchApi;
+    @Autowired
+    PlayerResultDao playerResultApi;
+    @Autowired
+    TeamResultDao teamResultApi;
+    @Autowired
+    ChallengeDao challengeApi;
 
     static int NUM_PLAYERS = 80;
 
@@ -46,16 +55,16 @@ public class SchemaData {
             return;
 
         generated = true;
-        
+
         logger.info("***** generating data *****");
-        
+
         for (DivisionType divisionType : DivisionType.values()) {
             divisionApi.create(new Division(divisionType));
             seasonApi.create(new Season(divisionType.name(), new Date(), -1, Status.ACTIVE));
         }
-        
-        for (int i = 1 ; i <= NUM_PLAYERS/10; i++) {
-            Team team = new Team(String.format("team%2d",i));
+
+        for (int i = 1; i <= NUM_PLAYERS / 10; i++) {
+            Team team = new Team(String.format("team%2d", i));
             teamApi.create(team);
         }
 
@@ -68,23 +77,23 @@ public class SchemaData {
     }
 
     private void createUsers() {
-        for (int i = 1 ; i <= NUM_PLAYERS ; i++){
+        for (int i = 0; i < USERS.length; i++) {
             User user = new User();
-            user.setFirstName("player_"+ i);
-            user.setLastName("lastname_" + i);
+            user.setFirstName(USERS[i].split(",")[0]);
+            user.setLastName(USERS[i].split(",")[1]);
             user.setEmail(i + "@example.com");
-            user.setPassword("login" + i);
-            user.setLogin("login" + i);
+            user.setPassword("login" + (i + 1) );
+            user.setLogin("login" + (i + 1));
             user.addRole(Role.PLAYER);
             userApi.create(user);
         }
     }
 
     private void createChallengePlayers() {
-        for (int i = 1 ; i <= NUM_PLAYERS ; i++) {
+        for (int i = 1; i <= NUM_PLAYERS; i++) {
             for (Division division : divisionApi.get().stream().filter(d -> d.isChallenge()).collect(Collectors.toList())) {
                 Player player = new Player();
-                String teamName ="login"+i;
+                String teamName = "login" + i;
                 Team team = teamApi.get(teamName);
                 if (team == null)
                     player.setTeam(teamApi.create(new Team(teamName)));
@@ -97,7 +106,7 @@ public class SchemaData {
                 player.setHandicap(getRandomHandicap(i, division.getType()));
                 player.setUser(userApi.get("login" + i));
                 if (player.getUser() == null) {
-                    throw new RuntimeException("Error find login for login" +i + " player: "+ player);
+                    throw new RuntimeException("Error find login for login" + i + " player: " + player);
                 }
                 playerApi.create(player);
             }
@@ -109,7 +118,7 @@ public class SchemaData {
         List<Player> players = playerApi.get().stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList());
         for (Player player : players) {
             List<Player> potentials = challengeApi.getPotentials(player.getUserId()).stream().filter(p -> p.getDivision().equals(player.getDivision())).collect(Collectors.toList());
-            int slot = (int) Math.round(Math.random() * potentials.size())-1;
+            int slot = (int) Math.round(Math.random() * potentials.size()) - 1;
             Player opponent = potentials.get(slot == -1 ? 0 : slot);
             Challenge challenge = new Challenge();
             TeamMatch teamMatch = new TeamMatch();
@@ -118,7 +127,9 @@ public class SchemaData {
             teamMatch.setHome(player.getTeam());
             teamMatch.setAway(opponent.getTeam());
             challenge.setTeamMatch(teamMatch);
-            challenge.setChallengeDate(Slot.getDefault(LocalDateTime.now().plusDays(14)).get(2).getDate());
+            List<LocalDateTime> slots = challengeApi.slots(LocalDateTime.now().plusDays((int) Math.round(Math.random()*20)));
+            slot = (int) Math.round(Math.random() * slots.size()) - 1;
+            challenge.setChallengeDate(slots.get(slot == -1 ? 0 : slot));
             challenge.setStatus(Status.PENDING);
             challengeApi.requestChallenge(challenge);
         }
@@ -127,18 +138,18 @@ public class SchemaData {
         logger.info("Created " + pending.size() + " challenges");
 
         int i = 0;
-        for (Challenge c: pending) {
+        for (Challenge c : pending) {
             i++;
             if (i % 2 == 0)
                 challengeApi.acceptChallenge(c);
         }
 
-         logger.info("Accepted " + challengeApi.get().stream().filter(c -> c.getStatus() == Status.ACCEPTED).count() + " challenges");
+        logger.info("Accepted " + challengeApi.get().stream().filter(c -> c.getStatus() == Status.ACCEPTED).count() + " challenges");
     }
 
     private void createMatchResults() {
-        LocalDate before =  LocalDate.now().plusDays(1);
-        Date b = new Date(before.getYear(),before.getMonthValue()-1,before.getDayOfMonth());
+        LocalDate before = LocalDate.now().plusDays(1);
+        Date b = new Date(before.getYear(), before.getMonthValue() - 1, before.getDayOfMonth());
         logger.info("Creating match results before " + before);
 
 
@@ -177,7 +188,7 @@ public class SchemaData {
             playerResult.setHomeRacks(result.getHomeRacks());
             playerResult.setTeamMatch(teamMatch);
 
-            PlayerResult savedResult  = playerResultApi.create(playerResult);
+            PlayerResult savedResult = playerResultApi.create(playerResult);
             if (savedResult == null) {
                 throw new RuntimeException("Could not create player result for " + playerResult);
             }
@@ -190,7 +201,7 @@ public class SchemaData {
         List<Player> challengers = playerApi.get().stream().filter(p -> p.getDivision().getType() == divisionType).collect(Collectors.toList());
         int size = challengers.size();
         logger.info("Have " + size + " player matches to generate");
-        for(int i=0; i<challengers.size(); i++) {
+        for (int i = 0; i < challengers.size(); i++) {
             Player challenger = challengers.get(i);
             List<Player> potentials = challengers.stream().filter(p -> !p.getId().equals(challenger.getId())).collect(Collectors.toList());
             for (int j = 1; j <= 5; j++) {
@@ -199,7 +210,7 @@ public class SchemaData {
                 teamMatch.setDivision(challenger.getDivision());
                 teamMatch.setSeason(challenger.getSeason());
                 teamMatch.setMatchDate(new Date(LocalDateTime.now().minusDays(j * 7).toEpochSecond(ZoneOffset.UTC)));
-                int slot = (int) Math.round(Math.random() * potentials.size())-1;
+                int slot = (int) Math.round(Math.random() * potentials.size()) - 1;
                 Player opponent = potentials.get(slot == -1 ? 0 : slot);
                 teamMatch.setAway(opponent.getTeam());
                 matchApi.create(teamMatch);
@@ -207,55 +218,137 @@ public class SchemaData {
         }
         logger.info("Create a total of " + matchApi.get().size() + " matches");
 
-   }
-    
+    }
+
     private Handicap getRandomHandicap(int i, DivisionType divisionType) {
-        if ( i <= Math.floor(NUM_PLAYERS*.25)) {
+        if (i <= Math.floor(NUM_PLAYERS * .25)) {
             if (divisionType.name().startsWith("NINE"))
                 return Handicap.DPLUS;
-            else 
+            else
                 return Handicap.FIVE;
         }
-        
-        if (i <= Math.floor(NUM_PLAYERS*.45)) {
+
+        if (i <= Math.floor(NUM_PLAYERS * .45)) {
             if (divisionType.name().startsWith("NINE"))
                 return Handicap.D;
             else
                 return Handicap.FOUR;
         }
-        
-        if (i <= Math.floor(NUM_PLAYERS*.60)) {
+
+        if (i <= Math.floor(NUM_PLAYERS * .60)) {
             if (divisionType.name().startsWith("NINE"))
                 return Handicap.C;
             else
                 return Handicap.THREE;
         }
-        
-        if (i <= Math.floor(NUM_PLAYERS*.70)) {
+
+        if (i <= Math.floor(NUM_PLAYERS * .70)) {
             if (divisionType.name().startsWith("NINE"))
                 return Handicap.B;
             else
                 return Handicap.SIX;
         }
 
-        if (i <= Math.floor(NUM_PLAYERS*.80)) {
+        if (i <= Math.floor(NUM_PLAYERS * .80)) {
             if (divisionType.name().startsWith("NINE"))
                 return Handicap.BPLUS;
             else
                 return Handicap.TWO;
         }
 
-        if (i <= Math.floor(NUM_PLAYERS*.9)) {
+        if (i <= Math.floor(NUM_PLAYERS * .9)) {
             if (divisionType.name().startsWith("NINE"))
                 return Handicap.A;
             else
                 return Handicap.SEVEN;
         }
-        
+
         if (divisionType.name().startsWith("NINE"))
             return Handicap.APLUS;
         else
             return Handicap.EIGHT;
-        
     }
+
+    static String[] USERS = new String[]{
+            "Andrew,Footer",
+            "Bob,Hemnami",
+            "Mark,McDade",
+            "Nick,Meyer",
+            "Chris,Spencer",
+            "David,Allen",
+            "Wanlop,Chan",
+            "Izac,Horne",
+            "Richard,Louapre",
+            "Chumrean,Sacharitakul",
+            "Akiko,Sugiyama",
+            "Thomas,Wan",
+            "Alex,Kittler",
+            "Giovanni,Mata",
+            "Soham,Patel",
+            "Max,Watanabe",
+            "Anna,Kaplan",
+            "Andrew,Footer",
+            "Bob,Hemnami",
+            "Mark,McDade",
+            "Nick,Meyer",
+            "Abe,Shaw",
+            "Chris,Spencer",
+            "Richard,Louapre",
+            "Michael,Harrington",
+            "Anna,Kaplan",
+            "Alex,Kittler",
+            "Giovanni,Mata",
+            "Soham,Patel",
+            "Max,Watanabe",
+            "Dev,Chatterjee",
+            "Alex,Gomez",
+            "Trevor,Heal",
+            "Howie,Reuben",
+            "Doug,Rhee",
+            "Oliver,Stalley",
+            "Ed,Sumner",
+            "Vinny,Ferri",
+            "Brendan,Ince",
+            "Rob,Mislivets",
+            "Zain,Siddiqi",
+            "Jonathan,Smith",
+            "Samms,Hasburn",
+            "Larry,Busacca",
+            "Edward,Lum",
+            "Michael,Secondo",
+            "James,Taylor",
+            "Jeff,Tischler",
+            "Thomas,Wan",
+            "Eric,Adelman",
+            "Naoto,Hariu",
+            "Peter,Khan",
+            "Tejune,Kang",
+            "Ross,Robbins",
+            "Todd,Wilson",
+            "Oscar,Ortiz",
+            "Henry,Balingcongan",
+            "Keith,Diaz",
+            "Paul,Lyons",
+            "Quang,Nguyen",
+            "Sanjay,Sachdeva",
+            "Thomas,Scott",
+            "Ramilo,Tanglao",
+            "Ben,Castaneros",
+            "Ron,Gabia",
+            "Yorgos,Hatziefhimiou",
+            "John,MacArthur",
+            "Sherwin,Robinson",
+            "Paul,Johnson",
+            "Doug,Chimento",
+            "Cassie,Corbin",
+            "Jin,Gong",
+            "Vinay,Pai",
+            "Serafina,Shishkova",
+            "Olga,Nikolaeva",
+            "Ambi,Estevez",
+            "Dan,Faraguna",
+            "Matthew,Harricharan",
+            "Miguel,Laboy",
+            "Rene,Villalobos"
+    };
 }

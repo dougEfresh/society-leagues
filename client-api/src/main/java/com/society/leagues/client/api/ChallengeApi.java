@@ -35,17 +35,9 @@ public interface ChallengeApi {
     List<Challenge> listChallenges(@PathParam(value = "id") Integer userId);
 
     @POST
-    @Path(value = "/api/challenge/cancel")
-    Boolean cancelChallenge(Challenge challenge);
-
-    @POST
     @Path(value = "/api/challenge/modify")
     Challenge modifyChallenge(Challenge challenge);
     
-    @POST
-    @Path(value = "/api/challenge/slots")
-    List<Slot> slots(Date date);
-
     @RequestMapping(value = "/api/challenge/player", produces = MediaType.APPLICATION_ATOM_XML, method = RequestMethod.POST)
     List<Challenge> getByPlayer(Player p);
 }

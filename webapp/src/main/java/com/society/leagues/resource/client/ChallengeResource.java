@@ -157,10 +157,8 @@ public class ChallengeResource  implements ChallengeApi {
     @RequestMapping(value = "/challenge/cancel/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public PlayerChallenge cancelChallenge(@PathVariable (value = "id") Integer id) {
         Challenge c = dao.get(id);
-        dao.cancelChallenge(c);
-        return getPlayerChallenge(c);
+        return getPlayerChallenge(dao.cancelChallenge(c));
     }
-
 
     public Challenge requestChallenge(Challenge challenge) {
         return dao.requestChallenge(challenge);
@@ -176,11 +174,6 @@ public class ChallengeResource  implements ChallengeApi {
         return dao.listChallenges(userId);
     }
 
-    @Override
-    public Boolean cancelChallenge(Challenge challenge) {
-        return dao.cancelChallenge(challenge);
-    }
-
     private Challenge modifyChallenge(User user, Challenge challenge) {
         Email email = new Email();
         return modifyChallenge(challenge);
@@ -191,10 +184,6 @@ public class ChallengeResource  implements ChallengeApi {
             return dao.modifyChallenge(challenge);
     }
 
-    @Override
-    public List<Slot> slots(Date date) {
-        return dao.slots(date);
-    }
 
     @Override
     public List<Challenge> getByPlayer(Player p) {

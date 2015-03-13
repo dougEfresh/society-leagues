@@ -1,12 +1,13 @@
 package com.society.leagues.client.api.domain;
 
 import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class ChallengeRequest {
     Player challenger;
     Player opponent;
-    Date date;
+    LocalDateTime date;
 
 
     public Player getChallenger() {
@@ -25,11 +26,11 @@ public class ChallengeRequest {
         this.opponent = opponent;
     }
 
-    public Date getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 }

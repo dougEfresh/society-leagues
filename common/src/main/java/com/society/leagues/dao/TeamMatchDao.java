@@ -35,7 +35,7 @@ public class TeamMatchDao extends Dao<TeamMatch> implements MatchApi, MatchAdmin
          Division division = divisionDao.get(rs.getInt("division_id"));
 
          TeamMatch m = new TeamMatch();
-         m.setMatchDate(rs.getDate("match_date"));
+         m.setMatchDate(rs.getTimestamp("match_date"));
          m.setAway(away);
          m.setHome(home);
          m.setSeason(season);

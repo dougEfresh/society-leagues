@@ -1,26 +1,21 @@
 package com.society.leagues.client.api.domain;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Challenge extends LeagueObject {
     Status status;
     TeamMatch teamMatch;
-    Date challengeDate;
+    LocalDateTime challengeDate;
 
     public Challenge() {
     }
 
-    public Challenge(TeamMatch teamMatch, Status status, Date date) {
-        this.teamMatch = teamMatch;
-        this.status = status;
-        this.challengeDate = date;
-    }
-
-    public Date getChallengeDate() {
+    public LocalDateTime getChallengeDate() {
         return challengeDate;
     }
 
-    public void setChallengeDate(Date challengeDate) {
+    public void setChallengeDate(LocalDateTime challengeDate) {
         this.challengeDate = challengeDate;
     }
 

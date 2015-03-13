@@ -14,6 +14,10 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -70,8 +74,10 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         PreparedStatementCreator ps = con ->
         {
             PreparedStatement st  = con.prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
-            st.setInt(1,challenge.getTeamMatch().getId());
-            st.setDate(2, new java.sql.Date(challenge.getChallengeDate().getTime()));
+            st.setInt(1, challenge.getTeamMatch().getId());
+            st.setTimestamp(2,
+                    Timestamp.valueOf(challenge.getChallengeDate())
+            );
             st.setString(3, Status.PENDING.name());
             return st;
         } ;
@@ -109,10 +115,9 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         return challenges;
     }
 
-    @Override
-    public Boolean cancelChallenge(Challenge challenge) {
-        challenge.setStatus(Status.CANCELLED);
-        return modifyChallenge(challenge) != null;
+    public Challenge cancelChallenge(Challenge challenge) {
+
+        return modify(challenge,"UPDATE challenge SET status  = ? WHERE challenge_id = ?", Status.CANCELLED.name(), challenge.getId());
     }
 
     public List<Challenge> getAccepted(User u) {
@@ -145,9 +150,8 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
                 challenge.getId());
     }
 
-    @Override
-    public List<Slot> slots(Date date) {
-        return null;
+    public List<LocalDateTime> slots(LocalDateTime date) {
+        return Slot.getDefault(date);
     }
 
     private List<Player> findChallengeUsers(Division division,Handicap handicap, List<Player> players) {
@@ -176,7 +180,7 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
 
     final RowMapper<Challenge> mapper = (rs, rowNum) -> {
         Challenge challenge = new Challenge();
-        challenge.setChallengeDate(rs.getDate("challenge_date"));
+        challenge.setChallengeDate(rs.getTimestamp("challenge_date").toLocalDateTime());
         challenge.setStatus(Status.valueOf(rs.getString("status")));
         challenge.setId(rs.getInt("challenge_id"));
         challenge.setTeamMatch(teamMatchDao.get(rs.getInt("team_match_id")));

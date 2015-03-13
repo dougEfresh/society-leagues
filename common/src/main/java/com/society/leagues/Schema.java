@@ -93,7 +93,7 @@ public class Schema {
               " home_team_id int NOT NULL CONSTRAINT HOME_K REFERENCES team ON DELETE CASCADE  ,\n" +
               " away_team_id int NOT NULL CONSTRAINT AWAY_K REFERENCES team ON DELETE CASCADE ,\n" +
               " division_id int NOT NULL CONSTRAINT DIV_TEAM_K REFERENCES division ON DELETE CASCADE ,\n" +
-              " match_date date " +
+              " match_date timestamp " +
             ")\n";
 
      static final String team_result = "create table team_result (\n" +
@@ -104,7 +104,7 @@ public class Schema {
             ")\n";
 
     static final String player_result = "create table player_result (\n" +
-              " player_result_id int NOT NULL AUTO_INCREMENT(50000) PRIMARY KEY,\n" +
+              " player_result_id int NOT NULL AUTO_INCREMENT(60000) PRIMARY KEY,\n" +
             " team_match_id int NOT NULL CONSTRAINT TEAM_PLAYER_MATCH_FK REFERENCES team_match ON DELETE CASCADE,\n" +
             " player_home_id int NOT NULL CONSTRAINT HOME_MATCH_FK REFERENCES player ON DELETE CASCADE,\n" +
             " player_away_id int NOT NULL CONSTRAINT AWAY_MATCH_FK REFERENCES player ON DELETE CASCADE,\n" +
@@ -121,9 +121,8 @@ public class Schema {
             ")\n";
     
     static final String slot = "create table slot  (\n" +
-              " slot_id int NOT NULL\n" +
-            " challenge_date timestamp not null,\n" +
-              " PRIMARY KEY (slot_id,challenge_date)" +
+              " slot_id int NOT NULL  AUTO_INCREMENT(80000) PRIMARY KEY,\n" +
+            " challenge_date timestamp not null\n" +
             ")\n";
 
     
@@ -143,6 +142,7 @@ public class Schema {
         jdbcTemplate.update(team_result);
         jdbcTemplate.update(player_result);
         jdbcTemplate.update(challenge);
+        jdbcTemplate.update(slot);
 
     }
 }
