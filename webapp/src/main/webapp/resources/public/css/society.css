@@ -1,3 +1,51 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body {
+    margin-top: 0px; /* Required margin for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+}
+
+/* Header Image Background - Change the URL below to your image path (example: ../images/background.jpg) */
+/* CUSTOMIZE THE NAVBAR
+-------------------------------------------------- */
+
+/* Special class on .container surrounding .navbar, used for positioning it into place. */
+
+.full {
+    background: url('../images/break2.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+.navbar-wrapper {
+	background-color: #000;
+}
+.navbar-wrapper > .container {
+		max-width: 100%;
+		padding: 0px 0px;
+}
+.navbar-wrapper .container .navbar-header {
+		max-width: 100%;
+		padding: 0px 15px 0px 0px;
+}
+
+.logo {
+	float:left;
+	display:block;
+	margin: 0px 0px; 
+	padding:0px 0px;
+	width: 80%;
+	height:75px;
+	background-image: url(../images/sbb-logo-mobile.jpg);
+	background-size: 100% 100%;
+	background-repeat:no-repeat;	
+}
+.logo a {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
 header.page-header {
     background: #2d3e50;
     color: #eee;
@@ -7,14 +55,6 @@ span.page-title {
     margin-left: 0.4em;
     font-size: 137%;
     vertical-align: top;
-}
-
-.logo {
-    height: 3.1em;
-    padding: 0.1em;
-    margin-top: 0.5em;
-    margin-left: 0.3em;
-    margin-bottom: 0.25em;
 }
 
 header a {
@@ -32,4 +72,142 @@ a.logout {
 
 a.logout:hover {
     color: #3b67a7;
+}
+.center { 
+	float: none; 
+	margin-left: auto; 
+	margin-right: auto; 
+}
+.error-messages {
+	margin-top: 5px;
+}
+h2.form-signin-heading {
+	text-align:center;
+	margin: 0px 0px 20px 0px;
+}
+.well {
+	float: none;
+	margin: 140px auto 0px auto;
+	color: #fff;
+	background-image: -webkit-linear-gradient(top, rgba(70,0,0, .9) 0%, rgba(0,0,0, .9) 100%);
+	background-image: -o-linear-gradient(top, rgba(70,0,0, .9) 0%, rgba(0,0,0, .9) 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(70,0,0, .9)), to(rgba(0,0,0, .9)));
+	background-image: linear-gradient(to bottom, rgba(70,0,0, .9) 0%, rgba(0,0,0, .9) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#460000', endColorstr='#6666666', GradientType=0);
+	background-repeat: repeat-x;
+	background-color: transparent;
+	border: 3px solid #240000;
+	border-radius: 8px;
+	-webkit-box-shadow: 0px 10px 35px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 10px 35px 0px rgba(0,0,0,0.75);
+	box-shadow: 0px 10px 35px 0px rgba(0,0,0,0.75);
+}
+#custom-bootstrap-menu.navbar-default .navbar-brand {
+    color: rgba(255, 255, 255, 1);
+}
+#custom-bootstrap-menu.navbar-default {
+    font-size: 14px;
+    background-color: rgba(0, 0, 0, 1);
+    border-width: 0px;
+    border-radius: 0px;
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a {
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(0, 0, 0, 1);
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:focus {
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(66, 4, 5, 1);
+    background-color: rgba(138, 30, 27, 1);
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:focus {
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(138, 30, 27, 1);
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle {
+	margin: 18px 0px 0px 0px;
+    border-color: #fff;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus {
+	border-color: #8a1e1b;
+    background-color: #000;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle .icon-bar {
+    background-color: #fff;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover .icon-bar,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus .icon-bar {
+    background-color: #8a1e1b;
+}
+@media (min-width: 768px) 
+{
+.navbar-wrapper {
+	background-color: transparent;
+}
+.navbar-wrapper > .container {
+		max-width: 1000px;
+}
+.navbar-wrapper .container .navbar-header {
+		padding: 0px 0px;
+}
+.well {
+	margin: 100px auto 0px auto;
+	}
+#custom-bootstrap-menu.navbar {
+	background: #000;
+	margin: 0px auto;
+	height: 114px;	
+	border: none;
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>ul {
+	height: 114px;
+	}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a {
+	float:left;
+	display: block;
+	background-color: #transparent;	
+	margin: 0px 0px 0px 0px;
+	padding: 78px 15px 16px 15px;
+	border-left:0px #000 solid;
+	border-bottom:0px #000 solid;
+	border-right:0px #000 solid;
+	color: #fff!important;
+	min-width: 63.5px;
+	text-decoration: none;
+	width: auto;
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:focus {
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(66, 4, 5, 1);
+    background: -webkit-linear-gradient(top, rgba(138, 30, 27, 1) 0%, rgba(66, 4, 5, 1) 100%);
+    background: linear-gradient(to bottom, rgba(138, 30, 27, 1) 0%, rgba(66, 4, 5, 1) 100%);
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:focus {
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(138, 30, 27, 1);
+	    background: -webkit-linear-gradient(top, rgba(138, 30, 27, 1) 0%, rgba(66, 4, 5, 1) 100%);
+    background: linear-gradient(to bottom, rgba(138, 30, 27, 1) 0%, rgba(66, 4, 5, 1) 100%);
+}	
+.logo {
+	float:left;
+	display: block;
+	width: 200px;
+	margin: 0px 0px; 
+	padding:0px 0px;
+	height: 114px;
+	background-image: url(../images/sbb-logo-2.jpg);
+	background-size:autos;	
+}
+@media (min-width: 992px) {
+ 
+}
+@media (min-width: 1200px) {
+ 
 }
