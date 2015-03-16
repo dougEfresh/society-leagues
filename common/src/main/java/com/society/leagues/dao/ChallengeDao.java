@@ -16,8 +16,6 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,7 +24,6 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
     static Logger logger = LoggerFactory.getLogger(ChallengeDao.class);
     @Autowired PlayerDao playerDao;
     @Autowired JdbcTemplate jdbcTemplate;
-    @Autowired TeamMatchDao teamMatchDao;
     @Autowired UserDao userDao;
 
     @Value("${email-override:}") String emailOverride;
@@ -52,33 +49,15 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         return Collections.emptyList();
     }
 
-    public Challenge requestChallenge(Player challenger, Player opponent) {
-        Challenge challenge = new Challenge();
-        challenger = playerDao.get(challenger.getId());
-        opponent = playerDao.get(opponent.getId());
-        TeamMatch teamMatch = new TeamMatch();
-        teamMatch.setHome(challenger.getTeam());
-        teamMatch.setAway(opponent.getTeam());
-        teamMatch.setSeason(challenger.getSeason());
-        teamMatch.setDivision(challenger.getDivision());
-        return null;
-    }
-
     @Override
     public Challenge requestChallenge(final Challenge challenge) {
-        TeamMatch teamMatch = teamMatchDao.create(challenge.getTeamMatch());
-        if (teamMatch == null)
-            return null;
-
-        challenge.setTeamMatch(teamMatch);
         PreparedStatementCreator ps = con ->
         {
             PreparedStatement st  = con.prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
-            st.setInt(1, challenge.getTeamMatch().getId());
-            st.setTimestamp(2,
-                    Timestamp.valueOf(challenge.getChallengeDate())
-            );
-            st.setString(3, Status.PENDING.name());
+            st.setInt(1, challenge.getChallenger().getId());
+            st.setInt(2, challenge.getOpponent().getId());
+            st.setTimestamp(3,Timestamp.valueOf(challenge.getChallengeDate()));
+            st.setString(4, Status.PENDING.name());
             return st;
         } ;
         return create(challenge,ps);
@@ -95,37 +74,11 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         if (u == null)
             return Collections.emptyList();
 
-        List<Player> players = playerDao.getByUser(u);
-        if (players == null || players.isEmpty())
-            return Collections.emptyList();
-
-
-        players = players.stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList());
-        if (players == null || players.isEmpty())
-            return Collections.emptyList();
-
-        List<Challenge> challenges = new ArrayList<>();
-
-        for (final Player p: players) {
-            challenges.addAll(get().stream().filter(c ->
-                            c.getTeamMatch().getHome().equals(p.getTeam()) ||
-                                    c.getTeamMatch().getAway().equals(p.getTeam())
-            ).collect(Collectors.toList()));
-        }
-        return challenges;
+        return get().stream().filter(c-> c.getOpponent().getUser().equals(u) || c.getChallenger().getUser().equals(u)).collect(Collectors.toList());
     }
 
     public Challenge cancelChallenge(Challenge challenge) {
-
         return modify(challenge,"UPDATE challenge SET status  = ? WHERE challenge_id = ?", Status.CANCELLED.name(), challenge.getId());
-    }
-
-    public List<Challenge> getAccepted(User u) {
-        return getChallenges(u,Status.ACCEPTED);
-    }
-
-    public List<Challenge> getPending(User u) {
-        return getChallenges(u,Status.PENDING);
     }
 
     public List<Challenge> getChallenges(User u, Status status) {
@@ -139,12 +92,14 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
 
     @Override
     public Challenge modifyChallenge(Challenge challenge) {
-        return modify(challenge,"update challenge set " +
-                        "team_match_id=?," +
+        return modify(challenge, "update challenge set " +
+                        "player_challenger_id=?," +
+                        "player_opponent_id=?," +
                         "challenge_date=?," +
                         "status=? " +
                         "where challenge_id = ?",
-                challenge.getTeamMatch().getId(),
+                challenge.getChallenger().getId(),
+                challenge.getOpponent().getId(),
                 challenge.getChallengeDate(),
                 challenge.getStatus().name(),
                 challenge.getId());
@@ -168,8 +123,8 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
             return Collections.emptyList();
         }
         return get().stream().
-                filter(c -> c.getTeamMatch().getPlayersHome().contains(p) ||
-                                c.getTeamMatch().getPlayersAway().contains(p)
+                filter(c -> c.getChallenger().equals(p) ||
+                                c.getOpponent().equals(p)
                 ).collect(Collectors.toList());
     }
 
@@ -183,12 +138,12 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         challenge.setChallengeDate(rs.getTimestamp("challenge_date").toLocalDateTime());
         challenge.setStatus(Status.valueOf(rs.getString("status")));
         challenge.setId(rs.getInt("challenge_id"));
-        challenge.setTeamMatch(teamMatchDao.get(rs.getInt("team_match_id")));
+        challenge.setChallenger(playerDao.get(rs.getInt("player_challenger_id")));
+        challenge.setChallenger(playerDao.get(rs.getInt("player_opponent_id")));
         return challenge;
     };
     
-    final static String CREATE = "INSERT INTO challenge(team_match_id,challenge_date,status) VALUES (?,?,?)";
-
+    final static String CREATE = "INSERT INTO challenge(player_challenger_id,player_opponent_id,challenge_date,status) VALUES (?,?,?,?)";
 
     @Override
     public String getSql() {

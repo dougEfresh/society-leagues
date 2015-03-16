@@ -5,8 +5,10 @@ import com.society.leagues.EmailService;
 import com.society.leagues.client.View;
 import com.society.leagues.client.api.ChallengeApi;
 import com.society.leagues.client.api.domain.*;
+import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.dao.ChallengeDao;
 import com.society.leagues.dao.PlayerDao;
+import com.society.leagues.dao.PlayerResultDao;
 import com.society.leagues.dao.UserDao;
 import com.society.leagues.util.Email;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,6 +33,7 @@ public class ChallengeResource  implements ChallengeApi {
     @Autowired EmailService emailService;
     @Autowired ChallengeDao dao;
     @Autowired PlayerDao playerDao;
+    @Autowired PlayerResultDao playerResultDao;
     @Autowired UserDao userDao;
 
     @JsonView(value = View.PlayerId.class)
@@ -37,16 +43,76 @@ public class ChallengeResource  implements ChallengeApi {
         List<PlayerChallenge> challenges =  getPendingChallenges(u);
         challenges.addAll(getAcceptedChallenges(u));
         challenges.addAll(getChallenges(u, Status.CANCELLED));
-        challenges.sort((o1, o2) -> o1.getChallenge().getId().compareTo(o2.getChallenge().getId()));
+        //challenges.sort((o1, o2) -> o1.getChallenges().getId().compareTo(o2.getChallenges().getId()));
         return challenges;
     }
 
+    @RequestMapping(value = "/challenge/potentials", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Collection<UserChallenge> getPotentials(Principal principal) {
+        User u = userDao.get(principal.getName());
+        return  getPotentials(u);
+    }
+
+    @RequestMapping(value = "/challenge/leaderBoard", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PlayerStats> leaderBoard() {
+        List<PlayerStats> stats = new ArrayList<>();
+        Map<Integer,PlayerStats> userStats = new HashMap<>();
+        List<Player> players = playerDao.get().stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList());
+
+        for (Player player : players) {
+            PlayerStats s = new PlayerStats();
+            s.setUserId(player.getUserId());
+            userStats.put(player.getUserId(),s);
+        }
+
+        return null;
+    }
+
+    @RequestMapping(value = "/challenge/cancel/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public Challenge cancelChallenge(@PathVariable (value = "id") Integer id) {
+        Challenge c = dao.get(id);
+        return dao.cancelChallenge(c);
+    }
+
+    @RequestMapping(value = "/challenge/accept/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public Challenge acceptChallenge(@PathVariable (value = "id") Integer id) {
+        Challenge c = dao.get(id);
+        c = dao.acceptChallenge(c);
+        return c;
+    }
+
+    @RequestMapping(value = "/challenge/request", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public PlayerChallenge requestChallenge(ChallengeRequest request) {
+
+        PlayerChallenge playerChallenge = new PlayerChallenge();
+        Player challenger = playerDao.get(request.getChallenger().getId());
+        Player opponent = playerDao.get(request.getOpponent().getId());
+        playerChallenge.setChallenger(challenger);
+        playerChallenge.setOpponent(opponent);
+
+        for (LocalDateTime localDateTime : request.getDate()) {
+            Challenge c = new Challenge();
+            c.setOpponent(opponent);
+            c.setChallenger(challenger);
+            c.setChallengeDate(localDateTime);
+            c.setStatus(Status.PENDING);
+            dao.requestChallenge(c);
+        }
+
+        return playerChallenge;
+    }
+
+    @RequestMapping(value = "/challenge/slots/{date}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public List<LocalDateTime> getSlots(@PathVariable(value = "date") String date) throws ParseException {
+        return Slot.getDefault(LocalDate.parse(date).atStartOfDay());
+    }
+
     public List<PlayerChallenge> getPendingChallenges(User u) {
-      return getChallenges(u,Status.PENDING);
+      return getChallenges(u, Status.PENDING);
     }
 
     public List<PlayerChallenge> getAcceptedChallenges(User u) {
-        return getChallenges(u,Status.ACCEPTED);
+        return getChallenges(u, Status.ACCEPTED);
     }
 
     private List<PlayerChallenge> getChallenges(User u, Status status) {
@@ -60,59 +126,37 @@ public class ChallengeResource  implements ChallengeApi {
 
     private PlayerChallenge getPlayerChallenge(Challenge c) {
         PlayerChallenge playerChallenge = new PlayerChallenge();
-        playerChallenge.setChallenge(c);
-        //In challenge division, only one player per team
-        playerChallenge.setChallenger(playerDao.findHomeTeamPlayers(c.getTeamMatch()).get(0));
-        playerChallenge.setOpponent(playerDao.findAwayTeamPlayers(c.getTeamMatch()).get(0));
+        playerChallenge.setChallenger(c.getChallenger());
+        playerChallenge.setOpponent(c.getOpponent());
         return playerChallenge;
     }
 
-
-    @JsonView(value = View.PlayerId.class)
-    @RequestMapping(value = "/potentials", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Collection<User> getPotentials(Principal principal) {
-        User u = userDao.get(principal.getName());
-        return getPotentials(u);
-    }
-
-    public Collection<User> getPotentials(User u) {
+    public Collection<UserChallenge> getPotentials(User u) {
         List<Player> players = dao.getPotentials(u.getId());
-        HashMap<Integer,User> users  = new HashMap<>();
+        HashMap<Integer,UserChallenge> users  = new HashMap<>();
         for (Player player : players) {
             if (!users.containsKey(player.getUser().getId())) {
-                users.put(player.getUser().getId(), player.getUser());
+                UserChallenge userChallenge = new UserChallenge();
+                userChallenge.setUser(player.getUser());
+                users.put(player.getUser().getId(), userChallenge);
             }
-            User user = users.get(player.getUserId());
-            user.addPlayer(player);
+
+            Player p = new Player();
+            p.setId(player.getId());
+            p.setHandicap(player.getHandicap());
+
+            UserChallenge userChallenge = users.get(player.getUserId());
+            if (player.getDivision().getType() == DivisionType.EIGHT_BALL_CHALLENGE) {
+                p.setDivision(player.getDivision());
+
+                userChallenge.setEightBallPlayer(p);
+            } else {
+                p.setDivision(player.getDivision());
+                userChallenge.setNineBallPlayer(p);
+            }
         }
         return users.values();
     }
-
-    @RequestMapping(value = "/leaderBoard", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PlayerStats> leaderBoard() {
-        List<PlayerStats> stats = new ArrayList<>();
-        Map<Integer,PlayerStats> userStats = new HashMap<>();
-        List<Player> players = playerDao.get().stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList());
-        /*
-        for (Player player : players) {
-            for (TeamMatch m : player.getTeamMatches().stream().filter(p -> p.getResult() != null).collect(Collectors.toList())) {
-                if (!userStats.containsKey(player.getId())) {
-                    userStats.put(player.getId(),new PlayerStats(player.getId()));
-                }
-
-                PlayerStats s = userStats.get(player.getId());
-
-            }
-        }
-
-        for (Challenge challenge : dao.get()) {
-            if (challenge.getTeamMatch().getResult() == null)
-                continue;
-        }
-        */
-        return null;
-    }
-
 
     @Override
     public List<Player> getPotentials(Integer id) {
@@ -124,40 +168,6 @@ public class ChallengeResource  implements ChallengeApi {
             return null;
 
         return  null ;//requestChallenge(players.get(0),players.get(1));
-    }
-
-    @RequestMapping(value = "/challenge/request", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public PlayerChallenge requestChallenge(ChallengeRequest request) {
-        Challenge c = new Challenge();
-
-        Player challenger = playerDao.get(request.getChallenger().getId());
-        Player opponent = playerDao.get(request.getOpponent().getId());
-        TeamMatch m = new TeamMatch();
-        m.setHome(challenger.getTeam());
-        m.setDivision(challenger.getDivision());
-        m.setSeason(challenger.getSeason());
-        m.setAway(opponent.getTeam());
-
-        c.setChallengeDate(request.getDate());
-        c.setTeamMatch(m);
-        c.setStatus(Status.PENDING);
-        c = dao.requestChallenge(c);
-        return getPlayerChallenge(c);
-    }
-
-
-    @RequestMapping(value = "/challenge/accept/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public PlayerChallenge acceptChallenge(@PathVariable (value = "id") Integer id) {
-        Challenge c = dao.get(id);
-        c = dao.acceptChallenge(c);
-        return getPlayerChallenge(c);
-    }
-
-
-    @RequestMapping(value = "/challenge/cancel/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public PlayerChallenge cancelChallenge(@PathVariable (value = "id") Integer id) {
-        Challenge c = dao.get(id);
-        return getPlayerChallenge(dao.cancelChallenge(c));
     }
 
     public Challenge requestChallenge(Challenge challenge) {

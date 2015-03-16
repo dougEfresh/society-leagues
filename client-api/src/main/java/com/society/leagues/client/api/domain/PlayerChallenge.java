@@ -1,9 +1,14 @@
 package com.society.leagues.client.api.domain;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 public class PlayerChallenge {
     Player challenger;
     Player opponent;
-    Challenge challenge;
+    List<LocalDateTime> challengeDates;
+    Status status;
 
     public Player getChallenger() {
         return challenger;
@@ -21,11 +26,13 @@ public class PlayerChallenge {
         this.opponent = opponent;
     }
 
-    public Challenge getChallenge() {
-        return challenge;
+    public List<LocalDateTime> getChallengeDates() {
+        return challengeDates;
     }
 
-    public void setChallenge(Challenge challenge) {
-        this.challenge = challenge;
+    public void setChallengeDates(List<LocalDateTime> challengeDates) {
+        this.challengeDates = challengeDates;
     }
+
+
 }

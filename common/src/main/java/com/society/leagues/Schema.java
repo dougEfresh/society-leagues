@@ -113,11 +113,12 @@ public class Schema {
             ")\n";
 
     static final String challenge = "create table challenge  (\n" +
-              " challenge_id int NOT NULL AUTO_INCREMENT(40000) PRIMARY KEY,\n" +
-              " team_match_id int NOT NULL CONSTRAINT PM_S_K REFERENCES team_match ON DELETE CASCADE,\n" +
-              " challenge_date timestamp not null,\n" +
-              " status varchar(255) not null,\n" +
-              " PRIMARY KEY (challenge_id)" +
+            " challenge_id int NOT NULL AUTO_INCREMENT(40000) PRIMARY KEY,\n" +
+            " challenge_date timestamp not null,\n" +
+            " player_challenger_id int not null  CONSTRAINT CH_PL_FK REFERENCES player ON DELETE CASCADE,\n" +
+            " player_opponent_id int not null    CONSTRAINT OP_PL_FK REFERENCES player ON DELETE CASCADE,\n" +
+            " status varchar(255) not null,\n" +
+            " PRIMARY KEY (challenge_id)" +
             ")\n";
     
     static final String slot = "create table slot  (\n" +

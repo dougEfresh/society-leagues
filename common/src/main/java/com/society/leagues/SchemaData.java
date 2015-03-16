@@ -121,16 +121,12 @@ public class SchemaData {
             int slot = (int) Math.round(Math.random() * potentials.size()) - 1;
             Player opponent = potentials.get(slot == -1 ? 0 : slot);
             Challenge challenge = new Challenge();
-            TeamMatch teamMatch = new TeamMatch();
-            teamMatch.setDivision(player.getDivision());
-            teamMatch.setSeason(player.getSeason());
-            teamMatch.setHome(player.getTeam());
-            teamMatch.setAway(opponent.getTeam());
-            challenge.setTeamMatch(teamMatch);
             List<LocalDateTime> slots = challengeApi.slots(LocalDateTime.now().plusDays((int) Math.round(Math.random()*20)));
             slot = (int) Math.round(Math.random() * slots.size()) - 1;
             challenge.setChallengeDate(slots.get(slot == -1 ? 0 : slot));
             challenge.setStatus(Status.PENDING);
+            challenge.setOpponent(opponent);
+            challenge.setChallenger(player);
             challengeApi.requestChallenge(challenge);
         }
         List<Challenge> pending = challengeApi.get().stream().filter(c -> c.getStatus() == Status.PENDING).collect(Collectors.toList());
@@ -217,7 +213,6 @@ public class SchemaData {
             }
         }
         logger.info("Create a total of " + matchApi.get().size() + " matches");
-
     }
 
     private Handicap getRandomHandicap(int i, DivisionType divisionType) {

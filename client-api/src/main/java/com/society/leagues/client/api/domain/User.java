@@ -22,7 +22,8 @@ public class User extends LeagueObject {
     String login;
     @NotNull
     Role role;
-    Set<Integer> players = new TreeSet<>();
+    Set<Integer> playerIds = new TreeSet<>();
+    List<Player> players = new ArrayList<>();
 
     public User(String login, String password, Role role) {
         this.login = login;
@@ -110,17 +111,22 @@ public class User extends LeagueObject {
         return Role.isAdmin(role);
     }
 
-    public Set<Integer> getPlayers() {
-        return players;
+    public Set<Integer> getPlayerIds() {
+        return playerIds;
+    }
+
+    public void addPlayerId(Player player) {
+        playerIds.add(player.getId());
     }
 
     public void addPlayer(Player player) {
-        players.add(player.getId());
+        players.add(player);
     }
 
     public String getName() {
         return firstName + " " + lastName;
     }
+
     @Override
     public String toString() {
         return "User{" +

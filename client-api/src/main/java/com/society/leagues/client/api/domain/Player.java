@@ -102,6 +102,9 @@ public class Player extends LeagueObject {
     }
 
     public Integer getUserId() {
+        if (user == null)
+            return null;
+
         return user.getId();
     }
 

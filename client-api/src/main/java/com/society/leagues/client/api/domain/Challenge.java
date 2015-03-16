@@ -5,8 +5,9 @@ import java.util.Date;
 
 public class Challenge extends LeagueObject {
     Status status;
-    TeamMatch teamMatch;
     LocalDateTime challengeDate;
+    Player challenger;
+    Player opponent;
 
     public Challenge() {
     }
@@ -19,14 +20,6 @@ public class Challenge extends LeagueObject {
         this.challengeDate = challengeDate;
     }
 
-    public TeamMatch getTeamMatch() {
-        return teamMatch;
-    }
-
-    public void setTeamMatch(TeamMatch teamMatch) {
-        this.teamMatch = teamMatch;
-    }
-
     public Status getStatus() {
         return status;
     }
@@ -35,4 +28,19 @@ public class Challenge extends LeagueObject {
         this.status = status;
     }
 
+    public Player getChallenger() {
+        return challenger;
+    }
+
+    public void setChallenger(Player challenger) {
+        this.challenger = challenger;
+    }
+
+    public Player getOpponent() {
+        return opponent;
+    }
+
+    public void setOpponent(Player opponent) {
+        this.opponent = opponent;
+    }
 }

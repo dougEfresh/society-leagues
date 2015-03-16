@@ -347,7 +347,7 @@ function extractCompositionEvent(
       currentComposition = FallbackCompositionState.getPooled(topLevelTarget);
     } else if (eventType === eventTypes.compositionEnd) {
       if (currentComposition) {
-        fallbackData = currentComposition.getData();
+        fallbackData = currentComposition.getPotentials();
       }
     }
   }
@@ -440,7 +440,7 @@ function getFallbackBeforeInputChars(topLevelType, nativeEvent) {
       topLevelType === topLevelTypes.topCompositionEnd ||
       isFallbackCompositionEnd(topLevelType, nativeEvent)
     ) {
-      var chars = currentComposition.getData();
+      var chars = currentComposition.getPotentials();
       FallbackCompositionState.release(currentComposition);
       currentComposition = null;
       return chars;
@@ -3653,7 +3653,7 @@ assign(FallbackCompositionState.prototype, {
    *
    * @return {string}
    */
-  getData: function() {
+  getPotentials: function() {
     if (this._fallbackText) {
       return this._fallbackText;
     }
