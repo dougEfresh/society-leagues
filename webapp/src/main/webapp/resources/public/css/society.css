@@ -105,8 +105,12 @@ h2.form-signin-heading {
 #custom-bootstrap-menu.navbar-default .navbar-brand {
     color: rgba(255, 255, 255, 1);
 }
+#custom-bootstrap-menu.navbar-default #navbar>ul {
+    margin-top: 0px;
+	margin-bottom: 0px;
+}
 #custom-bootstrap-menu.navbar-default {
-    font-size: 14px;
+    font-size: 20px;
     background-color: rgba(0, 0, 0, 1);
     border-width: 0px;
     border-radius: 0px;
@@ -114,6 +118,9 @@ h2.form-signin-heading {
 #custom-bootstrap-menu.navbar-default .navbar-nav>li>a {
     color: rgba(255, 255, 255, 1);
     background-color: rgba(0, 0, 0, 1);
+	padding-top: 15px;
+	padding-bottom: 15px;
+	border-bottom: 1px #666 solid;
 }
 #custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover,
 #custom-bootstrap-menu.navbar-default .navbar-nav>li>a:focus {
@@ -156,7 +163,10 @@ h2.form-signin-heading {
 }
 .well {
 	margin: 100px auto 0px auto;
-	}
+}
+#custom-bootstrap-menu.navbar-default {
+	font-size: 14px;
+}
 #custom-bootstrap-menu.navbar {
 	background: #000;
 	margin: 0px auto;
