@@ -5,32 +5,49 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Society Leagues</title>
-    <link rel="stylesheet" href="/resources/public/css/society.css">
-    <link rel="stylesheet" href="/resources/bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="icon" href="http://www.societybilliards.com/wp-content/themes/Bones/favicon.ico">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
     <link rel="stylesheet" href="/resources/css/jquery.datetimepicker.css">
+    <link rel="stylesheet" href="/resources/public/css/society.css">
+ 
 </head>
 
-<body id="loginApp">
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
+<body id="loginApp" class="full">
+
+    <div class="navbar-wrapper">
+      <div class="container">
+
+<nav id="custom-bootstrap-menu" class="navbar navbar-default" style="margin: 0px 0px;padding:0px 0px;">
+   
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                    aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">Society League</a>
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+         <a class="navbar-brand logo" href="http://www.societybilliards.com"></a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
+                <li><a href="http://www.societybilliards.com">Leagues</a></li>
+                <li><a href="http://www.societybilliards.com/corkroom/">Corkroom</a></li>
+                <li><a href="http://www.societybilliards.com/events/">Events</a></li>
+                <li><a href="http://www.societybilliards.com/menu/">Menu</a></li>
+                <li><a href="http://www.societybilliards.com/proshop/">Pro Shop</a></li>
+                <li><a href="http://www.societybilliards.com/press/">Press</a></li>
+                <li><a href="http://www.societybilliards.com/photovideo/">Media</a></li>
+                <li><a href="http://www.societybilliards.com/contact/">Contact</a></li>
+                <li class="active"><a href="http://leagues.societybilliards.com/">Login</a></li>
             </ul>
-        </div>
-        <!--/.nav-collapse -->
-    </div>
-</nav>
+        </div><!--/.nav-collapse -->
+    
+    </nav>
+    
+    </div><!-- end navbar-wrapper -->
+    </div><!-- end container -->
 <!--
     <header class="page-header">
         <div>
@@ -41,44 +58,57 @@
         </div>
     </header>
 -->
+
+<div class="container">
+
 <main ng-controller="BaseFormCtrl">
 
     <tt-error-messages extra-styles="access-screen"></tt-error-messages>
-    <div class="container">
-        <div class="login-container">
-            <form ng-submit="onLogin()" name="form" class="login-form" novalidate ng-controller="LoginCtrl">
+  
+      
+        <div class="login-container well col-lg-5 col-md-5 col-sm-6">
+            <form ng-submit="onLogin()" name="form" class="login-form form-signin" novalidate ng-controller="LoginCtrl">
                 <fieldset>
-                    <legend>Log In</legend>
-                    <div class="form-field">
+                    <h2 class="form-signin-heading">Please Log In</h2>
+					<div class="form-field form-group">
+                        
+                        <label for="inputUsername" class="sr-only">Username</label>
                         <input type="text" ng-focus="focus('username')"
                                ng-blur="blur('username')"
                                ng-model="vm.username"
-                               name="username" placeholder="Username">
-
-                        <div class="error-messages" ng-show="isMessagesVisible('username')"
+                               name="username" class="form-control" placeholder="Username">
+                               
+ 					<div class="error-messages" ng-show="isMessagesVisible('username')"
                              ng-messages="form.username.$error" ng-cloak>
                             <div ng-message="required">The username is mandatory</div>
                         </div>
                     </div>
-                    <div class="last-form-field">
+                    
+                    <div class="last-form-field form-group">
                         <input type="password" ng-focus="focus('password')" ng-blur="blur('password')"
-                               ng-model="vm.password" name="password" placeholder="Password" required ng-minlength="4">
+                               ng-model="vm.password" 
+                               name="password" class="form-control" placeholder="Password" required ng-minlength="4">
 
-                        <div class="error-messages" ng-show="isMessagesVisible('password')"
+                        <div class="error-messages alert alert-danger" ng-show="isMessagesVisible('password')"
                              ng-messages="form.password.$error" ng-cloak>
                             <div ng-message="required">The password is mandatory</div>
                         </div>
                     </div>
                 </fieldset>
 
-                <button type="submit"> Log In</button>
+                <button type="submit" class="btn btn-default btn-block">Sign in</button>
             </form>
         </div>
-    </div>
+  
 </main>
+</div>
 
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script type="text/javascript" data-main="/resources/public/js/run-login-app"
         src="/resources/bower_components/requirejs/require.js"></script>
-<script src="/resources/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 </body>
 </html>

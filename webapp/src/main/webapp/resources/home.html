@@ -5,9 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Society Leagues</title>
-    <link rel="stylesheet" href="/resources/public/css/society.css">
-    <link rel="stylesheet" href="/resources/bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="icon" href="http://www.societybilliards.com/wp-content/themes/Bones/favicon.ico">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
     <link rel="stylesheet" href="/resources/css/jquery.datetimepicker.css">
+    <!--load society css last as it should be used to override any 
+        classes in the css above without having to modify those files -->
+    <link rel="stylesheet" href="/resources/public/css/society.css">
 </head>
 
 <body id="leagueApp" ng-controller="HomeCtrl">
@@ -15,30 +20,59 @@
 <div class="please-wait-dialog" ng-hide="vm.appReady">
     <img class="please-wait-spinner" src="/resources/img/loading.gif">
 </div>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
+
+
+<div class="navbar-wrapper">
+      <div class="container">
+
+<nav id="custom-bootstrap-menu" class="navbar navbar-default" style="margin: 0px 0px;padding:0px 0px;">
+   
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                    aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">Society League</a>
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+         <a class="navbar-brand logo" href="http://www.societybilliards.com"></a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Home</a></li>
-                <li><a href="#requestChallenge">Request Challenge</a></li>
-                <li><a href="#contact">{{vm.userName}}</a></li>
-                <li><a ng-click="logout()" href="/logout">Logout </a></li>
+                <li><a href="http://www.societybilliards.com">Leagues</a></li>
+                <li><a href="http://www.societybilliards.com/corkroom/">Corkroom</a></li>
+                <li><a href="http://www.societybilliards.com/events/">Events</a></li>
+                <li><a href="http://www.societybilliards.com/menu/">Menu</a></li>
+                <li><a href="http://www.societybilliards.com/proshop/">Pro Shop</a></li>
+                <li><a href="http://www.societybilliards.com/press/">Press</a></li>
+                <li><a href="http://www.societybilliards.com/photovideo/">Media</a></li>
+                <li><a href="http://www.societybilliards.com/contact/">Contact</a></li>
+                <li class="active"><a href="http://leagues.societybilliards.com/">Login</a></li>
             </ul>
-        </div>
-        <!--/.nav-collapse -->
-    </div>
-</nav>
+        </div><!--/.nav-collapse -->
+    
+    </nav>
+    
+    </div><!-- end navbar-wrapper -->
+    </div><!-- end container -->
+    
 
+  <div class="container">
+
+  
+                <ul>
+                    <li class="active"><a href="#">Home</a></li>
+                    <li><a href="#requestChallenge">Request Challenge</a></li>
+                    <li><span class="glyphicon glyphicon-user" aria-hidden="true"></span> <a href="#contact">{{vm.userName}}</a></li>
+                    <li><a ng-click="logout()" href="/logout">Logout </a></li>
+                </ul>
+     
+            <!--/.nav-collapse -->
+
+  </div>
+
+<button type="button" class="btn btn-default" aria-label="Left Align">
+  <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> <a href="#requestChallenge">Request Challenge</a>
+</button>
 <header ng-class="{'app-ready': vm.appReady}"></header>
 
 <main class="container not-ready" ng-class="{'app-ready': vm.appReady}" ng-cloak>
@@ -316,12 +350,14 @@
     </div>
 </main>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script type="text/javascript"
         data-main="/resources/js/run-home-app"
         src="/resources/bower_components/requirejs/require.js">
 </script>
-<script src="/resources/public/js/jquery.min.js"></script>
-<script src="/resources/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>
