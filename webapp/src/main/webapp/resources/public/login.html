@@ -32,7 +32,7 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="http://www.societybilliards.com">Leagues</a></li>
+                <li><a href="http://www.societybilliards.com">Leagues</a></li>
                 <li><a href="http://www.societybilliards.com/corkroom/">Corkroom</a></li>
                 <li><a href="http://www.societybilliards.com/events/">Events</a></li>
                 <li><a href="http://www.societybilliards.com/menu/">Menu</a></li>
@@ -40,14 +40,14 @@
                 <li><a href="http://www.societybilliards.com/press/">Press</a></li>
                 <li><a href="http://www.societybilliards.com/photovideo/">Media</a></li>
                 <li><a href="http://www.societybilliards.com/contact/">Contact</a></li>
-                <li><a href="http://leagues.societybilliards.com/">Login</a></li>
+                <li class="active"><a href="http://leagues.societybilliards.com/">Login</a></li>
             </ul>
         </div><!--/.nav-collapse -->
     
     </nav>
     
-    </div>
-    </div>
+    </div><!-- end navbar-wrapper -->
+    </div><!-- end container -->
 <!--
     <header class="page-header">
         <div>
@@ -67,24 +67,27 @@
   
       
         <div class="login-container well col-lg-5 col-md-5 col-sm-6">
-            <form ng-submit="onLogin()" name="form" class="login-form form-signin" style="padding:0px 0px;margin: 0px 0px;" novalidate ng-controller="LoginCtrl">
+            <form ng-submit="onLogin()" name="form" class="login-form form-signin" novalidate ng-controller="LoginCtrl">
                 <fieldset>
-                     <h2 class="form-signin-heading">Please Log In</h2>
-                    <div class="form-field form-group">
-                         <label for="inputUsername" class="sr-only">Username</label>
+                    <h2 class="form-signin-heading">Please Log In</h2>
+					<div class="form-field form-group">
+                        
+                        <label for="inputUsername" class="sr-only">Username</label>
                         <input type="text" ng-focus="focus('username')"
                                ng-blur="blur('username')"
                                ng-model="vm.username"
-                               name="username" id="inputUsername" class="form-control" placeholder="Username">
-
-                        <div class="error-messages alert alert-danger" role="alert" ng-show="isMessagesVisible('username')"
+                               name="username" class="form-control" placeholder="Username">
+                               
+ 					<div class="error-messages" ng-show="isMessagesVisible('username')"
                              ng-messages="form.username.$error" ng-cloak>
                             <div ng-message="required">The username is mandatory</div>
                         </div>
                     </div>
+                    
                     <div class="last-form-field form-group">
                         <input type="password" ng-focus="focus('password')" ng-blur="blur('password')"
-                               ng-model="vm.password" name="password" id="inputPassword" class="form-control" placeholder="Password" required ng-minlength="4">
+                               ng-model="vm.password" 
+                               name="password" class="form-control" placeholder="Password" required ng-minlength="4">
 
                         <div class="error-messages alert alert-danger" ng-show="isMessagesVisible('password')"
                              ng-messages="form.password.$error" ng-cloak>
@@ -102,10 +105,8 @@
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script type="text/javascript"
-        data-main="/resources/js/run-home-app"
-        src="/resources/bower_components/requirejs/require.js">
-</script>
+<script type="text/javascript" data-main="/resources/public/js/run-login-app"
+        src="/resources/bower_components/requirejs/require.js"></script>
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
