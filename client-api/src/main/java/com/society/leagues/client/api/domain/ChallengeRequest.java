@@ -8,7 +8,7 @@ import java.util.List;
 public class ChallengeRequest {
     Player challenger;
     Player opponent;
-    List<LocalDateTime> challengeTimes = new ArrayList<>();
+    List<Slot> slotTimes = new ArrayList<>();
 
     public Player getChallenger() {
         return challenger;
@@ -26,12 +26,12 @@ public class ChallengeRequest {
         this.opponent = opponent;
     }
 
-    public List<LocalDateTime> getChallengeTimes() {
-        return challengeTimes;
+    public List<Slot> getSlotTimes() {
+        return slotTimes;
     }
 
-    public void setChallengeTimes(List<LocalDateTime> challengeTimes) {
-        this.challengeTimes = challengeTimes;
+    public void setSlotTimes(List<Slot> slotTimes) {
+        this.slotTimes = slotTimes;
     }
 
     public void addDate(LocalDateTime date) {
@@ -43,7 +43,7 @@ public class ChallengeRequest {
         return "ChallengeRequest{" +
                 "challenger=" + challenger +
                 ", opponent=" + opponent +
-                ", challengeTimes=" + Arrays.toString(challengeTimes.toArray()) +
+                ", challengeTimes=" + Arrays.toString(slotTimes.toArray()) +
                 '}';
     }
 }

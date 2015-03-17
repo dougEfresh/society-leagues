@@ -96,12 +96,12 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         return modify(challenge, "update challenge set " +
                         "player_challenger_id=?," +
                         "player_opponent_id=?," +
-                        "challenge_date=?," +
+                        "slot_id=?," +
                         "status=? " +
                         "where challenge_id = ?",
                 challenge.getChallenger().getId(),
                 challenge.getOpponent().getId(),
-                challenge.getChallengeDate(),
+                challenge.getSlot().getId(),
                 challenge.getStatus().name(),
                 challenge.getId());
     }

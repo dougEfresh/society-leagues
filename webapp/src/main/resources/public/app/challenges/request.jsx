@@ -112,7 +112,14 @@ var ChallengeRow = React.createClass({
 });
 
 var RequestChallengeRow = React.createClass({
-
+    getInitialState: function() {
+        return {
+            data: {
+                opponent: {},
+                
+            }
+        }
+    },
     handleClick: function() {
         var challenge = {};
         if (this.refs.nineball.getDOMNode().checked) {

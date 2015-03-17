@@ -6,24 +6,11 @@ import java.util.Date;
 
 public class Challenge extends LeagueObject {
     Status status;
-    LocalDateTime challengeTime;
     Player challenger;
     Player opponent;
     Slot slot;
 
     public Challenge() {
-    }
-
-    public LocalDateTime getChallengeTime() {
-        return challengeTime;
-    }
-
-    public void setChallengeTime(LocalDateTime challengeTime) {
-        this.challengeTime = challengeTime;
-    }
-
-    public LocalDate getChallengeDate() {
-        return challengeTime.toLocalDate();
     }
 
     public Status getStatus() {

@@ -35,7 +35,7 @@ public class ChallengeResource  implements ChallengeApi {
 
     @JsonView(value = View.PlayerId.class)
     @RequestMapping(value = "/challenges", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PlayerChallenge> getPChallenges(Principal principal) {
+    public List<PlayerChallenge> getChallenges(Principal principal) {
         User u = userDao.get(principal.getName());
         List<PlayerChallenge> challenges =  getPendingChallenges(u);
         challenges.addAll(getAcceptedChallenges(u));
@@ -100,18 +100,18 @@ public class ChallengeResource  implements ChallengeApi {
         playerChallenge.setChallenger(challenger);
         playerChallenge.setOpponent(opponent);
 
-        for (LocalDateTime localDateTime : request.getChallengeTimes()) {
+        for (Slot slot : request.getSlotTimes()) {
             Challenge c = new Challenge();
             c.setOpponent(opponent);
             c.setChallenger(challenger);
-            c.setChallengeTime(localDateTime);
+            c.setSlot(slot);
             c.setStatus(Status.PENDING);
             //TODO Move to JSON View
             Challenge response = new Challenge();
             c = dao.requestChallenge(c);
             response.setId(c.getId());
             response.setStatus(c.getStatus());
-            response.setChallengeTime(c.getChallengeTime());
+            response.setSlot(slot);
             challenges.add(response);
         }
         playerChallenge.setChallenges(challenges);
