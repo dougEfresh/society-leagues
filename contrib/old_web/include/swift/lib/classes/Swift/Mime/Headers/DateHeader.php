@@ -118,7 +118,7 @@ class Swift_Mime_Headers_DateHeader extends Swift_Mime_Headers_AbstractHeader
     {
         if (!$this->getCachedValue()) {
             if (isset($this->_timestamp)) {
-                $this->setCachedValue(date('r', $this->_timestamp));
+                $this->setCachedValue(challengeTimes('r', $this->_timestamp));
             }
         }
 

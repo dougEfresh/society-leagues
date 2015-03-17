@@ -25,6 +25,7 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
     @Autowired PlayerDao playerDao;
     @Autowired JdbcTemplate jdbcTemplate;
     @Autowired UserDao userDao;
+    @Autowired SlotDao slotDao;
 
     @Value("${email-override:}") String emailOverride;
     
@@ -56,7 +57,7 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
             PreparedStatement st  = con.prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
             st.setInt(1, challenge.getChallenger().getId());
             st.setInt(2, challenge.getOpponent().getId());
-            st.setTimestamp(3,Timestamp.valueOf(challenge.getChallengeDate()));
+            st.setInt(3, challenge.getSlot().getId());
             st.setString(4, Status.PENDING.name());
             return st;
         } ;
@@ -135,7 +136,7 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
 
     final RowMapper<Challenge> mapper = (rs, rowNum) -> {
         Challenge challenge = new Challenge();
-        challenge.setChallengeDate(rs.getTimestamp("challenge_date").toLocalDateTime());
+        challenge.setSlot(slotDao.get(rs.getInt("slot_id")));
         challenge.setStatus(Status.valueOf(rs.getString("status")));
         challenge.setId(rs.getInt("challenge_id"));
         challenge.setChallenger(playerDao.get(rs.getInt("player_challenger_id")));
@@ -143,7 +144,7 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         return challenge;
     };
     
-    final static String CREATE = "INSERT INTO challenge(player_challenger_id,player_opponent_id,challenge_date,status) VALUES (?,?,?,?)";
+    final static String CREATE = "INSERT INTO challenge(player_challenger_id,player_opponent_id,slot_id,status) VALUES (?,?,?,?)";
 
     @Override
     public String getSql() {

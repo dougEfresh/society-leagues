@@ -6,17 +6,13 @@ import com.society.leagues.client.View;
 import com.society.leagues.client.api.ChallengeApi;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.DivisionType;
-import com.society.leagues.dao.ChallengeDao;
-import com.society.leagues.dao.PlayerDao;
-import com.society.leagues.dao.PlayerResultDao;
-import com.society.leagues.dao.UserDao;
+import com.society.leagues.dao.*;
 import com.society.leagues.util.Email;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.text.ParseException;
@@ -29,12 +25,13 @@ import java.util.stream.Collectors;
 @RestController
 //@RolesAllowed(value = {"ADMIN","PLAYER"})
 public class ChallengeResource  implements ChallengeApi {
-
+    private static Logger logger = LoggerFactory.getLogger(ChallengeResource.class);
     @Autowired EmailService emailService;
     @Autowired ChallengeDao dao;
     @Autowired PlayerDao playerDao;
     @Autowired PlayerResultDao playerResultDao;
     @Autowired UserDao userDao;
+    @Autowired SlotDao slotDao;
 
     @JsonView(value = View.PlayerId.class)
     @RequestMapping(value = "/challenges", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -44,6 +41,14 @@ public class ChallengeResource  implements ChallengeApi {
         challenges.addAll(getAcceptedChallenges(u));
         challenges.addAll(getChallenges(u, Status.CANCELLED));
         //challenges.sort((o1, o2) -> o1.getChallenges().getId().compareTo(o2.getChallenges().getId()));
+        return challenges;
+    }
+
+    @JsonView(value = View.PlayerId.class)
+    @RequestMapping(value = "/challenges/pending", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PlayerChallenge> getPending(Principal principal) {
+        User u = userDao.get(principal.getName());
+        List<PlayerChallenge> challenges =  getPendingChallenges(u);
         return challenges;
     }
 
@@ -81,34 +86,45 @@ public class ChallengeResource  implements ChallengeApi {
         return c;
     }
 
-    @RequestMapping(value = "/challenge/request", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public PlayerChallenge requestChallenge(ChallengeRequest request) {
-
+    @RequestMapping(value = "/challenge/request",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public PlayerChallenge requestChallenge(@RequestBody ChallengeRequest request) {
+        logger.info("Got request for challenge " + request);
         PlayerChallenge playerChallenge = new PlayerChallenge();
         Player challenger = playerDao.get(request.getChallenger().getId());
         Player opponent = playerDao.get(request.getOpponent().getId());
+
+        List<Challenge> challenges = new ArrayList<>();
         playerChallenge.setChallenger(challenger);
         playerChallenge.setOpponent(opponent);
 
-        for (LocalDateTime localDateTime : request.getDate()) {
+        for (LocalDateTime localDateTime : request.getChallengeTimes()) {
             Challenge c = new Challenge();
             c.setOpponent(opponent);
             c.setChallenger(challenger);
-            c.setChallengeDate(localDateTime);
+            c.setChallengeTime(localDateTime);
             c.setStatus(Status.PENDING);
-            dao.requestChallenge(c);
+            //TODO Move to JSON View
+            Challenge response = new Challenge();
+            c = dao.requestChallenge(c);
+            response.setId(c.getId());
+            response.setStatus(c.getStatus());
+            response.setChallengeTime(c.getChallengeTime());
+            challenges.add(response);
         }
-
+        playerChallenge.setChallenges(challenges);
         return playerChallenge;
     }
 
     @RequestMapping(value = "/challenge/slots/{date}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public List<LocalDateTime> getSlots(@PathVariable(value = "date") String date) throws ParseException {
-        return Slot.getDefault(LocalDate.parse(date).atStartOfDay());
+    public List<Slot> getSlots(@PathVariable(value = "date") String date) throws ParseException {
+            return slotDao.get(LocalDate.parse(date).atStartOfDay());
     }
 
     public List<PlayerChallenge> getPendingChallenges(User u) {
-      return getChallenges(u, Status.PENDING);
+        return null;
     }
 
     public List<PlayerChallenge> getAcceptedChallenges(User u) {

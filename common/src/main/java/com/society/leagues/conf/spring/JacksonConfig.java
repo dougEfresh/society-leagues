@@ -20,7 +20,7 @@ public class JacksonConfig {
     public Jackson2ObjectMapperBuilder jacksonBuilder() {
         Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
         return builder.indentOutput(true).dateFormat(
-                new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")).defaultViewInclusion(true).
+                new SimpleDateFormat("yyyy-MM-dd")).defaultViewInclusion(true).
                 serializers(dateSerializer).deserializerByType(LocalDateTime.class,dateDeSerializer);
     }
 

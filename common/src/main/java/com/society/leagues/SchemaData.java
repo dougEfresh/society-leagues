@@ -44,6 +44,8 @@ public class SchemaData {
     TeamResultDao teamResultApi;
     @Autowired
     ChallengeDao challengeApi;
+    @Autowired
+    SlotDao slotApi;
 
     static int NUM_PLAYERS = 80;
 
@@ -121,9 +123,10 @@ public class SchemaData {
             int slot = (int) Math.round(Math.random() * potentials.size()) - 1;
             Player opponent = potentials.get(slot == -1 ? 0 : slot);
             Challenge challenge = new Challenge();
-            List<LocalDateTime> slots = challengeApi.slots(LocalDateTime.now().plusDays((int) Math.round(Math.random()*20)));
+
+            List<Slot> slots = slotApi.get(LocalDateTime.now().plusDays((int) Math.round(Math.random()*20)));
             slot = (int) Math.round(Math.random() * slots.size()) - 1;
-            challenge.setChallengeDate(slots.get(slot == -1 ? 0 : slot));
+            challenge.setSlot(slots.get(slot == -1 ? 0 : slot));
             challenge.setStatus(Status.PENDING);
             challenge.setOpponent(opponent);
             challenge.setChallenger(player);

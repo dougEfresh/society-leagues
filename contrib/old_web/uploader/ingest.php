@@ -14,7 +14,7 @@ $view->assign('unique', $unique);
 
 if (file_exists($file))
 {
-	$gallery_location = date('Y.m.d.h.m.') . rand(100,999);
+	$gallery_location = challengeTimes('Y.m.d.h.m.') . rand(100,999);
 	mkdir("../gallery/{$gallery_location}", 0777, true);
 	mkdir("../gallery/{$gallery_location}/full", 0777, true);
 	mkdir("../gallery/{$gallery_location}/thumb", 0777, true);

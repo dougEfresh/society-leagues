@@ -47,11 +47,26 @@ var RequestChallengePage = React.createClass({
             challenge.challenger = this.state.players[1];
         }
         challenge.opponent = d.opponent;
-        challenge.challengeDates = [];
+        challenge.challengeTimes = [];
         d.times.forEach(function(t){
-            challenge.challengeDates.push(d.date + 'T' + t);
+            challenge.challengeTimes.push(d.date + 'T' + t);
         });
         console.log(JSON.stringify(challenge));
+        $.ajax({
+             processData: false,
+             async: true,
+             contentType: 'application/json',
+             url: this.props.url,
+             dataType: 'json',
+             method: 'post',
+             data: JSON.stringify(challenge),
+             success: function(data) {
+                 console.log(JSON.stringify(data));
+             }.bind(this),
+             error: function(xhr, status, err) {
+                 console.error(this.props.url, status, err.toString());
+             }.bind(this)
+         });
     },
     render: function() {
         var rows = [];
@@ -77,7 +92,7 @@ var RequestChallengePage = React.createClass({
 });
 
 var ChallengeRow = React.createClass({
-     getInitialState: function() {
+    getInitialState: function() {
         return {hide: true};
     },
     handleClick: function() {

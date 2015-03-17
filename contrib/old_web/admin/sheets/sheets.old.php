@@ -32,8 +32,8 @@ switch($row['league_id'])
 		$player['home']		= $home_team_column = 40;
 		$player['visit']	= $visit_team_column = 355;
 		$team_row			= 690;
-		$date['column']		= 35;
-		$date['row']		= 717;
+		$challengeTimes['column']		= 35;
+		$challengeTimes['row']		= 717;
 	break;
 	
 	case '3':
@@ -58,8 +58,8 @@ switch($row['league_id'])
 		$player['home']		= 110;
 		$player['visit']	= 365;
 		$team_row			= 710;
-		$date['column']		= 335;
-		$date['row']		= 680;		
+		$challengeTimes['column']		= 335;
+		$challengeTimes['row']		= 680;
 	break;
 
 	case '6':
@@ -80,8 +80,8 @@ switch($row['league_id'])
 		$player['home']		= 110;
 		$player['visit']	= 365;
 		$team_row			= 710;
-		$date['column']		= 335;
-		$date['row']		= 680;		
+		$challengeTimes['column']		= 335;
+		$challengeTimes['row']		= 680;
 	break;
 				
 	case '1':
@@ -102,8 +102,8 @@ switch($row['league_id'])
 		$player['home']		= 98;
 		$player['visit']	= 455;
 		$team_row			= 507;
-		$date['column']		= 90;
-		$date['row']		= 520;				
+		$challengeTimes['column']		= 90;
+		$challengeTimes['row']		= 520;
 	break;
 			
 	default:
@@ -150,7 +150,7 @@ while($row = mysql_fetch_assoc($result))
 		
 		$font_size = 10;
 		$p->setfont($font, $font_size);
-		$p->set_text_pos($date['column'], $date['row']);
+		$p->set_text_pos($challengeTimes['column'], $challengeTimes['row']);
 		$p->setcolor("both", "cmyk", 1, 1, 0, 0);
 		$p->show('Scheduled Date:  '.$row['week']);
 				

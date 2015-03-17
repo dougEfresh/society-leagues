@@ -7,8 +7,8 @@ $start_date   = jquery_to_mysql_date(urldecode($_GET['start_date']));
 $end_date     = jquery_to_mysql_date(urldecode($_GET['end_date']));
 $league_id    = urldecode($_GET['league_id']);
 $time_slot    = urldecode($_GET['time_slot']);
-$division_day = date('w', strtotime($start_date)) + 1;
-$season_year  = date('Y', strtotime($start_date));
+$division_day = challengeTimes('w', strtotime($start_date)) + 1;
+$season_year  = challengeTimes('Y', strtotime($start_date));
 
 $sn[1] = $sn[2] = $sn[12]  = 1;
 $sn[3] = $sn[4] = $sn[5]   = 2;
@@ -17,7 +17,7 @@ $sn[9] = $sn[10] = $sn[11] = 4;
 
 $set = 
 "season_year='"	  . addslashes($season_year) . "', " . 
-"season_number='" . addslashes($sn[(int)date('m', strtotime($start_date))]) . "', " . 
+"season_number='" . addslashes($sn[(int)challengeTimes('m', strtotime($start_date))]) . "', " .
 "league_id='"     . addslashes($league_id) ."'";
 
 mysql_query("INSERT INTO season SET {$set}");

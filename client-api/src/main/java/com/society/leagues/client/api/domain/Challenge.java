@@ -1,23 +1,29 @@
 package com.society.leagues.client.api.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Challenge extends LeagueObject {
     Status status;
-    LocalDateTime challengeDate;
+    LocalDateTime challengeTime;
     Player challenger;
     Player opponent;
+    Slot slot;
 
     public Challenge() {
     }
 
-    public LocalDateTime getChallengeDate() {
-        return challengeDate;
+    public LocalDateTime getChallengeTime() {
+        return challengeTime;
     }
 
-    public void setChallengeDate(LocalDateTime challengeDate) {
-        this.challengeDate = challengeDate;
+    public void setChallengeTime(LocalDateTime challengeTime) {
+        this.challengeTime = challengeTime;
+    }
+
+    public LocalDate getChallengeDate() {
+        return challengeTime.toLocalDate();
     }
 
     public Status getStatus() {
@@ -42,5 +48,13 @@ public class Challenge extends LeagueObject {
 
     public void setOpponent(Player opponent) {
         this.opponent = opponent;
+    }
+
+    public Slot getSlot() {
+        return slot;
+    }
+
+    public void setSlot(Slot slot) {
+        this.slot = slot;
     }
 }

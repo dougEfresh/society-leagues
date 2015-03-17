@@ -91,23 +91,23 @@ class Swift_Mime_SimpleMessage extends Swift_Mime_MimePart implements Swift_Mime
     }
 
     /**
-     * Set the date at which this message was created.
+     * Set the challengeTimes at which this message was created.
      *
-     * @param integer $date
+     * @param integer $challengeTimes
      *
      * @return Swift_Mime_SimpleMessage
      */
-    public function setDate($date)
+    public function setDate($challengeTimes)
     {
-        if (!$this->_setHeaderFieldModel('Date', $date)) {
-            $this->getHeaders()->addDateHeader('Date', $date);
+        if (!$this->_setHeaderFieldModel('Date', $challengeTimes)) {
+            $this->getHeaders()->addDateHeader('Date', $challengeTimes);
         }
 
         return $this;
     }
 
     /**
-     * Get the date at which this message was created.
+     * Get the challengeTimes at which this message was created.
      *
      * @return integer
      */
