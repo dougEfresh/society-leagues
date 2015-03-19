@@ -1,8 +1,6 @@
 package com.society.leagues.client.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.society.leagues.client.View;
-
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -27,7 +25,6 @@ public class Team extends LeagueObject {
     public Team() {
     }
 
-    @JsonView(View.PlayerId.class)
     public String getName() {
         return name;
     }

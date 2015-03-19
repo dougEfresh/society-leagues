@@ -1,6 +1,5 @@
 package com.society.leagues.resource.client;
 
-import com.society.leagues.EmailService;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.dao.*;
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 @RestController
 public class ChallengeResource  {
     private static Logger logger = LoggerFactory.getLogger(ChallengeResource.class);
-    @Autowired EmailService emailService;
     @Autowired ChallengeDao dao;
     @Autowired PlayerDao playerDao;
     @Autowired PlayerResultDao playerResultDao;
