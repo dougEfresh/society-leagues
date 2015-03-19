@@ -1,0 +1,57 @@
+{
+  "name": "svb-billiards",
+  "version": "0.1.0",
+  "description": "Billiard management softtware",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Open test/index.html in a browser...\" && watchify -t reactify test/index.js -o test/tests.js -v"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dougEfresh/society-leagues.git"
+  },
+  "author": "Giulio Canti <giulio.canti@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gcanti/tcomb-form/issues"
+  },
+  "homepage": "https://github.com/gcanti/tcomb-form",
+  "peerDependencies": {
+    "react": ">=0.12.0"
+  },
+  "dependencies": {
+    "tcomb-form": "0.4.4",
+    "react": "0.12.2",
+    "debug": "^2.1.1",
+    "tcomb-validation": "^1.0.0",
+    "uvdom": "^0.1.0",
+    "uvdom-bootstrap": "^0.1.4"
+  },
+  "devDependencies": {
+    "browserify": "^6.3.2",
+    "deep-diff": "^0.3.0",
+    "gulp": "^3.8.10",
+    "gulp-jshint": "^1.9.0",
+    "gulp-util": "^3.0.2",
+    "jshint-stylish": "^1.0.0",
+    "react-vdom": "^0.2.1",
+    "reactify": "^1.0.0",
+    "tape": "^3.0.3",
+    "vinyl-source-stream": "^1.0.0",
+    "watchify": "^2.2.1"
+  },
+  "tags": [
+    "form",
+    "validation",
+    "generation",
+    "react",
+    "react-component"
+  ],
+  "keywords": [
+    "form",
+    "validation",
+    "generation",
+    "react",
+    "react-component"
+  ]
+}

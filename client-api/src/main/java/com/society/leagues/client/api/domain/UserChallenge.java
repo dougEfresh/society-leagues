@@ -4,6 +4,7 @@ public class UserChallenge {
     User user;
     Player nineBallPlayer;
     Player eightBallPlayer;
+    PlayerStats playerStats;
 
     public User getUser() {
         return user;

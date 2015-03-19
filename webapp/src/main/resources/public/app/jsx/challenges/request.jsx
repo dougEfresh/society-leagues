@@ -1,3 +1,6 @@
+var t = require('tcomb-form');
+var React = require('react');
+
 var RequestChallengePage = React.createClass({
     getInitialState: function() {
         return {
@@ -116,7 +119,6 @@ var RequestChallengeRow = React.createClass({
         return {
             data: {
                 opponent: {},
-
             }
         }
     },

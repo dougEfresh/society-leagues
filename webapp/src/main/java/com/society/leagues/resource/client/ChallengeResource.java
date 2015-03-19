@@ -45,7 +45,8 @@ public class ChallengeResource  {
     @RequestMapping(value = "/challenge/potentials", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<UserChallenge> getPotentials(Principal principal) {
         User u = userDao.get(principal.getName());
-        return  getPotentials(u);
+        Collection<UserChallenge> potentials = getPotentials(u);
+        return potentials;
     }
 
     @RequestMapping(value = "/challenge/leaderBoard", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -108,7 +109,10 @@ public class ChallengeResource  {
         return playerChallenge;
     }
 
-    @RequestMapping(value = "/challenge/slots/{date}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @RequestMapping(value = "/challenge/slots/{date}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.ALL_VALUE)
     public List<Slot> getSlots(@PathVariable(value = "date") String date) throws ParseException {
             return slotDao.get(LocalDate.parse(date).atStartOfDay());
     }
