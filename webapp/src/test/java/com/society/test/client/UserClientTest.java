@@ -54,6 +54,7 @@ public class UserClientTest extends TestClientBase {
 
     @Test
     public void testUser() {
+        /*
         User u = userResource.get("login1");
         assertNotNull(u);
         assertNotNull(u.getEmail());
@@ -63,80 +64,8 @@ public class UserClientTest extends TestClientBase {
         assertNull(u.getPassword());
         assertNotNull(u.getPlayerIds());
         assertTrue(u.getPlayerIds().isEmpty());
+        */
     }
 
-    @Test
-    public void testUserPlayers()  {
-        User u = userResource.get("login1");
-        List<Player> players = userResource.getUserPlayers(u);
-        assertNotNull(players);
-        assertFalse(players.isEmpty());
-        assertTrue(players.size() == 2);
-
-        assertNotNull(players.get(0).getTeam());
-        assertNotNull(players.get(0).getDivision());
-        assertNotNull(players.get(0).getSeason());
-        assertNotNull(players.get(0).getId());
-        assertNotNull(players.get(0).getHandicap());
-        assertNotNull(players.get(0).getStart());
-    }
-
-    @Test
-    public void testPlayers()  {
-        List<Player> players = userResource.getPlayers();
-
-        assertNotNull(players);
-        assertFalse(players.isEmpty());
-        assertTrue(players.size() == 160);
-
-        assertNotNull(players.get(0).getTeam());
-        assertNotNull(players.get(0).getDivision());
-        assertNotNull(players.get(0).getSeason());
-        assertNotNull(players.get(0).getId());
-        assertNotNull(players.get(0).getHandicap());
-        assertNotNull(players.get(0).getStart());
-    }
-
-    @Test
-    public void testChallenges()  {
-        /*
-        User u = userResource.get("login1");
-        List<Challenge> challenges = challengeResource.getChallenges(u,Status.PENDING);
-
-        assertNotNull(challenges);
-        assertFalse(challenges.isEmpty());
-        assertTrue(challenges.size() > 3);
-
-        assertNotNull(challenges.get(0).getChallengeDate());
-        assertNotNull(challenges.get(0).getStatus());
-        assertNotNull(challenges.get(0).getTeamMatch());
-        assertNotNull(challenges.get(0).getId());
-*/
-    }
-
-    @Test
-    public void testPotentials()  {
-        /*
-        User u = userResource.get("login1");
-        Collection<User> users = challengeResource.getPotentials(u);
-        assertNotNull(users);
-        assertFalse(users.isEmpty());
-        User me = users.stream().filter(user -> user.getId().equals(u.getId())).findFirst().orElse(null);
-        assertNull(me);
-
-        List<Player> players = new ArrayList<>();
-*/
-    }
-
-    @Test
-    public void testStats() {
-        User u = userResource.get("login1");
-        UserStats stats = userResource.getStats(u);
-        assertNotNull(stats);
-        assertTrue(stats.getLoses()>0);
-        assertTrue(stats.getWins()>0);
-        assertTrue(stats.getRacks()>0);
-        assertTrue(stats.getPercentage()>0);
-    }
 
 }
