@@ -2,6 +2,7 @@ package com.society.leagues.client.api;
 
 import com.society.leagues.client.api.domain.LeagueObject;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ClientApi<T extends LeagueObject> {
@@ -10,5 +11,5 @@ public interface ClientApi<T extends LeagueObject> {
     
     T get(Integer id);
     
-    List<T> get();
+    Collection<T> get();
 }

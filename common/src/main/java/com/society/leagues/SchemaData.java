@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -153,7 +154,7 @@ public class SchemaData {
 
 
         List<TeamMatch> teamMatches = matchApi.get().stream().filter(m -> m.getMatchDate().before(b)).collect(Collectors.toList());
-        List<Player> players = playerApi.get();
+        Collection<Player> players = playerApi.get();
 
         for (TeamMatch teamMatch : teamMatches) {
             TeamResult result = new TeamResult();

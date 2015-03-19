@@ -138,7 +138,7 @@ public class ChallengeResource  {
     }
 
     public Collection<UserChallenge> getPotentials(User u) {
-        List<Player> players = dao.getPotentials(u.getId());
+        Collection<Player> players = dao.getPotentials(u.getId());
         HashMap<Integer,UserChallenge> users  = new HashMap<>();
         for (Player player : players) {
             if (!users.containsKey(player.getUser().getId())) {

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,12 +49,12 @@ public class UserResource  {
     }
 
     @RequestMapping(value = "/players", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Player> getPlayers() {
+    public Collection<Player> getPlayers() {
         return playerDao.get();
     }
 
     @RequestMapping(value = "/results", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PlayerResult> getResults(Principal principal) {
+    public Collection<PlayerResult> getResults(Principal principal) {
         return playerResultDao.get();
     }
 

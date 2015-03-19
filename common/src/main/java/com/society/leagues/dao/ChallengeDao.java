@@ -27,16 +27,18 @@ public class ChallengeDao extends Dao<Challenge>  {
 
     @Value("${email-override:}") String emailOverride;
     
-    public List<Player> getPotentials(Integer id) {
+    public Collection<Player> getPotentials(Integer id) {
         try {
             User challenger = userDao.get(id);
-            List<Player> potentials = new ArrayList<>();
-            List<Player> challengePlayers = playerDao.getByUser(challenger).stream().filter(
+            Collection<Player> potentials = new ArrayList<>();
+            Collection<Player> challengePlayers = playerDao.getByUser(challenger).stream().filter(
                     p -> p.getDivision().isChallenge()).collect(Collectors.toList()
             );
-            List<Player> players = playerDao.get();
+            Collection<Player> players = playerDao.get();
             for (Player challengePlayer : challengePlayers) {
-                potentials.addAll(findChallengeUsers(challengePlayer.getDivision(),challengePlayer.getHandicap(),players));
+                potentials.addAll(findChallengeUsers(
+                        challengePlayer.getDivision(),
+                        challengePlayer.getHandicap(),players));
             }
             //Exclude the user requesting potentials
             potentials = potentials.stream().filter(p -> !Objects.equals(p.getUserId(), id)).collect(Collectors.toList());
@@ -103,7 +105,7 @@ public class ChallengeDao extends Dao<Challenge>  {
         return Slot.getDefault(date);
     }
 
-    private List<Player> findChallengeUsers(Division division,Handicap handicap, List<Player> players) {
+    private List<Player> findChallengeUsers(Division division,Handicap handicap, Collection<Player> players) {
         return players.stream().
                 filter(p -> p.getDivision().getId().equals(division.getId()) &&
                         p.getHandicap().ordinal() >= handicap.ordinal()-3 &&
