@@ -10,10 +10,8 @@ public class LeagueCache<T extends LeagueObject> {
     
     private Map<Integer,T> cache = new HashMap<>();
 
-    public synchronized final List<T> get() {
-        List<T> list = new ArrayList<>();
-        list.addAll(cache.values());
-        return list;
+    public synchronized final Collection<T> get() {
+        return cache.values();
     }
     
     public synchronized final T get(Integer id)  {
