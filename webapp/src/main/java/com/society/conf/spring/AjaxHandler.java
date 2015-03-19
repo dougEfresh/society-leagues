@@ -1,4 +1,4 @@
-package com.society.leagues.conf.spring;
+package com.society.conf.spring;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;

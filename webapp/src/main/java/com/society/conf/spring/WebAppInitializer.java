@@ -1,4 +1,4 @@
-package com.society.leagues.conf.spring;
+package com.society.conf.spring;
 
 import org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext;
 import org.springframework.boot.context.embedded.ServletContextInitializer;

@@ -1,9 +1,5 @@
 package com.society.leagues.client.api.domain;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
-
 public class Challenge extends LeagueObject {
     Status status;
     Player challenger;

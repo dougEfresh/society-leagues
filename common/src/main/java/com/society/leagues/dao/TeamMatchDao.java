@@ -1,6 +1,6 @@
 package com.society.leagues.dao;
 
-import com.society.leagues.client.api.MatchApi;
+import com.society.leagues.client.api.TeamMatchApi;
 import com.society.leagues.client.api.admin.MatchAdminApi;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class TeamMatchDao extends Dao<TeamMatch> implements MatchApi, MatchAdminApi {
+public class TeamMatchDao extends Dao<TeamMatch> implements TeamMatchApi, MatchAdminApi {
     @Autowired SeasonDao seasonDao;
     @Autowired TeamDao teamDao;
     @Autowired DivisionDao divisionDao;
@@ -66,15 +66,6 @@ public class TeamMatchDao extends Dao<TeamMatch> implements MatchApi, MatchAdmin
         );
     }
 
-    @Override
-    public List<TeamMatch> getByTeam(Team team) {
-
-        //TODO Why the filter?
-
-        return get().stream().filter(m -> m.getHome().equals(team) || m.getAway().equals(team)).
-                filter(m -> m.getMatchDate() != null).
-                collect(Collectors.toList());
-    }
 
     /**
      * A around is a day

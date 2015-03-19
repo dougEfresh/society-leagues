@@ -1,6 +1,5 @@
 package com.society.leagues.dao;
 
-import com.society.leagues.client.api.ChallengeApi;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import org.slf4j.Logger;
@@ -14,13 +13,12 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
+public class ChallengeDao extends Dao<Challenge>  {
     static Logger logger = LoggerFactory.getLogger(ChallengeDao.class);
     @Autowired PlayerDao playerDao;
     @Autowired JdbcTemplate jdbcTemplate;
@@ -29,7 +27,6 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
 
     @Value("${email-override:}") String emailOverride;
     
-    @Override
     public List<Player> getPotentials(Integer id) {
         try {
             User challenger = userDao.get(id);
@@ -50,7 +47,6 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         return Collections.emptyList();
     }
 
-    @Override
     public Challenge requestChallenge(final Challenge challenge) {
         PreparedStatementCreator ps = con ->
         {
@@ -64,12 +60,10 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         return create(challenge,ps);
     }
 
-    @Override
     public Challenge acceptChallenge(Challenge challenge) {
         return modify(challenge,"UPDATE challenge SET status  = ? WHERE challenge_id = ?", Status.ACCEPTED.name(), challenge.getId());
     }
     
-    @Override
     public List<Challenge> listChallenges(Integer userId) {
         User u  = userDao.get(userId);
         if (u == null)
@@ -91,7 +85,6 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         return  challenges;
     }
 
-    @Override
     public Challenge modifyChallenge(Challenge challenge) {
         return modify(challenge, "update challenge set " +
                         "player_challenger_id=?," +
@@ -118,7 +111,6 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
                 collect(Collectors.toList());
     }
 
-    @Override
     public List<Challenge> getByPlayer(Player p) {
         if (p == null) {
             return Collections.emptyList();

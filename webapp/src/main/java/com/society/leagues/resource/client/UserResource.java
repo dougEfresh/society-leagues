@@ -1,30 +1,33 @@
 package com.society.leagues.resource.client;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.society.leagues.client.View;
-import com.society.leagues.client.api.UserClientApi;
-import com.society.leagues.client.api.domain.*;
+import com.society.leagues.client.api.domain.Player;
+import com.society.leagues.client.api.domain.PlayerResult;
+import com.society.leagues.client.api.domain.User;
+import com.society.leagues.client.api.domain.UserStats;
 import com.society.leagues.dao.*;
-import com.society.leagues.resource.ApiResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @SuppressWarnings("unused")
-public class UserResource extends ApiResource  {
+public class UserResource  {
     @Autowired UserDao dao;
     @Autowired PlayerDao playerDao;
     @Autowired PlayerResultDao playerResultDao;
     @Autowired ChallengeDao challengeDao;
-    @Autowired TeamResultDao teamResultDao;   private static Logger logger = LoggerFactory.getLogger(UserResource.class);
+    @Autowired TeamResultDao teamResultDao;
+    private static Logger logger = LoggerFactory.getLogger(UserResource.class);
 
     @RequestMapping(value = "/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public User get(Principal principal) {
@@ -49,7 +52,6 @@ public class UserResource extends ApiResource  {
         return playerDao.get();
     }
 
-    @JsonView(value = View.PlayerId.class)
     @RequestMapping(value = "/results", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PlayerResult> getResults(Principal principal) {
         return playerResultDao.get();

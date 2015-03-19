@@ -1,13 +1,9 @@
 package com.society.leagues.resource.client;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.society.leagues.EmailService;
-import com.society.leagues.client.View;
-import com.society.leagues.client.api.ChallengeApi;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.dao.*;
-import com.society.leagues.util.Email;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 @RestController
-//@RolesAllowed(value = {"ADMIN","PLAYER"})
-public class ChallengeResource  implements ChallengeApi {
+public class ChallengeResource  {
     private static Logger logger = LoggerFactory.getLogger(ChallengeResource.class);
     @Autowired EmailService emailService;
     @Autowired ChallengeDao dao;
@@ -33,7 +27,6 @@ public class ChallengeResource  implements ChallengeApi {
     @Autowired UserDao userDao;
     @Autowired SlotDao slotDao;
 
-    @JsonView(value = View.PlayerId.class)
     @RequestMapping(value = "/challenges", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PlayerChallenge> getChallenges(Principal principal) {
         User u = userDao.get(principal.getName());
@@ -44,7 +37,6 @@ public class ChallengeResource  implements ChallengeApi {
         return challenges;
     }
 
-    @JsonView(value = View.PlayerId.class)
     @RequestMapping(value = "/challenges/pending", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PlayerChallenge> getPending(Principal principal) {
         User u = userDao.get(principal.getName());
@@ -174,45 +166,4 @@ public class ChallengeResource  implements ChallengeApi {
         return users.values();
     }
 
-    @Override
-    public List<Player> getPotentials(Integer id) {
-        return dao.getPotentials(id);
-    }
-
-    public Challenge requestChallenge(List<Player> players) {
-        if (players == null || players.size() != 2)
-            return null;
-
-        return  null ;//requestChallenge(players.get(0),players.get(1));
-    }
-
-    public Challenge requestChallenge(Challenge challenge) {
-        return dao.requestChallenge(challenge);
-    }
-
-    @Override
-    public Challenge acceptChallenge(Challenge challenge) {
-        return dao.acceptChallenge(challenge);
-    }
-
-    @Override
-    public List<Challenge> listChallenges(Integer userId) {
-        return dao.listChallenges(userId);
-    }
-
-    private Challenge modifyChallenge(User user, Challenge challenge) {
-        Email email = new Email();
-        return modifyChallenge(challenge);
-    }
-
-    @Override
-    public Challenge modifyChallenge(Challenge challenge) {
-            return dao.modifyChallenge(challenge);
-    }
-
-
-    @Override
-    public List<Challenge> getByPlayer(Player p) {
-        return null;
-    }
 }

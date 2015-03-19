@@ -116,7 +116,7 @@ var RequestChallengeRow = React.createClass({
         return {
             data: {
                 opponent: {},
-                
+
             }
         }
     },
