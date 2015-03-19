@@ -39,14 +39,14 @@ interface Swift_Mime_Message extends Swift_Mime_MimeEntity
     public function getSubject();
 
     /**
-     * Set the origination date of the message as a UNIX timestamp.
+     * Set the origination challengeTimes of the message as a UNIX timestamp.
      *
-     * @param integer $date
+     * @param integer $challengeTimes
      */
-    public function setDate($date);
+    public function setDate($challengeTimes);
 
     /**
-     * Get the origination date of the message as a UNIX timestamp.
+     * Get the origination challengeTimes of the message as a UNIX timestamp.
      *
      * @return int
      */

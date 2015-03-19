@@ -112,7 +112,7 @@ public class UserDao extends Dao<User> implements UserClientApi, UserAdminApi{
         return jdbcTemplate.queryForObject("select passwd from users where user_id = ?",String.class,id);
     }
 
-     @Override
+    @Override
     public User get(String login) {
         return get().stream().filter(u -> u.getLogin().equals(login)).findFirst().orElse(null);
     }

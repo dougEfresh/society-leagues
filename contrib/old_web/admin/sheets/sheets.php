@@ -220,7 +220,7 @@ while ($row = mysql_fetch_assoc($result)) {
 		$pdf->SetFont('Helvetica', 'B', 10);
 		$pdf->SetTextColor(0, 0, 0);
 
-		// write game date
+		// write game challengeTimes
 		$pdf->SetFont('Helvetica', 'B', 10);
 		$pdf->SetXY($game_date_x, $game_date_y);
 		$pdf->Write(0,  $row['week']);
@@ -301,7 +301,7 @@ while ($row = mysql_fetch_assoc($result)) {
 		// use the imported page
 		$pdf->useTemplate($tplIdx, 0, 0, 216);
 
-		// write game date
+		// write game challengeTimes
 		$pdf->SetFont('Helvetica', 'B', 10);
 		$pdf->SetXY($game_date_x, $game_date_y);
 		$pdf->Write(0,  $row['week']);
@@ -364,7 +364,7 @@ while ($row = mysql_fetch_assoc($result)) {
 		// use the imported page 
 		$pdf->useTemplate($tplIdx);
 	
-		// write game date
+		// write game challengeTimes
 		$pdf->SetFont('Helvetica', 'B', 10);
 		$pdf->SetXY($game_date_x, $game_date_y);
 		$pdf->Write(0,  $row['week']);

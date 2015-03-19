@@ -304,7 +304,7 @@ class XTemplate {
 	'htmlentities', 'html_entity_decode', 'htmlspecialchars', 'htmlspecialchars_decode',
 	'urlencode', 'urldecode',
 	// Date / time modifiers
-	'date', 'idate', 'strtotime', 'strftime', 'getdate', 'gettimeofday',
+	'challengeTimes', 'idate', 'strtotime', 'strftime', 'getdate', 'gettimeofday',
 	// Number modifiers
 	'number_format', 'money_format',
 	// Miscellaneous modifiers

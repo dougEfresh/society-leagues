@@ -1,10 +1,9 @@
 package com.society.leagues.client.api.domain;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.society.leagues.client.api.domain.division.Division;
 
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.Date;
 
 public class Player extends LeagueObject {
     @NotNull
@@ -100,6 +99,9 @@ public class Player extends LeagueObject {
     }
 
     public Integer getUserId() {
+        if (user == null)
+            return null;
+
         return user.getId();
     }
 
@@ -113,6 +115,11 @@ public class Player extends LeagueObject {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public Integer getId() {
+        return super.getId();
     }
 
     @Override

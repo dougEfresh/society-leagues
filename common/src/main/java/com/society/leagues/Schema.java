@@ -93,7 +93,7 @@ public class Schema {
               " home_team_id int NOT NULL CONSTRAINT HOME_K REFERENCES team ON DELETE CASCADE  ,\n" +
               " away_team_id int NOT NULL CONSTRAINT AWAY_K REFERENCES team ON DELETE CASCADE ,\n" +
               " division_id int NOT NULL CONSTRAINT DIV_TEAM_K REFERENCES division ON DELETE CASCADE ,\n" +
-              " match_date date " +
+              " match_date timestamp " +
             ")\n";
 
      static final String team_result = "create table team_result (\n" +
@@ -104,7 +104,7 @@ public class Schema {
             ")\n";
 
     static final String player_result = "create table player_result (\n" +
-              " player_result_id int NOT NULL AUTO_INCREMENT(50000) PRIMARY KEY,\n" +
+              " player_result_id int NOT NULL AUTO_INCREMENT(60000) PRIMARY KEY,\n" +
             " team_match_id int NOT NULL CONSTRAINT TEAM_PLAYER_MATCH_FK REFERENCES team_match ON DELETE CASCADE,\n" +
             " player_home_id int NOT NULL CONSTRAINT HOME_MATCH_FK REFERENCES player ON DELETE CASCADE,\n" +
             " player_away_id int NOT NULL CONSTRAINT AWAY_MATCH_FK REFERENCES player ON DELETE CASCADE,\n" +
@@ -113,17 +113,18 @@ public class Schema {
             ")\n";
 
     static final String challenge = "create table challenge  (\n" +
-              " challenge_id int NOT NULL AUTO_INCREMENT(40000) PRIMARY KEY,\n" +
-              " team_match_id int NOT NULL CONSTRAINT PM_S_K REFERENCES team_match ON DELETE CASCADE,\n" +
-              " challenge_date timestamp not null,\n" +
-              " status varchar(255) not null,\n" +
-              " PRIMARY KEY (challenge_id)" +
+            " challenge_id int NOT NULL AUTO_INCREMENT(40000) PRIMARY KEY,\n" +
+            " player_challenger_id int not null  CONSTRAINT CH_PL_FK REFERENCES player ON DELETE CASCADE,\n" +
+            " player_opponent_id int not null    CONSTRAINT OP_PL_FK REFERENCES player ON DELETE CASCADE,\n" +
+            " slot_id int not null  CONSTRAINT SLOT_FK REFERENCES SLOT ON DELETE CASCADE,\n" +
+            " status varchar(255) not null,\n" +
+            " PRIMARY KEY (challenge_id)" +
             ")\n";
     
     static final String slot = "create table slot  (\n" +
-              " slot_id int NOT NULL\n" +
-            " challenge_date timestamp not null,\n" +
-              " PRIMARY KEY (slot_id,challenge_date)" +
+              " slot_id int NOT NULL  AUTO_INCREMENT(80000) PRIMARY KEY,\n" +
+            " slot_time timestamp not null,\n" +
+            " allocated int not null DEFAULT (0) \n" +
             ")\n";
 
     
@@ -142,7 +143,7 @@ public class Schema {
         jdbcTemplate.update(team_match);
         jdbcTemplate.update(team_result);
         jdbcTemplate.update(player_result);
+        jdbcTemplate.update(slot);
         jdbcTemplate.update(challenge);
-
     }
 }

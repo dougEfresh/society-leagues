@@ -24,18 +24,18 @@ function set_select($view, $section, $selected_value = '', $table, $key, $name)
 	$view->parse("{$section}");
 }
 
-function jquery_to_mysql_date($date)
+function jquery_to_mysql_date($challengeTimes)
 {
-	$date = explode('/', $date);
-	$date = implode('-', array($date[2], $date[0], $date[1]));
-	return $date;	
+	$challengeTimes = explode('/', $challengeTimes);
+	$challengeTimes = implode('-', array($challengeTimes[2], $challengeTimes[0], $challengeTimes[1]));
+	return $challengeTimes;
 }
 
-function mysql_to_jquery_date($date)
+function mysql_to_jquery_date($challengeTimes)
 {
-	$date = explode('-', $date);
-	$date = implode('/', array($date[1], $date[2], $date[0]));
-	return $date;	
+	$challengeTimes = explode('-', $challengeTimes);
+	$challengeTimes = implode('/', array($challengeTimes[1], $challengeTimes[2], $challengeTimes[0]));
+	return $challengeTimes;
 }
 
 /*

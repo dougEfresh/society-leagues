@@ -4,10 +4,10 @@ public class PlayerStats {
     String name;
     Integer userId;
     Integer playerId;
-    Integer racks;
-    Integer wins;
-    Integer loses;
-    Integer matches;
+    Integer racks = 0;
+    Integer wins = 0;
+    Integer loses = 0;
+    Integer matches = 0;
 
     public PlayerStats() {
     }

@@ -35,5 +35,7 @@ logger("org.glassfish",INFO)
 logger("log4jdbc.log4j2",DEBUG)
 logger("com.wordnik",INFO)
 logger("feign",DEBUG)
+logger("org.apache.http",DEBUG)
+logger("org.apache.http.wire",ERROR)
 
 root(INFO, ["FILE", "CONSOLE"])

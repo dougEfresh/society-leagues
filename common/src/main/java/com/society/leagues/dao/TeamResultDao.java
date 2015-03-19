@@ -46,8 +46,7 @@ public class TeamResultDao extends Dao<TeamResult> implements TeamResultAdminApi
         return modify(teamResult,MODIFY,teamResult.getTeamMatch().getId(),teamResult.getHomeRacks(),teamResult.getAwayRacks(),teamResult.getId());
     }
 
-    @Override
-    public TeamResult getByMatch(@PathVariable(value = "id") Integer id) {
+    public TeamResult getByMatch(Integer id) {
         return get().stream().filter(r -> r.getTeamMatch().getId().equals(id)).findFirst().orElse(null);
     }
 

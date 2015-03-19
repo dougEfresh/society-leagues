@@ -43,7 +43,7 @@ public abstract class Dao<Q extends LeagueObject> implements ClientApi<Q> {
     }
 
     @Override
-    public List<Q> get() {
+    public Collection<Q> get() {
         if (cache.isEmpty()) {
             refreshCache();
         }

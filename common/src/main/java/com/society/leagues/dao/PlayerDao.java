@@ -81,13 +81,6 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
 
     }
 
-    public List<Player> get(boolean nocache) {
-        if (nocache)
-            return list(getSql());
-
-        return super.get();
-    }
-
     public List<Player> findHomeTeamPlayers(TeamMatch match) {
         return get().stream().filter(p -> p.getTeam().equals(match.getHome()) &&
                         p.getDivision().equals(match.getDivision()) &&

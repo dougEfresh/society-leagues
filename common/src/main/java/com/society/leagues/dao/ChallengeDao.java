@@ -1,6 +1,5 @@
 package com.society.leagues.dao;
 
-import com.society.leagues.client.api.ChallengeApi;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import org.slf4j.Logger;
@@ -14,30 +13,32 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
+public class ChallengeDao extends Dao<Challenge>  {
     static Logger logger = LoggerFactory.getLogger(ChallengeDao.class);
     @Autowired PlayerDao playerDao;
     @Autowired JdbcTemplate jdbcTemplate;
-    @Autowired TeamMatchDao teamMatchDao;
     @Autowired UserDao userDao;
+    @Autowired SlotDao slotDao;
 
     @Value("${email-override:}") String emailOverride;
     
-    @Override
-    public List<Player> getPotentials(Integer id) {
+    public Collection<Player> getPotentials(Integer id) {
         try {
             User challenger = userDao.get(id);
-            List<Player> potentials = new ArrayList<>();
-            List<Player> challengePlayers = playerDao.getByUser(challenger).stream().filter(
+            Collection<Player> potentials = new ArrayList<>();
+            Collection<Player> challengePlayers = playerDao.getByUser(challenger).stream().filter(
                     p -> p.getDivision().isChallenge()).collect(Collectors.toList()
             );
-            List<Player> players = playerDao.get();
+            Collection<Player> players = playerDao.get();
             for (Player challengePlayer : challengePlayers) {
-                potentials.addAll(findChallengeUsers(challengePlayer.getDivision(),challengePlayer.getHandicap(),players));
+                potentials.addAll(findChallengeUsers(
+                        challengePlayer.getDivision(),
+                        challengePlayer.getHandicap(),players));
             }
             //Exclude the user requesting potentials
             potentials = potentials.stream().filter(p -> !Objects.equals(p.getUserId(), id)).collect(Collectors.toList());
@@ -47,79 +48,37 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         }
         return Collections.emptyList();
     }
-    
-    @Override
-    public Challenge requestChallenge(final Challenge challenge) {
-        TeamMatch teamMatch = teamMatchDao.create(challenge.getTeamMatch());
-        if (teamMatch == null)
-            return null;
 
-        challenge.setTeamMatch(teamMatch);
+    public Challenge requestChallenge(final Challenge challenge) {
         PreparedStatementCreator ps = con ->
         {
             PreparedStatement st  = con.prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
-            st.setInt(1,challenge.getTeamMatch().getId());
-            st.setDate(2, new java.sql.Date(challenge.getChallengeDate().getTime()));
-            st.setString(3, Status.PENDING.name());
+            st.setInt(1, challenge.getChallenger().getId());
+            st.setInt(2, challenge.getOpponent().getId());
+            st.setInt(3, challenge.getSlot().getId());
+            st.setString(4, Status.PENDING.name());
             return st;
         } ;
         return create(challenge,ps);
     }
 
-    @Override
     public Challenge acceptChallenge(Challenge challenge) {
-        try {
-            jdbcTemplate.update("UPDATE challenge SET status  = ? WHERE challenge_id = ?", 
-                    Status.ACCEPTED.name(), challenge.getId());
-            challenge.setStatus(Status.ACCEPTED);
-        } catch (Throwable t ){ 
-            logger.error(t.getLocalizedMessage(),t);
-            return null;
-        }
-        return challenge;
+        return modify(challenge,"UPDATE challenge SET status  = ? WHERE challenge_id = ?", Status.ACCEPTED.name(), challenge.getId());
     }
     
-    @Override
     public List<Challenge> listChallenges(Integer userId) {
         User u  = userDao.get(userId);
         if (u == null)
             return Collections.emptyList();
 
-        List<Player> players = playerDao.getByUser(u);
-        if (players == null || players.isEmpty())
-            return Collections.emptyList();
-
-
-        players = players.stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList());
-        if (players == null || players.isEmpty())
-            return Collections.emptyList();
-
-        List<Challenge> challenges = new ArrayList<>();
-
-        for (final Player p: players) {
-            challenges.addAll(get().stream().filter(c ->
-                            c.getTeamMatch().getHome().equals(p.getTeam()) ||
-                                    c.getTeamMatch().getAway().equals(p.getTeam())
-            ).collect(Collectors.toList()));
-        }
-        return challenges;
+        return get().stream().filter(c-> c.getOpponent().getUser().equals(u) || c.getChallenger().getUser().equals(u)).collect(Collectors.toList());
     }
 
-    @Override
-    public Boolean cancelChallenge(Challenge challenge) {
-        challenge.setStatus(Status.CANCELLED);
-        return modifyChallenge(challenge) != null;
+    public Challenge cancelChallenge(Challenge challenge) {
+        return modify(challenge,"UPDATE challenge SET status  = ? WHERE challenge_id = ?", Status.CANCELLED.name(), challenge.getId());
     }
 
-    public List<Challenge> getAccepted(User u) {
-        return getChallenges(u,Status.ACCEPTED);
-    }
-
-    public List<Challenge> getPending(User u) {
-        return getChallenges(u,Status.PENDING);
-    }
-
-    private List<Challenge> getChallenges(User u, Status status) {
+    public List<Challenge> getChallenges(User u, Status status) {
         List<Player> players = playerDao.getByUser(u);
         List<Challenge> challenges = new ArrayList<>();
         for (Player player : players) {
@@ -128,25 +87,25 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
         return  challenges;
     }
 
-    @Override
     public Challenge modifyChallenge(Challenge challenge) {
-        return modify(challenge,"update challenge set " +
-                        "team_match_id=?," +
-                        "challenge_date=?," +
+        return modify(challenge, "update challenge set " +
+                        "player_challenger_id=?," +
+                        "player_opponent_id=?," +
+                        "slot_id=?," +
                         "status=? " +
                         "where challenge_id = ?",
-                challenge.getTeamMatch().getId(),
-                challenge.getChallengeDate(),
+                challenge.getChallenger().getId(),
+                challenge.getOpponent().getId(),
+                challenge.getSlot().getId(),
                 challenge.getStatus().name(),
                 challenge.getId());
     }
 
-    @Override
-    public List<Slot> slots(Date date) {
-        return null;
+    public List<LocalDateTime> slots(LocalDateTime date) {
+        return Slot.getDefault(date);
     }
 
-    private List<Player> findChallengeUsers(Division division,Handicap handicap, List<Player> players) {
+    private List<Player> findChallengeUsers(Division division,Handicap handicap, Collection<Player> players) {
         return players.stream().
                 filter(p -> p.getDivision().getId().equals(division.getId()) &&
                         p.getHandicap().ordinal() >= handicap.ordinal()-3 &&
@@ -154,14 +113,13 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
                 collect(Collectors.toList());
     }
 
-    @Override
     public List<Challenge> getByPlayer(Player p) {
         if (p == null) {
             return Collections.emptyList();
         }
         return get().stream().
-                filter(c -> c.getTeamMatch().getPlayersHome().contains(p) ||
-                                c.getTeamMatch().getPlayersAway().contains(p)
+                filter(c -> c.getChallenger().equals(p) ||
+                                c.getOpponent().equals(p)
                 ).collect(Collectors.toList());
     }
 
@@ -172,15 +130,15 @@ public class ChallengeDao extends Dao<Challenge> implements ChallengeApi {
 
     final RowMapper<Challenge> mapper = (rs, rowNum) -> {
         Challenge challenge = new Challenge();
-        challenge.setChallengeDate(rs.getDate("challenge_date"));
+        challenge.setSlot(slotDao.get(rs.getInt("slot_id")));
         challenge.setStatus(Status.valueOf(rs.getString("status")));
         challenge.setId(rs.getInt("challenge_id"));
-        challenge.setTeamMatch(teamMatchDao.get(rs.getInt("team_match_id")));
+        challenge.setChallenger(playerDao.get(rs.getInt("player_challenger_id")));
+        challenge.setChallenger(playerDao.get(rs.getInt("player_opponent_id")));
         return challenge;
     };
     
-    final static String CREATE = "INSERT INTO challenge(team_match_id,challenge_date,status) VALUES (?,?,?)";
-
+    final static String CREATE = "INSERT INTO challenge(player_challenger_id,player_opponent_id,slot_id,status) VALUES (?,?,?,?)";
 
     @Override
     public String getSql() {

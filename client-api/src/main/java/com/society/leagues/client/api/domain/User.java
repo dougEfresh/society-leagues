@@ -1,8 +1,6 @@
 package com.society.leagues.client.api.domain;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.society.leagues.client.api.domain.division.Division;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.annotation.security.DenyAll;
 import javax.validation.constraints.NotNull;
@@ -24,7 +22,8 @@ public class User extends LeagueObject {
     String login;
     @NotNull
     Role role;
-
+    Set<Integer> playerIds = new TreeSet<>();
+    List<Player> players = new ArrayList<>();
 
     public User(String login, String password, Role role) {
         this.login = login;
@@ -87,6 +86,7 @@ public class User extends LeagueObject {
         this.password = password;
     }
 
+    @JsonIgnore
     public String getLogin() {
         return login;
     }
@@ -109,6 +109,22 @@ public class User extends LeagueObject {
 
     public boolean isAdmin() {
         return Role.isAdmin(role);
+    }
+
+    public Set<Integer> getPlayerIds() {
+        return playerIds;
+    }
+
+    public void addPlayerId(Player player) {
+        playerIds.add(player.getId());
+    }
+
+    public void addPlayer(Player player) {
+        players.add(player);
+    }
+
+    public String getName() {
+        return firstName + " " + lastName;
     }
 
     @Override
