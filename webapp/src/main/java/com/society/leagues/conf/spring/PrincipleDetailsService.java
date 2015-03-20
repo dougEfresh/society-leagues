@@ -1,4 +1,4 @@
-package com.society.conf.spring;
+package com.society.leagues.conf.spring;
 
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.dao.UserDao;

@@ -1,4 +1,4 @@
-package com.society.conf.spring;
+package com.society.leagues.conf.spring;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;

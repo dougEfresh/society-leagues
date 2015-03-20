@@ -15,9 +15,12 @@ bootRun {
 
 dependencies {
     compile(project(':client-api'))
-    compile(project(':common'))
+    compile 'org.slf4j:slf4j-api:1.7.7'
 
-    compile 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+    //DB
+    compile 'mysql:mysql-connector-java:5.1.32'
+    compile "com.h2database:h2:1.4.185"
+    compile 'org.apache.tomcat:tomcat-dbcp:8.0.15'
 
     compile 'org.springframework.boot:spring-boot-actuator'
     compile 'org.springframework.boot:spring-boot-starter-jdbc'
@@ -25,6 +28,8 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-security'
     compile 'org.springframework.boot:spring-boot-starter-tomcat'
+    compile 'com.allanditzel:spring-security-csrf-token-filter:1.1'
+    compile 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
     compile 'org.codehaus.groovy:groovy-all:2.3.8'
 

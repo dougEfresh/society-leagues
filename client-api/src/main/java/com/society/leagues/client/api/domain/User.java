@@ -2,13 +2,11 @@ package com.society.leagues.client.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.annotation.security.DenyAll;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
 
 public class User extends LeagueObject {
 
@@ -77,7 +75,7 @@ public class User extends LeagueObject {
         this.email = email;
     }
 
-    @DenyAll
+
     public String getPassword() {
         return password;
     }

@@ -1,4 +1,4 @@
-package com.society.conf.spring;
+package com.society.leagues.conf.spring;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

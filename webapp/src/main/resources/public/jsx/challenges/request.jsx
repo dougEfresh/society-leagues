@@ -1,7 +1,17 @@
 var t = require('tcomb-form');
 var React = require('react');
 
+var Form = t.form.Form;
+
 var RequestChallengePage = React.createClass({
+    getDefaultProps: function() {
+        return {
+            url:"/challenge/request" ,
+            potentials:"/challenge/potentials" ,
+            slots:"/challenge/slots" ,
+            userPlayers:"/userPlayers"
+        }
+    },
     getInitialState: function() {
         return {
             data: [], players: []
@@ -118,7 +128,7 @@ var RequestChallengeRow = React.createClass({
     getInitialState: function() {
         return {
             data: {
-                opponent: {},
+                opponent: {}
             }
         }
     },
@@ -184,7 +194,5 @@ var DatePicker = React.createClass({
     }
 });
 
-React.render(
-    <RequestChallengePage url="/challenge/request" potentials="/challenge/potentials" slots="/challenge/slots" userPlayers="/userPlayers" />,
-    document.getElementById('content')
-);
+module.exports = RequestChallengePage;
+

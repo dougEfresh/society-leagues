@@ -1,4 +1,4 @@
-package com.society.leagues.infrastructure;
+package com.society.leagues.dao;
 
 import com.society.leagues.client.api.domain.LeagueObject;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,5 @@
 package com.society.leagues.client.api.domain;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 

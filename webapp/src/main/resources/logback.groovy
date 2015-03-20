@@ -37,5 +37,6 @@ logger("com.wordnik",INFO)
 logger("feign",DEBUG)
 logger("org.apache.http",DEBUG)
 logger("org.apache.http.wire",ERROR)
+logger("org.springframework.web",INFO)
 
 root(INFO, ["FILE", "CONSOLE"])
