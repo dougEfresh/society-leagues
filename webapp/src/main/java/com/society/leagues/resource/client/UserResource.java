@@ -65,6 +65,7 @@ public class UserResource  {
         stats.setUser(u);
         return Arrays.asList(stats);
     }
+
     @RequestMapping(value = "/allStats", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserStats> getAllStats() {
         List<UserStats> stats = new ArrayList<>();
@@ -88,13 +89,17 @@ public class UserResource  {
             if (result.getHomeRacks() > result.getAwayRacks()) {
                 if (result.getPlayerHome().getUser().equals(user)) {
                     userStats.addWin(result.getHomeRacks());
+                    userStats.addPoints(3);
                 } else {
+                    userStats.addPoints(1);
                     userStats.addLost(result.getHomeRacks());
                 }
             } else {
                 if (result.getPlayerHome().getUser().equals(user)) {
+                    userStats.addPoints(1);
                     userStats.addLost(result.getHomeRacks());
                 } else {
+                    userStats.addPoints(3);
                     userStats.addWin(result.getHomeRacks());
                 }
             }

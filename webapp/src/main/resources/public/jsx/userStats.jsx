@@ -1,3 +1,5 @@
+var React = require('react/addons');
+
 var UserStats = React.createClass({
     getInitialState: function() {
         return {data: []};
@@ -65,9 +67,4 @@ var UserStatsRow = React.createClass({
     }
 });
 
-React.render(
-    <UserStats url="/allStats" />,
-    document.getElementById('content')
-);
-
-
+module.exports = {UserStats: UserStatsRow, UserStatsTable: UserStatsTable};

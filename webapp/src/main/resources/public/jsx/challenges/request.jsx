@@ -1,7 +1,23 @@
 var t = require('tcomb-form');
 var React = require('react');
-
+var UserStatsRow = require('../userStats.jsx');
 var Form = t.form.Form;
+
+//var moment = require('moment');
+//var DatePicker = require('react-datepicker');
+
+var RequestForm = React.createClass({
+    getInitialState: function() {
+        return {
+            data: {
+
+            }
+        }
+    },
+    render: function() {
+
+    }
+});
 
 var RequestChallengePage = React.createClass({
     getDefaultProps: function() {
@@ -9,12 +25,13 @@ var RequestChallengePage = React.createClass({
             url:"/challenge/request" ,
             potentials:"/challenge/potentials" ,
             slots:"/challenge/slots" ,
-            userPlayers:"/userPlayers"
+            userPlayers:"/userPlayers",
+            userStats:"/userStats"
         }
     },
     getInitialState: function() {
         return {
-            data: [], players: []
+            date: "2015-04-06", data: [], players: []
         };
     },
     getPotentials: function() {
@@ -48,6 +65,7 @@ var RequestChallengePage = React.createClass({
     componentDidMount: function() {
         this.getPlayer();
         this.getPotentials();
+
     },
     sendChallenge: function(c) {
 
@@ -104,93 +122,15 @@ var RequestChallengePage = React.createClass({
     }
 });
 
-var ChallengeRow = React.createClass({
-    getInitialState: function() {
-        return {hide: true};
-    },
-    handleClick: function() {
-        this.setState({hide: !this.state.hide});
-    },
+var UserStat = React.createClass({
     render: function() {
         return (
             <div>
-            <tr>
-                <td><button type="button" onClick={this.handleClick} name="challenge" /></td>
-                <td>{this.props.challenge.user.name}</td>
-            </tr>
-                <RequestChallengeRow challenge={this.props.challenge} hide={this.state.hide} onChallenge={this.props.handleChallenge} />
+                <tr>
+                    <td>{this.props.name}</td>
+                </tr>
             </div>
         );
-    }
-});
-
-var RequestChallengeRow = React.createClass({
-    getInitialState: function() {
-        return {
-            data: {
-                opponent: {}
-            }
-        }
-    },
-    handleClick: function() {
-        var challenge = {};
-        if (this.refs.nineball.getDOMNode().checked) {
-            challenge.opponent = this.props.challenge.nineBallPlayer;
-        } else {
-            challenge.opponent = this.props.challenge.eightBallPlayer;
-        }
-        challenge.date = this.refs.date.getDOMNode().value;
-        challenge.times = [];
-        challenge.times.push(this.refs.time.getDOMNode().value);
-        this.props.onChallenge(challenge);
-    },
-    render: function() {
-        var disp = this.props.hide ? "none" : "inline";
-        return (
-        <div style={{"display": disp}}>
-            9ball <input ref="eightball" type="checkbox" />
-            8ball <input ref="nineball" type="checkbox" />
-            Date: <input ref="date" type="text" />
-            Time: <input ref="time" type="text" />
-            Challenge: <button type="button" onClick={this.handleClick} />
-        </div>
-        );
-    }
-});
-
-var Submit = React.createClass({
-    render: function() {
-        return (
-            <div>
-            <button ref={this.props.opponent} name="submit"></button>
-            </div>
-        );
-    }
-});
-
-var NineBallBox = React.createClass({
-    render: function() {
-        return (
-            <div>
-                <input ref={"nineball"} type="checkbox" /> 9
-            </div>
-        );
-    }
-});
-
-var EighBallBox = React.createClass({
-    render: function() {
-        return (
-            <div>
-                <input ref={"eightball"} type="checkbox" /> 9
-            </div>
-        );
-    }
-});
-
-var DatePicker = React.createClass({
-    render : function() {
-
     }
 });
 

@@ -5,8 +5,8 @@ public class UserStats {
     int matches = 0;
     int loses = 0;
     int racks = 0;
+    int points = 0;
     User user;
-
 
     public int getWins() {
         return wins;
@@ -25,7 +25,7 @@ public class UserStats {
     }
 
     public double getPercentage() {
-        return new Double(loses)/new Double(racks);
+        return new Double(loses)/new Double(matches);
     }
 
     public void addWin(int racks) {
@@ -46,5 +46,13 @@ public class UserStats {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void addPoints(int points) {
+        this.points += points;
+    }
+
+    public int getPoints() {
+        return points;
     }
 }
