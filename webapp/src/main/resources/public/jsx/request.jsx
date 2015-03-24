@@ -1,25 +1,52 @@
+var React = require('react/addons');
 var t = require('tcomb-form');
-var React = require('react');
-var UserStatsRow = require('../userStats.jsx');
 var Form = t.form.Form;
 
-//var moment = require('moment');
-//var DatePicker = require('react-datepicker');
+var Bootstrap = require('react-bootstrap');
+var Input = Bootstrap.Input;
+var Button = Bootstrap.Button;
+var moment = require('moment');
+var DatePicker = require('react-datepicker');
 
-var RequestForm = React.createClass({
+var RequestPage = React.createClass({
     getInitialState: function() {
+        var m = moment();
         return {
-            data: {
-
-            }
+            date: m
         }
     },
     render: function() {
-
+        return (<div>
+            <ChallengeDate date={this.state.date} />
+        </div>)
     }
 });
 
-var RequestChallengePage = React.createClass({
+var DateType = t.struct({
+    date: t.Str
+});
+
+var ChallengeDate = React.createClass({
+    getInitialState: function() {
+        return {
+            data: {
+                date: this.props.date.format('YYYY-MM-DD')
+            }
+        }
+    },
+    handleDateChange: function() {
+        console.log('Date:' + JSON.stringify(this.refs.form.getValue()));
+    },
+    render: function() {
+        return (<div>
+            <Form ref="form" type={DateType} value={this.state.data}  />
+            <Button  onClick={this.handleDateChange}>Change</Button>
+            </div>
+        );
+    }
+});
+
+var RequestChallenge = React.createClass({
     getDefaultProps: function() {
         return {
             url:"/challenge/request" ,
@@ -134,5 +161,9 @@ var UserStat = React.createClass({
     }
 });
 
-module.exports = RequestChallengePage;
+function render() {
+    React.render(<RequestPage />, document.getElementById('content'));
+}
+
+module.exports = {render: render};
 

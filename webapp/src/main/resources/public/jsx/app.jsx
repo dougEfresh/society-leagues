@@ -1,8 +1,7 @@
 var React = require('react/addons');
-var Requests = require('./challenges/request.jsx');
+var request = require('./request.jsx');
+var nav = require('./nav.jsx');
 
-console.log(window.location.search.indexOf('request'));
+nav.render();
+request.render();
 
-if (window.location.search.indexOf('request') !== -1) {
-    <Requests />
-}

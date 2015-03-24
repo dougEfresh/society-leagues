@@ -38,9 +38,39 @@ public class ChallengeResource  {
     @RequestMapping(value = "/challenges/pending", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PlayerChallenge> getPending(Principal principal) {
         User u = userDao.get(principal.getName());
-        List<PlayerChallenge> challenges =  getPendingChallenges(u);
-        return challenges;
+        return getSent(u);
     }
+
+    @RequestMapping(value = "/challenges/sent", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PlayerChallenge> getSent(Principal principal) {
+        User u = userDao.get(principal.getName());
+        return getSent(u);
+    }
+
+    @RequestMapping(value = "/challenges/pendingApproval", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PlayerChallenge> getPendingApproval(Principal principal) {
+        User u = userDao.get(principal.getName());
+        return getSent(u);
+    }
+
+    private List<PlayerChallenge> getSent(User u) {
+        List<Player> userPlayers = playerDao.getByUser(u);
+        List<PlayerChallenge> challenges = getPendingChallenges(u);
+        List<PlayerChallenge> sent = new ArrayList<>();
+        sent.addAll(challenges.stream().filter( p->p.getChallenger().equals(userPlayers.get(0))).collect(Collectors.toList()));
+        sent.addAll(challenges.stream().filter( p->p.getChallenger().equals(userPlayers.get(1))).collect(Collectors.toList()));
+        return sent;
+    }
+
+    private List<PlayerChallenge> getPendingApproval(User u) {
+        List<Player> userPlayers = playerDao.getByUser(u);
+        List<PlayerChallenge> challenges = getPendingChallenges(u);
+        List<PlayerChallenge> sent = new ArrayList<>();
+        sent.addAll(challenges.stream().filter( p->p.getOpponent().equals(userPlayers.get(0))).collect(Collectors.toList()));
+        sent.addAll(challenges.stream().filter( p->p.getOpponent().equals(userPlayers.get(1))).collect(Collectors.toList()));
+        return sent;
+    }
+
 
     @RequestMapping(value = "/challenge/potentials", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<UserChallenge> getPotentials(Principal principal) {
@@ -117,8 +147,17 @@ public class ChallengeResource  {
             return slotDao.get(LocalDate.parse(date).atStartOfDay());
     }
 
+    @RequestMapping(value = "/challenge/counters", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Integer> getCounters(Principal principal) {
+        User u = userDao.get(principal.getName());
+        List<Integer> counters = new ArrayList<>();
+        counters.add(getSent(u).size());
+        counters.add(getPendingApproval(u).size());
+        return counters;
+    }
+
     public List<PlayerChallenge> getPendingChallenges(User u) {
-        return null;
+        return getChallenges(u,Status.PENDING);
     }
 
     public List<PlayerChallenge> getAcceptedChallenges(User u) {

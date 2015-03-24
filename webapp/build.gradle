@@ -13,6 +13,10 @@ bootRun {
     jvmArgs = [ '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005', '-Dembedded=true' ]
 }
 
+task watchify(type:Exec) {
+    commandLine  '../watchify.sh'
+}
+
 dependencies {
     compile(project(':client-api'))
     compile 'org.slf4j:slf4j-api:1.7.7'

@@ -13,7 +13,7 @@
   "author": "Douglas Chimento <dchimento@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gcanti/tcomb-form/issues"
+    "url": "https://github.com/society-leagues/issues"
   },
   "homepage": "https://github.com/gcanti/tcomb-form",
   "dependencies": {
@@ -21,7 +21,9 @@
     "react-datepicker" :"0.5.1",
     "tcomb-form": "0.4.4",
     "react": "0.12.2",
-    "debug": "^2.1.1"
+    "debug": "^2.1.1",
+    "moment": "^2.9.0",
+    "react-bootstrap": "^0.17.0"
   },
   "devDependencies": {
     "browserify": "^9.0.3",

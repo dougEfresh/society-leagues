@@ -134,7 +134,7 @@ public class ChallengeDao extends Dao<Challenge>  {
         challenge.setStatus(Status.valueOf(rs.getString("status")));
         challenge.setId(rs.getInt("challenge_id"));
         challenge.setChallenger(playerDao.get(rs.getInt("player_challenger_id")));
-        challenge.setChallenger(playerDao.get(rs.getInt("player_opponent_id")));
+        challenge.setOpponent(playerDao.get(rs.getInt("player_opponent_id")));
         return challenge;
     };
     
