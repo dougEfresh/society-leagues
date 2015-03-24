@@ -4,4 +4,3 @@ var nav = require('./nav.jsx');
 
 nav.render();
 request.render();
-

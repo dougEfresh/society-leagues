@@ -34,13 +34,16 @@ var SocietyNav = React.createClass({
         }.bind(this));
     },
     render: function() {
-        //<Badge>10</Badge>
+	var indicator = 'Challenges';
+	if (this.state.sent + this.state.pending > 0) {
+	    indicator = (<span>Challenges <Badge>{this.state.sent + this.state.pending}</Badge></span>);
+	}
         var navBarInstance = (
             <Navbar brand="Society" toggleNavKey={this.state.key}>
                 <Nav bsStyle="pills" fluid fixedTop activeKey={this.state.key} toggleNavKey={this.state.key}>
                     <NavItem eventKey={"home"} href={'home.html'}>Home</NavItem>
                     <NavItem eventKey={"stats"} href={'home.html?stats='}>Stats</NavItem>
-                    <DropdownButton  eventKey={"challenge"} title={"Challenges"} navItem={true}>
+                    <DropdownButton  eventKey={"challenge"} title={indicator} navItem={true}>
                         <MenuItem eventKey={"sent"} href={'home.html?challenge=sent'}>Sent <Badge>{this.state.sent}</Badge></MenuItem>
                         <MenuItem eventKey={"pending"} href={'home.html?challenge=pending'}>Pending <Badge>{this.state.pending}</Badge></MenuItem>
                         <MenuItem eventKey={"request"} href={'home.html?challenge=request'}>Make Request</MenuItem>

@@ -1,12 +1,12 @@
 var React = require('react/addons');
 var t = require('tcomb-form');
 var Form = t.form.Form;
-
+var Util = require('./util.jsx');
 var Bootstrap = require('react-bootstrap');
 var Input = Bootstrap.Input;
 var Button = Bootstrap.Button;
 var moment = require('moment');
-var DatePicker = require('react-datepicker');
+//var DatePicker = require('react-datepicker');
 
 var RequestPage = React.createClass({
     getInitialState: function() {
@@ -15,9 +15,13 @@ var RequestPage = React.createClass({
             date: m
         }
     },
+    changeDate: function(d) {
+        this.setState({date: moment(d)});
+    },
     render: function() {
         return (<div>
-            <ChallengeDate date={this.state.date} />
+            <ChallengeDate date={this.state.date} handleDateChange={this.changeDate}/>
+            <ChallengeUsers date={this.state.date}/>
         </div>)
     }
 });
@@ -36,14 +40,101 @@ var ChallengeDate = React.createClass({
     },
     handleDateChange: function() {
         console.log('Date:' + JSON.stringify(this.refs.form.getValue()));
+        if (this.refs.form.getValue() === null)
+            return;
+        var d = this.refs.form.getValue().date;
+        if (d !== undefined) {
+            this.setState({data:this.refs.form.getValue()});
+            if (d.length === 10) {
+                this.props.handleDateChange(this.refs.form.getValue().date);
+            }
+        }
     },
     render: function() {
-        return (<div>
-            <Form ref="form" type={DateType} value={this.state.data}  />
-            <Button  onClick={this.handleDateChange}>Change</Button>
+        return (
+            <div>
+                <Form ref="form" type={DateType} value={this.state.data} onChange={this.handleDateChange} />
             </div>
         );
     }
+});
+
+var ChallengeUsers = React.createClass({
+    getInitialState: function(){
+        return {
+            opponent : null,
+            potentials: []
+        }
+    },
+    componentDidMount: function() {
+        Util.getData('/challenge/potentials', function(d) {
+            this.setState({potentials: d});
+        }.bind(this));
+    },
+    handleChange: function(e) {
+        var op = null;
+        this.state.potentials.forEach(function(p){
+            if (p.user.id == e.target.value) {
+                op = p;
+            }
+        });
+        this.setState({opponent: op});
+    },
+    render: function() {
+        var potentials = [];
+        potentials.push(<option key={"-1"} value={-1}>{"-----"}</option>);
+        this.state.potentials.forEach(function(p){
+            potentials.push(<option key={p.user.id} value={p.user.id}>{p.user.name}</option>);
+        });
+        var eightDisable = function(p) {
+            return  this.state.opponent == null || this.state.opponent.eightBallPlayer === null || this.state.opponent.eightBallPlayer === undefined;
+        }.bind(this);
+        var nineDisable = function(p) {
+            return  this.state.opponent == null || this.state.opponent.nineBallPlayer === null || this.state.opponent.eightBallPlayer === undefined;
+        }.bind(this);
+
+        return (
+            <div>
+            <Input type={"select"} label={"Choose Player"} onChange={this.handleChange} defaultValue={this.state.opponent} >
+                {potentials}
+            </Input>
+                <div style={{display: eightDisable(this.state.opponent) ? 'none' : 'inline' }}>
+                <Input disabled={eightDisable(this.state.opponent)} type="checkbox" label={"8"}></Input>
+                </div>
+                 <div style={{display: nineDisable(this.state.opponent) ? 'none' : 'inline' }}>
+                     <Input type="checkbox" label={"9"}></Input>
+                 </div>
+		 <TimeSlots date={this.props.date} />
+            </div>
+        );
+    }
+});
+
+var TimeSlots = React.createClass({
+    getInitialState: function() {
+    return {
+          slots: {},
+ 	  selected: [],
+	  type: t.struct({
+	    time: t.list(t.Str)
+	  })
+    }   
+    },
+    componentDidMount: function() {
+        Util.getData('/challenge/slots/' + this.props.date.format('YYYY-MM-DD'), function(d) {
+	var slots = {};
+	slots[d.id + ''] = d.time;
+	var type = t.list(t.enums(slots));
+	this.setState({slots: slots});
+	}.bind(this));
+    },
+    render: function() {
+    if (this.props.date === null || this.props.date === undefined ) {
+        return (<div></div>)
+    } else {
+           return (<Form type={this.state.type}/>);
+	}  
+    }	
 });
 
 var RequestChallenge = React.createClass({

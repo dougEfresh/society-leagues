@@ -76,7 +76,12 @@ public class ChallengeResource  {
     public Collection<UserChallenge> getPotentials(Principal principal) {
         User u = userDao.get(principal.getName());
         Collection<UserChallenge> potentials = getPotentials(u);
-        return potentials;
+        return potentials.stream().sorted(new Comparator<UserChallenge>() {
+            @Override
+            public int compare(UserChallenge o1, UserChallenge o2) {
+                return o1.getUser().getName().compareTo(o2.getUser().getName());
+            }
+        }).collect(Collectors.toList());
     }
 
     @RequestMapping(value = "/challenge/leaderBoard", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -195,13 +200,15 @@ public class ChallengeResource  {
             p.setHandicap(player.getHandicap());
 
             UserChallenge userChallenge = users.get(player.getUserId());
-            if (player.getDivision().getType() == DivisionType.EIGHT_BALL_CHALLENGE) {
-                p.setDivision(player.getDivision());
-
-                userChallenge.setEightBallPlayer(p);
-            } else {
-                p.setDivision(player.getDivision());
-                userChallenge.setNineBallPlayer(p);
+            switch (player.getDivision().getType()) {
+                case EIGHT_BALL_CHALLENGE:
+                    p.setDivision(player.getDivision());
+                    userChallenge.setEightBallPlayer(p);
+                    break;
+                case NINE_BALL_CHALLENGE:
+                    p.setDivision(player.getDivision());
+                    userChallenge.setNineBallPlayer(p);
+                    break;
             }
         }
         return users.values();
