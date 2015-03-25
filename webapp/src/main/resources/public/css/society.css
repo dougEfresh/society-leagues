@@ -33,3 +33,14 @@ a.logout {
 a.logout:hover {
     color: #3b67a7;
 }
+
+.form-hide {
+    display: none;
+}
+
+
+.form-show {
+    display: inline;
+}
+
+
