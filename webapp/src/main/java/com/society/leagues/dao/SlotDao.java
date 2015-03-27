@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +37,7 @@ public class SlotDao extends Dao<Slot> {
     final String CREATE = "INSERT INTO SLOT(slot_time,allocated) VALUES(?,?)";
 
     public List<Slot> get(LocalDateTime date) {
-        List<Slot> slots = get().stream().filter(s-> s.getTime().toLocalDate().isEqual(date.toLocalDate())).collect(Collectors.toList());
+        List<Slot> slots = get().stream().filter(s-> s.getLocalDateTime().toLocalDate().isEqual(date.toLocalDate())).collect(Collectors.toList());
         if (slots.isEmpty()) {
             return create(date);
         }

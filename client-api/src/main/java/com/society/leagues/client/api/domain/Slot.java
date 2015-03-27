@@ -1,6 +1,9 @@
 package com.society.leagues.client.api.domain;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +25,7 @@ public class Slot extends LeagueObject {
         return slots;
     }
 
-    public LocalDateTime getTime() {
+    public LocalDateTime getLocalDateTime() {
         return time;
     }
 
@@ -36,5 +39,12 @@ public class Slot extends LeagueObject {
 
     public void setAllocated(Integer allocated) {
         this.allocated = allocated;
+    }
+
+    public String getTime() {
+        return this.time.format(new DateTimeFormatterBuilder()
+                .appendValue(ChronoField.HOUR_OF_DAY, 2)
+                .appendLiteral(':')
+                .appendValue(ChronoField.MINUTE_OF_DAY, 2).toFormatter());
     }
 }

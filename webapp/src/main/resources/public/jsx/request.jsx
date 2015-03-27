@@ -3,6 +3,7 @@ var t = require('tcomb-form');
 var Form = t.form.Form;
 var Util = require('./util.jsx');
 var Bootstrap = require('react-bootstrap');
+var MultiSelector = require('./MultiSelector.jsx');
 var Input = Bootstrap.Input;
 var Button = Bootstrap.Button;
 var Panel = Bootstrap.Panel;
@@ -27,7 +28,7 @@ var RequestPage = React.createClass({
     render: function() {
         return (
             <div>
-                <Panel header={'Choose your enemy'} footer={'Submit'}>
+                <Panel header={'Request'} footer={'Submit'}>
                     <ChallengeDate  ref='date' date={this.state.data.date}/>
                     <ChallengeUsers ref='opponent' onChange={this.onChange}/>
                     <ChallengeType player={this.state.data.opponent} />
@@ -42,7 +43,7 @@ var ChallengeDate = React.createClass({
     getInitialState: function() {
         return {
             data: {
-                date: this.props.date.format('YYYY-MM-DD')
+                dates: []
             }
         }
     },
@@ -50,14 +51,26 @@ var ChallengeDate = React.createClass({
         if (this.refs.date.getValue().length != 10)
             return;
 
-        this.setState(
-            {data: {date: this.refs.date.getValue()}}
-        );
+        //this.setState(
+          //  {data: {date: this.refs.date.getValue()}}
+        //);
+    },
+    componentDidMount: function() {
+        var dates = [];
+        var now = moment().format('YYYY-MM-DD');
+        dates.push((<option key={now} value={now} >{now}</option>));
+        [1,2,3,4].forEach(function(d) {
+            var date = moment().add(d,'weeks').format('YYYY-MM-DD');
+            dates.push((<option key={date} value={date}>{date}</option>));
+        });
+        this.setState({data: {dates: dates}});
     },
     render: function() {
         return (
             <div>
-                <Input ref="date" type={'text'} value={this.state.data.date} onChange={this.handleDateChange} />
+                <Input ref="date" type={'select'}  onChange={this.handleDateChange} >
+                    {this.state.data.dates}
+                </Input>
             </div>
         );
     }
@@ -97,7 +110,7 @@ var ChallengeUsers = React.createClass({
         });
 
         return (
-            <Input ref='opponent' type={"select"} label={"Choose Player"} onChange={this.handleChange} >
+            <Input ref='opponent' type={'select'} label={'Choose your enemy'} onChange={this.handleChange} >
                 {potentials}
             </Input>
         );
@@ -143,11 +156,8 @@ var ChallengeType = React.createClass({
 var TimeSlots = React.createClass({
     getInitialState: function() {
     return {
-        slots: {},
+        slots: [],
         selected: [],
-        type: t.struct({
-            time: t.list(t.Str)
-        }),
         display: false
     }   
     },
@@ -155,15 +165,26 @@ var TimeSlots = React.createClass({
         this.setState({display: nextProps.display });
     },
     componentDidMount: function() {
-        Util.getData('/challenge/slots/' + this.props.date.format('YYYY-MM-DD'), function(d) {
-	var slots = {};
-	slots[d.id + ''] = d.time;
-	var type = t.list(t.enums(slots));
-	this.setState({slots: slots});
-	}.bind(this));
+        Util.getData( function(d) {
+            this.setState({slots: d});
+        }.bind(this));
+    },
+    handleChange: function() {
+
     },
     render: function() {
-           return (<div className={this.state.display ? 'form-show' : 'form-hide'}> <Form className={this.props.className} type={this.state.type}/> </div>);
+        var slots = [];
+        //{s.time.split('T')[1].substr(0,5)}
+        this.state.slots.forEach(function(s) {
+            slots.push((<option key={s.id} value={s.id}>{s.time.split('T')[1].substr(0,5)}</option>));
+        });
+        return (
+            <div className={this.state.display ? 'form-show' : 'form-hide'}>
+                <MultiSelector url={'/challenge/slots/' + this.props.date.format('YYYY-MM-DD')} field={'time'} />
+            <Input ref='slot' type={'select'} multiple label={'Choose your time'} onChange={this.handleChange} >
+                {slots}
+            </Input>
+        </div>);
     }
 });
 

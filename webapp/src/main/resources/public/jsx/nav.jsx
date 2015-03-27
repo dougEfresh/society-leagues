@@ -39,7 +39,7 @@ var SocietyNav = React.createClass({
 	    indicator = (<span>Challenges <Badge>{this.state.sent + this.state.pending}</Badge></span>);
 	}
         var navBarInstance = (
-            <Navbar brand="Society" toggleNavKey={this.state.key}>
+            <Navbar brand="Blah" toggleNavKey={this.state.key}>
                 <Nav bsStyle="pills" fluid fixedTop activeKey={this.state.key} toggleNavKey={this.state.key}>
                     <NavItem eventKey={"home"} href={'home.html'}>Home</NavItem>
                     <NavItem eventKey={"stats"} href={'home.html?stats='}>Stats</NavItem>
