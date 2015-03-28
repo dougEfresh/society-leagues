@@ -67,4 +67,4 @@ var UserStatsRow = React.createClass({
     }
 });
 
-module.exports = {UserStats: UserStatsRow, UserStatsTable: UserStatsTable};
+module.exports = {UserStats: UserStats, UserStatsTable: UserStatsTable};

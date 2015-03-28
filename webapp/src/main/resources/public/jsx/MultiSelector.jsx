@@ -10,6 +10,11 @@ var PanelGroup = Bootstrap.PanelGroup;
 var Panel = Bootstrap.Panel;
 
 var MultiSelector = React.createClass({
+    getDefaultProps: function() {
+        return {
+            field: 'name'
+        }
+    },
     getInitialState: function () {
         return {
             data: [],
@@ -75,8 +80,9 @@ var MultiSelector = React.createClass({
     componentDidMount: function () {
         Util.getData(this.props.url, function (d) {
             var list = [];
+            var field = this.props.field;
             d.forEach(function(d) {
-                list.push(<option key={d.id} value={d.name}>{d.name}</option>)
+                list.push(<option key={d.id} value={d[field]}>{d[field]}</option>)
             });
             this.setState({ data : d , list: list});
         }.bind(this));
@@ -115,9 +121,13 @@ var MultiSelector = React.createClass({
                 {chosen}
             </ListGroup>
             </div>);
+        var filter = (<div></div>);
+        if (this.props.filter) {
+            filter = <Input className={'multi-select-filter'} type={'text'} ref={'search'} onChange={this.handleFilter} placeholder={'Filter...'} />
+        }
         return (
             <div>
-                <Input className={'multi-select-filter'} type={'text'} ref={'search'} onChange={this.handleFilter} placeholder={'Filter...'} />
+                {filter}
                 {chosenGroup}
                 <Input className={'multi-select'} ref={this.props.label} onChange={this.onChange} multiple help="Help Me" type="select" label={this.props.label}>{this.state.list}</Input>
 

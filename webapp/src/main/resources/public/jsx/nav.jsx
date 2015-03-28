@@ -1,11 +1,13 @@
 var React = require('react/addons');
-var Bootstrap = require('react-bootstrap');
-var Navbar = Bootstrap.Navbar;
-var Nav = Bootstrap.Nav;
-var NavItem = Bootstrap.NavItem;
-var DropdownButton = Bootstrap.DropdownButton;
-var MenuItem = Bootstrap.MenuItem;
-var Badge = Bootstrap.Badge;
+var Bootstrap = require('react-bootstrap')
+    ,Navbar = Bootstrap.Navbar
+    ,Nav = Bootstrap.Nav
+    ,DropdownButton = Bootstrap.DropdownButton
+    ,Badge = Bootstrap.Badge;
+
+var ReactRouterBootstrap = require('react-router-bootstrap')
+    ,NavItemLink = ReactRouterBootstrap.NavItemLink
+    ,MenuItemLink = ReactRouterBootstrap.MenuItemLink;
 
 var Util = require('./util.jsx');
 
@@ -18,6 +20,7 @@ var SocietyNav = React.createClass({
         }
     },
     componentDidMount: function() {
+        /*
         if (this.props.location === "") {
             this.setState({key: 'home'});
         }
@@ -28,6 +31,7 @@ var SocietyNav = React.createClass({
         if (this.props.location.indexOf('challenge') >= 0) {
             this.setState({key: 'challenge'})
         }
+        */
         //TODO check to see if logged in
         Util.getData('/challenge/counters', function(d) {
             this.setState({sent: d[0], pending:d[1]});
@@ -37,17 +41,20 @@ var SocietyNav = React.createClass({
 	var indicator = 'Challenges';
 	if (this.state.sent + this.state.pending > 0) {
 	    indicator = (<span>Challenges <Badge>{this.state.sent + this.state.pending}</Badge></span>);
-	}
+    }
         var navBarInstance = (
             <Navbar brand="Blah" toggleNavKey={this.state.key}>
                 <Nav bsStyle="pills" fluid fixedTop activeKey={this.state.key} toggleNavKey={this.state.key}>
-                    <NavItem eventKey={"home"} href={'home.html'}>Home</NavItem>
-                    <NavItem eventKey={"stats"} href={'home.html?stats='}>Stats</NavItem>
+                    <NavItemLink to='home' eventKey={"home"}>Home</NavItemLink>
+                    <DropdownButton  eventKey={"stats"} title={'Stats'} navItem={true}>
+                        <MenuItemLink to='stats' eventKey={"text"} href={'home.html?stats=text'}>Text</MenuItemLink>
+                        <MenuItemLink to='stats' eventKey={"graphs"} href={'home.html?stats=graph'}>Graphs</MenuItemLink>
+                    </DropdownButton>
                     <DropdownButton  eventKey={"challenge"} title={indicator} navItem={true}>
-                        <MenuItem eventKey={"sent"} href={'home.html?challenge=sent'}>Sent <Badge>{this.state.sent}</Badge></MenuItem>
-                        <MenuItem eventKey={"pending"} href={'home.html?challenge=pending'}>Pending <Badge>{this.state.pending}</Badge></MenuItem>
-                        <MenuItem eventKey={"request"} href={'home.html?challenge=request'}>Make Request</MenuItem>
-                        <MenuItem eventKey={"history"} href={'home.html?challenge=history'}>History</MenuItem>
+                        <MenuItemLink  to='request' eventKey={"sent"} >Sent <Badge>{this.state.sent}</Badge></MenuItemLink>
+                        <MenuItemLink  to='request' eventKey={"pending"}>Pending <Badge>{this.state.pending}</Badge></MenuItemLink>
+                        <MenuItemLink  to='request' eventKey={"request"}>Make Request</MenuItemLink>
+                        <MenuItemLink  to='request' eventKey={"history"}>History</MenuItemLink>
                     </DropdownButton>
                 </Nav>
             </Navbar>
@@ -56,8 +63,4 @@ var SocietyNav = React.createClass({
     }
 });
 
-function render() {
-    React.render(<SocietyNav location={window.location.search}/>, document.getElementById('societyNav'));
-}
-
-module.exports = {render: render};
+module.exports = SocietyNav;

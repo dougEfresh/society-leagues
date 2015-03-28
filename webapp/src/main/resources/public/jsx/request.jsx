@@ -1,6 +1,4 @@
 var React = require('react/addons');
-var t = require('tcomb-form');
-var Form = t.form.Form;
 var Util = require('./util.jsx');
 var Bootstrap = require('react-bootstrap');
 var MultiSelector = require('./MultiSelector.jsx');
@@ -8,31 +6,41 @@ var Input = Bootstrap.Input;
 var Button = Bootstrap.Button;
 var Panel = Bootstrap.Panel;
 var moment = require('moment');
-//var DatePicker = require('react-datepicker');
-//var classSet = require('classnames');
 
 var RequestPage = React.createClass({
-    getInitialState: function() {
+    getInitialState: function () {
         var m = moment();
         return {
             data: {
-                date: m,
+                date: m.format('YYYY-MM-DD'),
+                challenger: null,
                 opponent: null,
                 slots: []
             }
         }
     },
-    onChange: function() {
-        this.setState({data: {opponent: this.refs.opponent.getValue()}});
+    onChange: function () {
+        this.setState({
+                data: {
+                    opponent: this.refs.opponent.getValue(),
+                    date: this.refs.date.getValue(),
+                    slots: this.refs.slot.getValue()
+                }
+            }
+        );
     },
-    render: function() {
+    handleClick: function(){
+        console.log('asdsd');
+    },
+    render: function () {
+        var submit = (<Button bsStyle='primary' onClick={this.handleClick}>Submit</Button>);
         return (
             <div>
-                <Panel header={'Request'} footer={'Submit'}>
-                    <ChallengeDate  ref='date' date={this.state.data.date}/>
+                <Panel header={'Request'} footer={submit}>
+                    <ChallengeDate ref='date' date={this.state.data.date} onChange={this.onChange}/>
                     <ChallengeUsers ref='opponent' onChange={this.onChange}/>
-                    <ChallengeType player={this.state.data.opponent} />
-                    <TimeSlots display={this.state.data.opponent !== null} date={this.state.data.date} />
+                    <ChallengeType ref='type' opponent={this.state.data.opponent}/>
+                    <ChallengeSlot ref='slot' display={this.state.data.opponent !== null} date={this.state.data.date}/>
                 </Panel>
             </div>
         )
@@ -40,36 +48,35 @@ var RequestPage = React.createClass({
 });
 
 var ChallengeDate = React.createClass({
-    getInitialState: function() {
-        return {
-            data: {
-                dates: []
-            }
-        }
+    getInitialState: function () {
+        return {selected: this.props.date}
     },
-    handleDateChange: function() {
+    handleDateChange: function () {
         if (this.refs.date.getValue().length != 10)
             return;
 
-        //this.setState(
-          //  {data: {date: this.refs.date.getValue()}}
-        //);
+        this.setState(
+          {selected: this.refs.date.getValue()}
+        );
     },
-    componentDidMount: function() {
+    getValue: function() {
+        return this.refs.date.getValue();
+    },
+    componentDidMount: function () {
+
+    },
+    render: function () {
         var dates = [];
         var now = moment().format('YYYY-MM-DD');
-        dates.push((<option key={now} value={now} >{now}</option>));
-        [1,2,3,4].forEach(function(d) {
-            var date = moment().add(d,'weeks').format('YYYY-MM-DD');
+        dates.push((<option key={now} value={now}>{now}</option>));
+        [1, 2, 3, 4].forEach(function (d) {
+            var date = moment().add(d, 'weeks').format('YYYY-MM-DD');
             dates.push((<option key={date} value={date}>{date}</option>));
         });
-        this.setState({data: {dates: dates}});
-    },
-    render: function() {
         return (
             <div>
-                <Input ref="date" type={'select'}  onChange={this.handleDateChange} >
-                    {this.state.data.dates}
+                <Input ref="date" type={'select'} onChange={this.handleDateChange}>
+                    {dates}
                 </Input>
             </div>
         );
@@ -77,21 +84,21 @@ var ChallengeDate = React.createClass({
 });
 
 var ChallengeUsers = React.createClass({
-    getInitialState: function(){
+    getInitialState: function () {
         return {
-            opponent : null,
+            opponent: null,
             potentials: []
         }
     },
-    getValue: function() {
+    getValue: function () {
         return this.state.opponent;
     },
-    componentDidMount: function() {
-        Util.getData('/challenge/potentials', function(d) {
+    componentDidMount: function () {
+        Util.getData('/challenge/potentials', function (d) {
             this.setState({potentials: d});
         }.bind(this));
     },
-    handleChange: function() {
+    handleChange: function () {
         var op = this.refs.opponent.getValue();
         var opponent = null;
         this.state.potentials.forEach(function (p) {
@@ -102,15 +109,15 @@ var ChallengeUsers = React.createClass({
         this.state.opponent = opponent;
         this.props.onChange();
     },
-    render: function() {
+    render: function () {
         var potentials = [];
         potentials.push(<option key={"-1"} value={-1}>{"-----"}</option>);
-        this.state.potentials.forEach(function(p){
+        this.state.potentials.forEach(function (p) {
             potentials.push(<option key={p.user.id} value={p.user.id}>{p.user.name}</option>);
         });
 
         return (
-            <Input ref='opponent' type={'select'} label={'Choose your enemy'} onChange={this.handleChange} >
+            <Input ref='opponent' type={'select'} label={'Choose your enemy'} onChange={this.handleChange}>
                 {potentials}
             </Input>
         );
@@ -119,32 +126,36 @@ var ChallengeUsers = React.createClass({
 
 var ChallengeType = React.createClass({
 
-    getInitialState: function() {
+    getInitialState: function () {
         return {
-                nine: true,
-                eight: true,
-                player: null
+            opponent: {}
         }
     },
-    componentWillReceiveProps: function(nextProps) {
-        this.setState({ player: nextProps.player });
+    componentWillReceiveProps: function (nextProps) {
+        this.setState({opponent: nextProps.opponent});
     },
-    componentDidMount: function() {
-        if (this.props.player === null) {
+    componentDidMount: function () {
+        if (this.props.opponent === null) {
             return;
         }
         this.setState({
-                nine: this.props.player.hasNine,
-                eight: this.props.player.hasEight,
-                player: this.props.player
+            opponent: this.props.opponent
         })
     },
-    render: function() {
+    onChange: function(){
+        console.log(JSON.stringify(this.refs.type.getValue()));
+    },
+    render: function () {
+        var games = [];
+
         if (this.state.player !== null) {
+            if (this.state.opponent.nineBallPlayer != undefined)
+                games.push(<option key={this.state.opponent.nineBallPlayer.id} value={this.state.opponent.nineBallPlayer.id}>{'9'}</option>);
+            if (this.state.opponent.eightBallPlayer != undefined)
+                games.push(<option  key={this.state.opponent.eightBallPlayer.id} value={this.state.opponent.eightBallPlayer.id}>{'8'}</option>)
             return (
                 <div>
-                    <Input type='checkbox' label='9' disable={this.state.nine}></Input>
-                    <Input type='checkbox' label='8' disable={this.state.eight}></Input>
+                    <Input ref='type' type='select' label='Game' onChange={this.onChange} >{games}</Input>
                 </div>
             );
         } else {
@@ -153,125 +164,126 @@ var ChallengeType = React.createClass({
     }
 });
 
-var TimeSlots = React.createClass({
-    getInitialState: function() {
-    return {
-        slots: [],
-        selected: [],
-        display: false
-    }   
+var ChallengeSlot = React.createClass({
+    getInitialState: function () {
+        return {
+            slots: [],
+            display: false,
+            date: this.props.date
+        }
     },
-    componentWillReceiveProps: function(nextProps) {
-        this.setState({display: nextProps.display });
+    componentWillReceiveProps: function (nextProps) {
+        this.setState({display: nextProps.display});
     },
-    componentDidMount: function() {
-        Util.getData( function(d) {
+    componentDidMount: function () {
+        Util.getData('/challenge/slots/' + this.state.date, function (d) {
             this.setState({slots: d});
         }.bind(this));
     },
-    handleChange: function() {
+    handleChange: function () {
 
     },
-    render: function() {
+    getValue: function() {
+        return "";
+    },
+    render: function () {
         var slots = [];
-        //{s.time.split('T')[1].substr(0,5)}
-        this.state.slots.forEach(function(s) {
-            slots.push((<option key={s.id} value={s.id}>{s.time.split('T')[1].substr(0,5)}</option>));
+        this.state.slots.forEach(function (s) {
+            slots.push((<option key={s.id} value={s.id}>{s.time}</option>));
         });
         return (
             <div className={this.state.display ? 'form-show' : 'form-hide'}>
-                <MultiSelector url={'/challenge/slots/' + this.props.date.format('YYYY-MM-DD')} field={'time'} />
-            <Input ref='slot' type={'select'} multiple label={'Choose your time'} onChange={this.handleChange} >
-                {slots}
-            </Input>
-        </div>);
+                <MultiSelector filter={false} url={'/challenge/slots/' + this.state.date} field={'time'}
+                               label={'Slot'}/>
+            </div>
+        );
     }
 });
 
 var RequestChallenge = React.createClass({
-    getDefaultProps: function() {
+    getDefaultProps: function () {
         return {
-            url:"/challenge/request" ,
-            potentials:"/challenge/potentials" ,
-            slots:"/challenge/slots" ,
-            userPlayers:"/userPlayers",
-            userStats:"/userStats"
+            url: "/challenge/request",
+            potentials: "/challenge/potentials",
+            slots: "/challenge/slots",
+            userPlayers: "/userPlayers",
+            userStats: "/userStats"
         }
     },
-    getInitialState: function() {
+    getInitialState: function () {
         return {
             date: "2015-04-06", data: [], players: []
         };
     },
-    getPotentials: function() {
+    getPotentials: function () {
         console.log("Getting Data...");
         $.ajax({
             async: true,
             url: this.props.potentials,
             dataType: 'json',
-            success: function(data) {
+            success: function (data) {
                 this.setState({data: data, user: this.state.players});
             }.bind(this),
-            error: function(xhr, status, err) {
+            error: function (xhr, status, err) {
                 console.error(this.props.potentials, status, err.toString());
             }.bind(this)
         });
     },
-    getPlayer: function() {
+    getPlayer: function () {
         console.log("Getting User...");
         $.ajax({
             async: true,
             url: this.props.userPlayers,
             dataType: 'json',
-            success: function(data) {
+            success: function (data) {
                 this.setState({players: data, data: this.state.data});
             }.bind(this),
-            error: function(xhr, status, err) {
+            error: function (xhr, status, err) {
                 console.error(this.props.potentials, status, err.toString());
             }.bind(this)
         });
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         this.getPlayer();
         this.getPotentials();
 
     },
-    sendChallenge: function(c) {
+    sendChallenge: function (c) {
 
     },
-    onChallengeRequest: function(d) {
+    onChallengeRequest: function (d) {
         var challenge = {};
-        if (this.state.players[0].division.type === d.opponent.division.type ) {
+        if (this.state.players[0].division.type === d.opponent.division.type) {
             challenge.challenger = this.state.players[0];
         } else {
             challenge.challenger = this.state.players[1];
         }
         challenge.opponent = d.opponent;
         challenge.challengeTimes = [];
-        d.times.forEach(function(t){
+        d.times.forEach(function (t) {
             challenge.challengeTimes.push(d.date + 'T' + t);
         });
         console.log(JSON.stringify(challenge));
         $.ajax({
-             processData: false,
-             async: true,
-             contentType: 'application/json',
-             url: this.props.url,
-             dataType: 'json',
-             method: 'post',
-             data: JSON.stringify(challenge),
-             success: function(data) {
-                 console.log(JSON.stringify(data));
-             }.bind(this),
-             error: function(xhr, status, err) {
-                 console.error(this.props.url, status, err.toString());
-             }.bind(this)
-         });
+            processData: false,
+            async: true,
+            contentType: 'application/json',
+            url: this.props.url,
+            dataType: 'json',
+            method: 'post',
+            data: JSON.stringify(challenge),
+            success: function (data) {
+                console.log(JSON.stringify(data));
+            }.bind(this),
+            error: function (xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
     },
-    render: function() {
+    render: function () {
         var rows = [];
-          this.state.data.forEach(function (c) {
-              rows.push(<ChallengeRow challenge={c} key={c.user.id} handleChallenge={this.onChallengeRequest} />);
+        this.state.data.forEach(function (c) {
+            rows.push(<ChallengeRow challenge={c} key={c.user.id} handleChallenge={this.onChallengeRequest}/>);
         }.bind(this));
 
         return (
@@ -297,5 +309,5 @@ function render() {
     }
 }
 
-module.exports = {render: render};
+module.exports = RequestPage;
 

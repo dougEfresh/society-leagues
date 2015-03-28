@@ -44,7 +44,9 @@ public class Slot extends LeagueObject {
     public String getTime() {
         return this.time.format(new DateTimeFormatterBuilder()
                 .appendValue(ChronoField.HOUR_OF_DAY, 2)
-                .appendLiteral(':')
-                .appendValue(ChronoField.MINUTE_OF_DAY, 2).toFormatter());
+                .appendLiteral(":00").toFormatter()
+				);
+				//                .appendValue(ChronoField.MINUTE_OF_DAY, 2).toFormatter());
     }
+	
 }

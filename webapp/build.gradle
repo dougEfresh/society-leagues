@@ -10,7 +10,8 @@ bootRun {
         args project.args.split('\\s+')
     }
 
-    jvmArgs = [ '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005', '-Dembedded=true' ]
+    jvmArgs = [ '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005', '-Dembedded=true' ,
+                '-Xmx512m']
 }
 
 task watchify(type:Exec) {
