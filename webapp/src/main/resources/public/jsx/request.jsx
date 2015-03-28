@@ -5,29 +5,37 @@ var Util = require('./util.jsx');
 var Bootstrap = require('react-bootstrap');
 var Input = Bootstrap.Input;
 var Button = Bootstrap.Button;
+var Panel = Bootstrap.Panel;
 var moment = require('moment');
 //var DatePicker = require('react-datepicker');
+//var classSet = require('classnames');
 
 var RequestPage = React.createClass({
     getInitialState: function() {
         var m = moment();
         return {
-            date: m
+            data: {
+                date: m,
+                opponent: null,
+                slots: []
+            }
         }
     },
-    changeDate: function(d) {
-        this.setState({date: moment(d)});
+    onChange: function() {
+        this.setState({data: {opponent: this.refs.opponent.getValue()}});
     },
     render: function() {
-        return (<div>
-            <ChallengeDate date={this.state.date} handleDateChange={this.changeDate}/>
-            <ChallengeUsers date={this.state.date}/>
-        </div>)
+        return (
+            <div>
+                <Panel header={'Choose your enemy'} footer={'Submit'}>
+                    <ChallengeDate  ref='date' date={this.state.data.date}/>
+                    <ChallengeUsers ref='opponent' onChange={this.onChange}/>
+                    <ChallengeType player={this.state.data.opponent} />
+                    <TimeSlots display={this.state.data.opponent !== null} date={this.state.data.date} />
+                </Panel>
+            </div>
+        )
     }
-});
-
-var DateType = t.struct({
-    date: t.Str
 });
 
 var ChallengeDate = React.createClass({
@@ -39,21 +47,17 @@ var ChallengeDate = React.createClass({
         }
     },
     handleDateChange: function() {
-        console.log('Date:' + JSON.stringify(this.refs.form.getValue()));
-        if (this.refs.form.getValue() === null)
+        if (this.refs.date.getValue().length != 10)
             return;
-        var d = this.refs.form.getValue().date;
-        if (d !== undefined) {
-            this.setState({data:this.refs.form.getValue()});
-            if (d.length === 10) {
-                this.props.handleDateChange(this.refs.form.getValue().date);
-            }
-        }
+
+        this.setState(
+            {data: {date: this.refs.date.getValue()}}
+        );
     },
     render: function() {
         return (
             <div>
-                <Form ref="form" type={DateType} value={this.state.data} onChange={this.handleDateChange} />
+                <Input ref="date" type={'text'} value={this.state.data.date} onChange={this.handleDateChange} />
             </div>
         );
     }
@@ -66,19 +70,24 @@ var ChallengeUsers = React.createClass({
             potentials: []
         }
     },
+    getValue: function() {
+        return this.state.opponent;
+    },
     componentDidMount: function() {
         Util.getData('/challenge/potentials', function(d) {
             this.setState({potentials: d});
         }.bind(this));
     },
-    handleChange: function(e) {
-        var op = null;
-        this.state.potentials.forEach(function(p){
-            if (p.user.id == e.target.value) {
-                op = p;
+    handleChange: function() {
+        var op = this.refs.opponent.getValue();
+        var opponent = null;
+        this.state.potentials.forEach(function (p) {
+            if (p.user.id == op) {
+                opponent = p;
             }
         });
-        this.setState({opponent: op});
+        this.state.opponent = opponent;
+        this.props.onChange();
     },
     render: function() {
         var potentials = [];
@@ -86,39 +95,64 @@ var ChallengeUsers = React.createClass({
         this.state.potentials.forEach(function(p){
             potentials.push(<option key={p.user.id} value={p.user.id}>{p.user.name}</option>);
         });
-        var eightDisable = function(p) {
-            return  this.state.opponent == null || this.state.opponent.eightBallPlayer === null || this.state.opponent.eightBallPlayer === undefined;
-        }.bind(this);
-        var nineDisable = function(p) {
-            return  this.state.opponent == null || this.state.opponent.nineBallPlayer === null || this.state.opponent.eightBallPlayer === undefined;
-        }.bind(this);
 
         return (
-            <div>
-            <Input type={"select"} label={"Choose Player"} onChange={this.handleChange} defaultValue={this.state.opponent} >
+            <Input ref='opponent' type={"select"} label={"Choose Player"} onChange={this.handleChange} >
                 {potentials}
             </Input>
-                <div style={{display: eightDisable(this.state.opponent) ? 'none' : 'inline' }}>
-                <Input disabled={eightDisable(this.state.opponent)} type="checkbox" label={"8"}></Input>
-                </div>
-                 <div style={{display: nineDisable(this.state.opponent) ? 'none' : 'inline' }}>
-                     <Input type="checkbox" label={"9"}></Input>
-                 </div>
-		 <TimeSlots date={this.props.date} />
-            </div>
         );
+    }
+});
+
+var ChallengeType = React.createClass({
+
+    getInitialState: function() {
+        return {
+                nine: true,
+                eight: true,
+                player: null
+        }
+    },
+    componentWillReceiveProps: function(nextProps) {
+        this.setState({ player: nextProps.player });
+    },
+    componentDidMount: function() {
+        if (this.props.player === null) {
+            return;
+        }
+        this.setState({
+                nine: this.props.player.hasNine,
+                eight: this.props.player.hasEight,
+                player: this.props.player
+        })
+    },
+    render: function() {
+        if (this.state.player !== null) {
+            return (
+                <div>
+                    <Input type='checkbox' label='9' disable={this.state.nine}></Input>
+                    <Input type='checkbox' label='8' disable={this.state.eight}></Input>
+                </div>
+            );
+        } else {
+            return <div></div>;
+        }
     }
 });
 
 var TimeSlots = React.createClass({
     getInitialState: function() {
     return {
-          slots: {},
- 	  selected: [],
-	  type: t.struct({
-	    time: t.list(t.Str)
-	  })
+        slots: {},
+        selected: [],
+        type: t.struct({
+            time: t.list(t.Str)
+        }),
+        display: false
     }   
+    },
+    componentWillReceiveProps: function(nextProps) {
+        this.setState({display: nextProps.display });
     },
     componentDidMount: function() {
         Util.getData('/challenge/slots/' + this.props.date.format('YYYY-MM-DD'), function(d) {
@@ -129,12 +163,8 @@ var TimeSlots = React.createClass({
 	}.bind(this));
     },
     render: function() {
-    if (this.props.date === null || this.props.date === undefined ) {
-        return (<div></div>)
-    } else {
-           return (<Form type={this.state.type}/>);
-	}  
-    }	
+           return (<div className={this.state.display ? 'form-show' : 'form-hide'}> <Form className={this.props.className} type={this.state.type}/> </div>);
+    }
 });
 
 var RequestChallenge = React.createClass({
@@ -240,20 +270,10 @@ var RequestChallenge = React.createClass({
     }
 });
 
-var UserStat = React.createClass({
-    render: function() {
-        return (
-            <div>
-                <tr>
-                    <td>{this.props.name}</td>
-                </tr>
-            </div>
-        );
-    }
-});
-
 function render() {
-    React.render(<RequestPage />, document.getElementById('content'));
+    if (window.location.search.indexOf('request') !== -1) {
+        React.render(<RequestPage />, document.getElementById('content'));
+    }
 }
 
 module.exports = {render: render};

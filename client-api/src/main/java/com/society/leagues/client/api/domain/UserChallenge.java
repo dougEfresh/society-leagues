@@ -29,4 +29,12 @@ public class UserChallenge {
     public void setEightBallPlayer(Player eightBallPlayer) {
         this.eightBallPlayer = eightBallPlayer;
     }
+
+    public boolean hasNine() {
+        return nineBallPlayer != null;
+    }
+
+    public boolean hasEight() {
+        return eightBallPlayer != null;
+    }
 }
