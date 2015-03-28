@@ -1,6 +1,6 @@
 var React = require('react');
-var { DefaultRoute, Route, NotFoundRoute } = require('react-router');
-
+//var { DefaultRoute, Route, NotFoundRoute } = require('react-router');
+/*
 module.exports = (token) => {
 
   // hand-wavy dependency injection
@@ -17,3 +17,4 @@ module.exports = (token) => {
     <NotFoundRoute name="not-found" handler={require('./handlers/NotFound')}/>
   ];
 };
+    */
