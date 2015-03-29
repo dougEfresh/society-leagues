@@ -48,7 +48,7 @@ public class SchemaData {
     @Autowired
     SlotDao slotApi;
 
-    static int NUM_PLAYERS = 80;
+    static int NUM_PLAYERS = 40;
 
     public void generateData() {
         if (!generate)
@@ -93,10 +93,11 @@ public class SchemaData {
     }
 
     private void createChallengePlayers() {
-        for (int i = 1; i <= NUM_PLAYERS; i++) {
+        for (int i = 0; i <  USERS.length; i++) {
+		int num = i + 1;
             for (Division division : divisionApi.get().stream().filter(d -> d.isChallenge()).collect(Collectors.toList())) {
                 Player player = new Player();
-                String teamName = "login" + i;
+                String teamName = "login" + num;
                 Team team = teamApi.get(teamName);
                 if (team == null)
                     player.setTeam(teamApi.create(new Team(teamName)));
@@ -107,7 +108,7 @@ public class SchemaData {
                 player.setSeason(seasonApi.get(division.getType().name()));
                 player.setStart(new Date());
                 player.setHandicap(getRandomHandicap(i, division.getType()));
-                player.setUser(userApi.get("login" + i));
+                player.setUser(userApi.get("login" + num));
                 if (player.getUser() == null) {
                     throw new RuntimeException("Error find login for login" + i + " player: " + player);
                 }

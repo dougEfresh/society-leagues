@@ -130,7 +130,6 @@ var MultiSelector = React.createClass({
                 {filter}
                 {chosenGroup}
                 <Input className={'multi-select'} ref={this.props.label} onChange={this.onChange} multiple help="Help Me" type="select" label={this.props.label}>{this.state.list}</Input>
-
             </div>
         );
     }

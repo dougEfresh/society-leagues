@@ -5,6 +5,7 @@ var MultiSelector = require('./MultiSelector.jsx');
 var Input = Bootstrap.Input;
 var Button = Bootstrap.Button;
 var Panel = Bootstrap.Panel;
+var Badge = Bootstrap.Badge;
 var moment = require('moment');
 
 var RequestPage = React.createClass({
@@ -125,10 +126,11 @@ var ChallengeUsers = React.createClass({
 });
 
 var ChallengeType = React.createClass({
-
     getInitialState: function () {
         return {
-            opponent: {}
+            nine: false,
+            eight: false,
+            opponent: null
         }
     },
     componentWillReceiveProps: function (nextProps) {
@@ -143,31 +145,29 @@ var ChallengeType = React.createClass({
         })
     },
     onChange: function(){
-        console.log(JSON.stringify(this.refs.type.getValue()));
+        this.setState({
+            nine: this.refs.nine.getChecked(),
+            eight: this.refs.eight.getChecked()
+        })
     },
     render: function () {
-        var games = [];
-
-        if (this.state.player !== null) {
-            if (this.state.opponent.nineBallPlayer != undefined)
-                games.push(<option key={this.state.opponent.nineBallPlayer.id} value={this.state.opponent.nineBallPlayer.id}>{'9'}</option>);
-            if (this.state.opponent.eightBallPlayer != undefined)
-                games.push(<option  key={this.state.opponent.eightBallPlayer.id} value={this.state.opponent.eightBallPlayer.id}>{'8'}</option>)
-            return (
-                <div>
-                    <Input ref='type' type='select' label='Game' onChange={this.onChange} >{games}</Input>
-                </div>
-            );
-        } else {
-            return <div></div>;
+        if (this.state.opponent === null) {
+            return null;
         }
+        var nineLabel = (<Badge>9</Badge>);
+        var eightLabel = (<Badge>8</Badge>);
+        return (
+            <div>
+                <Input className="nine-ball" ref='nine' type='checkbox' label={nineLabel}   checked={this.state.nine} onChange={this.onChange}></Input>
+                <Input className="eight-ball" ref='eight' type='checkbox' label={eightLabel} checked={this.state.eight} onChange={this.onChange}></Input>
+            </div>
+        );
     }
 });
 
 var ChallengeSlot = React.createClass({
     getInitialState: function () {
         return {
-            slots: [],
             display: false,
             date: this.props.date
         }
@@ -176,24 +176,20 @@ var ChallengeSlot = React.createClass({
         this.setState({display: nextProps.display});
     },
     componentDidMount: function () {
-        Util.getData('/challenge/slots/' + this.state.date, function (d) {
-            this.setState({slots: d});
-        }.bind(this));
     },
     handleChange: function () {
 
     },
     getValue: function() {
-        return "";
+        return this.refs.slots.getValue();
     },
     render: function () {
-        var slots = [];
-        this.state.slots.forEach(function (s) {
-            slots.push((<option key={s.id} value={s.id}>{s.time}</option>));
-        });
         return (
             <div className={this.state.display ? 'form-show' : 'form-hide'}>
-                <MultiSelector filter={false} url={'/challenge/slots/' + this.state.date} field={'time'}
+                <MultiSelector ref={'slots'}
+                               filter={false}
+                               url={'/challenge/slots/' + this.state.date}
+                               field={'time'}
                                label={'Slot'}/>
             </div>
         );

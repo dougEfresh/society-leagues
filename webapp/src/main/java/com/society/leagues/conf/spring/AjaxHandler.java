@@ -29,13 +29,9 @@ public class AjaxHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
-
-        if ( request.getHeader("X-Login-Ajax-call") != null && request.getHeader("X-Login-Ajax-call").equals("true")) {
-            response.getWriter().print("ok");
-            response.getWriter().flush();
-            return;
-        }
-
-        defaultHandler.onAuthenticationSuccess(request, response, authentication);
+	System.err.println("**** login ******\n");
+	response.getWriter().print("ok");
+	response.getWriter().flush();
+        //defaultHandler.onAuthenticationSuccess(request, response, authentication);
     }
 }

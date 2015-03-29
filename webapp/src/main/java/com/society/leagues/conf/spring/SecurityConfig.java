@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -41,21 +42,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/authenticate**").permitAll()
                 .antMatchers("/css/**").permitAll()
                 .antMatchers("/js/**").permitAll()
+                .antMatchers("/app/js/**").permitAll()
                 .antMatchers("/img/**").permitAll()
+                .antMatchers("/app/home.html**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().permitAll()
-                .defaultSuccessUrl("/app/home.html")
+                .defaultSuccessUrl("/app/home.html#/")
                 .loginProcessingUrl("/authenticate")
                 .usernameParameter("username")
                 .passwordParameter("password")
-                .loginPage("/login.html").permitAll()
+                .successHandler(new AjaxHandler(new SavedRequestAwareAuthenticationSuccessHandler()))
+	    .loginPage("/app/home.html#/login1").permitAll()
                 .and()
                 .httpBasic()
                 .and()
                 .logout()
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/login.html")
+                .logoutSuccessUrl("/app/home.html#/")
                 .permitAll();
     }
 }

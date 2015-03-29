@@ -32,9 +32,7 @@ public class UserResource  {
 
     @RequestMapping(value = "/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public User get(Principal principal) {
-        User u = get(principal.getName());
-
-        return u;
+        return  get(principal.getName());
     }
 
     @RequestMapping(value = "/userPlayers", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
