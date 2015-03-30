@@ -75,6 +75,13 @@ public class ChallengeResource  {
     @RequestMapping(value = "/challenge/potentials", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<UserChallenge> getPotentials(Principal principal) {
         User u = userDao.get(principal.getName());
+	return getPotentials(u.getId());
+    }
+
+
+    @RequestMapping(value = "/challenge/potentials/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Collection<UserChallenge> getPotentials(@PathVariable Integer  userId) {
+        User u = userDao.get(userId);
         Collection<UserChallenge> potentials = getPotentials(u);
         return potentials.stream().sorted(new Comparator<UserChallenge>() {
             @Override
@@ -155,6 +162,12 @@ public class ChallengeResource  {
     @RequestMapping(value = "/challenge/counters", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Integer> getCounters(Principal principal) {
         User u = userDao.get(principal.getName());
+        return getCounters(u.getId());
+    }
+
+    @RequestMapping(value = "/challenge/counters/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Integer> getCounters(@PathVariable Integer userId) {
+        User u = userDao.get(userId);
         List<Integer> counters = new ArrayList<>();
         counters.add(getSent(u).size());
         counters.add(getPendingApproval(u).size());

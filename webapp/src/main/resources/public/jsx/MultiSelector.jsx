@@ -30,14 +30,15 @@ var MultiSelector = React.createClass({
             return [] ;
 
         var ids = [];
-        chosen.forEach(function(name) {
+        chosen.forEach(function(field) {
             for(var i = 0; i < available.length ; i++) {
-                if (available[i].name == name) {
+                debugger;
+                if (available[i][this.props.field] == field) {
                     ids.push(available[i].id);
                     break;
                 }
             }
-        });
+        }.bind(this));
         return ids;
     },
     getValue: function() {
@@ -78,7 +79,10 @@ var MultiSelector = React.createClass({
         }
     },
     componentDidMount: function () {
-        Util.getData(this.props.url, function (d) {
+        this.getDatathis.props.url);
+    },
+    getData: function(url) {
+        Util.getData(url, function (d) {
             var list = [];
             var field = this.props.field;
             d.forEach(function(d) {
@@ -86,6 +90,12 @@ var MultiSelector = React.createClass({
             });
             this.setState({ data : d , list: list});
         }.bind(this));
+    },
+    componentWillReceiveProps: function (nextProps) {
+        if(nextProps.url == this.props.url) {
+            return;
+        }
+        this.getData(nextProps.url);
     },
     onRemove: function(item) {
         var name = item.target.textContent;

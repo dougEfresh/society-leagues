@@ -9,6 +9,9 @@ var Badge = Bootstrap.Badge;
 var moment = require('moment');
 
 var RequestPage = React.createClass({
+    contextTypes: {
+        router: React.PropTypes.func
+    },
     getInitialState: function () {
         var m = moment();
         return {
@@ -16,32 +19,36 @@ var RequestPage = React.createClass({
                 date: m.format('YYYY-MM-DD'),
                 challenger: null,
                 opponent: null,
-                slots: []
-            }
+                slots: [],
+                type: null,
+            },
+            userId : 0
         }
+    },
+    componentDidMount: function() {
+        this.setState({userId: parseInt(this.context.router.getCurrentParams().userId)});
     },
     onChange: function () {
         this.setState({
                 data: {
-                    opponent: this.refs.opponent.getValue(),
                     date: this.refs.date.getValue(),
-                    slots: this.refs.slot.getValue()
+                    opponent: this.refs.opponent.getValue()
                 }
             }
         );
     },
     handleClick: function(){
-        console.log('asdsd');
+        console.log(JSON.stringify(this.refs.slots.getValue()));
     },
     render: function () {
         var submit = (<Button bsStyle='primary' onClick={this.handleClick}>Submit</Button>);
         return (
             <div>
                 <Panel header={'Request'} footer={submit}>
-                    <ChallengeDate ref='date' date={this.state.data.date} onChange={this.onChange}/>
-                    <ChallengeUsers ref='opponent' onChange={this.onChange}/>
-                    <ChallengeType ref='type' opponent={this.state.data.opponent}/>
-                    <ChallengeSlot ref='slot' display={this.state.data.opponent !== null} date={this.state.data.date}/>
+                    <ChallengeDate  ref='date' date={this.state.data.date} onChange={this.onChange}/>
+                    <ChallengeUsers ref='opponent' userId={this.state.userId} onChange={this.onChange}/>
+                    <ChallengeType  ref='types' opponent={this.state.data.opponent} onChange={this.onChange}/>
+                    <ChallengeSlot  ref='slots' display={this.state.data.opponent !== null} date={this.state.data.date} onChange={this.onChange}/>
                 </Panel>
             </div>
         )
@@ -85,6 +92,9 @@ var ChallengeDate = React.createClass({
 });
 
 var ChallengeUsers = React.createClass({
+    propTypes: {
+        userId:  React.PropTypes.number
+    },
     getInitialState: function () {
         return {
             opponent: null,
@@ -95,7 +105,16 @@ var ChallengeUsers = React.createClass({
         return this.state.opponent;
     },
     componentDidMount: function () {
-        Util.getData('/challenge/potentials', function (d) {
+        if (this.props.userId == '0')
+            return;
+        Util.getData('/challenge/potentials/' + this.props.userId, function (d) {
+            this.setState({potentials: d});
+        }.bind(this));
+    },
+    componentWillReceiveProps: function (nextProps) {
+        if (nextProps.userId == '0' || nextProps.userId == this.props.userId)
+            return;
+         Util.getData('/challenge/potentials/' + nextProps.userId, function (d) {
             this.setState({potentials: d});
         }.bind(this));
     },
@@ -107,6 +126,7 @@ var ChallengeUsers = React.createClass({
                 opponent = p;
             }
         });
+        //TODO: FIX ME
         this.state.opponent = opponent;
         this.props.onChange();
     },
@@ -144,11 +164,18 @@ var ChallengeType = React.createClass({
             opponent: this.props.opponent
         })
     },
-    onChange: function(){
+    onChange: function() {
+        //TODO: Why do I have to do this ?
+        this.state.nine = this.refs.nine.getChecked();
+        this.state.eight = this.refs.eight.getChecked();
         this.setState({
             nine: this.refs.nine.getChecked(),
             eight: this.refs.eight.getChecked()
-        })
+        });
+        this.props.onChange();
+    },
+    getValue: function() {
+        return ({ nine: this.state.nine, eight: this.state.eight});
     },
     render: function () {
         if (this.state.opponent === null) {
@@ -156,12 +183,15 @@ var ChallengeType = React.createClass({
         }
         var nineLabel = (<Badge>9</Badge>);
         var eightLabel = (<Badge>8</Badge>);
-        return (
-            <div>
-                <Input className="nine-ball" ref='nine' type='checkbox' label={nineLabel}   checked={this.state.nine} onChange={this.onChange}></Input>
-                <Input className="eight-ball" ref='eight' type='checkbox' label={eightLabel} checked={this.state.eight} onChange={this.onChange}></Input>
-            </div>
-        );
+        var games = [];
+        if (this.state.opponent.nineBallPlayer) {
+            games.push(<Input key='9' className="nine-ball" ref='nine' type='checkbox' label={nineLabel} checked={this.state.nine} onChange={this.onChange}></Input>);
+        }
+
+        if (this.state.opponent.eightBallPlayer) {
+            games.push(<Input key='8' className="eight-ball" ref='eight' type='checkbox' label={eightLabel} checked={this.state.eight} onChange={this.onChange}></Input>);
+        }
+        return (<div>{games}</div>);
     }
 });
 
@@ -173,12 +203,8 @@ var ChallengeSlot = React.createClass({
         }
     },
     componentWillReceiveProps: function (nextProps) {
-        this.setState({display: nextProps.display});
-    },
-    componentDidMount: function () {
-    },
-    handleChange: function () {
-
+        this.setState(
+            {display: nextProps.display, date: nextProps.date});
     },
     getValue: function() {
         return this.refs.slots.getValue();
@@ -298,12 +324,6 @@ var RequestChallenge = React.createClass({
             </div>);
     }
 });
-
-function render() {
-    if (window.location.search.indexOf('request') !== -1) {
-        React.render(<RequestPage />, document.getElementById('content'));
-    }
-}
 
 module.exports = RequestPage;
 

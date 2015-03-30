@@ -15,6 +15,9 @@ var ReactRouterBootstrap = require('react-router-bootstrap')
 var Util = require('./util.jsx');
 
 var SocietyNav = React.createClass({
+    propTypes: {
+        userContext:  React.PropTypes.object
+    },
     getInitialState: function() {
         return {
             key: 'home',
@@ -27,19 +30,28 @@ var SocietyNav = React.createClass({
         if (!this.props.userContext.loggedIn)  {
             return;
         }
-        this.updateState(this.props);
-    },
-    componentWillReceiveProps: function (nextProps) {
-        this.updateState(nextProps);
-    },
-    updateState: function(nextProps) {
-        Util.getData('/challenge/counters', function(d) {
+        Util.getData('/challenge/counters/' + this.getViewingUser().id, function(d) {
             this.setState(
                 {sent: d[0], pending:d[1]}
             );
         }.bind(this));
-
+    },
+    componentWillReceiveProps: function (nextProps) {
         this.setState({userContext: nextProps.userContext});
+    },
+    shouldComponentUpdate: function(nextProps,nextState) {
+        if (nextProps.userContext.loggedIn)
+            return true;
+
+        var viewingUser = this.getViewingUser();
+        if (viewingUser.id == 0){
+            return false;
+        }
+        var newUser = nextProps.userContext.viewUser != null ? nextProps.userContext.viewUser : nextProps.userContext.user;
+        if (viewUser.id == newUser.id) {
+            return false;
+        }
+        return true;
     },
     getViewingUser: function() {
         if (!this.state.userContext.loggedIn)
@@ -58,7 +70,7 @@ var SocietyNav = React.createClass({
         var navBarInstance = (
             <Navbar inverse brand="Blah" toggleNavKey={this.state.key}>
                 <Nav bsStyle="pills" fluid fixedTop activeKey={this.state.key} toggleNavKey={this.state.key}>
-                    <NavItemLink to='home' eventKey={"home"}>Home</NavItemLink>
+                    <NavItemLink to='home' params={{userId: this.getViewingUser().id}} eventKey={"home"}>Home</NavItemLink>
                     <NavItemLink to='stats' params={{userId: this.getViewingUser().id}} eventKey={"Stats"}>Stats</NavItemLink>
                     <DropdownButton  eventKey={"challenge"} title={indicator} navItem={true}>
                         <MenuItemLink  to='request' params={{userId: this.getViewingUser().id}} eventKey={"sent"} >Sent <Badge>{this.state.sent}</Badge></MenuItemLink>

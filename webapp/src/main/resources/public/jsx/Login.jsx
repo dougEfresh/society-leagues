@@ -23,7 +23,7 @@ var Login = React.createClass({
             data: {username: user, password: password},
             method: 'post',
             success: function (d) {
-                window.location = '/app/home.html'
+                this.props.onLogin();
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error('/authenticate', status, err.toString());
