@@ -79,7 +79,7 @@ var MultiSelector = React.createClass({
         }
     },
     componentDidMount: function () {
-        this.getDatathis.props.url);
+        this.getData(this.props.url);
     },
     getData: function(url) {
         Util.getData(url, function (d) {
