@@ -1,41 +1,54 @@
 package com.society.leagues.client.api.domain;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class ChallengeRequest {
-    Player challenger;
-    Player opponent;
-    List<Slot> slotTimes = new ArrayList<>();
+    User challenger;
+    User opponent;
+    boolean nine;
+    boolean eight;
+    List<Slot> slots = new ArrayList<>();
 
-    public Player getChallenger() {
+    public User getChallenger() {
         return challenger;
     }
 
-    public void setChallenger(Player challenger) {
+    public void setChallenger(User challenger) {
         this.challenger = challenger;
     }
 
-    public Player getOpponent() {
+    public User getOpponent() {
         return opponent;
     }
 
-    public void setOpponent(Player opponent) {
+    public void setOpponent(User opponent) {
         this.opponent = opponent;
     }
 
-    public List<Slot> getSlotTimes() {
-        return slotTimes;
+    public List<Slot> getSlots() {
+        return slots;
     }
 
-    public void setSlotTimes(List<Slot> slotTimes) {
-        this.slotTimes = slotTimes;
+    public void setSlots(List<Slot> slots) {
+        this.slots = slots;
     }
 
-    public void addDate(LocalDateTime date) {
+    public boolean isNine() {
+        return nine;
+    }
 
+    public void setNine(boolean nine) {
+        this.nine = nine;
+    }
+
+    public boolean isEight() {
+        return eight;
+    }
+
+    public void setEight(boolean eight) {
+        this.eight = eight;
     }
 
     @Override
@@ -43,7 +56,7 @@ public class ChallengeRequest {
         return "ChallengeRequest{" +
                 "challenger=" + challenger +
                 ", opponent=" + opponent +
-                ", challengeTimes=" + Arrays.toString(slotTimes.toArray()) +
+                ", challengeTimes=" + Arrays.toString(slots.toArray()) +
                 '}';
     }
 }

@@ -133,7 +133,7 @@ public class ChallengeResource  {
         playerChallenge.setChallenger(challenger);
         playerChallenge.setOpponent(opponent);
 
-        for (Slot slot : request.getSlotTimes()) {
+        for (Slot slot : request.getSlots()) {
             Challenge c = new Challenge();
             c.setOpponent(opponent);
             c.setChallenger(challenger);

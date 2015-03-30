@@ -38,7 +38,13 @@ var RequestPage = React.createClass({
         );
     },
     handleClick: function(){
-        console.log(JSON.stringify(this.refs.slots.getValue()));
+        var challenge = {};
+        challenge.user = {id: this.state.userId};
+        challenge.opponent = opponent;
+        challenge.slots = this.refs.slots.getValue();
+        challenge.nine = this.refs.type.getValue().nine;
+        challenge.eight = this.refs.type.getValue().eight;
+        console.log(JSON.stringify(challenge));
     },
     render: function () {
         var submit = (<Button bsStyle='primary' onClick={this.handleClick}>Submit</Button>);
