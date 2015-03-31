@@ -3,6 +3,7 @@ var Util = require('./util.jsx');
 var Bootstrap = require('react-bootstrap');
 var MultiSelector = require('./MultiSelector.jsx');
 var Input = Bootstrap.Input;
+var Table = Bootstrap.Table;
 var Button = Bootstrap.Button;
 var Panel = Bootstrap.Panel;
 var Badge = Bootstrap.Badge;
@@ -70,21 +71,51 @@ var RequestPage = React.createClass({
 var PendingChallenges = React.createClass({
     getDefaultProps: function() {
         return {
-            userId: 0,
-            challenges: null
+            userId: 0
+        }
+    },
+    getInitialState: function() {
+        return {
+            challenges: []
         }
     },
     componentWillMount: function() {
-
+        if (this.props.userId  == 0) {
+            return;
+        }
+        Util.getData('/challenges/pending/' + this.props.userId, function(d){
+            this.setState({challenges: d});
+        }.bind(this))
+    },
+    componentWillReceiveProps: function (nextProps) {
+        if (nextProps.userId  == 0) {
+            return;
+        }
+        Util.getData('/challenges/pending/' + nextProps.userId, function(d){
+            this.setState({challenges: d});
+        }.bind(this))
     },
     render: function() {
         if (this.props.userId == 0) {
             return null;
         }
+        var rows = [];
+        this.state.challenges.forEach(function(c){
+            rows.push(<tr><td>{c.date}</td></tr>);
+        });
         return (
             <div>
-                <Panel header={'Pending'}>
-                    <PendingChallenges />
+                <Panel collapsable defaultExpanded header={'Pending'}>
+                    <Table striped bordered condensed hover>
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {rows}
+                        </tbody>
+                    </Table>
                 </Panel>
             </div>
         );

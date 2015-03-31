@@ -38,6 +38,9 @@ public class ChallengeResource  {
     @RequestMapping(value = "/challenges/pending/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserChallengeGroup> getPending(@PathVariable Integer userId,Principal principal) {
         User u = userDao.get(userId);
+        if (u == null) {
+            return Collections.emptyList();
+        }
         List<UserChallengeGroup> challenges = getSent(u);
         challenges.addAll(getNeedNotify(u));
         return challenges;
@@ -108,6 +111,7 @@ public class ChallengeResource  {
     @RequestMapping(value = "/challenge/potentials/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<UserChallenge> getPotentials(@PathVariable Integer  userId) {
         User u = userDao.get(userId);
+
         Collection<UserChallenge> potentials = getPotentials(u);
         return potentials.stream().sorted(new Comparator<UserChallenge>() {
             @Override
