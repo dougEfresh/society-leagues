@@ -48,8 +48,10 @@ var RequestPage = React.createClass({
         challenge.eight = this.refs.types.getValue().eight;
         console.log(JSON.stringify(challenge));
         Util.sendData(challenge,'/challenge/request', function(d) {
-
-        });
+	    this.setState({data: 
+			   {opponent: null, date: this.state.date}
+			  });
+        }.bind(this));
 
     },
     render: function () {
@@ -215,8 +217,6 @@ var ChallengeUsers = React.createClass({
 var ChallengeType = React.createClass({
     getInitialState: function () {
         return {
-            nine: false,
-            eight: false,
             opponent: null
         }
     },
@@ -231,18 +231,8 @@ var ChallengeType = React.createClass({
             opponent: this.props.opponent
         })
     },
-    onChange: function() {
-        //TODO: Why do I have to do this ?
-        this.state.nine = this.refs.nine.getChecked();
-        this.state.eight = this.refs.eight.getChecked();
-        this.setState({
-            nine: this.refs.nine.getChecked(),
-            eight: this.refs.eight.getChecked()
-        });
-        this.props.onChange();
-    },
     getValue: function() {
-        return ({ nine: this.state.nine, eight: this.state.eight});
+        return ({ nine: this.refs.nine.getChecked(), eight: this.refs.eight.getChecked()});
     },
     render: function () {
         if (this.state.opponent === null) {
@@ -252,11 +242,11 @@ var ChallengeType = React.createClass({
         var eightLabel = (<Badge>8</Badge>);
         var games = [];
         if (this.state.opponent.nineBallPlayer) {
-            games.push(<Input key='9' className="nine-ball" ref='nine' type='checkbox' label={nineLabel} checked={this.state.nine} onChange={this.onChange}></Input>);
+            games.push(<Input key='9' className="nine-ball" ref='nine' type='checkbox' label={nineLabel} />);
         }
 
         if (this.state.opponent.eightBallPlayer) {
-            games.push(<Input key='8' className="eight-ball" ref='eight' type='checkbox' label={eightLabel} checked={this.state.eight} onChange={this.onChange}></Input>);
+            games.push(<Input key='8' className="eight-ball" ref='eight' type='checkbox' label={eightLabel}/>);
         }
         return (<div>{games}</div>);
     }
