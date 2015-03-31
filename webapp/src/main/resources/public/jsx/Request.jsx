@@ -17,14 +17,12 @@ var RequestPage = React.createClass({
         return {
             data: {
                 date: m.format('YYYY-MM-DD'),
-                challenger: null,
-                opponent: null,
-                slots: [],
-                type: null,
+                opponent: null
             },
             userId : 0
         }
     },
+    
     componentDidMount: function() {
         this.setState({userId: parseInt(this.context.router.getCurrentParams().userId)});
     },
@@ -39,17 +37,25 @@ var RequestPage = React.createClass({
     },
     handleClick: function(){
         var challenge = {};
-        challenge.user = {id: this.state.userId};
-        challenge.opponent = opponent;
-        challenge.slots = this.refs.slots.getValue();
-        challenge.nine = this.refs.type.getValue().nine;
-        challenge.eight = this.refs.type.getValue().eight;
+        challenge.challenger = {id: this.state.userId};
+        challenge.opponent = {id: this.state.data.opponent.user.id};
+        challenge.slots = [];
+        this.refs.slots.getValue().forEach(function(s){
+            challenge.slots.push({id: s});
+        });
+        challenge.nine = this.refs.types.getValue().nine;
+        challenge.eight = this.refs.types.getValue().eight;
         console.log(JSON.stringify(challenge));
+        Util.sendData(challenge,'/challenge/request', function(d) {
+
+        });
+
     },
     render: function () {
         var submit = (<Button bsStyle='primary' onClick={this.handleClick}>Submit</Button>);
         return (
             <div>
+              <PendingChallenges userId={this.state.userId}/>
                 <Panel header={'Request'} footer={submit}>
                     <ChallengeDate  ref='date' date={this.state.data.date} onChange={this.onChange}/>
                     <ChallengeUsers ref='opponent' userId={this.state.userId} onChange={this.onChange}/>
@@ -58,6 +64,30 @@ var RequestPage = React.createClass({
                 </Panel>
             </div>
         )
+    }
+});
+
+var PendingChallenges = React.createClass({
+    getDefaultProps: function() {
+        return {
+            userId: 0,
+            challenges: null
+        }
+    },
+    componentWillMount: function() {
+
+    },
+    render: function() {
+        if (this.props.userId == 0) {
+            return null;
+        }
+        return (
+            <div>
+                <Panel header={'Pending'}>
+                    <PendingChallenges />
+                </Panel>
+            </div>
+        );
     }
 });
 

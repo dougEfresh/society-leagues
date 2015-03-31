@@ -48,5 +48,12 @@ public class Slot extends LeagueObject {
 				);
 				//                .appendValue(ChronoField.MINUTE_OF_DAY, 2).toFormatter());
     }
-	
+
+    @Override
+    public String toString() {
+        return "Slot{" +
+                "id=" + getId() +
+                "time=" + time +
+                '}';
+    }
 }

@@ -7,23 +7,22 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Component
-public class DateSerializer extends JsonSerializer<LocalDate> {
+public class DateTimeSerializer extends JsonSerializer<LocalDateTime> {
 
     @Override
-    public void serialize(LocalDate value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
+    public void serialize(LocalDateTime value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
         if (value == null) {
             return;
         }
-        jgen.writeString(value.format(DateTimeFormatter.ISO_LOCAL_DATE));
+        jgen.writeString(value.format(DateTimeFormatter.ISO_DATE_TIME));
     }
 
     @Override
-    public Class<LocalDate> handledType() {
-        return LocalDate.class;
+    public Class<LocalDateTime> handledType() {
+        return LocalDateTime.class;
     }
 }

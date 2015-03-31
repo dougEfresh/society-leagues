@@ -26,46 +26,72 @@ public class ChallengeResource  {
     @Autowired SlotDao slotDao;
 
     @RequestMapping(value = "/challenges", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PlayerChallenge> getChallenges(Principal principal) {
+    public List<UserChallengeGroup> getChallenges(Principal principal) {
         User u = userDao.get(principal.getName());
-        List<PlayerChallenge> challenges =  getPendingChallenges(u);
+        List<UserChallengeGroup> challenges =  getPendingChallenges(u);
         challenges.addAll(getAcceptedChallenges(u));
         challenges.addAll(getChallenges(u, Status.CANCELLED));
         //challenges.sort((o1, o2) -> o1.getChallenges().getId().compareTo(o2.getChallenges().getId()));
         return challenges;
     }
 
-    @RequestMapping(value = "/challenges/pending", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PlayerChallenge> getPending(Principal principal) {
-        User u = userDao.get(principal.getName());
-        return getSent(u);
+    @RequestMapping(value = "/challenges/pending/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<UserChallengeGroup> getPending(@PathVariable Integer userId,Principal principal) {
+        User u = userDao.get(userId);
+        List<UserChallengeGroup> challenges = getSent(u);
+        challenges.addAll(getNeedNotify(u));
+        return challenges;
     }
 
     @RequestMapping(value = "/challenges/sent", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PlayerChallenge> getSent(Principal principal) {
+    public List<UserChallengeGroup> getSent(Principal principal) {
         User u = userDao.get(principal.getName());
         return getSent(u);
     }
 
     @RequestMapping(value = "/challenges/pendingApproval", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PlayerChallenge> getPendingApproval(Principal principal) {
+    public List<UserChallengeGroup> getPendingApproval(Principal principal) {
         User u = userDao.get(principal.getName());
         return getSent(u);
     }
 
-    private List<PlayerChallenge> getSent(User u) {
-        List<Player> userPlayers = playerDao.getByUser(u);
-        List<PlayerChallenge> challenges = getPendingChallenges(u);
-        List<PlayerChallenge> sent = new ArrayList<>();
-        sent.addAll(challenges.stream().filter( p->p.getChallenger().equals(userPlayers.get(0))).collect(Collectors.toList()));
-        sent.addAll(challenges.stream().filter( p->p.getChallenger().equals(userPlayers.get(1))).collect(Collectors.toList()));
-        return sent;
+    private List<UserChallengeGroup> getUserChallengeGroups(User u, Status status) {
+        List<UserChallengeGroup> groupChallenges = new ArrayList<>();
+        List<Challenge> challenges = new ArrayList<>();
+        List<Player> userPlayers = playerDao.getByUser(u).stream().filter(p-> p.getDivision().isChallenge()).collect(Collectors.toList());
+
+        for (Player userPlayer : userPlayers) {
+            challenges.addAll(dao.getChallenges(u, status).stream().filter(c -> c.getChallenger().equals(userPlayer)).collect(Collectors.toList()));
+        }
+        List<UserChallengeGroup> groups = new ArrayList<>();
+
+        for (Challenge challenge : challenges) {
+            UserChallengeGroup group = new UserChallengeGroup();
+            group.setChallenger(challenge.getChallenger().getUser());
+            group.setOpponent(challenge.getOpponent().getUser());
+            group.setDate(challenge.getSlot().getLocalDateTime().toLocalDate());
+            if (!groups.contains(group)) {
+                groups.add(group);
+            }
+
+            group = groups.get(groups.indexOf(group));
+            group.addChallenge(challenge);
+        }
+        return groups;
     }
 
-    private List<PlayerChallenge> getPendingApproval(User u) {
+    private List<UserChallengeGroup> getSent(User u) {
+        return getUserChallengeGroups(u,Status.PENDING);
+    }
+
+    private List<UserChallengeGroup> getNeedNotify(User u) {
+        return getUserChallengeGroups(u,Status.NEEDS_NOTIFY);
+    }
+
+    private List<UserChallengeGroup> getPendingApproval(User u) {
         List<Player> userPlayers = playerDao.getByUser(u);
-        List<PlayerChallenge> challenges = getPendingChallenges(u);
-        List<PlayerChallenge> sent = new ArrayList<>();
+        List<UserChallengeGroup> challenges = getPendingChallenges(u);
+        List<UserChallengeGroup> sent = new ArrayList<>();
         sent.addAll(challenges.stream().filter( p->p.getOpponent().equals(userPlayers.get(0))).collect(Collectors.toList()));
         sent.addAll(challenges.stream().filter( p->p.getOpponent().equals(userPlayers.get(1))).collect(Collectors.toList()));
         return sent;
@@ -123,32 +149,63 @@ public class ChallengeResource  {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public PlayerChallenge requestChallenge(@RequestBody ChallengeRequest request) {
+    public UserChallengeGroup requestChallenge(@RequestBody ChallengeRequest request) {
         logger.info("Got request for challenge " + request);
-        PlayerChallenge playerChallenge = new PlayerChallenge();
-        Player challenger = playerDao.get(request.getChallenger().getId());
-        Player opponent = playerDao.get(request.getOpponent().getId());
+        UserChallengeGroup userChallengeGroup = new UserChallengeGroup();
+        User challenger = userDao.get(request.getChallenger().getId());
+        User opponent = userDao.get(request.getOpponent().getId());
+
+        List<Player> challengePlayers = playerDao.getByUser(challenger);
+        List<Player> opponentPlayers = playerDao.getByUser(opponent);
 
         List<Challenge> challenges = new ArrayList<>();
-        playerChallenge.setChallenger(challenger);
-        playerChallenge.setOpponent(opponent);
+        userChallengeGroup.setChallenger(challenger);
+        userChallengeGroup.setOpponent(opponent);
+        Player op = null;
+        Player ch = null;
+        if (request.isNine()) {
+            op = opponentPlayers.stream().filter(p->p.getDivision().getType() == DivisionType.NINE_BALL_CHALLENGE).findFirst().orElseGet(null);
+            ch = challengePlayers.stream().filter(p->p.getDivision().getType() == DivisionType.NINE_BALL_CHALLENGE).findFirst().orElseGet(null);
+            challenges.addAll(createChallenge(request.getSlots(),ch,op));
+        }
 
-        for (Slot slot : request.getSlots()) {
+        if (request.isEight()) {
+            op = opponentPlayers.stream().filter(p->p.getDivision().getType() == DivisionType.EIGHT_BALL_CHALLENGE).findFirst().orElseGet(null);
+            ch = challengePlayers.stream().filter(p->p.getDivision().getType() == DivisionType.EIGHT_BALL_CHALLENGE).findFirst().orElseGet(null);
+            challenges.addAll(createChallenge(request.getSlots(),ch,op));
+        }
+
+        userChallengeGroup.setChallenges(challenges);
+        userChallengeGroup.setEight(request.isEight());
+        userChallengeGroup.setNine(request.isNine());
+        //TODO verify....
+        userChallengeGroup.setDate(request.getSlots().get(0).getLocalDateTime().toLocalDate());
+        return userChallengeGroup;
+    }
+
+    private List<Challenge> createChallenge(List<Slot> slots,Player ch, Player op) {
+        if (ch == null || op == null) {
+            logger.error("Got a challenge request with either no challenger of opponent: " + ch + "  "+  op);
+            return Collections.emptyList();
+        }
+
+        List<Challenge> challenges = new ArrayList<>();
+        for (Slot slot : slots) {
             Challenge c = new Challenge();
-            c.setOpponent(opponent);
-            c.setChallenger(challenger);
+            c.setOpponent(op);
+            c.setChallenger(ch);
             c.setSlot(slot);
-            c.setStatus(Status.PENDING);
-            //TODO Move to JSON View
+            c.setStatus(Status.NEEDS_NOTIFY);
+            //TODO JSON View
             Challenge response = new Challenge();
             c = dao.requestChallenge(c);
+
             response.setId(c.getId());
             response.setStatus(c.getStatus());
-            response.setSlot(slot);
+            response.setSlot(slotDao.get(c.getSlot().getId()));
             challenges.add(response);
         }
-        playerChallenge.setChallenges(challenges);
-        return playerChallenge;
+        return challenges;
     }
 
     @RequestMapping(value = "/challenge/slots/{date}",
@@ -174,28 +231,33 @@ public class ChallengeResource  {
         return counters;
     }
 
-    public List<PlayerChallenge> getPendingChallenges(User u) {
-        return getChallenges(u,Status.PENDING);
+    public List<UserChallengeGroup> getPendingChallenges(User u) {
+        return getChallenges(u, Status.PENDING);
     }
 
-    public List<PlayerChallenge> getAcceptedChallenges(User u) {
+    public List<UserChallengeGroup> getNeedNotifyChallenges(User u) {
+        return getChallenges(u, Status.NEEDS_NOTIFY);
+    }
+
+    public List<UserChallengeGroup> getAcceptedChallenges(User u) {
         return getChallenges(u, Status.ACCEPTED);
     }
 
-    private List<PlayerChallenge> getChallenges(User u, Status status) {
+    private List<UserChallengeGroup> getChallenges(User u, Status status) {
         List<Challenge> challenges = dao.getChallenges(u,status);
-        List<PlayerChallenge> playerChallenges = new ArrayList<>(challenges.size());
+        List<UserChallengeGroup> userChallengeGroups = new ArrayList<>(challenges.size());
         for (Challenge challenge : challenges) {
-            playerChallenges.add(getPlayerChallenge(challenge));
+            userChallengeGroups.add(getGroupChallenge(challenge));
         }
-        return playerChallenges;
+        return userChallengeGroups;
     }
 
-    private PlayerChallenge getPlayerChallenge(Challenge c) {
-        PlayerChallenge playerChallenge = new PlayerChallenge();
-        playerChallenge.setChallenger(c.getChallenger());
-        playerChallenge.setOpponent(c.getOpponent());
-        return playerChallenge;
+    private UserChallengeGroup getGroupChallenge(Challenge c) {
+        UserChallengeGroup userChallengeGroup = new UserChallengeGroup();
+        userChallengeGroup.setChallenger(c.getChallenger().getUser());
+        userChallengeGroup.setOpponent(c.getOpponent().getUser());
+
+        return userChallengeGroup;
     }
 
     public Collection<UserChallenge> getPotentials(User u) {

@@ -53,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .successHandler(new AjaxHandler(new SavedRequestAwareAuthenticationSuccessHandler()))
-	    .loginPage("/app/home.html#/login1").permitAll()
+                .loginPage("/app/home.html#/login").permitAll()
                 .and()
                 .httpBasic()
                 .and()

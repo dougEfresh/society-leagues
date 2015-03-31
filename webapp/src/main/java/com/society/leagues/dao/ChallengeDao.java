@@ -56,7 +56,7 @@ public class ChallengeDao extends Dao<Challenge>  {
             st.setInt(1, challenge.getChallenger().getId());
             st.setInt(2, challenge.getOpponent().getId());
             st.setInt(3, challenge.getSlot().getId());
-            st.setString(4, Status.PENDING.name());
+            st.setString(4, challenge.getStatus().name());
             return st;
         } ;
         return create(challenge,ps);

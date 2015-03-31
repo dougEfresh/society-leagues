@@ -48,8 +48,6 @@ public class SchemaData {
     @Autowired
     SlotDao slotApi;
 
-    static int NUM_PLAYERS = 40;
-
     public void generateData() {
         if (!generate)
             return;
@@ -66,7 +64,7 @@ public class SchemaData {
             seasonApi.create(new Season(divisionType.name(), new Date(), -1, Status.ACTIVE));
         }
 
-        for (int i = 1; i <= NUM_PLAYERS / 10; i++) {
+        for (int i = 0; i <= USERS.length; i++) {
             Team team = new Team(String.format("team%2d", i));
             teamApi.create(team);
         }
@@ -85,16 +83,16 @@ public class SchemaData {
             user.setFirstName(USERS[i].split(",")[0]);
             user.setLastName(USERS[i].split(",")[1]);
             user.setEmail(i + "@example.com");
-            user.setPassword("login" + (i + 1) );
-            user.setLogin("login" + (i + 1));
+            user.setPassword("login" + i);
+            user.setLogin("login" + i);
             user.addRole(Role.PLAYER);
             userApi.create(user);
         }
     }
 
     private void createChallengePlayers() {
-        for (int i = 0; i <  USERS.length; i++) {
-		int num = i + 1;
+        for (int i = 0; i < USERS.length; i++) {
+		int num = i;
             for (Division division : divisionApi.get().stream().filter(d -> d.isChallenge()).collect(Collectors.toList())) {
                 Player player = new Player();
                 String teamName = "login" + num;
@@ -221,42 +219,42 @@ public class SchemaData {
     }
 
     private Handicap getRandomHandicap(int i, DivisionType divisionType) {
-        if (i <= Math.floor(NUM_PLAYERS * .25)) {
+        if (i <= Math.floor(USERS.length * .25)) {
             if (divisionType.name().startsWith("NINE"))
                 return Handicap.DPLUS;
             else
                 return Handicap.FIVE;
         }
 
-        if (i <= Math.floor(NUM_PLAYERS * .45)) {
+        if (i <= Math.floor(USERS.length * .45)) {
             if (divisionType.name().startsWith("NINE"))
                 return Handicap.D;
             else
                 return Handicap.FOUR;
         }
 
-        if (i <= Math.floor(NUM_PLAYERS * .60)) {
+        if (i <= Math.floor(USERS.length * .60)) {
             if (divisionType.name().startsWith("NINE"))
                 return Handicap.C;
             else
                 return Handicap.THREE;
         }
 
-        if (i <= Math.floor(NUM_PLAYERS * .70)) {
+        if (i <= Math.floor(USERS.length * .70)) {
             if (divisionType.name().startsWith("NINE"))
                 return Handicap.B;
             else
                 return Handicap.SIX;
         }
 
-        if (i <= Math.floor(NUM_PLAYERS * .80)) {
+        if (i <= Math.floor(USERS.length * .80)) {
             if (divisionType.name().startsWith("NINE"))
                 return Handicap.BPLUS;
             else
                 return Handicap.TWO;
         }
 
-        if (i <= Math.floor(NUM_PLAYERS * .9)) {
+        if (i <= Math.floor(USERS.length * .9)) {
             if (divisionType.name().startsWith("NINE"))
                 return Handicap.A;
             else
@@ -270,7 +268,7 @@ public class SchemaData {
     }
 
     static String[] USERS = new String[]{
-            "Andrew,Footer",
+            "Mimi,Ji",
             "Bob,Hemnami",
             "Mark,McDade",
             "Nick,Meyer",

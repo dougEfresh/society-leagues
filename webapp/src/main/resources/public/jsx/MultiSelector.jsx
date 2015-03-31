@@ -32,7 +32,6 @@ var MultiSelector = React.createClass({
         var ids = [];
         chosen.forEach(function(field) {
             for(var i = 0; i < available.length ; i++) {
-                debugger;
                 if (available[i][this.props.field] == field) {
                     ids.push(available[i].id);
                     break;
