@@ -88,7 +88,7 @@ var MultiSelector = React.createClass({
             d.forEach(function(d) {
                 list.push(<option key={d.id} value={d[field]}>{d[field]}</option>)
             });
-            this.setState({ data : d , list: list});
+            this.setState({ data : d , list: list, selected: {choosen:[], chosenIds:[]}});
         }.bind(this));
     },
     componentWillReceiveProps: function (nextProps) {

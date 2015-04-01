@@ -86,7 +86,7 @@ var RequestPage = React.createClass({
 
     },
     render: function () {
-        var submit = (<Button bsStyle='primary' disabled={!this.state.valid} nClick={this.handleClick}>Challenge</Button>);
+        var submit = (<Button bsStyle='primary' disabled={!this.state.valid} onClick={this.handleClick}>Challenge</Button>);
         return (
             <div>
               <PendingChallenges userId={this.state.userId}/>
