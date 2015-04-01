@@ -101,18 +101,18 @@ public class ChallengeResource  {
     }
 
 
-    @RequestMapping(value = "/challenge/potentials", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Collection<UserChallenge> getPotentials(Principal principal) {
-        User u = userDao.get(principal.getName());
-        return getPotentials(u.getId());
-    }
-
-
     @RequestMapping(value = "/challenge/potentials/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Collection<UserChallenge> getPotentials(@PathVariable Integer  userId) {
+    public List<UserChallenge> getPotentials(@PathVariable Integer userId) {
         User u = userDao.get(userId);
+        List<UserChallenge> potentials = new ArrayList<>();
+        userDao.get().stream().filter(user -> !user.equals(u)).forEach(user -> potentials.add(new UserChallenge(user)));
+        potentials.stream().forEach(
+                user -> user.setNineBallPlayer(playerDao.getByUser(user.getUser()).stream().filter(p -> p.getDivision().getType() == DivisionType.NINE_BALL_CHALLENGE).findFirst().orElse(null))
+        );
 
-        Collection<UserChallenge> potentials = getPotentials(u);
+        potentials.stream().forEach(
+                user -> user.setEightBallPlayer(playerDao.getByUser(user.getUser()).stream().filter(p->p.getDivision().getType() == DivisionType.EIGHT_BALL_CHALLENGE).findFirst().orElse(null))
+        );
         return potentials.stream().sorted(new Comparator<UserChallenge>() {
             @Override
             public int compare(UserChallenge o1, UserChallenge o2) {
@@ -215,14 +215,14 @@ public class ChallengeResource  {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.ALL_VALUE)
     public List<Slot> getSlots(@PathVariable(value = "date") String date) throws ParseException {
-            return slotDao.get(LocalDate.parse(date).atStartOfDay());
+        return slotDao.get(LocalDate.parse(date).atStartOfDay()).stream().sorted(new Comparator<Slot>() {
+            @Override
+            public int compare(Slot o1, Slot o2) {
+                return o1.getLocalDateTime().compareTo(o2.getLocalDateTime());
+            }
+        }).collect(Collectors.toList());
     }
 
-    @RequestMapping(value = "/challenge/counters", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Integer> getCounters(Principal principal) {
-        User u = userDao.get(principal.getName());
-        return getCounters(u.getId());
-    }
 
     @RequestMapping(value = "/challenge/counters/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Integer> getCounters(@PathVariable Integer userId) {
@@ -260,36 +260,6 @@ public class ChallengeResource  {
         userChallengeGroup.setOpponent(c.getOpponent().getUser());
 
         return userChallengeGroup;
-    }
-
-    public Collection<UserChallenge> getPotentials(User u) {
-        Collection<Player> players = dao.getPotentials(u.getId());
-        
-        HashMap<Integer,UserChallenge> users  = new HashMap<>();
-        for (Player player : players) {
-            if (!users.containsKey(player.getUser().getId())) {
-                UserChallenge userChallenge = new UserChallenge();
-                userChallenge.setUser(player.getUser());
-                users.put(player.getUser().getId(), userChallenge);
-            }
-
-            Player p = new Player();
-            p.setId(player.getId());
-            p.setHandicap(player.getHandicap());
-
-            UserChallenge userChallenge = users.get(player.getUserId());
-            switch (player.getDivision().getType()) {
-                case EIGHT_BALL_CHALLENGE:
-                    p.setDivision(player.getDivision());
-                    userChallenge.setEightBallPlayer(p);
-                    break;
-                case NINE_BALL_CHALLENGE:
-                    p.setDivision(player.getDivision());
-                    userChallenge.setNineBallPlayer(p);
-                    break;
-            }
-        }
-        return users.values();
     }
 
 }

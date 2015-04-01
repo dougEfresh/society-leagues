@@ -41,7 +41,7 @@ var MultiSelector = React.createClass({
         return ids;
     },
     getValue: function() {
-        return this.state.selected.chosenIds;
+        return this.resolveIds(this.refs[this.props.label].getValue(),this.state.data);
     },
     isValid: function() {
         return this.state.selected != null && this.state.selected.chosen.length > 0;
@@ -69,6 +69,7 @@ var MultiSelector = React.createClass({
         this.state.selected.chosen = chosen;
         chosen = chosen.sort();
         var state = {selected: {chosen: chosen, chosenIds: this.resolveIds(chosen,this.state.data)} };
+        this.state.selected.chosenIds = state.chosenIds;
         this.setState(
             state
         );
@@ -106,6 +107,7 @@ var MultiSelector = React.createClass({
             }
         });
         this.setState({selected: {chosen: newChosen, chosenIds: this.resolveIds(newChosen,this.state.data)} });
+        this.props.onChange();
     },
     handleFilter: function(e) {
         var list = [];

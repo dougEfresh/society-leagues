@@ -22,7 +22,8 @@
     "moment": "^2.9.0",
     "react-bootstrap": "^0.19.1",
     "react-router": ">=0.13.1",
-    "react-router-bootstrap": "0.12.1"
+    "react-router-bootstrap": "0.12.1",
+	"react-chartjs": "^0.6.0"
   },
   "devDependencies": {
     "browserify": "^9.0.3",

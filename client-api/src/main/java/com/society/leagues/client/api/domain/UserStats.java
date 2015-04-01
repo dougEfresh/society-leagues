@@ -6,7 +6,7 @@ public class UserStats {
     int loses = 0;
     int racks = 0;
     int points = 0;
-    User user;
+    Player player;
 
     public int getWins() {
         return wins;
@@ -40,16 +40,16 @@ public class UserStats {
         this.racks += racks;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public void addPoints(int points) {
         this.points += points;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     public int getPoints() {

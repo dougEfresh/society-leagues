@@ -3,17 +3,18 @@ package com.society.leagues.client.api.domain;
 public class PlayerStats {
     String name;
     Integer userId;
-    Integer playerId;
+    Player player;
     Integer racks = 0;
     Integer wins = 0;
     Integer loses = 0;
     Integer matches = 0;
+    Integer points = 0;
 
     public PlayerStats() {
     }
 
-    public PlayerStats(Integer playerId) {
-        this.playerId = playerId;
+    public PlayerStats(Player player) {
+        this.player = player;
     }
 
     public String getName() {
@@ -64,11 +65,24 @@ public class PlayerStats {
         this.matches = matches;
     }
 
-    public Integer getPlayerId() {
-        return playerId;
+    public double getPercentage() {
+        return new Double(loses)/new Double(matches);
     }
 
-    public void setPlayerId(Integer playerId) {
-        this.playerId = playerId;
+    public void addWin(int racks) {
+        wins++;
+        matches++;
+        this.racks += racks;
     }
+
+    public void addLost(int racks) {
+        loses++;
+        matches++;
+        this.racks += racks;
+    }
+
+    public void addPoints(int points) {
+        this.points += points;
+    }
+
 }

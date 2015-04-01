@@ -1,12 +1,12 @@
 var React = require('react/addons');
 var Util = require('./util.jsx');
-var Bootstrap = require('react-bootstrap');
 var MultiSelector = require('./MultiSelector.jsx');
-var Input = Bootstrap.Input;
-var Table = Bootstrap.Table;
-var Button = Bootstrap.Button;
-var Panel = Bootstrap.Panel;
-var Badge = Bootstrap.Badge;
+var Bootstrap = require('react-bootstrap')
+,Input = Bootstrap.Input
+,Table = Bootstrap.Table
+,Button = Bootstrap.Button
+,Panel = Bootstrap.Panel
+,Badge = Bootstrap.Badge;
 var moment = require('moment');
 
 var RequestPage = React.createClass({
@@ -20,10 +20,12 @@ var RequestPage = React.createClass({
                 date: m.format('YYYY-MM-DD'),
                 opponent: null
             },
-            userId : 0
+            userId : 0,
+            submitted: false,
+            valid: false,
+            errors: []
         }
     },
-    
     componentDidMount: function() {
         this.setState({userId: parseInt(this.context.router.getCurrentParams().userId)});
     },
@@ -32,38 +34,67 @@ var RequestPage = React.createClass({
                 data: {
                     date: this.refs.date.getValue(),
                     opponent: this.refs.opponent.getValue()
-                }
+                },
+                valid : this.isValid()
             }
         );
     },
-    handleClick: function(){
+    getErrors: function() {
+        var errors = [];
+        var challenge = this.getChallenge();
+        if (!challenge.opponent)
+            errors.push('Need an opponent');
+        if (!challenge.nine && !challenge.eight)
+            errors.push('Please choose game type');
+        if (challenge.slots.length == 0)
+            errors.push('Please choose a time');
+
+        return errors;
+    },
+    isValid: function(){
+        return this.getErrors().length == 0;
+    },
+    getChallenge: function(){
         var challenge = {};
         challenge.challenger = {id: this.state.userId};
-        challenge.opponent = {id: this.state.data.opponent.user.id};
+        challenge.opponent = this.refs.opponent && this.refs.opponent.getValue() ? {id: this.refs.opponent.getValue().user.id} : null;
         challenge.slots = [];
-        this.refs.slots.getValue().forEach(function(s){
-            challenge.slots.push({id: s});
-        });
-        challenge.nine = this.refs.types.getValue().nine;
-        challenge.eight = this.refs.types.getValue().eight;
+        if (this.refs.slots && this.refs.slots.getValue()) {
+            this.refs.slots.getValue().forEach(function (s) {
+                challenge.slots.push({id: s});
+            });
+        }
+        challenge.nine =  this.refs.types ?  this.refs.types.getValue().nine : false;
+        challenge.eight = this.refs.types ?  this.refs.types.getValue().eight : false;
         console.log(JSON.stringify(challenge));
+        return challenge;
+    },
+    handleClick: function(){
+        if (!this.isValid) {
+            this.setState({errors: this.getErrors()});
+            return ;
+        }
+        var challenge = this.getChallenge();
         Util.sendData(challenge,'/challenge/request', function(d) {
-	    this.setState({data: 
-			   {opponent: null, date: this.state.date}
-			  });
+	    this.setState( {
+                data: {opponent: null, date: this.state.date },
+                submitted: true,
+                errors: []
+            }
+        );
         }.bind(this));
 
     },
     render: function () {
-        var submit = (<Button bsStyle='primary' onClick={this.handleClick}>Submit</Button>);
+        var submit = (<Button bsStyle='primary' disabled={!this.state.valid} nClick={this.handleClick}>Challenge</Button>);
         return (
             <div>
               <PendingChallenges userId={this.state.userId}/>
                 <Panel header={'Request'} footer={submit}>
                     <ChallengeDate  ref='date' date={this.state.data.date} onChange={this.onChange}/>
                     <ChallengeUsers ref='opponent' userId={this.state.userId} onChange={this.onChange}/>
-                    <ChallengeType  ref='types' opponent={this.state.data.opponent} onChange={this.onChange}/>
-                    <ChallengeSlot  ref='slots' display={this.state.data.opponent !== null} date={this.state.data.date} onChange={this.onChange}/>
+                    <ChallengeType  ref='types' opponent={this.state.data.opponent} onChange={this.onChange} />
+                    <ChallengeSlot  ref='slots' display={this.state.data.opponent !== null} date={this.state.data.date} onChange={this.onChange} />
                 </Panel>
             </div>
         )
@@ -103,7 +134,7 @@ var PendingChallenges = React.createClass({
         }
         var rows = [];
         this.state.challenges.forEach(function(c){
-            rows.push(<tr><td>{c.date}</td></tr>);
+            rows.push(<tr key={c.id}><td >{c.date}</td></tr>);
         });
         return (
             <div>
@@ -223,6 +254,7 @@ var ChallengeType = React.createClass({
     componentWillReceiveProps: function (nextProps) {
         this.setState({opponent: nextProps.opponent});
     },
+
     componentDidMount: function () {
         if (this.props.opponent === null) {
             return;
@@ -242,11 +274,11 @@ var ChallengeType = React.createClass({
         var eightLabel = (<Badge>8</Badge>);
         var games = [];
         if (this.state.opponent.nineBallPlayer) {
-            games.push(<Input key='9' className="nine-ball" ref='nine' type='checkbox' label={nineLabel}  ><</Input>);
+            games.push(<Input key='9' className="nine-ball" ref='nine' type='checkbox' label={nineLabel} onChange={this.props.onChange}></Input>);
         }
 
         if (this.state.opponent.eightBallPlayer) {
-            games.push(<Input key='8' className="eight-ball" ref='eight' type='checkbox' label={eightLabel} ></Input>);
+            games.push(<Input key='8' className="eight-ball" ref='eight' type='checkbox' label={eightLabel} onChange={this.props.onChange} ></Input>);
         }
 
         return (<div>{games}</div>);
@@ -274,7 +306,9 @@ var ChallengeSlot = React.createClass({
                                filter={false}
                                url={'/challenge/slots/' + this.state.date}
                                field={'time'}
-                               label={'Slot'}/>
+                               label={'Slot'}
+                               onChange={this.props.onChange}
+                    />
             </div>
         );
     }

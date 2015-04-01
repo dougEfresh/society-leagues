@@ -1,23 +1,19 @@
 package com.society.leagues.resource.client;
 
-import com.society.leagues.client.api.domain.Player;
-import com.society.leagues.client.api.domain.PlayerResult;
-import com.society.leagues.client.api.domain.User;
-import com.society.leagues.client.api.domain.UserStats;
+import com.society.leagues.client.api.domain.*;
+import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.dao.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -56,54 +52,58 @@ public class UserResource  {
         return playerResultDao.get();
     }
 
-    @RequestMapping(value = "/userStats", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserStats> getStats(Principal principal) {
-        User u = get(principal.getName());
-        UserStats stats = getStats(u);
-        stats.setUser(u);
-        return Arrays.asList(stats);
+
+    @RequestMapping(value = "/userStats/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PlayerStats> getStats(@PathVariable Integer userId) {
+        User u = dao.get(userId);
+        if (u == null) {
+            return Collections.emptyList();
+        }
+        List<PlayerStats> playerStats = new ArrayList<>();
+        playerDao.getByUser(u).forEach(p -> playerStats.add(getStats(p)));
+        return playerStats;
     }
 
     @RequestMapping(value = "/allStats", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserStats> getAllStats() {
         List<UserStats> stats = new ArrayList<>();
         for (User user : dao.get()) {
-            UserStats s = getStats(user);
-            stats.add(s);
+            ///UserStats s = getStats(user);
+            //stats.add(s);
         }
 
         return stats;
     }
 
-    public UserStats getStats(User user) {
+    public PlayerStats getStats(Player player) {
 
         List<PlayerResult> results = playerResultDao.get().stream().filter(p ->
-                        p.getPlayerAway().getUser().equals(user) ||
-                                p.getPlayerHome().getUser().equals(user)
+                        p.getPlayerAway().equals(player) ||
+                                p.getPlayerHome().equals(player)
         ).collect(Collectors.toList());
 
-        UserStats userStats = new UserStats();
+        PlayerStats playerStats = new PlayerStats();
+
         for (PlayerResult result : results) {
             if (result.getHomeRacks() > result.getAwayRacks()) {
-                if (result.getPlayerHome().getUser().equals(user)) {
-                    userStats.addWin(result.getHomeRacks());
-                    userStats.addPoints(3);
+                if (result.getPlayerHome().equals(player)){
+                    playerStats.addWin(result.getHomeRacks());
+                    playerStats.addPoints(3);
                 } else {
-                    userStats.addPoints(1);
-                    userStats.addLost(result.getHomeRacks());
+                    playerStats.addPoints(1);
+                    playerStats.addLost(result.getHomeRacks());
                 }
             } else {
-                if (result.getPlayerHome().getUser().equals(user)) {
-                    userStats.addPoints(1);
-                    userStats.addLost(result.getHomeRacks());
+                if (result.getPlayerHome().equals(player)) {
+                    playerStats.addPoints(1);
+                    playerStats.addLost(result.getHomeRacks());
                 } else {
-                    userStats.addPoints(3);
-                    userStats.addWin(result.getHomeRacks());
+                    playerStats.addPoints(3);
+                    playerStats.addWin(result.getHomeRacks());
                 }
             }
         }
-        userStats.setUser(user);
-        return userStats;
+        return playerStats;
     }
 
     public User get(String login) {

@@ -4,7 +4,14 @@ public class UserChallenge {
     User user;
     Player nineBallPlayer;
     Player eightBallPlayer;
-    PlayerStats playerStats;
+
+    public UserChallenge(User user) {
+        this.user = user;
+    }
+
+    public UserChallenge() {
+
+    }
 
     public User getUser() {
         return user;
@@ -28,13 +35,5 @@ public class UserChallenge {
 
     public void setEightBallPlayer(Player eightBallPlayer) {
         this.eightBallPlayer = eightBallPlayer;
-    }
-
-    public boolean hasNine() {
-        return nineBallPlayer != null;
-    }
-
-    public boolean hasEight() {
-        return eightBallPlayer != null;
     }
 }
