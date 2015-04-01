@@ -2,6 +2,8 @@ package com.society.leagues.conf.spring;
 
 import com.allanditzel.springframework.security.web.csrf.CsrfTokenResponseHeaderBindingFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,8 +11,11 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+
+import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
@@ -18,6 +23,7 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired PrincipleDetailsService principleDetailsService;
+    @Autowired DataSource datasource;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -45,21 +51,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/app/js/**").permitAll()
                 .antMatchers("/img/**").permitAll()
                 .antMatchers("/app/home.html**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin().permitAll()
-                .defaultSuccessUrl("/app/home.html#/")
-                .loginProcessingUrl("/authenticate")
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .successHandler(new AjaxHandler(new SavedRequestAwareAuthenticationSuccessHandler()))
-                .loginPage("/app/home.html#/login").permitAll()
-                .and()
-                .httpBasic()
-                .and()
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/app/home.html#/")
-                .permitAll();
+                .anyRequest().authenticated().and()
+                .exceptionHandling().authenticationEntryPoint(new AuthenticationEntry()).and()
+                .formLogin().permitAll().loginProcessingUrl("/authenticate") .usernameParameter("username").passwordParameter("password")
+                .successHandler(new AjaxHandler(new SavedRequestAwareAuthenticationSuccessHandler())).and()
+                .logout().logoutUrl("/logout").logoutSuccessUrl("/app/home.html").and()
+                .rememberMe().key("_spring_security_remember_me").tokenValiditySeconds(14400 * 5).tokenRepository(tokenRepository());
+    }
+
+    @Bean
+    public JdbcTokenRepositoryImpl tokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setCreateTableOnStartup(true);
+        tokenRepository.setDataSource(datasource);
+        return tokenRepository;
     }
 }

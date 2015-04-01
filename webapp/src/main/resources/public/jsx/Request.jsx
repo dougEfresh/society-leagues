@@ -233,6 +233,7 @@ var ChallengeType = React.createClass({
     },
     onChange: function() {
         //TODO: Why do I have to do this ?
+        /*
         this.state.nine = this.refs.nine.getChecked();
         this.state.eight = this.refs.eight.getChecked();
         this.setState({
@@ -240,9 +241,10 @@ var ChallengeType = React.createClass({
             eight: this.refs.eight.getChecked()
         });
         this.props.onChange();
+        */
     },
     getValue: function() {
-        return ({ nine: this.state.nine, eight: this.state.eight});
+        return ({ nine: this.refs.nine == undefined ? false : this.refs.nine.getChecked(), eight: this.refs.eight == undefined ? false : this.refs.eight.getChecked()});
     },
     render: function () {
         if (this.state.opponent === null) {
@@ -252,11 +254,11 @@ var ChallengeType = React.createClass({
         var eightLabel = (<Badge>8</Badge>);
         var games = [];
         if (this.state.opponent.nineBallPlayer) {
-            games.push(<Input key='9' className="nine-ball" ref='nine' type='checkbox' label={nineLabel} checked={this.state.nine} onChange={this.onChange}></Input>);
+            games.push(<Input key='9' className="nine-ball" ref='nine' type='checkbox' label={nineLabel}  ></Input>);
         }
 
         if (this.state.opponent.eightBallPlayer) {
-            games.push(<Input key='8' className="eight-ball" ref='eight' type='checkbox' label={eightLabel} checked={this.state.eight} onChange={this.onChange}></Input>);
+            games.push(<Input key='8' className="eight-ball" ref='eight' type='checkbox' label={eightLabel} ></Input>);
         }
         return (<div>{games}</div>);
     }

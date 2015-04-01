@@ -1,35 +1,17 @@
 var React = require('react/addons');
 var Router = require('react-router')
     , RouteHandler = Router.RouteHandler
-    , Route = Router.Route;
+    , Route = Router.Route
+    , DefaultRoute = Router.DefaultRoute;
 
-var Util = require('./util.jsx');
 var ChallengeRequest = require('./Request.jsx');
 var SocietyNav = require('./Nav.jsx');
 var Login = require('./Login.jsx');
 
 var App = React.createClass({
-    //TODO use localStorage to save state
-    getInitialState: function () {
-        return {
-            user: null,
-            viewUser: null,
-            loggedIn: false
-        };
-    },
-    componentWillMount: function() {
-        this.update();
-    },
-    update: function() {
-        Util.getData('/user',function(d){
-            this.setState({user: d,loggedIn: true});
-        }.bind(this));
-    },
     render: function () {
         return (
             <div>
-                <SocietyNav userContext={this.state} />
-                <Login onLogin={this.update} loggedIn={this.state.loggedIn}/>
                 <RouteHandler/>
             </div>
         );
@@ -50,14 +32,24 @@ var Home = React.createClass({
         return (<div>Home</div>);
     }
 });
-
+//
+//<DefaultRoute handler={Home} />
 var routes = (
-    <Route handler={App} path="/">
-        <Route name="login" handler={Login}/>
-        <Route name="home" path=":userId/home" handler={Home}/>
-        <Route name="account" path=":userId/account" handler={Home}/>
-        <Route name="request" path=":userId/challenge/request" handler={ChallengeRequest}/>
-        <Route name="stats" path=":userId/stats" handler={Stats}/>
+    <Route handler={App}>
+        <DefaultRoute handler={Home} />
+        <Route name="login" path="login" handler={Login} />
+        <Route name="nav" path="/" handler={SocietyNav}>
+            <Route name="home" path="home" handler={Home}/>
+            <Route name="account" path=":userId/account" handler={Home}/>
+            <Route name="challenge" path="challenge" handler={ChallengeRequest}>
+                <Route name="request" path=":userId/request" handler={ChallengeRequest}/>
+                <Route name="pending" path=":userId/pending" handler={ChallengeRequest}/>
+                <Route name="sent" path=":userId/sent" handler={ChallengeRequest}/>
+                <Route name="history" path=":userId/history" handler={ChallengeRequest}/>
+            </Route>
+
+            <Route name="stats" path=":userId/stats" handler={Stats}/>
+        </Route>
     </Route>
 );
 

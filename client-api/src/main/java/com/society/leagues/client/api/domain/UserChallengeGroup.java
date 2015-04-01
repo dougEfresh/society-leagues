@@ -9,8 +9,6 @@ public class UserChallengeGroup {
     User opponent;
     LocalDate date;
     List<Challenge> challenges = new ArrayList<>();
-    boolean nine;
-    boolean eight;
 
     public User getChallenger() {
         return challenger;
@@ -26,22 +24,6 @@ public class UserChallengeGroup {
 
     public void setOpponent(User opponent) {
         this.opponent = opponent;
-    }
-
-    public boolean isNine() {
-        return nine;
-    }
-
-    public void setNine(boolean nine) {
-        this.nine = nine;
-    }
-
-    public boolean isEight() {
-        return eight;
-    }
-
-    public void setEight(boolean eight) {
-        this.eight = eight;
     }
 
     public List<Challenge> getChallenges() {

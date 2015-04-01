@@ -11,92 +11,130 @@ var Bootstrap = require('react-bootstrap')
 var ReactRouterBootstrap = require('react-router-bootstrap')
     ,NavItemLink = ReactRouterBootstrap.NavItemLink
     ,MenuItemLink = ReactRouterBootstrap.MenuItemLink;
+var Router = require('react-router')
+    , RouteHandler = Router.RouteHandler;
 
 var Util = require('./util.jsx');
 
+var Home = React.createClass({
+    contextTypes: {
+        router: React.PropTypes.func
+    },
+    render: function () {
+        return (<div>Home</div>);
+    }
+});
+
 var SocietyNav = React.createClass({
-    propTypes: {
-        userContext:  React.PropTypes.object
+    contextTypes: {
+        router: React.PropTypes.func
+    },
+    getDefaultProps: function() {
+        return {
+            anon: false
+        }
     },
     getInitialState: function() {
         return {
             key: 'home',
-            sent: 0,
-            pending: 0,
-            userContext: {loggedIn: false}
+            loggedIn: false,
+            user : {id: 0, name: 'Login'},
+            viewUser: null
         }
     },
     componentDidMount: function() {
-        if (!this.props.userContext.loggedIn)  {
-            return;
+        if (this.props.anon) {
+            return ;
         }
-        Util.getData('/challenge/counters/' + this.getViewingUser().id, function(d) {
+        var router  = this.context.router;
+        Util.getData('/user',function(d){
+            this.setState({user: d,loggedIn: true});
+        }.bind(this),
+            router
+        );
+    },
+    componentWillReceiveProps: function (nextProps) {
+    },
+    getViewingUser: function() {
+        return this.state.viewUser != null ? this.state.viewUser : this.state.user;
+    },
+    render: function() {
+        var name = this.getViewingUser().name;
+        if (this.props.anon || !this.state.loggedIn) {
+            return (
+                <Navbar inverse brand="Society" toggleNavKey={this.state.key}>
+                    <Nav bsStyle="pills" fluid fixedTop activeKey={this.state.key} toggleNavKey={this.state.key}>
+                    </Nav>
+                </Navbar>
+            );
+        }
+        return (
+            <div>
+            <Navbar inverse brand="Society" toggleNavKey={this.state.key}>
+            <Nav bsStyle="pills" fluid fixedTop activeKey={this.state.key} toggleNavKey={this.state.key}>
+                <NavItemLink to='home' params={{userId: this.getViewingUser().id}} eventKey={"home"}>Home</NavItemLink>
+                <NavItemLink to='stats' params={{userId: this.getViewingUser().id}} eventKey={"Stats"}>Stats</NavItemLink>
+                <ChallengeNav user={this.getViewingUser()} />
+                <DropdownButton pullRight eventKey={"user"} title={name} navItem={true}>
+                    <MenuItemLink  to='account' params={{userId: this.getViewingUser().id}} eventKey={"account"}>Account</MenuItemLink>
+                    <MenuItem href="/logout" eventKey={"logout"}>Logout</MenuItem>
+                </DropdownButton>
+                <DropdownButton pullRight eventKey={"admin"} title={'Admin'} navItem={true}>
+                    <MenuItemLink  to='account' params={{userId: this.getViewingUser().id}} eventKey={"account"}>Account</MenuItemLink>
+                </DropdownButton>
+            </Nav>
+            </Navbar>
+                <RouteHandler/>
+            </div>
+        );
+    }
+});
+
+var ChallengeNav = React.createClass({
+    getDefaultProps: function() {
+        return {
+            user : {id: 0}
+        }
+    },
+    getInitialState: function() {
+        return {
+            sent: 0,
+            pending: 0
+        }
+    },
+    componentWillReceiveProps: function (nextProps) {
+        if (nextProps.user.id != this.props.user.id) {
+            this.update(nextProps.user);
+        }
+    },
+    componentDidMount: function() {
+        if (this.props.user.id != 0)
+            this.update(this.props.user);
+
+     },
+    update: function(user) {
+        Util.getData('/challenge/counters/' + user.id, function(d) {
             this.setState(
                 {sent: d[0], pending:d[1]}
             );
         }.bind(this));
     },
-    componentWillReceiveProps: function (nextProps) {
-        this.setState({userContext: nextProps.userContext});
-    },
-    shouldComponentUpdate: function(nextProps,nextState) {
-        if (nextProps.userContext.loggedIn)
-            return true;
-
-        var viewingUser = this.getViewingUser();
-        if (viewingUser.id == 0){
-            return false;
-        }
-        var newUser = nextProps.userContext.viewUser != null ? nextProps.userContext.viewUser : nextProps.userContext.user;
-        if (viewUser.id == newUser.id) {
-            return false;
-        }
-        return true;
-    },
-    getViewingUser: function() {
-        if (!this.state.userContext.loggedIn)
-            return {id: 0};
-
-        return this.state.userContext.viewUser != null ? this.state.userContext.viewUser : this.state.userContext.user;
-    },
     render: function() {
-        var name = this.state.userContext.loggedIn ? this.state.userContext.user.name : 'Anon';
-        var disp = this.state.userContext.loggedIn ? 'inline' : 'none';
-
         var indicator = 'Challenges';
         if (this.state.sent + this.state.pending > 0) {
             indicator = (<span>Challenges <Badge>{this.state.sent + this.state.pending}</Badge></span>);
         }
-        var navBarInstance = (
-            <Navbar inverse brand="Blah" toggleNavKey={this.state.key}>
-                <Nav bsStyle="pills" fluid fixedTop activeKey={this.state.key} toggleNavKey={this.state.key}>
-                    <NavItemLink to='home' params={{userId: this.getViewingUser().id}} eventKey={"home"}>Home</NavItemLink>
-                    <NavItemLink to='stats' params={{userId: this.getViewingUser().id}} eventKey={"Stats"}>Stats</NavItemLink>
-                    <DropdownButton  eventKey={"challenge"} title={indicator} navItem={true}>
-                        <MenuItemLink  to='request' params={{userId: this.getViewingUser().id}} eventKey={"sent"} >Sent <Badge>{this.state.sent}</Badge></MenuItemLink>
-                        <MenuItemLink  to='request' params={{userId: this.getViewingUser().id}} eventKey={"pending"}>Pending <Badge>{this.state.pending}</Badge></MenuItemLink>
-                        <MenuItemLink  to='request' params={{userId: this.getViewingUser().id}} eventKey={"request"}>Make Request</MenuItemLink>
-                        <MenuItemLink  to='request' params={{userId: this.getViewingUser().id}} eventKey={"history"}>History</MenuItemLink>
-                    </DropdownButton>
-                    <DropdownButton pullRight eventKey={"user"} title={name} navItem={true}>
-                        <MenuItemLink  to='account' params={{userId: this.getViewingUser().id}} eventKey={"account"}>Account</MenuItemLink>
-                        <MenuItem href="/logout" eventKey={"logout"}>Logout</MenuItem>
-                    </DropdownButton>
-                     <DropdownButton pullRight eventKey={"admin"} title={'Admin'} navItem={true}>
-                        <MenuItemLink  to='account' params={{userId: this.getViewingUser().id}} eventKey={"account"}>Account</MenuItemLink>
-                    </DropdownButton>
-                </Nav>
-            </Navbar>
+        return (
+            <DropdownButton  eventKey={"challenge"} title={indicator} navItem={true}>
+                <MenuItemLink  to='sent' params={{userId: this.props.user.id}} eventKey={"sent"} >Sent <Badge>{this.state.sent}</Badge></MenuItemLink>
+                <MenuItemLink  to='pending' params={{userId: this.props.user.id}} eventKey={"pending"}>Pending <Badge>{this.state.pending}</Badge></MenuItemLink>
+                <MenuItemLink  to='request' params={{userId: this.props.user.id}} eventKey={"request"}>Make Request</MenuItemLink>
+                <MenuItemLink  to='history' params={{userId: this.props.user.id}} eventKey={"history"}>History</MenuItemLink>
+            </DropdownButton>
         );
-        return (navBarInstance);
     }
+
+
 });
-
-var UserNav = React.createClass({
-
-    render: function() {
-
-    }
-    });
 
 module.exports = SocietyNav;

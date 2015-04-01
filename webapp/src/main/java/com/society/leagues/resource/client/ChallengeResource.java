@@ -104,7 +104,7 @@ public class ChallengeResource  {
     @RequestMapping(value = "/challenge/potentials", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<UserChallenge> getPotentials(Principal principal) {
         User u = userDao.get(principal.getName());
-	return getPotentials(u.getId());
+        return getPotentials(u.getId());
     }
 
 
@@ -180,10 +180,8 @@ public class ChallengeResource  {
         }
 
         userChallengeGroup.setChallenges(challenges);
-        userChallengeGroup.setEight(request.isEight());
-        userChallengeGroup.setNine(request.isNine());
         //TODO verify....
-        userChallengeGroup.setDate(request.getSlots().get(0).getLocalDateTime().toLocalDate());
+        userChallengeGroup.setDate(slotDao.get(request.getSlots().get(0).getId()).getLocalDateTime().toLocalDate());
         return userChallengeGroup;
     }
 
@@ -266,6 +264,7 @@ public class ChallengeResource  {
 
     public Collection<UserChallenge> getPotentials(User u) {
         Collection<Player> players = dao.getPotentials(u.getId());
+        
         HashMap<Integer,UserChallenge> users  = new HashMap<>();
         for (Player player : players) {
             if (!users.containsKey(player.getUser().getId())) {
