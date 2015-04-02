@@ -307,7 +307,8 @@ public class SchemaData {
             "Ed,Sumner",
             "Vinny,Ferri",
             "Brendan,Ince",
-            "Rob,Mislivets",
+            "Rob,Mislivets"
+	    /*,
             "Zain,Siddiqi",
             "Jonathan,Smith",
             "Samms,Hasburn",
@@ -315,7 +316,7 @@ public class SchemaData {
             "Edward,Lum",
             "Michael,Secondo",
             "James,Taylor",
-            "Jeff,Tischler",
+            "Jeff,Tischler"
             "Thomas,Wan",
             "Eric,Adelman",
             "Naoto,Hariu",
@@ -348,5 +349,6 @@ public class SchemaData {
             "Matthew,Harricharan",
             "Miguel,Laboy",
             "Rene,Villalobos"
+	    */
     };
 }

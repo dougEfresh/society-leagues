@@ -66,7 +66,6 @@ var RequestPage = React.createClass({
         }
         challenge.nine =  this.refs.types ?  this.refs.types.getValue().nine : false;
         challenge.eight = this.refs.types ?  this.refs.types.getValue().eight : false;
-        console.log(JSON.stringify(challenge));
         return challenge;
     },
     handleClick: function(){
@@ -76,12 +75,7 @@ var RequestPage = React.createClass({
         }
         var challenge = this.getChallenge();
         Util.sendData(challenge,'/challenge/request', function(d) {
-	    this.setState( {
-                data: {opponent: null, date: this.state.date },
-                submitted: true,
-                errors: []
-            }
-        );
+            this.setState(this.getInitialState());
         }.bind(this));
 
     },
@@ -136,13 +130,13 @@ var PendingChallenges = React.createClass({
         this.state.challenges.forEach(function(c){
             rows.push(<tr key={c.id}><td >{c.date}</td></tr>);
         });
+        var header = (<span>Pending <Badge>{this.state.challenges.length}</Badge></span>);
         return (
-            <div>
-                <Panel collapsable defaultExpanded header={'Pending'}>
+                <Panel collapsable defaultCollapsed  header={header}>
                     <Table striped bordered condensed hover>
                         <thead>
                         <tr>
-                            <th>Date</th>
+                        <th>Date</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -150,8 +144,18 @@ var PendingChallenges = React.createClass({
                         </tbody>
                     </Table>
                 </Panel>
-            </div>
         );
+    }
+});
+
+var PendingRow = React.createClass({
+    getDefaultProps: function() {
+        return {
+            challenge : null
+        }
+    },
+    render: function() {
+        return null;
     }
 });
 
@@ -160,12 +164,10 @@ var ChallengeDate = React.createClass({
         return {selected: this.props.date}
     },
     handleDateChange: function () {
-        if (this.refs.date.getValue().length != 10)
-            return;
-
         this.setState(
           {selected: this.refs.date.getValue()}
         );
+        this.props.onChange();
     },
     getValue: function() {
         return this.refs.date.getValue();
@@ -212,8 +214,9 @@ var ChallengeUsers = React.createClass({
         }.bind(this));
     },
     componentWillReceiveProps: function (nextProps) {
-        if (nextProps.userId == '0' || nextProps.userId == this.props.userId)
+        if (nextProps.userId == '0' || nextProps.userId == this.props.userId) {
             return;
+        }
          Util.getData('/challenge/potentials/' + nextProps.userId, function (d) {
             this.setState({potentials: d});
         }.bind(this));
@@ -300,8 +303,10 @@ var ChallengeSlot = React.createClass({
         return this.refs.slots.getValue();
     },
     render: function () {
+        if (!this.state.date)
+            return null;
+
         return (
-            <div className={this.state.display ? 'form-show' : 'form-hide'}>
                 <MultiSelector ref={'slots'}
                                filter={false}
                                url={'/challenge/slots/' + this.state.date}
@@ -309,111 +314,8 @@ var ChallengeSlot = React.createClass({
                                label={'Slot'}
                                onChange={this.props.onChange}
                     />
-            </div>
+
         );
-    }
-});
-
-var RequestChallenge = React.createClass({
-    getDefaultProps: function () {
-        return {
-            url: "/challenge/request",
-            potentials: "/challenge/potentials",
-            slots: "/challenge/slots",
-            userPlayers: "/userPlayers",
-            userStats: "/userStats"
-        }
-    },
-    getInitialState: function () {
-        return {
-            date: "2015-04-06", data: [], players: []
-        };
-    },
-    getPotentials: function () {
-        console.log("Getting Data...");
-        $.ajax({
-            async: true,
-            url: this.props.potentials,
-            dataType: 'json',
-            success: function (data) {
-                this.setState({data: data, user: this.state.players});
-            }.bind(this),
-            error: function (xhr, status, err) {
-                console.error(this.props.potentials, status, err.toString());
-            }.bind(this)
-        });
-    },
-    getPlayer: function () {
-        console.log("Getting User...");
-        $.ajax({
-            async: true,
-            url: this.props.userPlayers,
-            dataType: 'json',
-            success: function (data) {
-                this.setState({players: data, data: this.state.data});
-            }.bind(this),
-            error: function (xhr, status, err) {
-                console.error(this.props.potentials, status, err.toString());
-            }.bind(this)
-        });
-    },
-    componentDidMount: function () {
-        this.getPlayer();
-        this.getPotentials();
-
-    },
-    sendChallenge: function (c) {
-
-    },
-    onChallengeRequest: function (d) {
-        var challenge = {};
-        if (this.state.players[0].division.type === d.opponent.division.type) {
-            challenge.challenger = this.state.players[0];
-        } else {
-            challenge.challenger = this.state.players[1];
-        }
-        challenge.opponent = d.opponent;
-        challenge.challengeTimes = [];
-        d.times.forEach(function (t) {
-            challenge.challengeTimes.push(d.date + 'T' + t);
-        });
-        console.log(JSON.stringify(challenge));
-        $.ajax({
-            processData: false,
-            async: true,
-            contentType: 'application/json',
-            url: this.props.url,
-            dataType: 'json',
-            method: 'post',
-            data: JSON.stringify(challenge),
-            success: function (data) {
-                console.log(JSON.stringify(data));
-            }.bind(this),
-            error: function (xhr, status, err) {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
-    },
-    render: function () {
-        var rows = [];
-        this.state.data.forEach(function (c) {
-            rows.push(<ChallengeRow challenge={c} key={c.user.id} handleChallenge={this.onChallengeRequest}/>);
-        }.bind(this));
-
-        return (
-            <div>
-                <table className="table">
-                    <thead>
-                    <tr>
-                        <th>Action</th>
-                        <th>Player</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {rows}
-                    </tbody>
-                </table>
-            </div>);
     }
 });
 
