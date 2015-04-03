@@ -37,7 +37,7 @@ var ChallengeRequestDate = React.createClass({
         return dateOptions;
     },
     onChange: function() {
-        ChallengeActions.dateChange(this.refs.date.getValue());
+        ChallengeActions.changeDate(this.refs.date.getValue());
     },
     render: function() {
         return (

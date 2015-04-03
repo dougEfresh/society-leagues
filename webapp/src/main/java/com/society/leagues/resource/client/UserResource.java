@@ -17,6 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping(value = "/api")
 @SuppressWarnings("unused")
 public class UserResource  {
     @Autowired UserDao dao;

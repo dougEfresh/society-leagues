@@ -37,6 +37,29 @@ var ChallengeStore =  assign({}, EventEmitter.prototype, {
         _challenge.date = date;
     },
 
+    addSlots : function(slots) {
+        //TODO Optimize
+        slots.forEach(function(newSlot) {
+            var found = false;
+            _challenge.slots.forEach(function(s) {
+                if (s.id == newSlot.id) {
+                    found = true;
+                }
+            });
+            if (!found) {
+                _challenge.slots.push(newSlot);
+            }
+        });
+    },
+    removeSlot : function(slot) {
+        var newSlots = [];
+        _challenge.slots.forEach(function(s){
+            if (s.id != slot.id) {
+                newSlots.push(s);
+            }
+        });
+        _challenge.slots = newSlots;
+    },
     get: function() {
         return _challenge;
     }
@@ -47,6 +70,16 @@ AppDispatcher.register(function(action) {
      switch(action.actionType) {
          case ChallengeConstants.CHALLENGE_DATE_CHANGE:
              ChallengeStore.changeDate(action.date);
+             ChallengeStore.emitChange();
+             break;
+
+         case ChallengeConstants.CHALLENGE_SLOTS_ADD:
+             ChallengeStore.addSlots(action.slots);
+             ChallengeStore.emitChange();
+             break;
+
+         case ChallengeConstants.CHALLENGE_SLOTS_REMOVE:
+             ChallengeStore.removeSlot(action.slot);
              ChallengeStore.emitChange();
              break;
 

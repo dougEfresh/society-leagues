@@ -16,6 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
+@RequestMapping(value = "/api")
 @RestController
 public class ChallengeResource  {
     private static Logger logger = LoggerFactory.getLogger(ChallengeResource.class);
