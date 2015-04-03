@@ -1,11 +1,9 @@
-FROM dougefresh/society-base
+FROM java:openjdk-8u40-jre
 
 MAINTAINER Douglas Chimento "dchimento@gmail.com"
 
-ADD . /data/src
-
-RUN  mkdir -p /srv/service /data/web/leagues && cd /data/src && ./gradlew clean build && mv build/libs/society-leagues.jar /srv/service/ && tar zxf build/distributions/leagues.tar.gz -C /data/web/leagues/ && cp contrib/linux/docker-entrypoint.sh /srv/start.sh
+ADD build/libs/society-leagues-server.jar /srv/service.jar
 
 EXPOSE 80
 
-ENTRYPOINT bash /srv/start.sh
+ENTRYPOINT java -XX:+PrintGCTimeStamps -XX:+PrintGCDetails -verbose:gc -Xloggc:/tmp/jvmdebug.log -Xmx512m -jar /srv/service.jar 
