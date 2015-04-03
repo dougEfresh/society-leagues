@@ -4,7 +4,7 @@ MAINTAINER Douglas Chimento "dchimento@gmail.com"
 
 ADD build/libs/society-leagues-server.jar /srv/service.jar
 ADD society-leagues-web/ /srv/webapp/
-ADD contrib/docker/ngnix.conf etc/nginx/sites-enabled/default
+ADD contrib/docker/ngnix.conf /etc/nginx/sites-enabled/default
 
 EXPOSE 8000
 
