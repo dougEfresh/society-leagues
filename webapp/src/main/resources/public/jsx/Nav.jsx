@@ -47,7 +47,7 @@ var SocietyNav = React.createClass({
             return ;
         }
         var router  = this.context.router;
-        Util.getData('/user',function(d){
+        Util.getData('/api/user',function(d){
             this.setState({user: d,loggedIn: true});
         }.bind(this),
             router
@@ -113,7 +113,7 @@ var ChallengeNav = React.createClass({
 
      },
     update: function(user) {
-        Util.getData('/challenge/counters/' + user.id, function(d) {
+        Util.getData('/api/challenge/counters/' + user.id, function(d) {
             this.setState(
                 {sent: d[0], pending:d[1]}
             );

@@ -43,9 +43,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/login/**").permitAll()
-                .antMatchers("/login**").permitAll()
-                .antMatchers("/authenticate**").permitAll()
+                .antMatchers("/api/authenticate**").permitAll()
+                .antMatchers("/api/login**").permitAll()
                 .antMatchers("/css/**").permitAll()
                 .antMatchers("/js/**").permitAll()
                 .antMatchers("/app/js/**").permitAll()
@@ -53,9 +52,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/app/home.html**").permitAll()
                 .anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(new AuthenticationEntry()).and()
-                .formLogin().permitAll().loginProcessingUrl("/authenticate") .usernameParameter("username").passwordParameter("password")
+                .formLogin().permitAll().loginProcessingUrl("/api/authenticate") .usernameParameter("username").passwordParameter("password")
                 .successHandler(new AjaxHandler(new SavedRequestAwareAuthenticationSuccessHandler())).and()
-                .logout().logoutUrl("/logout").logoutSuccessUrl("/app/home.html").and()
+                .logout().logoutUrl("/api/logout").logoutSuccessUrl("/app/home.html").and()
                 .rememberMe().key("_spring_security_remember_me").tokenValiditySeconds(14400 * 5).tokenRepository(tokenRepository());
     }
 
