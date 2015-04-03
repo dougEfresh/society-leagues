@@ -28,7 +28,7 @@ var Login = React.createClass({
         $.ajax({
             async: true,
             processData: true,
-            url: '/authenticate',
+            url: '/api/authenticate',
             data: {username: user, password: password},
             method: 'post',
             success: function (d) {

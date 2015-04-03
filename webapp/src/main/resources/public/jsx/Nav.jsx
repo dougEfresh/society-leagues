@@ -77,7 +77,7 @@ var SocietyNav = React.createClass({
                 <ChallengeNav user={this.getViewingUser()} />
                 <DropdownButton pullRight eventKey={"user"} title={name} navItem={true}>
                     <MenuItemLink  to='account' params={{userId: this.getViewingUser().id}} eventKey={"account"}>Account</MenuItemLink>
-                    <MenuItem href="/logout" eventKey={"logout"}>Logout</MenuItem>
+                    <MenuItem href="/api/logout" eventKey={"logout"}>Logout</MenuItem>
                 </DropdownButton>
                 <DropdownButton pullRight eventKey={"admin"} title={'Admin'} navItem={true}>
                     <MenuItemLink  to='account' params={{userId: this.getViewingUser().id}} eventKey={"account"}>Account</MenuItemLink>
