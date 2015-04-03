@@ -4,7 +4,7 @@ var Router = require('react-router')
     , Route = Router.Route
     , DefaultRoute = Router.DefaultRoute;
 
-var ChallengeRequest = require('./Request.jsx');
+var ChallengeRequestApp = require('./components/ChallengeRequestApp.jsx');
 var SocietyNav = require('./Nav.jsx');
 var Login = require('./Login.jsx');
 
@@ -41,11 +41,11 @@ var routes = (
         <Route name="nav" path="/" handler={SocietyNav}>
             <Route name="home" path="home" handler={Home}/>
             <Route name="account" path=":userId/account" handler={Home}/>
-            <Route name="challenge" path="challenge" handler={ChallengeRequest}>
-                <Route name="request" path=":userId/request" handler={ChallengeRequest}/>
-                <Route name="pending" path=":userId/pending" handler={ChallengeRequest}/>
-                <Route name="sent" path=":userId/sent" handler={ChallengeRequest}/>
-                <Route name="history" path=":userId/history" handler={ChallengeRequest}/>
+            <Route name="challenge" path="challenge" handler={ChallengeRequestApp}>
+                <Route name="request" path=":userId/request" handler={ChallengeRequestApp}/>
+                <Route name="pending" path=":userId/pending" handler={ChallengeRequestApp}/>
+                <Route name="sent" path=":userId/sent" handler={ChallengeRequestApp}/>
+                <Route name="history" path=":userId/history" handler={ChallengeRequestApp}/>
             </Route>
 
             <Route name="stats" path=":userId/stats" handler={Stats}/>
