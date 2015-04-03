@@ -1,7 +1,22 @@
+buildscript {
+  repositories {
+      jcenter()
+      mavenLocal()
+  }
+  dependencies {
+    classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.2.RELEASE'
+  }
+}
+
+
+apply plugin: 'java'
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
 apply plugin: 'spring-boot'
 
 jar {
-    archiveName = 'society-leagues-admin-server.jar'
+    archiveName = 'society-leagues-server.jar'
     version = '1.0.0'
 }
 
@@ -14,12 +29,7 @@ bootRun {
                 '-Xmx512m']
 }
 
-task watchify(type:Exec) {
-    commandLine  '../watchify.sh'
-}
-
 dependencies {
-    compile(project(':client-api'))
     compile 'org.slf4j:slf4j-api:1.7.7'
 
     //DB
