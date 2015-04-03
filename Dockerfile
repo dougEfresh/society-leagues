@@ -6,4 +6,4 @@ ADD build/libs/society-leagues-server.jar /srv/service.jar
 
 EXPOSE 8080
 
-ENTRYPOINT java -XX:+PrintGCTimeStamps -XX:+PrintGCDetails -verbose:gc -Xloggc:/tmp/jvmdebug.log -Xmx512m -jar /srv/service.jar 
+ENTRYPOINT java -XX:+PrintGCTimeStamps -XX:+PrintGCDetails -verbose:gc -Xloggc:/tmp/jvmdebug.log -Xmx512m -jar /srv/service.jar  -Dembedded=true
