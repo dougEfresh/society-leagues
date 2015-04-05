@@ -6,7 +6,7 @@ import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 import static ch.qos.logback.classic.Level.*
 
 appender("FILE", RollingFileAppender) {
- def rootDir = new File("/data/logs");
+ def rootDir = new File("/tmp/logs");
 
   if (!rootDir.exists()) {
      rootDir = new File("build/logs");
