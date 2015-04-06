@@ -26,7 +26,7 @@ public class ChallengeResource  {
     @Autowired UserDao userDao;
     @Autowired SlotDao slotDao;
 
-    @RequestMapping(value = "/challenges", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/challenge", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserChallengeGroup> getChallenges(Principal principal) {
         User u = userDao.get(principal.getName());
         List<UserChallengeGroup> challenges =  getPendingChallenges(u);
@@ -36,7 +36,7 @@ public class ChallengeResource  {
         return challenges;
     }
 
-    @RequestMapping(value = "/challenges/pending/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/challenge/pending/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserChallengeGroup> getPending(@PathVariable Integer userId,Principal principal) {
         User u = userDao.get(userId);
         if (u == null) {
@@ -47,13 +47,13 @@ public class ChallengeResource  {
         return challenges;
     }
 
-    @RequestMapping(value = "/challenges/sent", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/challenge/sent", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserChallengeGroup> getSent(Principal principal) {
         User u = userDao.get(principal.getName());
         return getSent(u);
     }
 
-    @RequestMapping(value = "/challenges/pendingApproval", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/challenge/pendingApproval", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserChallengeGroup> getPendingApproval(Principal principal) {
         User u = userDao.get(principal.getName());
         return getSent(u);
