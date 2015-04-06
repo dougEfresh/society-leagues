@@ -53,7 +53,6 @@ public class UserResource  {
         return playerResultDao.get();
     }
 
-
     @RequestMapping(value = "/userStats/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PlayerStats> getStats(@PathVariable Integer userId) {
         User u = dao.get(userId);
@@ -66,14 +65,14 @@ public class UserResource  {
     }
 
     @RequestMapping(value = "/allStats", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserStats> getAllStats() {
+    public List<Map<Integer,UserStats>> getAllStats() {
         List<UserStats> stats = new ArrayList<>();
         for (User user : dao.get()) {
             ///UserStats s = getStats(user);
             //stats.add(s);
         }
 
-        return stats;
+        return Collections.emptyList();
     }
 
     public PlayerStats getStats(Player player) {

@@ -5,6 +5,7 @@ import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.dao.*;
+import com.society.leagues.resource.client.ChallengeResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,9 +117,8 @@ public class SchemaData {
         logger.info("Created " + playerApi.get().size() + " challenge players");
     }
 
-    private void createChallengeRequests() {
-        List<Player> players = playerApi.get().stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList());
-        for (Player player : players) {
+    private void createChallengeRequests(Player player) {
+        for(int i=0; i<4; i++) {
             List<Player> potentials = challengeApi.getPotentials(player.getUserId()).stream().filter(p -> p.getDivision().equals(player.getDivision())).collect(Collectors.toList());
             int slot = (int) Math.round(Math.random() * potentials.size()) - 1;
             Player opponent = potentials.get(slot == -1 ? 0 : slot);
@@ -132,25 +132,55 @@ public class SchemaData {
             challenge.setChallenger(player);
             challengeApi.requestChallenge(challenge);
         }
-        List<Challenge> pending = challengeApi.get().stream().filter(c -> c.getStatus() == Status.PENDING).collect(Collectors.toList());
+    }
 
-        logger.info("Created " + pending.size() + " challenges");
-
-        int i = 0;
-        for (Challenge c : pending) {
-            i++;
-            if (i % 2 == 0)
-                challengeApi.acceptChallenge(c);
+    private void createChallengeRequests() {
+        List<Player> players = playerApi.get().stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList());
+        for (Player player : players) {
+            createChallengeRequests(player);
+            acceptChallengeRequest(player);
         }
+        for (int i = 0; i < Status.values().length; i++) {
+            Status status = Status.values()[i];
+            logger.info("Challenge Status:  " +
+                            status + " " +
+                            challengeApi.get().stream().filter(c -> c.getStatus() == status).count()
+            );
+        }
+    }
 
-        logger.info("Accepted " + challengeApi.get().stream().filter(c -> c.getStatus() == Status.ACCEPTED).count() + " challenges");
+    private void acceptChallengeRequest(Player player) {
+        Challenge challenge = challengeApi.get().stream().filter(c -> c.getChallenger().equals(player)).findFirst().orElse(null);
+        logger.info("Accepting challenge  " + player.getUserId() + " " +  player.getId()  + " " + challenge.getStatus() + " " + challenge.getOpponent().getUserId() );
+        challengeApi.acceptChallenge(challenge);
+    }
+
+    private void createChallengeMatches(DivisionType divisionType) {
+        List<Player> challengers = playerApi.get().stream().filter(p -> p.getDivision().getType() == divisionType).collect(Collectors.toList());
+        int size = challengers.size();
+        logger.info("Have " + size + " player matches to generate");
+        for (int i = 0; i < challengers.size(); i++) {
+            Player challenger = challengers.get(i);
+            List<Player> potentials = challengers.stream().filter(p -> !p.getId().equals(challenger.getId())).collect(Collectors.toList());
+            for (int j = 1; j <= 10; j++) {
+                TeamMatch teamMatch = new TeamMatch();
+                teamMatch.setHome(challenger.getTeam());
+                teamMatch.setDivision(challenger.getDivision());
+                teamMatch.setSeason(challenger.getSeason());
+                teamMatch.setMatchDate(new Date(LocalDateTime.now().minusDays(j * 7).toEpochSecond(ZoneOffset.UTC)));
+                int slot = (int) Math.round(Math.random() * potentials.size()) - 1;
+                Player opponent = potentials.get(slot == -1 ? 0 : slot);
+                teamMatch.setAway(opponent.getTeam());
+                matchApi.create(teamMatch);
+            }
+        }
+        logger.info("Create a total of " + matchApi.get().size() + " matches");
     }
 
     private void createMatchResults() {
         LocalDate before = LocalDate.now().plusDays(1);
         Date b = new Date(before.getYear(), before.getMonthValue() - 1, before.getDayOfMonth());
         logger.info("Creating match results before " + before);
-
 
         List<TeamMatch> teamMatches = matchApi.get().stream().filter(m -> m.getMatchDate().before(b)).collect(Collectors.toList());
         Collection<Player> players = playerApi.get();
@@ -194,28 +224,6 @@ public class SchemaData {
         }
 
         logger.info("Created  " + playerResultApi.get().size() + " match results");
-    }
-
-    private void createChallengeMatches(DivisionType divisionType) {
-        List<Player> challengers = playerApi.get().stream().filter(p -> p.getDivision().getType() == divisionType).collect(Collectors.toList());
-        int size = challengers.size();
-        logger.info("Have " + size + " player matches to generate");
-        for (int i = 0; i < challengers.size(); i++) {
-            Player challenger = challengers.get(i);
-            List<Player> potentials = challengers.stream().filter(p -> !p.getId().equals(challenger.getId())).collect(Collectors.toList());
-            for (int j = 1; j <= 5; j++) {
-                TeamMatch teamMatch = new TeamMatch();
-                teamMatch.setHome(challenger.getTeam());
-                teamMatch.setDivision(challenger.getDivision());
-                teamMatch.setSeason(challenger.getSeason());
-                teamMatch.setMatchDate(new Date(LocalDateTime.now().minusDays(j * 7).toEpochSecond(ZoneOffset.UTC)));
-                int slot = (int) Math.round(Math.random() * potentials.size()) - 1;
-                Player opponent = potentials.get(slot == -1 ? 0 : slot);
-                teamMatch.setAway(opponent.getTeam());
-                matchApi.create(teamMatch);
-            }
-        }
-        logger.info("Create a total of " + matchApi.get().size() + " matches");
     }
 
     private Handicap getRandomHandicap(int i, DivisionType divisionType) {
@@ -276,7 +284,6 @@ public class SchemaData {
             "David,Allen",
             "Wanlop,Chan",
             "Izac,Horne",
-            "Richard,Louapre",
             "Chumrean,Sacharitakul",
             "Akiko,Sugiyama",
             "Thomas,Wan",
@@ -287,36 +294,33 @@ public class SchemaData {
             "Anna,Kaplan",
             "Andrew,Footer",
             "Bob,Hemnami",
-            "Mark,McDade",
             "Nick,Meyer",
-            "Abe,Shaw",
             "Chris,Spencer",
-            "Richard,Louapre",
             "Michael,Harrington",
-            "Anna,Kaplan",
             "Alex,Kittler",
             "Giovanni,Mata",
             "Soham,Patel",
             "Max,Watanabe",
             "Dev,Chatterjee",
-            "Alex,Gomez",
-            "Trevor,Heal",
-            "Howie,Reuben",
             "Doug,Rhee",
             "Oliver,Stalley",
-            "Ed,Sumner",
             "Vinny,Ferri",
-            "Brendan,Ince",
-            "Rob,Mislivets"
-	    /*,
+            "Rob,Mislivets",
             "Zain,Siddiqi",
             "Jonathan,Smith",
+            "Doug,Chimento",
+            "Olga,Nikolaeva",
+            "James,Taylor",
+            "Jeff,Tischler",
+            "Jin,Gong",
+            "Vinay,Pai",
+            "Serafina,Shishkova",
+            "John,MacArthur"
+	    /*,
             "Samms,Hasburn",
             "Larry,Busacca",
             "Edward,Lum",
             "Michael,Secondo",
-            "James,Taylor",
-            "Jeff,Tischler"
             "Thomas,Wan",
             "Eric,Adelman",
             "Naoto,Hariu",
@@ -335,15 +339,10 @@ public class SchemaData {
             "Ben,Castaneros",
             "Ron,Gabia",
             "Yorgos,Hatziefhimiou",
-            "John,MacArthur",
+
             "Sherwin,Robinson",
             "Paul,Johnson",
-            "Doug,Chimento",
             "Cassie,Corbin",
-            "Jin,Gong",
-            "Vinay,Pai",
-            "Serafina,Shishkova",
-            "Olga,Nikolaeva",
             "Ambi,Estevez",
             "Dan,Faraguna",
             "Matthew,Harricharan",

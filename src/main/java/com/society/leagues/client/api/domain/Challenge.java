@@ -40,4 +40,14 @@ public class Challenge extends LeagueObject {
     public void setSlot(Slot slot) {
         this.slot = slot;
     }
+
+    @Override
+    public String toString() {
+        return "Challenge{" +
+                "status=" + status +
+                ", challenger=" + challenger +
+                ", opponent=" + opponent +
+                ", slot=" + slot +
+                '}';
+    }
 }

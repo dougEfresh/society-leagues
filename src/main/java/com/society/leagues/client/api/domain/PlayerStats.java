@@ -1,8 +1,6 @@
 package com.society.leagues.client.api.domain;
 
 public class PlayerStats {
-    String name;
-    Integer userId;
     Player player;
     Integer racks = 0;
     Integer wins = 0;
@@ -17,20 +15,8 @@ public class PlayerStats {
         this.player = player;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+        return player.getUserId();
     }
 
     public Integer getRacks() {
