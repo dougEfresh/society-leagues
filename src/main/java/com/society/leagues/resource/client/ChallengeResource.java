@@ -130,7 +130,7 @@ public class ChallengeResource  {
 
         for (Player player : players) {
             PlayerStats s = new PlayerStats();
-            s.setUserId(player.getUserId());
+            //s.setUserId(player.getUserId());
             userStats.put(player.getUserId(),s);
         }
 
