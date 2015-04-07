@@ -2,7 +2,6 @@ package com.society.leagues.conf.spring;
 
 import com.allanditzel.springframework.security.web.csrf.CsrfTokenResponseHeaderBindingFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,7 +20,7 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 @SuppressWarnings("unused")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
+    @Autowired LoginHandler loginHandler;
     @Autowired PrincipleDetailsService principleDetailsService;
     @Autowired DataSource datasource;
 
@@ -53,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(new AuthenticationEntry()).and()
                 .formLogin().permitAll().loginProcessingUrl("/api/authenticate") .usernameParameter("username").passwordParameter("password")
-                .successHandler(new AjaxHandler(new SavedRequestAwareAuthenticationSuccessHandler())).and()
+                .successHandler(loginHandler).and()
                 .logout().logoutUrl("/api/logout").logoutSuccessUrl("/app/home.html").and()
                 .rememberMe().key("_spring_security_remember_me").tokenValiditySeconds(14400 * 5).tokenRepository(tokenRepository());
     }
