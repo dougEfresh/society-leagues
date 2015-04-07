@@ -27,7 +27,9 @@ public class LoginHandler implements AuthenticationSuccessHandler {
         org.springframework.security.core.userdetails.User springUser = (org.springframework.security.core.userdetails.User)authentication.getPrincipal();
         User u = userDao.get(springUser.getUsername());
         ObjectMapper mapper = new ObjectMapper();
-        mapper.writer().writeValue(response.getWriter(),u);
-        response.getWriter().flush();
+        response.setContentType("application/json;charset=UTF-8");
+        mapper.writer().writeValue(response.getWriter(), u);
+
+        //response.getWriter().flush();
     }
 }
