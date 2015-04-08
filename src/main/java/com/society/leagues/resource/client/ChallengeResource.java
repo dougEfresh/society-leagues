@@ -36,7 +36,7 @@ public class ChallengeResource  {
         return challenges;
     }
 
-    @RequestMapping(value = "/challenge/sent/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/challenge/requested/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserChallengeGroup> getPending(@PathVariable Integer userId,Principal principal) {
         User u = userDao.get(userId);
         if (u == null) {
@@ -45,18 +45,6 @@ public class ChallengeResource  {
         List<UserChallengeGroup> challenges = getSent(u);
         challenges.addAll(getNeedNotify(u));
         return challenges;
-    }
-
-    @RequestMapping(value = "/challenge/sent", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserChallengeGroup> getSent(Principal principal) {
-        User u = userDao.get(principal.getName());
-        return getSent(u);
-    }
-
-    @RequestMapping(value = "/challenge/pendingApproval", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserChallengeGroup> getPendingApproval(Principal principal) {
-        User u = userDao.get(principal.getName());
-        return getSent(u);
     }
 
     private List<UserChallengeGroup> getUserChallengeGroups(User u, Status status) {
