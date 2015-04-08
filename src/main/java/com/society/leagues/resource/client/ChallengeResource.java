@@ -36,7 +36,7 @@ public class ChallengeResource  {
         return challenges;
     }
 
-    @RequestMapping(value = "/challenge/pending/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/challenge/sent/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserChallengeGroup> getPending(@PathVariable Integer userId,Principal principal) {
         User u = userDao.get(userId);
         if (u == null) {
