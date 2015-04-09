@@ -29,7 +29,7 @@ bootRun {
     }
 
     jvmArgs = [ '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005', '-Dembedded=true' ,
-                '-Xmx512m']
+                '-Xmx512m', '-Dsecurity-disable=true']
 }
 
 dependencies {

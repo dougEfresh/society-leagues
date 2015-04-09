@@ -26,35 +26,22 @@ public class ChallengeResource  {
     @Autowired UserDao userDao;
     @Autowired SlotDao slotDao;
 
-    @RequestMapping(value = "/challenge", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserChallengeGroup> getChallenges(Principal principal) {
-        User u = userDao.get(principal.getName());
-        List<UserChallengeGroup> challenges =  getPendingChallenges(u);
-        challenges.addAll(getAcceptedChallenges(u));
-        challenges.addAll(getChallenges(u, Status.CANCELLED));
-        //challenges.sort((o1, o2) -> o1.getChallenges().getId().compareTo(o2.getChallenges().getId()));
-        return challenges;
-    }
-
-    @RequestMapping(value = "/challenge/requested/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserChallengeGroup> getPending(@PathVariable Integer userId,Principal principal) {
+    @RequestMapping(value = "/challenge/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<Status,List<UserChallengeGroup>> getChallenges(@PathVariable Integer userId) {
         User u = userDao.get(userId);
-        if (u == null) {
-            return Collections.emptyList();
+        Map<Status,List<UserChallengeGroup>> challenges = new HashMap<>();
+        for (Status status : Status.values()) {
+            challenges.put(status, getUserChallengeGroups(u,status));
         }
-        List<UserChallengeGroup> challenges = getSent(u);
-        challenges.addAll(getNeedNotify(u));
         return challenges;
     }
 
     private List<UserChallengeGroup> getUserChallengeGroups(User u, Status status) {
-        List<UserChallengeGroup> groupChallenges = new ArrayList<>();
-        List<Challenge> challenges = new ArrayList<>();
-        List<Player> userPlayers = playerDao.getByUser(u).stream().filter(p-> p.getDivision().isChallenge()).collect(Collectors.toList());
+        Collection<Challenge> challenges = dao.get().stream().
+                filter(c -> c.getOpponent().getUser().equals(u) ||
+                                c.getChallenger().getUser().equals(u)
+                ).filter(c -> c.getStatus() == status).collect(Collectors.toList());
 
-        for (Player userPlayer : userPlayers) {
-            challenges.addAll(dao.getChallenges(u, status).stream().filter(c -> c.getChallenger().equals(userPlayer)).collect(Collectors.toList()));
-        }
         List<UserChallengeGroup> groups = new ArrayList<>();
 
         for (Challenge challenge : challenges) {

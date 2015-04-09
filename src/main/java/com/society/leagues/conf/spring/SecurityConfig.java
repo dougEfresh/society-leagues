@@ -2,6 +2,7 @@ package com.society.leagues.conf.spring;
 
 import com.allanditzel.springframework.security.web.csrf.CsrfTokenResponseHeaderBindingFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -31,6 +32,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired LoginHandler loginHandler;
     @Autowired PrincipleDetailsService principleDetailsService;
     @Autowired DataSource datasource;
+    @Value("${security-disable:false}")
+    boolean disableSecurity = false;
+
     AuthenticationFailureHandler fHandler = (request, response, exception) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
 
     LogoutSuccessHandler logoutHandler = (request, response, authentication) -> {
@@ -53,17 +57,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         CsrfTokenResponseHeaderBindingFilter csrfTokenFilter = new CsrfTokenResponseHeaderBindingFilter();
         http.addFilterAfter(csrfTokenFilter, CsrfFilter.class);
-
-        http.csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/api/authenticate**").permitAll()
-                .antMatchers("/api/logout**").permitAll()
-                .anyRequest().authenticated().and()
-                .exceptionHandling().authenticationEntryPoint(new AuthenticationEntry()).and()
-                .formLogin().permitAll().loginProcessingUrl("/api/authenticate") .usernameParameter("username").passwordParameter("password")
-                .successHandler(loginHandler).failureHandler(fHandler).and()
-                .logout().logoutUrl("/api/logout").logoutSuccessHandler(logoutHandler).and()
-                .rememberMe().key("_spring_security_remember_me").tokenValiditySeconds(14400 * 5).tokenRepository(tokenRepository());
+        if (!disableSecurity) {
+            http.csrf().disable()
+                    .authorizeRequests()
+                    .antMatchers("/api/authenticate**").permitAll()
+                    .antMatchers("/api/logout**").permitAll()
+                    .anyRequest().authenticated().and()
+                    .exceptionHandling().authenticationEntryPoint(new AuthenticationEntry()).and()
+                    .formLogin().permitAll().loginProcessingUrl("/api/authenticate").usernameParameter("username").passwordParameter("password")
+                    .successHandler(loginHandler).failureHandler(fHandler).and()
+                    .logout().logoutUrl("/api/logout").logoutSuccessHandler(logoutHandler).and()
+                    .rememberMe().key("_spring_security_remember_me").tokenValiditySeconds(14400 * 5).tokenRepository(tokenRepository());
+        } else {
+            http.csrf().disable().authorizeRequests().antMatchers("/**").permitAll().
+                    anyRequest().authenticated().and()
+                    .exceptionHandling().authenticationEntryPoint(new AuthenticationEntry()).and()
+                    .formLogin().permitAll().loginProcessingUrl("/api/authenticate").usernameParameter("username").passwordParameter("password")
+                    .successHandler(loginHandler).failureHandler(fHandler).and()
+                    .logout().logoutUrl("/api/logout").logoutSuccessHandler(logoutHandler).and()
+                    .rememberMe().key("_spring_security_remember_me").tokenValiditySeconds(14400 * 5).tokenRepository(tokenRepository());
+        }
     }
 
     @Bean
