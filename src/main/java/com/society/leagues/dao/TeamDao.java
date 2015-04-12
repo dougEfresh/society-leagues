@@ -2,7 +2,6 @@ package com.society.leagues.dao;
 
 import com.society.leagues.client.api.TeamClientApi;
 import com.society.leagues.client.api.admin.TeamAdminApi;
-import com.society.leagues.client.api.domain.LeagueObject;
 import com.society.leagues.client.api.domain.Team;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;

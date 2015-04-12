@@ -4,6 +4,7 @@ package com.society.leagues.client.api.domain;
 import com.society.leagues.client.api.domain.division.Division;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -13,12 +14,12 @@ public class TeamMatch extends LeagueObject  {
     @NotNull Team away;
     @NotNull Season season;
     @NotNull Division division;
-    Date matchDate;
+    LocalDateTime matchDate;
     TeamResult result;
     List<Player> playersHome = Collections.emptyList();
     List<Player> playersAway = Collections.emptyList();
 
-    public TeamMatch(Team home, Team away, Season season, Date matchDate) {
+    public TeamMatch(Team home, Team away, Season season, LocalDateTime matchDate) {
         this.home = home;
         this.away = away;
         this.season = season;
@@ -44,11 +45,11 @@ public class TeamMatch extends LeagueObject  {
         this.away = away;
     }
 
-    public Date getMatchDate() {
+    public LocalDateTime getMatchDate() {
         return matchDate;
     }
 
-    public void setMatchDate(Date matchDate) {
+    public void setMatchDate(LocalDateTime matchDate) {
         this.matchDate = matchDate;
     }
 

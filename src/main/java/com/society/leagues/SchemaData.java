@@ -5,16 +5,13 @@ import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.dao.*;
-import com.society.leagues.resource.client.ChallengeResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -72,10 +69,9 @@ public class SchemaData {
 
         createUsers();
         createChallengePlayers();
-        createChallengeMatches(DivisionType.EIGHT_BALL_CHALLENGE);
-        createChallengeMatches(DivisionType.NINE_BALL_CHALLENGE);
-        createMatchResults();
         createChallengeRequests();
+        createChallengeTeamMatches();
+        createMatchResults();
     }
 
     private void createUsers() {
@@ -118,7 +114,7 @@ public class SchemaData {
     }
 
     private void createChallengeRequests(Player player) {
-        for(int i=0; i<4; i++) {
+        for(int i=0; i<5; i++) {
             List<Player> potentials = challengeApi.getPotentials(player.getUserId()).stream().filter(p -> p.getDivision().equals(player.getDivision())).collect(Collectors.toList());
             int slot = (int) Math.round(Math.random() * potentials.size()) - 1;
             Player opponent = potentials.get(slot == -1 ? 0 : slot);
@@ -132,13 +128,30 @@ public class SchemaData {
             challenge.setChallenger(player);
             challengeApi.requestChallenge(challenge);
         }
+          for(int i=0; i<10; i++) {
+            List<Player> potentials = challengeApi.getPotentials(player.getUserId()).stream().filter(p -> p.getDivision().equals(player.getDivision())).collect(Collectors.toList());
+            int slot = (int) Math.round(Math.random() * potentials.size()) - 1;
+            Player opponent = potentials.get(slot == -1 ? 0 : slot);
+            Challenge challenge = new Challenge();
+
+            List<Slot> slots = slotApi.get(LocalDateTime.now().minusWeeks((int) Math.round(Math.random() * 20)));
+            slot = (int) Math.round(Math.random() * slots.size()) - 1;
+            challenge.setSlot(slots.get(slot == -1 ? 0 : slot));
+            challenge.setStatus(Status.ACCEPTED);
+            challenge.setOpponent(opponent);
+            challenge.setChallenger(player);
+            challengeApi.requestChallenge(challenge);
+        }
     }
 
     private void createChallengeRequests() {
-        List<Player> players = playerApi.get().stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList());
+        List<Player> players = playerApi.get().stream().
+                filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList());
         for (Player player : players) {
             createChallengeRequests(player);
             acceptChallengeRequest(player);
+            setNeedNotifyChallengeRequest(player);
+            setCancelChallengeRequest(player);
         }
         for (int i = 0; i < Status.values().length; i++) {
             Status status = Status.values()[i];
@@ -150,39 +163,70 @@ public class SchemaData {
     }
 
     private void acceptChallengeRequest(Player player) {
-        Challenge challenge = challengeApi.get().stream().filter(c -> c.getChallenger().equals(player)).findFirst().orElse(null);
-        logger.info("Accepting challenge  " + player.getUserId() + " " +  player.getId()  + " " + challenge.getStatus() + " " + challenge.getOpponent().getUserId() );
+        Challenge challenge = challengeApi.get().stream().
+                filter(c -> c.getChallenger().equals(player)).
+                filter(c -> c.getStatus() == Status.PENDING).
+                findFirst().orElse(null);
         challengeApi.acceptChallenge(challenge);
     }
 
-    private void createChallengeMatches(DivisionType divisionType) {
-        List<Player> challengers = playerApi.get().stream().filter(p -> p.getDivision().getType() == divisionType).collect(Collectors.toList());
-        int size = challengers.size();
-        logger.info("Have " + size + " player matches to generate");
-        for (int i = 0; i < challengers.size(); i++) {
-            Player challenger = challengers.get(i);
-            List<Player> potentials = challengers.stream().filter(p -> !p.getId().equals(challenger.getId())).collect(Collectors.toList());
-            for (int j = 1; j <= 10; j++) {
+    private void setNeedNotifyChallengeRequest(Player player) {
+        Challenge challenge = challengeApi.get().stream().
+                filter(c -> c.getChallenger().equals(player)).
+                filter(c -> c.getStatus() == Status.PENDING).
+                filter( c-> c.getSlot().getLocalDateTime().isAfter(LocalDateTime.now())
+                ).
+                findFirst().orElse(null);
+        if (challenge == null) {
+            throw new RuntimeException("Couldn't find accepted challenge for " + player.getId());
+        }
+        challenge.setStatus(Status.NEEDS_NOTIFY);
+        challengeApi.modifyChallenge(challenge);
+    }
+
+    private void setCancelChallengeRequest(Player player) {
+        Challenge challenge = challengeApi.get().stream().
+                filter(c -> c.getChallenger().equals(player)).
+                filter(c -> c.getStatus() == Status.PENDING).
+                filter( c-> c.getSlot().getLocalDateTime().isAfter(LocalDateTime.now())
+                ).
+                findFirst().orElse(null);
+        if (challenge == null) {
+            throw new RuntimeException("Couldn't find accepted challenge for " + player.getId());
+        }
+        challenge.setStatus(Status.CANCELLED);
+        challengeApi.modifyChallenge(challenge);
+    }
+    private void createChallengeTeamMatches() {
+        for(DivisionType divisionType : DivisionType.values()) {
+            if (!DivisionType.isChallange(divisionType)) {
+                continue;
+            }
+            List<Challenge> challenges = challengeApi.get().stream().
+                    filter(c -> c.getChallenger().getDivision().getType() == divisionType).
+                    filter(c -> c.getSlot().getLocalDateTime().isBefore(LocalDateTime.now().plusDays(1))).
+                    filter(c -> c.getStatus() == Status.ACCEPTED).
+                    collect(Collectors.toList());
+
+            logger.info("Create match results for " + challenges.size() + " challenges");
+            for (Challenge challenge : challenges) {
+                Player challenger = challenge.getChallenger();
                 TeamMatch teamMatch = new TeamMatch();
                 teamMatch.setHome(challenger.getTeam());
                 teamMatch.setDivision(challenger.getDivision());
                 teamMatch.setSeason(challenger.getSeason());
-                teamMatch.setMatchDate(new Date(LocalDateTime.now().minusDays(j * 7).toEpochSecond(ZoneOffset.UTC)));
-                int slot = (int) Math.round(Math.random() * potentials.size()) - 1;
-                Player opponent = potentials.get(slot == -1 ? 0 : slot);
-                teamMatch.setAway(opponent.getTeam());
+                teamMatch.setMatchDate(challenge.getSlot().getLocalDateTime());
+                teamMatch.setAway(challenge.getOpponent().getTeam());
                 matchApi.create(teamMatch);
             }
+
+            logger.info("Create a total of " + matchApi.get().size() + " matches");
         }
-        logger.info("Create a total of " + matchApi.get().size() + " matches");
     }
 
     private void createMatchResults() {
-        LocalDate before = LocalDate.now().plusDays(1);
-        Date b = new Date(before.getYear(), before.getMonthValue() - 1, before.getDayOfMonth());
-        logger.info("Creating match results before " + before);
-
-        List<TeamMatch> teamMatches = matchApi.get().stream().filter(m -> m.getMatchDate().before(b)).collect(Collectors.toList());
+        List<TeamMatch> teamMatches = matchApi.get().stream().collect(Collectors.toList());
+        logger.info("Creating match results " +  teamMatches.size());
         Collection<Player> players = playerApi.get();
 
         for (TeamMatch teamMatch : teamMatches) {
@@ -318,6 +362,7 @@ public class SchemaData {
             "John,MacArthur"
 	    /*,
             "Samms,Hasburn",
+
             "Larry,Busacca",
             "Edward,Lum",
             "Michael,Secondo",

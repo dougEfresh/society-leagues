@@ -27,12 +27,22 @@ public class ChallengeResource  {
     @Autowired SlotDao slotDao;
 
     @RequestMapping(value = "/challenge/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<Status,List<UserChallengeGroup>> getChallenges(@PathVariable Integer userId) {
+    public Map<String,List<UserChallengeGroup>> getChallenges(@PathVariable Integer userId) {
         User u = userDao.get(userId);
-        Map<Status,List<UserChallengeGroup>> challenges = new HashMap<>();
+        Map<String,List<UserChallengeGroup>> challenges = new HashMap<>();
         for (Status status : Status.values()) {
-            challenges.put(status, getUserChallengeGroups(u,status));
+            challenges.put(status.name(), getUserChallengeGroups(u,status));
         }
+        challenges.put("REQUESTED",
+                challenges.get(Status.PENDING.name()).stream().
+                        filter(c -> c.getChallenger().equals(u)).
+                        collect(Collectors.toList())
+        );
+        challenges.put(Status.PENDING.name(),
+                challenges.get(Status.PENDING.name()).stream().
+                        filter(c -> !c.getChallenger().equals(u)).
+                        collect(Collectors.toList())
+        );
         return challenges;
     }
 

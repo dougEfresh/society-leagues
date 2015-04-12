@@ -20,6 +20,10 @@ public enum DivisionType {
         return leagueType;
     }
 
+    public static boolean isChallange(DivisionType type) {
+        return type == EIGHT_BALL_CHALLENGE || type == NINE_BALL_CHALLENGE;
+    }
+
     @Override
     public String toString() {
         return "DivisionType{" +
