@@ -43,6 +43,13 @@ public class ChallengeResource  {
                         filter(c -> !c.getChallenger().equals(u)).
                         collect(Collectors.toList())
         );
+        challenges.put(Status.NEEDS_NOTIFY.name(),
+                challenges.get(Status.NEEDS_NOTIFY.name()).stream().
+                        filter(c -> c.getChallenger().equals(u)).
+                        collect(Collectors.toList())
+        );
+
+
         return challenges;
     }
 
