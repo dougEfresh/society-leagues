@@ -33,7 +33,7 @@ public class ChallengeResource  {
         for (Status status : Status.values()) {
             challenges.put(status.name(), getUserChallengeGroups(u,status));
         }
-        challenges.put("REQUESTED",
+        challenges.put("SENT",
                 challenges.get(Status.PENDING.name()).stream().
                         filter(c -> c.getChallenger().equals(u)).
                         collect(Collectors.toList())
