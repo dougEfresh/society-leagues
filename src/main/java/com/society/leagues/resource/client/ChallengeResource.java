@@ -142,40 +142,32 @@ public class ChallengeResource  {
         return c;
     }
 
-    @RequestMapping(value = "/challenge/request",
+    @RequestMapping(value = "/challenge/request/{id}",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public UserChallengeGroup requestChallenge(@RequestBody ChallengeRequest request) {
+    public Boolean  requestChallenge(@PathVariable Integer id, @RequestBody ChallengeRequest request) {
         logger.info("Got request for challenge " + request);
-        UserChallengeGroup userChallengeGroup = new UserChallengeGroup();
-        User challenger = userDao.get(request.getChallenger().getId());
+        User u = userDao.get(id);
         User opponent = userDao.get(request.getOpponent().getId());
 
-        List<Player> challengePlayers = playerDao.getByUser(challenger);
-        List<Player> opponentPlayers = playerDao.getByUser(opponent);
+        for (Slot slot : request.getSlots()) {
+            if (request.isEight())
+                createChallenge(u,opponent,DivisionType.EIGHT_BALL_CHALLENGE,slot);
 
-        List<Challenge> challenges = new ArrayList<>();
-        userChallengeGroup.setChallenger(challenger);
-        userChallengeGroup.setOpponent(opponent);
-        Player op = null;
-        Player ch = null;
-        if (request.isNine()) {
-            op = opponentPlayers.stream().filter(p->p.getDivision().getType() == DivisionType.NINE_BALL_CHALLENGE).findFirst().orElseGet(null);
-            ch = challengePlayers.stream().filter(p->p.getDivision().getType() == DivisionType.NINE_BALL_CHALLENGE).findFirst().orElseGet(null);
-            challenges.addAll(createChallenge(request.getSlots(),ch,op));
+            if (request.isNine())
+                createChallenge(u,opponent,DivisionType.NINE_BALL_CHALLENGE,slot);
         }
+        return true;
+    }
 
-        if (request.isEight()) {
-            op = opponentPlayers.stream().filter(p->p.getDivision().getType() == DivisionType.EIGHT_BALL_CHALLENGE).findFirst().orElseGet(null);
-            ch = challengePlayers.stream().filter(p->p.getDivision().getType() == DivisionType.EIGHT_BALL_CHALLENGE).findFirst().orElseGet(null);
-            challenges.addAll(createChallenge(request.getSlots(),ch,op));
-        }
-
-        userChallengeGroup.setChallenges(challenges);
-        //TODO verify....
-        userChallengeGroup.setDate(slotDao.get(request.getSlots().get(0).getId()).getLocalDateTime().toLocalDate());
-        return userChallengeGroup;
+    private void createChallenge(User challenger, User opponent, DivisionType type, Slot slot) {
+        Challenge challenge = new Challenge();
+        challenge.setChallenger(playerDao.getByUser(challenger).stream().filter(p-> p.getDivision().getType() == type).findFirst().get());
+        challenge.setOpponent(playerDao.getByUser(opponent).stream().filter(p -> p.getDivision().getType() == type).findFirst().get());
+        challenge.setSlot(slot);
+        challenge.setStatus(Status.NEEDS_NOTIFY);
+        dao.requestChallenge(challenge);
     }
 
     private List<Challenge> createChallenge(List<Slot> slots,Player ch, Player op) {

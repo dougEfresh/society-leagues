@@ -5,19 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ChallengeRequest {
-    User challenger;
     User opponent;
     boolean nine;
     boolean eight;
     List<Slot> slots = new ArrayList<>();
-
-    public User getChallenger() {
-        return challenger;
-    }
-
-    public void setChallenger(User challenger) {
-        this.challenger = challenger;
-    }
 
     public User getOpponent() {
         return opponent;
@@ -54,7 +45,6 @@ public class ChallengeRequest {
     @Override
     public String toString() {
         return "ChallengeRequest{" +
-                "challenger=" + challenger +
                 ", opponent=" + opponent +
                 ", challengeTimes=" + Arrays.toString(slots.toArray()) +
                 '}';
