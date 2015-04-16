@@ -48,7 +48,11 @@ public class ChallengeResource  {
                         filter(c -> c.getChallenger().equals(u)).
                         collect(Collectors.toList())
         );
-
+        challenges.put(Status.ACCEPTED.name(),
+                challenges.get(Status.ACCEPTED.name()).stream().
+                        filter(c-> !c.getDate().isBefore(LocalDate.now())).
+                        collect(Collectors.toList())
+        );
 
         return challenges;
     }
@@ -129,22 +133,29 @@ public class ChallengeResource  {
         return null;
     }
 
-    @RequestMapping(value = "/challenge/cancel", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Boolean cancelChallenge(@RequestBody UserChallengeGroup challengeGroup) {
+    @RequestMapping(value = "/challenge/status/{status}",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Boolean changeStatus(@PathVariable String status, @RequestBody UserChallengeGroup challengeGroup) {
         if ( challengeGroup.getChallenges() == null || challengeGroup.getChallenges().isEmpty()) {
             return false;
         }
+        if (Status.valueOf(status) == Status.CANCELLED)
+            challengeGroup.getChallenges().forEach(dao::cancelChallenge);
 
-        challengeGroup.getChallenges().forEach(dao::cancelChallenge);
+        if (Status.valueOf(status) == Status.PENDING) {
+            for (Challenge challenge : challengeGroup.getChallenges()) {
+                Challenge c = dao.get(challenge.getId());
+                c.setStatus(Status.PENDING);
+                dao.modifyChallenge(c);
+            }
+        }
 
+        if (Status.valueOf(status) == Status.ACCEPTED) {
+            challengeGroup.getChallenges().forEach(dao::acceptChallenge);
+        }
         return true;
-    }
-
-    @RequestMapping(value = "/challenge/accept/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public Challenge acceptChallenge(@PathVariable (value = "id") Integer id) {
-        Challenge c = dao.get(id);
-        c = dao.acceptChallenge(c);
-        return c;
     }
 
     @RequestMapping(value = "/challenge/request",
