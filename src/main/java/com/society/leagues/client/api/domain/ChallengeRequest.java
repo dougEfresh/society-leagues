@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ChallengeRequest {
+    User challenger;
     User opponent;
     boolean nine;
     boolean eight;
@@ -40,6 +41,14 @@ public class ChallengeRequest {
 
     public void setEight(boolean eight) {
         this.eight = eight;
+    }
+
+    public User getChallenger() {
+        return challenger;
+    }
+
+    public void setChallenger(User challenger) {
+        this.challenger = challenger;
     }
 
     @Override

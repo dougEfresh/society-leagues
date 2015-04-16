@@ -129,10 +129,15 @@ public class ChallengeResource  {
         return null;
     }
 
-    @RequestMapping(value = "/challenge/cancel/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public Challenge cancelChallenge(@PathVariable (value = "id") Integer id) {
-        Challenge c = dao.get(id);
-        return dao.cancelChallenge(c);
+    @RequestMapping(value = "/challenge/cancel", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Boolean cancelChallenge(@RequestBody UserChallengeGroup challengeGroup) {
+        if ( challengeGroup.getChallenges() == null || challengeGroup.getChallenges().isEmpty()) {
+            return false;
+        }
+
+        challengeGroup.getChallenges().forEach(dao::cancelChallenge);
+
+        return true;
     }
 
     @RequestMapping(value = "/challenge/accept/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
@@ -142,13 +147,13 @@ public class ChallengeResource  {
         return c;
     }
 
-    @RequestMapping(value = "/challenge/request/{id}",
+    @RequestMapping(value = "/challenge/request",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Boolean  requestChallenge(@PathVariable Integer id, @RequestBody ChallengeRequest request) {
+    public Boolean  requestChallenge(@RequestBody ChallengeRequest request) {
         logger.info("Got request for challenge " + request);
-        User u = userDao.get(id);
+        User u = userDao.get(request.getChallenger().getId());
         User opponent = userDao.get(request.getOpponent().getId());
 
         for (Slot slot : request.getSlots()) {
@@ -167,7 +172,20 @@ public class ChallengeResource  {
         challenge.setOpponent(playerDao.getByUser(opponent).stream().filter(p -> p.getDivision().getType() == type).findFirst().get());
         challenge.setSlot(slot);
         challenge.setStatus(Status.NEEDS_NOTIFY);
-        dao.requestChallenge(challenge);
+        Collection<Challenge> challenges = dao.get();
+        //Check Dups
+        boolean dup = false;
+        for (Challenge c : challenges) {
+            if (c.getChallenger().equals(challenge.getChallenger()) &&
+                    c.getOpponent().equals(challenge.getOpponent()) &&
+                    c.getSlot().equals(challenge.getSlot())
+                    ) {
+                logger.warn("Trying to create a request for one that already exists:" + c.getId());
+                dup = true;
+            }
+        }
+        if (!dup)
+            dao.requestChallenge(challenge);
     }
 
     private List<Challenge> createChallenge(List<Slot> slots,Player ch, Player op) {
