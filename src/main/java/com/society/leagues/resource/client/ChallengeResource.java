@@ -133,13 +133,13 @@ public class ChallengeResource  {
         return null;
     }
 
-    @RequestMapping(value = "/challenge/status/{status}",
+    @RequestMapping(value = "/challenge/status/{userId}/{status}",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Boolean changeStatus(@PathVariable String status, @RequestBody UserChallengeGroup challengeGroup) {
+	    public  Map<String,List<UserChallengeGroup>> changeStatus(@PathVariable Integer userId, @PathVariable String status, @RequestBody UserChallengeGroup challengeGroup) {
         if ( challengeGroup.getChallenges() == null || challengeGroup.getChallenges().isEmpty()) {
-            return false;
+            return getChallenges(userId);
         }
         if (Status.valueOf(status) == Status.CANCELLED)
             challengeGroup.getChallenges().forEach(dao::cancelChallenge);
@@ -155,14 +155,14 @@ public class ChallengeResource  {
         if (Status.valueOf(status) == Status.ACCEPTED) {
             challengeGroup.getChallenges().forEach(dao::acceptChallenge);
         }
-        return true;
+	return getChallenges(userId);
     }
 
     @RequestMapping(value = "/challenge/request",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Boolean  requestChallenge(@RequestBody ChallengeRequest request) {
+    public Map<String,List<UserChallengeGroup>>  requestChallenge(@RequestBody ChallengeRequest request) {
         logger.info("Got request for challenge " + request);
         User u = userDao.get(request.getChallenger().getId());
         User opponent = userDao.get(request.getOpponent().getId());
@@ -174,7 +174,7 @@ public class ChallengeResource  {
             if (request.isNine())
                 createChallenge(u,opponent,DivisionType.NINE_BALL_CHALLENGE,slot);
         }
-        return true;
+	return getChallenges(u.getId());
     }
 
     private void createChallenge(User challenger, User opponent, DivisionType type, Slot slot) {
@@ -235,16 +235,6 @@ public class ChallengeResource  {
                 return o1.getLocalDateTime().compareTo(o2.getLocalDateTime());
             }
         }).collect(Collectors.toList());
-    }
-
-
-    @RequestMapping(value = "/challenge/counters/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Integer> getCounters(@PathVariable Integer userId) {
-        User u = userDao.get(userId);
-        List<Integer> counters = new ArrayList<>();
-        counters.add(getSent(u).size());
-        counters.add(getPendingApproval(u).size());
-        return counters;
     }
 
     public List<UserChallengeGroup> getPendingChallenges(User u) {
