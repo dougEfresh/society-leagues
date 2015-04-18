@@ -75,7 +75,7 @@ public class User extends LeagueObject {
         this.email = email;
     }
 
-
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -84,7 +84,6 @@ public class User extends LeagueObject {
         this.password = password;
     }
 
-    @JsonIgnore
     public String getLogin() {
         return login;
     }

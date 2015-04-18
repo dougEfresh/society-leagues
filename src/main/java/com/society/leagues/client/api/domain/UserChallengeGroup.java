@@ -1,8 +1,9 @@
 package com.society.leagues.client.api.domain;
 
+import com.society.leagues.client.api.domain.division.DivisionType;
+
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class UserChallengeGroup {
     User challenger;
@@ -44,6 +45,22 @@ public class UserChallengeGroup {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public Set<DivisionType> getGames() {
+        Set<DivisionType> games = new HashSet<>();
+        for (Challenge challenge : getChallenges()) {
+            games.add(challenge.getChallenger().getDivision().getType());
+        }
+        return games;
+    }
+
+    public Set<Slot> getSlots() {
+        Set<Slot> slots = new HashSet<>();
+        for (Challenge challenge : getChallenges()) {
+            slots.add(challenge.getSlot());
+        }
+        return slots;
     }
 
     @Override

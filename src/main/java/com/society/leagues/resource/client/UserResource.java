@@ -32,6 +32,28 @@ public class UserResource  {
         return  get(principal.getName());
     }
 
+
+    @RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public User get(@PathVariable Integer id) {
+        if ( id == null || id == 0 ) {
+            User u = new User();
+            u.setFirstName("");
+            u.setLastName("");
+            u.setId(0);
+            return u;
+        }
+        return dao.get(id);
+    }
+
+    @RequestMapping(value = "/users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Collection<User> get() {
+        return  dao.get().stream().sorted(new Comparator<User>() {
+            @Override
+            public int compare(User o1, User o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        }).collect(Collectors.toList());
+    }
     @RequestMapping(value = "/userPlayers", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Player> getUserPlayers(Principal principal) {
         User u = get(principal.getName());
