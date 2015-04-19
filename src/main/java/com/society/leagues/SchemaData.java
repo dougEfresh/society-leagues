@@ -180,7 +180,7 @@ public class SchemaData {
         if (challenge == null) {
             throw new RuntimeException("Couldn't find accepted challenge for " + player.getId());
         }
-        challenge.setStatus(Status.NEEDS_NOTIFY);
+        challenge.setStatus(Status.NOTIFY);
         challengeApi.modifyChallenge(challenge);
     }
 
@@ -361,8 +361,9 @@ public class SchemaData {
             "Yorgos,Hatziefhimiou",
             "Zain,Siddiqi",
             "Thomas,Wan",
-            "Eric,Adelman"
-
+            "Eric,Adelman",
+            "Ross,Robbins",
+            "Todd,Wilson"
 
 	    /*,
             "Samms,Hasburn",
@@ -375,8 +376,7 @@ public class SchemaData {
             "Naoto,Hariu",
             "Peter,Khan",
             "Tejune,Kang",
-            "Ross,Robbins",
-            "Todd,Wilson",
+
             "Oscar,Ortiz",
             "Henry,Balingcongan",
             "Keith,Diaz",

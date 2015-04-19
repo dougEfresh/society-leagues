@@ -10,6 +10,7 @@ public class UserChallengeGroup {
     User opponent;
     LocalDate date;
     List<Challenge> challenges = new ArrayList<>();
+    Status status;
 
     public User getChallenger() {
         return challenger;
@@ -61,6 +62,13 @@ public class UserChallengeGroup {
             slots.add(challenge.getSlot());
         }
         return slots;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+    public Status getStatus() {
+            return status;
     }
 
     @Override

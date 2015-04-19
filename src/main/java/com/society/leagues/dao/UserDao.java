@@ -2,6 +2,7 @@ package com.society.leagues.dao;
 
 import com.society.leagues.client.api.UserClientApi;
 import com.society.leagues.client.api.admin.UserAdminApi;
+import com.society.leagues.client.api.domain.Challenge;
 import com.society.leagues.client.api.domain.Player;
 import com.society.leagues.client.api.domain.Status;
 import com.society.leagues.client.api.domain.User;
@@ -76,7 +77,6 @@ public class UserDao extends Dao<User> implements UserClientApi, UserAdminApi{
             return ps;
         };
     }
-
     static String CREATE = "INSERT INTO users " +
             "(" +
             "login," +

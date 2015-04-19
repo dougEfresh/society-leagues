@@ -6,5 +6,6 @@ public enum Status {
     PENDING,
     CANCELLED,
     ACCEPTED,
-    NEEDS_NOTIFY
+    NOTIFY,
+    SENT
 }
