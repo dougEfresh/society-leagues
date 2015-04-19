@@ -162,7 +162,7 @@ public class ChallengeResource  {
         return getChallenges(userId);
     }
 
-  @RequestMapping(value = "/challenge/cancel/{userId}",
+    @RequestMapping(value = {"/challenge/cancel/{userId}","/challenge/cancelled/{userId}"},
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -180,7 +180,7 @@ public class ChallengeResource  {
         return getChallenges(userId);
     }
 
-    @RequestMapping(value = "/challenge/accept/{userId}",
+    @RequestMapping(value = {"/challenge/accept/{userId}", "/challenge/accepted/{userId}"},
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
