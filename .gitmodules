@@ -1,0 +1,3 @@
+[submodule "society-leagues-web"]
+	path = society-leagues-web
+	url = https://github.com/dougEfresh/society-leagues-web.git
