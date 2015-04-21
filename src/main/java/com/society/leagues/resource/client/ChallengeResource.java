@@ -185,7 +185,22 @@ public class ChallengeResource  {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
   public Map<Status,List<UserChallengeGroup>> accept(@PathVariable Integer userId, @RequestBody Challenge challenge) {
-        dao.acceptChallenge(challenge);
+        Map<Status,List<UserChallengeGroup>> challengeGroups = getChallenges(userId);
+        User user = userDao.get(userId);
+        final Challenge c  = dao.get(challenge.getId());
+        if (user == null || c == null) {
+            return Collections.emptyMap();
+        }
+        List<Challenge> toCancel = dao.get().stream().
+	    filter(ch->ch.getSlot().getLocalDateTime().toLocalDate().isEqual(c.getSlot().getLocalDateTime().toLocalDate())).
+	    filter(ch->ch.getChallenger().getUser().equals(c.getChallenger().getUser()) || ch.getOpponent().getUser().equals(c.getOpponent().getUser())).
+	    collect(Collectors.toList());
+        for (Challenge ch : toCancel) {
+	    logger.info("Cancel: " + ch.getSlot().getLocalDateTime().toLocalDate() + " " +  ch.getId()  + " " + ch.getChallenger().getDivision().getType());
+            ch.setStatus(Status.CANCELLED);
+        }
+        dao.cancel(toCancel);
+        dao.acceptChallenge(c);
         return getChallenges(userId);
     }
 
