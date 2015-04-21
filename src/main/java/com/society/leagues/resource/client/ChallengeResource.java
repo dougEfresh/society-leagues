@@ -26,33 +26,37 @@ public class ChallengeResource  {
     @Autowired SlotDao slotDao;
 
     @RequestMapping(value = "/challenge/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String,List<UserChallengeGroup>> getChallenges(@PathVariable Integer userId) {
+    public Map<Status,List<UserChallengeGroup>> getChallenges(@PathVariable Integer userId) {
         User u = userDao.get(userId);
-        Map<String,List<UserChallengeGroup>> challenges = new HashMap<>();
+        Map<Status,List<UserChallengeGroup>> challenges = new HashMap<>();
         for (Status status : Status.values()) {
-            challenges.put(status.name(), getUserChallengeGroups(u,status));
+            challenges.put(status,getUserChallengeGroups(u, status));
         }
-        challenges.put("SENT",
-                challenges.get(Status.PENDING.name()).stream().
+        challenges.put(Status.SENT,
+                challenges.get(Status.PENDING).stream().
                         filter(c -> c.getChallenger().equals(u)).
                         collect(Collectors.toList())
         );
-        challenges.put(Status.PENDING.name(),
-                challenges.get(Status.PENDING.name()).stream().
+        challenges.put(Status.PENDING,
+                challenges.get(Status.PENDING).stream().
                         filter(c -> !c.getChallenger().equals(u)).
                         collect(Collectors.toList())
         );
-        challenges.put(Status.NEEDS_NOTIFY.name(),
-                challenges.get(Status.NEEDS_NOTIFY.name()).stream().
+        challenges.put(Status.NOTIFY,
+                challenges.get(Status.NOTIFY).stream().
                         filter(c -> c.getChallenger().equals(u)).
                         collect(Collectors.toList())
         );
-        challenges.put(Status.ACCEPTED.name(),
-                challenges.get(Status.ACCEPTED.name()).stream().
-                        filter(c-> !c.getDate().isBefore(LocalDate.now())).
+        challenges.put(Status.ACCEPTED,
+                challenges.get(Status.ACCEPTED).stream().
+                        filter(c -> !c.getDate().isBefore(LocalDate.now())).
                         collect(Collectors.toList())
         );
-
+        for (Status status : challenges.keySet()) {
+            for(UserChallengeGroup group : challenges.get(status)) {
+                group.setStatus(status);
+            }
+        }
         return challenges;
     }
 
@@ -69,6 +73,7 @@ public class ChallengeResource  {
             group.setChallenger(challenge.getChallenger().getUser());
             group.setOpponent(challenge.getOpponent().getUser());
             group.setDate(challenge.getSlot().getLocalDateTime().toLocalDate());
+
             if (!groups.contains(group)) {
                 groups.add(group);
             }
@@ -84,7 +89,7 @@ public class ChallengeResource  {
     }
 
     private List<UserChallengeGroup> getNeedNotify(User u) {
-        return getUserChallengeGroups(u,Status.NEEDS_NOTIFY);
+        return getUserChallengeGroups(u,Status.NOTIFY);
     }
 
     private List<UserChallengeGroup> getPendingApproval(User u) {
@@ -136,7 +141,7 @@ public class ChallengeResource  {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-	    public  Map<String,List<UserChallengeGroup>> changeStatus(@PathVariable Integer userId, @PathVariable String status, @RequestBody UserChallengeGroup challengeGroup) {
+	    public  Map<Status,List<UserChallengeGroup>> changeStatus(@PathVariable Integer userId, @PathVariable String status, @RequestBody UserChallengeGroup challengeGroup) {
         if ( challengeGroup.getChallenges() == null || challengeGroup.getChallenges().isEmpty()) {
             return getChallenges(userId);
         }
@@ -154,14 +159,56 @@ public class ChallengeResource  {
         if (Status.valueOf(status) == Status.ACCEPTED) {
             challengeGroup.getChallenges().forEach(dao::acceptChallenge);
         }
-	return getChallenges(userId);
+        return getChallenges(userId);
+    }
+
+    @RequestMapping(value = {"/challenge/cancel/{userId}","/challenge/cancelled/{userId}"},
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+  public Map<Status,List<UserChallengeGroup>> cancel(@PathVariable Integer userId, @RequestBody UserChallengeGroup challengeGroup) {
+      dao.cancel(challengeGroup.getChallenges());
+      return getChallenges(userId);
+    }
+
+    @RequestMapping(value = "/challenge/notify/{userId}",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+  public Map<Status,List<UserChallengeGroup>> notify(@PathVariable Integer userId, @RequestBody UserChallengeGroup challengeGroup) {
+        dao.pending(challengeGroup.getChallenges());
+        return getChallenges(userId);
+    }
+
+    @RequestMapping(value = {"/challenge/accept/{userId}", "/challenge/accepted/{userId}"},
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+  public Map<Status,List<UserChallengeGroup>> accept(@PathVariable Integer userId, @RequestBody Challenge challenge) {
+        Map<Status,List<UserChallengeGroup>> challengeGroups = getChallenges(userId);
+        User user = userDao.get(userId);
+        final Challenge c  = dao.get(challenge.getId());
+        if (user == null || c == null) {
+            return Collections.emptyMap();
+        }
+        List<Challenge> toCancel = dao.get().stream().
+	    filter(ch->ch.getSlot().getLocalDateTime().toLocalDate().isEqual(c.getSlot().getLocalDateTime().toLocalDate())).
+	    filter(ch->ch.getChallenger().getUser().equals(c.getChallenger().getUser()) || ch.getOpponent().getUser().equals(c.getOpponent().getUser())).
+	    collect(Collectors.toList());
+        for (Challenge ch : toCancel) {
+	    logger.info("Cancel: " + ch.getSlot().getLocalDateTime().toLocalDate() + " " +  ch.getId()  + " " + ch.getChallenger().getDivision().getType());
+            ch.setStatus(Status.CANCELLED);
+        }
+        dao.cancel(toCancel);
+        dao.acceptChallenge(c);
+        return getChallenges(userId);
     }
 
     @RequestMapping(value = "/challenge/request",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String,List<UserChallengeGroup>>  requestChallenge(@RequestBody ChallengeRequest request) {
+    public Map<Status,List<UserChallengeGroup>>  requestChallenge(@RequestBody ChallengeRequest request) {
         logger.info("Got request for challenge " + request);
         User u = userDao.get(request.getChallenger().getId());
         User opponent = userDao.get(request.getOpponent().getId());
@@ -173,7 +220,7 @@ public class ChallengeResource  {
             if (request.isNine())
                 createChallenge(u,opponent,DivisionType.NINE_BALL_CHALLENGE,slot);
         }
-	return getChallenges(u.getId());
+        return getChallenges(u.getId());
     }
 
     private void createChallenge(User challenger, User opponent, DivisionType type, Slot slot) {
@@ -181,7 +228,7 @@ public class ChallengeResource  {
         challenge.setChallenger(playerDao.getByUser(challenger).stream().filter(p-> p.getDivision().getType() == type).findFirst().get());
         challenge.setOpponent(playerDao.getByUser(opponent).stream().filter(p -> p.getDivision().getType() == type).findFirst().get());
         challenge.setSlot(slot);
-        challenge.setStatus(Status.NEEDS_NOTIFY);
+        challenge.setStatus(Status.NOTIFY);
         Collection<Challenge> challenges = dao.get();
         //Check Dups
         boolean dup = false;
@@ -210,7 +257,7 @@ public class ChallengeResource  {
             c.setOpponent(op);
             c.setChallenger(ch);
             c.setSlot(slot);
-            c.setStatus(Status.NEEDS_NOTIFY);
+            c.setStatus(Status.NOTIFY);
             //TODO JSON View
             Challenge response = new Challenge();
             c = dao.requestChallenge(c);
@@ -241,7 +288,7 @@ public class ChallengeResource  {
     }
 
     public List<UserChallengeGroup> getNeedNotifyChallenges(User u) {
-        return getChallenges(u, Status.NEEDS_NOTIFY);
+        return getChallenges(u, Status.NOTIFY);
     }
 
     public List<UserChallengeGroup> getAcceptedChallenges(User u) {

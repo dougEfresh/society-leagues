@@ -99,6 +99,17 @@ public abstract class Dao<Q extends LeagueObject> implements ClientApi<Q> {
         return null;
     }
 
+    public <T extends LeagueObject> T modifyNoRefresh(T thing, String sql, Object ...args) {
+        try {
+            if (jdbcTemplate.update(sql,args) <= 0)
+                return null;
+            return thing;
+        } catch (Throwable t) {
+            logger.error(t.getMessage(),t);
+        }
+        return null;
+    }
+
     static final int HALF_AN_HOUR_IN_MILLISECONDS = 30 * 60 * 1000;
     @Scheduled(fixedRate = HALF_AN_HOUR_IN_MILLISECONDS)
     protected synchronized void refreshCache() {

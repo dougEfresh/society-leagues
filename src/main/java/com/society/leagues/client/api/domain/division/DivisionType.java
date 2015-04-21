@@ -26,9 +26,6 @@ public enum DivisionType {
 
     @Override
     public String toString() {
-        return "DivisionType{" +
-                "DivisionType=" + this.name() +
-                "  leagueType=" + leagueType +
-                '}';
+        return this.name();
     }
 }

@@ -78,6 +78,20 @@ public class ChallengeDao extends Dao<Challenge>  {
         return modify(challenge,"UPDATE challenge SET status  = ? WHERE challenge_id = ?", Status.CANCELLED.name(), challenge.getId());
     }
 
+    public void pending(List<Challenge> challenges) {
+        for (Challenge challenge : challenges) {
+            modifyNoRefresh(challenge,"UPDATE challenge SET status  = ? WHERE challenge_id = ?", Status.PENDING.name(), challenge.getId());
+        }
+        refreshCache();
+    }
+
+    public void cancel(List<Challenge> challenges) {
+        for (Challenge challenge : challenges) {
+            modifyNoRefresh(challenge,"UPDATE challenge SET status  = ? WHERE challenge_id = ?", Status.CANCELLED.name(), challenge.getId());
+        }
+        refreshCache();
+    }
+
     public List<Challenge> getChallenges(User u, Status status) {
         List<Player> players = playerDao.getByUser(u);
         List<Challenge> challenges = new ArrayList<>();
