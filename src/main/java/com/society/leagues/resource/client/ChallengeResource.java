@@ -48,11 +48,6 @@ public class ChallengeResource  {
                         filter(c -> !c.getChallenger().equals(u)).
                         collect(Collectors.toList())
         );
-        challenges.put(Status.NOTIFY,
-                challenges.get(Status.NOTIFY).stream().
-                        filter(c -> c.getChallenger().equals(u)).
-                        collect(Collectors.toList())
-        );
         challenges.put(Status.ACCEPTED,
                 challenges.get(Status.ACCEPTED).stream().
                         filter(c -> !c.getDate().isBefore(LocalDate.now())).
@@ -251,7 +246,7 @@ public class ChallengeResource  {
         challenge.setChallenger(playerDao.getByUser(challenger).stream().filter(p-> p.getDivision().getType() == type).findFirst().get());
         challenge.setOpponent(playerDao.getByUser(opponent).stream().filter(p -> p.getDivision().getType() == type).findFirst().get());
         challenge.setSlot(slot);
-        challenge.setStatus(Status.NOTIFY);
+        challenge.setStatus(Status.PENDING);
         Collection<Challenge> challenges = dao.get();
         //Check Dups
         boolean dup = false;
