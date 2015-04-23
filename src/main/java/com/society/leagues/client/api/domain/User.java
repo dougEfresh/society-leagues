@@ -10,16 +10,12 @@ import java.util.TreeSet;
 
 public class User extends LeagueObject {
 
-    @NotNull
-    String firstName;
-    @NotNull
-    String lastName;
+    @NotNull String firstName;
+    @NotNull String lastName;
     String email;
     String password;
-    @NotNull
-    String login;
-    @NotNull
-    Role role;
+    @NotNull String login;
+    @NotNull Role role;
     Set<Integer> playerIds = new TreeSet<>();
     List<Player> players = new ArrayList<>();
 

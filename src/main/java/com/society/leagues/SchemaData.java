@@ -150,7 +150,7 @@ public class SchemaData {
         for (Player player : players) {
             createChallengeRequests(player);
             acceptChallengeRequest(player);
-            setNeedNotifyChallengeRequest(player);
+            //setNeedNotifyChallengeRequest(player);
             setCancelChallengeRequest(player);
         }
         for (int i = 0; i < Status.values().length; i++) {
@@ -197,6 +197,7 @@ public class SchemaData {
         challenge.setStatus(Status.CANCELLED);
         challengeApi.modifyChallenge(challenge);
     }
+
     private void createChallengeTeamMatches() {
         for(DivisionType divisionType : DivisionType.values()) {
             if (!DivisionType.isChallange(divisionType)) {
@@ -348,6 +349,7 @@ public class SchemaData {
             "Max,Watanabe",
             "Michael,Harrington",
             "Mimi,Ji",
+            /*
             "Nick,Meyer",
             "Olga,Nikolaeva",
             "Oliver,Stalley",
@@ -364,7 +366,7 @@ public class SchemaData {
             "Eric,Adelman",
             "Ross,Robbins",
             "Todd,Wilson"
-
+*/
 	    /*,
             "Samms,Hasburn",
 

@@ -1,11 +1,14 @@
 package com.society.leagues.resource.client;
 
+import com.society.leagues.EmailSender;
+import com.society.leagues.EmailTaskRunner;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.dao.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +27,8 @@ public class ChallengeResource  {
     @Autowired PlayerResultDao playerResultDao;
     @Autowired UserDao userDao;
     @Autowired SlotDao slotDao;
+    @Autowired EmailSender emailSender;
+    @Value("${service-url:http://leaguesdev.societybilliards.com}") String serviceUrl;
 
     @RequestMapping(value = "/challenge/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<Status,List<UserChallengeGroup>> getChallenges(@PathVariable Integer userId) {
@@ -167,7 +172,11 @@ public class ChallengeResource  {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
   public Map<Status,List<UserChallengeGroup>> cancel(@PathVariable Integer userId, @RequestBody UserChallengeGroup challengeGroup) {
-      dao.cancel(challengeGroup.getChallenges());
+        User user = userDao.get(userId);
+        Challenge c = challengeGroup.getChallenges().get(0);
+        User opponent =userDao.get(dao.get(c.getId()).getOpponent().getUserId());
+        dao.cancel(challengeGroup.getChallenges());
+        sendEmail(user,opponent,Status.CANCELLED);
       return getChallenges(userId);
     }
 
@@ -176,7 +185,11 @@ public class ChallengeResource  {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
   public Map<Status,List<UserChallengeGroup>> notify(@PathVariable Integer userId, @RequestBody UserChallengeGroup challengeGroup) {
+        User user = userDao.get(userId);
+        Challenge c = challengeGroup.getChallenges().get(0);
+        User opponent =userDao.get(dao.get(c.getId()).getOpponent().getUserId());
         dao.pending(challengeGroup.getChallenges());
+        sendEmail(user,opponent,Status.NOTIFY);
         return getChallenges(userId);
     }
 
@@ -184,24 +197,64 @@ public class ChallengeResource  {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-  public Map<Status,List<UserChallengeGroup>> accept(@PathVariable Integer userId, @RequestBody Challenge challenge) {
+    public Map<Status,List<UserChallengeGroup>> accept(@PathVariable Integer userId, @RequestBody Challenge challenge) {
         Map<Status,List<UserChallengeGroup>> challengeGroups = getChallenges(userId);
         User user = userDao.get(userId);
         final Challenge c  = dao.get(challenge.getId());
         if (user == null || c == null) {
             return Collections.emptyMap();
         }
+        User opponent = userDao.get(challenge.getChallenger().getUserId());
         List<Challenge> toCancel = dao.get().stream().
-	    filter(ch->ch.getSlot().getLocalDateTime().toLocalDate().isEqual(c.getSlot().getLocalDateTime().toLocalDate())).
-	    filter(ch->ch.getChallenger().getUser().equals(c.getChallenger().getUser()) || ch.getOpponent().getUser().equals(c.getOpponent().getUser())).
-	    collect(Collectors.toList());
+                filter(ch->ch.getSlot().getLocalDateTime().toLocalDate().isEqual(c.getSlot().getLocalDateTime().toLocalDate())).
+                filter(ch->ch.getChallenger().getUser().equals(c.getChallenger().getUser()) || ch.getOpponent().getUser().equals(c.getOpponent().getUser())).
+                collect(Collectors.toList());
         for (Challenge ch : toCancel) {
-	    logger.info("Cancel: " + ch.getSlot().getLocalDateTime().toLocalDate() + " " +  ch.getId()  + " " + ch.getChallenger().getDivision().getType());
+            logger.info("Cancel: " + ch.getSlot().getLocalDateTime().toLocalDate() + " " +  ch.getId()  + " " + ch.getChallenger().getDivision().getType());
             ch.setStatus(Status.CANCELLED);
         }
         dao.cancel(toCancel);
         dao.acceptChallenge(c);
+        sendEmail(user,opponent,Status.ACCEPTED);
         return getChallenges(userId);
+    }
+
+    private void sendEmail(User to, User from, Status status) {
+        String subject;
+        String body;
+        Thread thread;
+        EmailTaskRunner taskRunner;
+
+        switch (status) {
+            case NOTIFY:
+                subject = "Society Leagues - Challenge Request From " + from.getName();
+                body =  String.format("Hello %s,\nYou have a challenge request from %s.\nClick %s for details and approve!\n" +
+                                "Thanks,    From the wonderful people of Society\n",
+                        to.getName(), from.getName(), serviceUrl);
+                break;
+            case ACCEPTED:
+                subject = "Society Leagues - Challenge Request Accepted - " + from.getName();
+                body = String.format("Hello %s,\nYour challenge from %s has been accepted.\nSee %s for details.\n" +
+                                "Thanks,    From the wonderful people of Society\n",
+                                to.getName(), from.getName(), serviceUrl);
+
+                break;
+            case CANCELLED:
+                subject = "Society Leagues - Challenge Request Declined - " + from.getName();
+                body = String.format("Hello %s,\n%s has declined the challenge.\nClick %s for another challenge.\n" +
+                                "Thanks,    From the wonderful people of Society\n",
+                                to.getName(), from.getName(), serviceUrl);
+
+                break;
+            default:
+                logger.warn("Got email request for unknown status " + status);
+                return;
+
+        }
+
+        taskRunner = new EmailTaskRunner(emailSender,subject,body,to);
+        thread = new Thread(taskRunner);
+        thread.run();
     }
 
     @RequestMapping(value = "/challenge/request",

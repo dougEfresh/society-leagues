@@ -52,6 +52,8 @@ dependencies {
 
     compile 'org.codehaus.groovy:groovy-all:2.3.8'
 
+    compile('com.sun.mail:javax.mail:1.5.2')
+
     //Test
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'org.apache.httpcomponents:httpclient:4.4'
