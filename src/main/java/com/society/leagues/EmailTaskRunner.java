@@ -21,9 +21,7 @@ public class EmailTaskRunner implements Runnable {
     @Override
     public void run() {
         try {
-            Double ran = new Double(Math.random() * 10);
-            Integer wait = new Double(Math.ceil(ran)).intValue();
-            Thread.sleep(1000*60*wait);
+
             emailSender.email(to.getEmail(),subject,body);
         } catch (Throwable t) {
             logger.error(t.getLocalizedMessage(),t);

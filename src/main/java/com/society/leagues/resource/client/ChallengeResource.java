@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
@@ -29,6 +32,7 @@ public class ChallengeResource  {
     @Autowired SlotDao slotDao;
     @Autowired EmailSender emailSender;
     @Value("${service-url:http://leaguesdev.societybilliards.com}") String serviceUrl;
+    ScheduledThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(400);
 
     @RequestMapping(value = "/challenge/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<Status,List<UserChallengeGroup>> getChallenges(@PathVariable Integer userId) {
@@ -204,7 +208,7 @@ public class ChallengeResource  {
         if (user == null || c == null) {
             return Collections.emptyMap();
         }
-        User opponent = userDao.get(challenge.getChallenger().getUserId());
+        User opponent = userDao.get(c.getChallenger().getUserId());
         List<Challenge> toCancel = dao.get().stream().
                 filter(ch->ch.getSlot().getLocalDateTime().toLocalDate().isEqual(c.getSlot().getLocalDateTime().toLocalDate())).
                 filter(ch->ch.getChallenger().getUser().equals(c.getChallenger().getUser()) || ch.getOpponent().getUser().equals(c.getOpponent().getUser())).
@@ -253,8 +257,10 @@ public class ChallengeResource  {
         }
 
         taskRunner = new EmailTaskRunner(emailSender,subject,body,to);
-        thread = new Thread(taskRunner);
-        thread.run();
+        Double ran = new Double(Math.random() * 10);
+        Integer wait = new Double(Math.ceil(ran)).intValue();
+        logger.info("Adding email to " + to.getName() + " to the thread pool. Delay: " + wait);
+        threadPoolExecutor.schedule(taskRunner,wait, TimeUnit.MINUTES);
     }
 
     @RequestMapping(value = "/challenge/request",
