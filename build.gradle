@@ -9,7 +9,7 @@ buildscript {
       mavenLocal()
   }
   dependencies {
-    classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.2.RELEASE'
+    classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.3.RELEASE'
   }
 }
 
@@ -51,8 +51,8 @@ dependencies {
     compile 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
     compile 'org.codehaus.groovy:groovy-all:2.3.8'
-
-    compile('com.sun.mail:javax.mail:1.5.2')
+    compile 'uk.com.robust-it:cloning:1.9.1'
+    compile 'com.sun.mail:javax.mail:1.5.2'
 
     //Test
     testCompile 'org.springframework.boot:spring-boot-starter-test'

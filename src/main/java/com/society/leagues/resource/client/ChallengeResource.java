@@ -1,6 +1,7 @@
 package com.society.leagues.resource.client;
 
 import com.society.leagues.email.EmailSender;
+import com.society.leagues.email.EmailService;
 import com.society.leagues.email.EmailTaskRunner;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.DivisionType;
@@ -15,11 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("unused")
 @RequestMapping(value = "/api")
 @RestController
 public class ChallengeResource  {
@@ -31,7 +29,7 @@ public class ChallengeResource  {
     @Autowired SlotDao slotDao;
     @Autowired EmailSender emailSender;
     @Value("${service-url:http://leaguesdev.societybilliards.com}") String serviceUrl;
-    ScheduledThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(400);
+    @Autowired EmailService emailService;
 
     @RequestMapping(value = "/challenge/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<Status,List<UserChallengeGroup>> getChallenges(@PathVariable Integer userId) {
@@ -92,24 +90,6 @@ public class ChallengeResource  {
         return groups;
     }
 
-    private List<UserChallengeGroup> getSent(User u) {
-        return getUserChallengeGroups(u,Status.PENDING);
-    }
-
-    private List<UserChallengeGroup> getNeedNotify(User u) {
-        return getUserChallengeGroups(u,Status.NOTIFY);
-    }
-
-    private List<UserChallengeGroup> getPendingApproval(User u) {
-        List<Player> userPlayers = playerDao.getByUser(u);
-        List<UserChallengeGroup> challenges = getPendingChallenges(u);
-        List<UserChallengeGroup> sent = new ArrayList<>();
-        sent.addAll(challenges.stream().filter( p->p.getOpponent().equals(userPlayers.get(0))).collect(Collectors.toList()));
-        sent.addAll(challenges.stream().filter( p->p.getOpponent().equals(userPlayers.get(1))).collect(Collectors.toList()));
-        return sent;
-    }
-
-
     @RequestMapping(value = "/challenge/potentials/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserChallenge> getPotentials(@PathVariable Integer userId) {
         User u = userDao.get(userId);
@@ -128,21 +108,6 @@ public class ChallengeResource  {
                 return o1.getUser().getName().compareTo(o2.getUser().getName());
             }
         }).collect(Collectors.toList());
-    }
-
-    @RequestMapping(value = "/challenge/leaderBoard", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PlayerStats> leaderBoard() {
-        List<PlayerStats> stats = new ArrayList<>();
-        Map<Integer,PlayerStats> userStats = new HashMap<>();
-        List<Player> players = playerDao.get().stream().filter(p -> p.getDivision().isChallenge()).collect(Collectors.toList());
-
-        for (Player player : players) {
-            PlayerStats s = new PlayerStats();
-            //s.setUserId(player.getUserId());
-            userStats.put(player.getUserId(),s);
-        }
-
-        return null;
     }
 
     @RequestMapping(value = "/challenge/status/{userId}/{status}",
@@ -177,9 +142,14 @@ public class ChallengeResource  {
   public Map<Status,List<UserChallengeGroup>> cancel(@PathVariable Integer userId, @RequestBody UserChallengeGroup challengeGroup) {
         User user = userDao.get(userId);
         Challenge c = challengeGroup.getChallenges().get(0);
-        User opponent =userDao.get(dao.get(c.getId()).getOpponent().getUserId());
+        User opponent = userDao.get(dao.get(c.getId()).getOpponent().getUserId());
+        User challenger = userDao.get(dao.get(c.getId()).getChallenger().getUserId());
         dao.cancel(challengeGroup.getChallenges());
-        sendEmail(user,opponent,Status.CANCELLED);
+        if (user.equals(challenger)) {
+            sendEmail(opponent, challenger, Status.CANCELLED);
+        } else {
+            sendEmail(challenger, opponent, Status.CANCELLED);
+        }
       return getChallenges(userId);
     }
 
@@ -192,7 +162,7 @@ public class ChallengeResource  {
         Challenge c = challengeGroup.getChallenges().get(0);
         User opponent =userDao.get(dao.get(c.getId()).getOpponent().getUserId());
         dao.pending(challengeGroup.getChallenges());
-        sendEmail(user,opponent,Status.NOTIFY);
+        sendEmail(opponent,user,Status.NOTIFY);
         return getChallenges(userId);
     }
 
@@ -201,7 +171,6 @@ public class ChallengeResource  {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public Map<Status,List<UserChallengeGroup>> accept(@PathVariable Integer userId, @RequestBody Challenge challenge) {
-        Map<Status,List<UserChallengeGroup>> challengeGroups = getChallenges(userId);
         User user = userDao.get(userId);
         final Challenge c  = dao.get(challenge.getId());
         if (user == null || c == null) {
@@ -218,14 +187,13 @@ public class ChallengeResource  {
         }
         dao.cancel(toCancel);
         dao.acceptChallenge(c);
-        sendEmail(user,opponent,Status.ACCEPTED);
+        sendEmail(opponent, user, Status.ACCEPTED);
         return getChallenges(userId);
     }
 
     private void sendEmail(User to, User from, Status status) {
         String subject;
         String body;
-        Thread thread;
         EmailTaskRunner taskRunner;
 
         switch (status) {
@@ -254,12 +222,9 @@ public class ChallengeResource  {
                 return;
 
         }
-
-        taskRunner = new EmailTaskRunner(emailSender,subject,body,to);
-        Double ran = new Double(Math.random() * 10);
-        Integer wait = new Double(Math.ceil(ran)).intValue();
-        logger.info("Adding email to " + to.getName() + " to the thread pool. Delay: " + wait);
-        threadPoolExecutor.schedule(taskRunner,wait, TimeUnit.MINUTES);
+        logger.info("Creating an email to " + to.getName() + " subject:" + subject + " ");
+        taskRunner = new EmailTaskRunner(emailSender,subject,body,to.getEmail());
+        emailService.add(taskRunner);
     }
 
     @RequestMapping(value = "/challenge/request",
@@ -303,31 +268,6 @@ public class ChallengeResource  {
             dao.requestChallenge(challenge);
     }
 
-    private List<Challenge> createChallenge(List<Slot> slots,Player ch, Player op) {
-        if (ch == null || op == null) {
-            logger.error("Got a challenge request with either no challenger of opponent: " + ch + "  "+  op);
-            return Collections.emptyList();
-        }
-
-        List<Challenge> challenges = new ArrayList<>();
-        for (Slot slot : slots) {
-            Challenge c = new Challenge();
-            c.setOpponent(op);
-            c.setChallenger(ch);
-            c.setSlot(slot);
-            c.setStatus(Status.NOTIFY);
-            //TODO JSON View
-            Challenge response = new Challenge();
-            c = dao.requestChallenge(c);
-
-            response.setId(c.getId());
-            response.setStatus(c.getStatus());
-            response.setSlot(slotDao.get(c.getSlot().getId()));
-            challenges.add(response);
-        }
-        return challenges;
-    }
-
     @RequestMapping(value = "/challenge/slots/{date}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE,
@@ -341,33 +281,5 @@ public class ChallengeResource  {
         }).collect(Collectors.toList());
     }
 
-    public List<UserChallengeGroup> getPendingChallenges(User u) {
-        return getChallenges(u, Status.PENDING);
-    }
-
-    public List<UserChallengeGroup> getNeedNotifyChallenges(User u) {
-        return getChallenges(u, Status.NOTIFY);
-    }
-
-    public List<UserChallengeGroup> getAcceptedChallenges(User u) {
-        return getChallenges(u, Status.ACCEPTED);
-    }
-
-    private List<UserChallengeGroup> getChallenges(User u, Status status) {
-        List<Challenge> challenges = dao.getChallenges(u,status);
-        List<UserChallengeGroup> userChallengeGroups = new ArrayList<>(challenges.size());
-        for (Challenge challenge : challenges) {
-            userChallengeGroups.add(getGroupChallenge(challenge));
-        }
-        return userChallengeGroups;
-    }
-
-    private UserChallengeGroup getGroupChallenge(Challenge c) {
-        UserChallengeGroup userChallengeGroup = new UserChallengeGroup();
-        userChallengeGroup.setChallenger(c.getChallenger().getUser());
-        userChallengeGroup.setOpponent(c.getOpponent().getUser());
-
-        return userChallengeGroup;
-    }
 
 }

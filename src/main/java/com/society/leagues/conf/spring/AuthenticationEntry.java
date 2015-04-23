@@ -9,6 +9,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class AuthenticationEntry extends LoginUrlAuthenticationEntryPoint {
+
+    public AuthenticationEntry(String loginFormUrl) {
+        super(loginFormUrl);
+    }
+
     @Override
 	public void commence(final HttpServletRequest request, final HttpServletResponse response, final AuthenticationException authException) throws IOException, ServletException {
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");

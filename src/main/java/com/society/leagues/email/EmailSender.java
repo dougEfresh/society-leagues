@@ -22,6 +22,9 @@ public class EmailSender {
     @Value("${smtp-port:25}") int mailPort = 25;
     @Value("${mail-from:leagues@societybilliards.com}") String mailFrom;
     @Value("${email-override:}") String emailOverride;
+    @Value("${email-only:}") String emailOnly;
+    @Value("${email-disable:true}") boolean emailDisabled = true;
+
     private static Logger logger = LoggerFactory.getLogger(EmailSender.class);
 
     @PostConstruct
@@ -46,17 +49,31 @@ public class EmailSender {
             multipart.addBodyPart(bodyPart);
             message.setContent(multipart);
             logger.info(String.format("Sending message to %s subject:%s", recipient,subject));
-            Transport.send(message);
+            if (emailDisabled) {
+                logger.info("Email sending is disabled");
+                return;
+            }
+            if (emailOnly != null && !emailOnly.isEmpty()) {
+                String[] emails = emailOnly.split(",");
+                logger.info("Only sending to " + emailOnly);
+                for (String email : emails) {
+                    if (recipient.equalsIgnoreCase(email)) {
+                        Transport.send(message);
+                    }
+                }
+            } else {
+                Transport.send(message);
+            }
         } catch (Throwable t) {
             logger.error(t.getLocalizedMessage(),t);
         }
     }
+
     private Session getSession() {
         Properties properties = new Properties();
         properties.put("mail.smtp.host", mailHost);
         properties.put("mail.smtp.port", mailPort);
         return Session.getDefaultInstance(properties);
     }
-
 
 }

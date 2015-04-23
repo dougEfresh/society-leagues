@@ -1,6 +1,5 @@
 package com.society.leagues.email;
 
-import com.society.leagues.client.api.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,9 +8,9 @@ public class EmailTaskRunner implements Runnable {
     final EmailSender emailSender;
     final String subject;
     final String body;
-    final User to;
+    final String to;
 
-    public EmailTaskRunner(EmailSender emailSender, String subject, String body, User to) {
+    public EmailTaskRunner(EmailSender emailSender, String subject, String body,String to) {
         this.emailSender = emailSender;
         this.subject = subject;
         this.body = body;
@@ -21,10 +20,25 @@ public class EmailTaskRunner implements Runnable {
     @Override
     public void run() {
         try {
-
-            emailSender.email(to.getEmail(),subject,body);
+            emailSender.email(to,subject,body);
         } catch (Throwable t) {
             logger.error(t.getLocalizedMessage(),t);
         }
+    }
+
+    public EmailSender getEmailSender() {
+        return emailSender;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public String getTo() {
+        return to;
     }
 }

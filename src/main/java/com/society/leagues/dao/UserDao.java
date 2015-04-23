@@ -2,10 +2,7 @@ package com.society.leagues.dao;
 
 import com.society.leagues.client.api.UserClientApi;
 import com.society.leagues.client.api.admin.UserAdminApi;
-import com.society.leagues.client.api.domain.Challenge;
-import com.society.leagues.client.api.domain.Player;
-import com.society.leagues.client.api.domain.Status;
-import com.society.leagues.client.api.domain.User;
+import com.society.leagues.client.api.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 public class UserDao extends Dao<User> implements UserClientApi, UserAdminApi{
@@ -30,6 +25,7 @@ public class UserDao extends Dao<User> implements UserClientApi, UserAdminApi{
         user.setLastName(rs.getString("last_name"));
         user.setLogin(rs.getString("login"));
         user.setEmail(rs.getString("email"));
+        user.setRole(Role.valueOf(rs.getString("role")));
         return user;
     };
 
@@ -59,7 +55,6 @@ public class UserDao extends Dao<User> implements UserClientApi, UserAdminApi{
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
-                user.getPassword(),
                 user.getId()
         );
     }
@@ -94,8 +89,7 @@ public class UserDao extends Dao<User> implements UserClientApi, UserAdminApi{
             "role=?," +
             "first_name=?," +
             "last_name=?," +
-            "email=?," +
-            "passwd= ? " +
+            "email=?" +
             " where user_id = ?";
 
     @Override

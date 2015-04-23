@@ -1,5 +1,6 @@
 package com.society.leagues.dao;
 
+import com.rits.cloning.Cloner;
 import com.society.leagues.client.api.ClientApi;
 import com.society.leagues.client.api.domain.LeagueObject;
 import org.slf4j.Logger;
@@ -11,14 +12,20 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class Dao<Q extends LeagueObject> implements ClientApi<Q> {
-
-    @Autowired JdbcTemplate jdbcTemplate;
     static Logger logger = LoggerFactory.getLogger(Dao.class);
-    protected LeagueCache<Q> cache = new LeagueCache<>();
+    @Autowired JdbcTemplate jdbcTemplate;
+    @Autowired Cloner cloner;
+    protected LeagueCache<Q> cache;
+
+    @PostConstruct
+    public void init() {
+        cache = new LeagueCache<>(cloner);
+    }
 
     /**
      * The sql to get the LeagueObject Q

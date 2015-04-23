@@ -63,15 +63,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/api/authenticate**").permitAll()
                     .antMatchers("/api/logout**").permitAll()
                     .anyRequest().authenticated().and()
-                    .exceptionHandling().authenticationEntryPoint(new AuthenticationEntry()).and()
+                    .exceptionHandling().authenticationEntryPoint(new AuthenticationEntry("/index.html")).and()
                     .formLogin().permitAll().loginProcessingUrl("/api/authenticate").usernameParameter("username").passwordParameter("password")
                     .successHandler(loginHandler).failureHandler(fHandler).and()
                     .logout().logoutUrl("/api/logout").logoutSuccessHandler(logoutHandler).and()
-                    .rememberMe().key("_spring_security_remember_me").tokenValiditySeconds(14400 * 5).tokenRepository(tokenRepository());
+                    .rememberMe().key("_spring_security_remember_me").tokenValiditySeconds(86400 * 30).tokenRepository(tokenRepository());
         } else {
             http.csrf().disable().authorizeRequests().antMatchers("/**").permitAll().
                     anyRequest().authenticated().and()
-                    .exceptionHandling().authenticationEntryPoint(new AuthenticationEntry()).and()
+                    .exceptionHandling().authenticationEntryPoint(new AuthenticationEntry("/index.html")).and()
                     .formLogin().permitAll().loginProcessingUrl("/api/authenticate").usernameParameter("username").passwordParameter("password")
                     .successHandler(loginHandler).failureHandler(fHandler).and()
                     .logout().logoutUrl("/api/logout").logoutSuccessHandler(logoutHandler).and()

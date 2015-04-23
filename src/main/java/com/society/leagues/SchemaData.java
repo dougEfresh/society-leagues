@@ -85,6 +85,8 @@ public class SchemaData {
             user.addRole(Role.PLAYER);
             userApi.create(user);
         }
+
+        setEmails();
     }
 
     private void createChallengePlayers() {
@@ -320,10 +322,31 @@ public class SchemaData {
             return Handicap.EIGHT;
     }
 
+    public void setEmails() {
+        logger.info("Setting Emails");
+        Collection<User> users = userApi.get();
+
+        User user = users.stream().filter(u->u.getName().equalsIgnoreCase("doug rhee")).findFirst().get();
+        user.setEmail("doug.rhee@societybilliards.com");
+        userApi.modify(user);
+
+        user = users.stream().filter(u->u.getName().equalsIgnoreCase("doug chimento")).findFirst().get();
+        user.setEmail("dchimento@gmail.com");
+        userApi.modify(user);
+
+        user = users.stream().filter(u->u.getName().equalsIgnoreCase("Robert Perrego")).findFirst().get();
+        user.setEmail("rob.p@societybilliards.com");
+        userApi.modify(user);
+
+        user = users.stream().filter(u->u.getName().equalsIgnoreCase("Jared Pereira")).findFirst().get();
+        user.setEmail("jared@societybilliards.com");
+        userApi.modify(user);
+    }
+
     static String[] USERS = new String[]{
             "Doug,Rhee",
-            "Rob,P",
-            "Jared,P",
+            "Robert,Perrego",
+            "Jared,Pereira",
             "Doug,Chimento",
 
             "Akiko,Sugiyama",
