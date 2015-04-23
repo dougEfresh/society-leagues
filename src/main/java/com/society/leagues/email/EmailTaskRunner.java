@@ -1,4 +1,4 @@
-package com.society.leagues;
+package com.society.leagues.email;
 
 import com.society.leagues.client.api.domain.User;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package com.society.leagues;
+package com.society.leagues.email;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +39,7 @@ public class EmailSender {
             MimeMessage message = new MimeMessage(session);
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
             message.setSubject(subject);
+            message.setFrom(new InternetAddress(mailFrom));
             MimeBodyPart bodyPart = new MimeBodyPart();
             bodyPart.setText(body);
             Multipart multipart = new MimeMultipart();

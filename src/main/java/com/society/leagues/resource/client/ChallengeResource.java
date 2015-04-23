@@ -1,7 +1,7 @@
 package com.society.leagues.resource.client;
 
-import com.society.leagues.EmailSender;
-import com.society.leagues.EmailTaskRunner;
+import com.society.leagues.email.EmailSender;
+import com.society.leagues.email.EmailTaskRunner;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.dao.*;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
