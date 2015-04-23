@@ -238,6 +238,8 @@ public class ChallengeResource  {
             if (request.isNine())
                 createChallenge(u,opponent,DivisionType.NINE_BALL_CHALLENGE,slot);
         }
+
+        sendEmail(opponent,u,Status.NOTIFY);
         return getChallenges(u.getId());
     }
 
