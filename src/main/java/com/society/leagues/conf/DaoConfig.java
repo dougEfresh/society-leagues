@@ -21,7 +21,7 @@ public class DaoConfig {
     String username;
     @Value("${db-password:}")
     String password;
-    @Value("${db:league}")
+    @Value("${db:leagues}")
     String db;
     @Value("${embedded:false}")
     boolean useEmbedded = false;

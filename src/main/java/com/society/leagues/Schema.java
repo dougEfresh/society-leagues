@@ -11,7 +11,7 @@ import java.lang.reflect.Field;
 @Component
 @SuppressWarnings("unused")
 public class Schema {
-    @Value("${embedded:true}")
+    @Value("${embedded:false}")
     boolean embedded;
     @Autowired JdbcTemplate jdbcTemplate;
     @Autowired SchemaData schemaData;

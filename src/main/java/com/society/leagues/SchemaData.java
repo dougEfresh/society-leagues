@@ -22,7 +22,7 @@ public class SchemaData {
 
     public static boolean generated = false;
     private static Logger logger = LoggerFactory.getLogger(SchemaData.class);
-    @Value("${generate}")
+    @Value("${generate:false}")
     boolean generate = false;
 
     @Autowired
