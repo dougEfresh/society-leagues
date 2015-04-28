@@ -1,5 +1,6 @@
 package com.society.leagues.client.api.domain.division;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.society.leagues.client.api.domain.LeagueObject;
 
 import javax.validation.constraints.NotNull;
@@ -36,5 +37,11 @@ public class Division extends LeagueObject {
 
     public boolean isChallenge() {
         return this.getType() == DivisionType.NINE_BALL_CHALLENGE || this.getType() == DivisionType.EIGHT_BALL_CHALLENGE;
+    }
+
+    @JsonIgnore
+    @Override
+    public Integer getId() {
+        return super.getId();
     }
 }

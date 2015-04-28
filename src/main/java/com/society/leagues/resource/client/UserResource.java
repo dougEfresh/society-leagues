@@ -1,5 +1,6 @@
 package com.society.leagues.resource.client;
 
+import com.society.leagues.adapters.UserAdapter;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.dao.*;
 import org.slf4j.Logger;
@@ -45,13 +46,23 @@ public class UserResource  {
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Collection<User> get() {
-        return  dao.get().stream().sorted(new Comparator<User>() {
+    public Collection<UserAdapter> get() {
+        List<User> users = dao.get().stream().sorted(new Comparator<User>() {
             @Override
             public int compare(User o1, User o2) {
                 return o1.getName().compareTo(o2.getName());
             }
-        }).collect(Collectors.toList());
+        }).filter(u -> !(
+                        u.getName().contains("FORFEIT") || u.getName().contains("BYE")  || u.getName().contains("HANDICAP")
+                )
+        ).collect(Collectors.toList());
+
+        List<UserAdapter> userAdapters = new ArrayList<>();
+        for (User user : users) {
+            UserAdapter adapter = new UserAdapter(user,playerDao.getByUser(user));
+            userAdapters.add(adapter);
+        }
+        return userAdapters;
     }
 
     @RequestMapping(value = "/results", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

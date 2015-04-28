@@ -20,16 +20,20 @@ from
 where season_year != 2015
 group by m.season_id,m.league_id;
 
+update season set start_date= '2014-01-14' where season_id = '2013,Summer,9-ball';
+update season set start_date= '2013-05-08' where name = '2014,Winter,Mixed';
 
-insert into leagues.division(league_type,division_type)
+
+
+insert into leagues.division(division_type,league_type)
 VALUES ('EIGHT_BALL_WEDNESDAYS','TEAM');
-insert into leagues.division(league_type,division_type)
+insert into leagues.division(division_type,league_type)
 VALUES ('EIGHT_BALL_THURSDAYS','TEAM');
-insert into leagues.division(league_type,division_type)
+insert into leagues.division(division_type,league_type)
 VALUES ('NINE_BALL_TUESDAYS','TEAM');
-insert into leagues.division(league_type,division_type)
+insert into leagues.division(division_type,league_type)
 VALUES ('EIGHT_BALL_CHALLENGE','INDIVIDUAL');
-insert into leagues.division(league_type,division_type)
+insert into leagues.division(division_type,league_type)
 VALUES ('NINE_BALL_CHALLENGE','INDIVIDUAL');
 
 insert into leagues.team_match (team_match_id,season_id,home_team_id,away_team_id,division_id,match_date)

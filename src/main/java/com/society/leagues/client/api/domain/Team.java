@@ -1,5 +1,7 @@
 package com.society.leagues.client.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -32,6 +34,7 @@ public class Team extends LeagueObject {
         this.name = name;
     }
 
+    @JsonIgnore
     public Date getCreated() {
         return created;
     }
@@ -40,6 +43,7 @@ public class Team extends LeagueObject {
         this.created = created;
     }
 
+    @JsonIgnore
     public TeamStatus getStatus() {
         return status;
     }
@@ -71,5 +75,11 @@ public class Team extends LeagueObject {
                 "name='" + name + '\'' +
                 ", id=" + id +
                 '}';
+    }
+
+    @JsonIgnore
+    @Override
+    public Integer getId() {
+        return super.getId();
     }
 }

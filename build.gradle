@@ -28,7 +28,7 @@ bootRun {
         args project.args.split('\\s+')
     }
 
-    jvmArgs = [ '-Dsecurity-disable=true','-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005', '-Dembedded=true' ,
+    jvmArgs = [ '-Dsecurity-disable=true','-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005', '-Dembedded=true' ,'-Dgenerate=true',
     //jvmArgs = [ '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005', '-Dembedded=true' ,
                 '-Xmx512m', '-Dserver.port=8081']
 }

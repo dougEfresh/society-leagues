@@ -22,7 +22,10 @@ public class SeasonDao extends Dao<Season> implements SeasonClientApi,SeasonAdmi
         season.setName(rs.getString("name"));
         season.setId(rs.getInt("season_id"));
         season.setRounds(rs.getInt("rounds"));
-        season.setSeasonStatus(Status.valueOf(rs.getString("season_status")));
+        String status = rs.getString("season_status");
+        if (status != null && !status.isEmpty()) {
+            season.setSeasonStatus(Status.valueOf(status));
+        }
         return season;
     };
 
