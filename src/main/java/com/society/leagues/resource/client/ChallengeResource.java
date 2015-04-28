@@ -89,7 +89,17 @@ public class ChallengeResource  {
     public List<UserChallenge> getPotentials(@PathVariable Integer userId) {
         User u = userDao.get(userId);
         List<UserChallenge> potentials = new ArrayList<>();
-        userDao.get().stream().filter(user -> !user.equals(u)).forEach(user -> potentials.add(new UserChallenge(user)));
+        List<User> users = userDao.get().stream().filter(user -> !user.equals(u)).collect(Collectors.toList());
+        for (User user : users) {
+            List<Player> players = playerDao.getByUser(user);
+            for (Player player : players) {
+                if (player.getDivision().isChallenge()) {
+                    potentials.add(new UserChallenge(player.getUser()));
+                    break;
+                }
+            }
+        }
+
         potentials.stream().forEach(
                 user -> user.setNineBallPlayer(playerDao.getByUser(user.getUser()).stream().filter(p -> p.getDivision().getType() == DivisionType.NINE_BALL_CHALLENGE).findFirst().orElse(null))
         );
