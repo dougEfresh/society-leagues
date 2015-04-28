@@ -6,10 +6,12 @@ import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.dao.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,6 +27,11 @@ public class StatsResource {
     @Autowired TeamResultDao teamResultDao;
     @Autowired WebMapCache<Map<Integer,UserStats>> cache;
 
+    @PostConstruct
+    public void init() {
+        getStats();
+    }
+
     @RequestMapping(value = "/stats", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<Integer,UserStats> getStats() {
         if (!cache.isEmpty()) {
@@ -36,6 +43,14 @@ public class StatsResource {
         }
         cache.setCache(stats);
         return cache.getCache();
+    }
+
+    @RequestMapping(value = "/stats/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserStats getStats(@PathVariable Integer userId) {
+        if (!cache.isEmpty()) {
+            cache.setCache(getStats());
+        }
+        return  cache.getCache().get(userId);
     }
 
     public UserStats getUserStats(User user) {
