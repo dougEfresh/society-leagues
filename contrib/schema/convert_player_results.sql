@@ -11,7 +11,7 @@ select r.result_id,r.match_id,r.player_id,r.team_id, games_won,r.match_number
  from result_ind r
 join match_schedule m on r.match_id=m.match_id and r.team_id=m.home_team_id
 join leagues.team_match tm on tm.team_match_id=r.match_id
-join leagues.division d on d.league_type = 'NINE_BALL_TUESDAYS' 
+join leagues.division d on d.division_type = 'NINE_BALL_TUESDAYS'
 join leagues.player p on p.user_id=r.player_id and p.season_id = m.season_id and r.team_id=p.team_id and d.division_id = p.division_id
 
  where m.league_id = 1 
