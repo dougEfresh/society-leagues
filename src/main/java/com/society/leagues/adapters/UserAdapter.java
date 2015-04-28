@@ -59,7 +59,7 @@ public class UserAdapter {
         return user.getEmail();
     }
 
-    Set<Division> getDivisions() {
+    public Set<Division> getDivisions() {
         return divisions;
     }
 
