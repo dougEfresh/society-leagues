@@ -2,6 +2,7 @@ package com.society.leagues.resource.client;
 
 import com.society.leagues.adapters.UserAdapter;
 import com.society.leagues.client.api.domain.*;
+import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.dao.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,6 @@ public class UserResource  {
     public User get(Principal principal) {
         return  get(principal.getName());
     }
-
 
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public User get(@PathVariable Integer id) {
@@ -64,6 +64,21 @@ public class UserResource  {
         }
         return userAdapters;
     }
+
+    @RequestMapping(value = "/users/challenge", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Collection<UserAdapter> getChallengeUsers() {
+        List<UserAdapter> userAdapters = new ArrayList<>();
+        for (UserAdapter userAdapter : get()) {
+            for(Division d : userAdapter.getDivisions()) {
+                if (d.isChallenge()) {
+                    userAdapters.add(userAdapter);
+                    break;
+                }
+            }
+        }
+        return userAdapters;
+    }
+
 
     @RequestMapping(value = "/results", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Collection<PlayerResult> getResults(Principal principal) {
