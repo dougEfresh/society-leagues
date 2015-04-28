@@ -34,7 +34,7 @@ public class SlotDao extends Dao<Slot> {
         return slot;
     };
 
-    final String CREATE = "INSERT INTO SLOT(slot_time,allocated) VALUES(?,?)";
+    final String CREATE = "INSERT INTO slot(slot_time,allocated) VALUES(?,?)";
 
     public List<Slot> get(LocalDateTime date) {
         List<Slot> slots = get().stream().filter(s-> s.getLocalDateTime().toLocalDate().isEqual(date.toLocalDate())).collect(Collectors.toList());
