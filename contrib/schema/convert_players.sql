@@ -24,10 +24,11 @@ end) as hcd
 from result_ind r  join match_schedule m on m.match_id=r.match_id
 join player p on r.player_id = p.player_id
 JOIN handicap_display hc_9 ON hc_9.hcd_id=p.hc_9
-JOIN leagues.division d on d.league_type = 'NINE_BALL_TUESDAYS' 
-  join season s on s.season_id=m.season_id 
- join season_name sn on s.season_number=sn.sn_id
-where m.league_id = 1 and season_year != 2015;
+JOIN leagues.division d on d.division_type = 'NINE_BALL_TUESDAYS' 
+join season s on s.season_id=m.season_id 
+join season_name sn on s.season_number=sn.sn_id
+left join leagues.player lp on lp.user_id = p.player_id and lp.season_id=s.season_id and d.division_id=lp.division_id and lp.team_id =  r.team_id 
+where m.league_id = 1 and lp.user_id is null;
 
 
 
@@ -57,10 +58,12 @@ end) as hcd
 from result_ind r  join match_schedule m on m.match_id=r.match_id
 join player p on r.player_id = p.player_id
 JOIN handicap_display hc_8B ON hc_8B.hcd_id=p.hc_8Begin
-JOIN leagues.division d on d.league_type = 'EIGHT_BALL_WEDNESDAYS' 
+JOIN leagues.division d on d.division_type = 'EIGHT_BALL_WEDNESDAYS' 
   join season s on s.season_id=m.season_id 
  join season_name sn on s.season_number=sn.sn_id
-where m.league_id = 6 and season_year != 2015
+left join leagues.player lp on lp.user_id = p.player_id and lp.season_id=s.season_id and d.division_id=lp.division_id and lp.team_id =  r.team_id 
+where m.league_id = 6 and lp.user_id is null;
+
 ;
 
 insert leagues.player (season_id,division_id,user_id,team_id,handicap)
@@ -89,8 +92,8 @@ end) as hcd
 from result_ind r  join match_schedule m on m.match_id=r.match_id
 join player p on r.player_id = p.player_id
 JOIN handicap_display hc_8B ON hc_8B.hcd_id=p.hc_8Begin
-JOIN leagues.division d on d.league_type = 'EIGHT_BALL_THURSDAYS' 
-  join season s on s.season_id=m.season_id 
- join season_name sn on s.season_number=sn.sn_id
-where m.league_id = 2 and season_year != 2015
-;
+JOIN leagues.division d on d.division_type = 'EIGHT_BALL_THURSDAYS' 
+join season s on s.season_id=m.season_id 
+join season_name sn on s.season_number=sn.sn_id
+left join leagues.player lp on lp.user_id = p.player_id and lp.season_id=s.season_id and d.division_id=lp.division_id and lp.team_id =  r.team_id 
+where m.league_id = 2 and lp.user_id is null;

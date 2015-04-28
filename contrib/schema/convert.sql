@@ -17,12 +17,10 @@ from
  join season s on s.season_id=m.season_id 
  join season_name sn on s.season_number=sn.sn_id
  join league l on m.league_id=l.league_id 
-where season_year != 2015
 group by m.season_id,m.league_id;
 
-update season set start_date= '2014-01-14' where season_id = '2013,Summer,9-ball';
+update season set start_date= '2014-01-14' where name = '2013,Summer,9-ball';
 update season set start_date= '2013-05-08' where name = '2014,Winter,Mixed';
-
 
 
 insert into leagues.division(division_type,league_type)
@@ -39,13 +37,13 @@ VALUES ('NINE_BALL_CHALLENGE','INDIVIDUAL');
 insert into leagues.team_match (team_match_id,season_id,home_team_id,away_team_id,division_id,match_date)
 select match_id,m.season_id,home_team_id,visit_team_id,d.division_id,match_start_date
  from match_schedule m join leagues.season s on  m.season_id=s.season_id
- join leagues.division d on d.league_type =
+ join leagues.division d on d.division_type =
  (case 
  when s.name like '%9-Ball%' then 'NINE_BALL_TUESDAYS' 
  when s.name like '%Thurs%' then  'EIGHT_BALL_THURSDAYS' 
  when s.name like '%Wed%' then 'EIGHT_BALL_WEDNESDAYS' 
-end)
-where s.name  not like '%Mixed%' and s.name not like '%2015%' and s.name not like '%Straigh%';
+ end)
+where s.name like '%2015%' and s.name not like '%MIXED%';
 
 insert into leagues.team_result (team_match_id,home_racks,away_racks)
 select home.match_id,home.racks as home_racks,away.racks as away_racks
@@ -62,6 +60,8 @@ sum(games_won) as racks  from
 group by m.match_id,m.visit_team_id) away 
 on home.match_id=away.match_id 
 join leagues.team_match tm on home.match_id=tm.team_match_id
+left join leagues.team_result tr on tm.team_match_id = tr.team_match_id
+where tr.team_match_id is null
 ;
 
 insert leagues.player (season_id,division_id,user_id,team_id,handicap)
