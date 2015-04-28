@@ -1,5 +1,6 @@
 package com.society.leagues.resource.client;
 
+import com.society.leagues.WebMapCache;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.dao.*;
@@ -22,14 +23,19 @@ public class StatsResource {
     @Autowired PlayerResultDao playerResultDao;
     @Autowired ChallengeDao challengeDao;
     @Autowired TeamResultDao teamResultDao;
+    @Autowired WebMapCache<Map<Integer,UserStats>> cache;
 
     @RequestMapping(value = "/stats", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<Integer,UserStats> getStats() {
+        if (!cache.isEmpty()) {
+            return cache.getCache();
+        }
         Map<Integer,UserStats>  stats = new HashMap<>();
         for (User user : dao.get()) {
             stats.put(user.getId(),getUserStats(user));
         }
-        return stats;
+        cache.setCache(stats);
+        return cache.getCache();
     }
 
     public UserStats getUserStats(User user) {
