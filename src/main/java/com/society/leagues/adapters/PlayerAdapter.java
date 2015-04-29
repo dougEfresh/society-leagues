@@ -33,4 +33,6 @@ public class PlayerAdapter {
         return player.getEnd() == null ? Status.INACTIVE : Status.ACTIVE;
     }
 
+    public Integer getUser() { return player.getUserId(); }
+
 }

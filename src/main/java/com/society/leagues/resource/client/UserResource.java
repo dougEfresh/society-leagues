@@ -2,7 +2,6 @@ package com.society.leagues.resource.client;
 
 import com.society.leagues.adapters.UserAdapter;
 import com.society.leagues.client.api.domain.*;
-import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.dao.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,24 +28,17 @@ public class UserResource  {
     private static Logger logger = LoggerFactory.getLogger(UserResource.class);
 
     @RequestMapping(value = "/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public User get(Principal principal) {
+    public UserAdapter get(Principal principal) {
         return  get(principal.getName());
     }
 
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public User get(@PathVariable Integer id) {
-        if ( id == null || id == 0 ) {
-            User u = new User();
-            u.setFirstName("");
-            u.setLastName("");
-            u.setId(0);
-            return u;
-        }
-        return dao.get(id);
+    public UserAdapter get(@PathVariable Integer id) {
+        return get().get(id);
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Collection<UserAdapter> get() {
+    public Map<Integer,UserAdapter> get() {
         List<User> users = dao.get().stream().sorted(new Comparator<User>() {
             @Override
             public int compare(User o1, User o2) {
@@ -57,36 +49,17 @@ public class UserResource  {
                 )
         ).collect(Collectors.toList());
 
-        List<UserAdapter> userAdapters = new ArrayList<>();
+        Map<Integer,UserAdapter> userAdapters = new HashMap<>();
         for (User user : users) {
             UserAdapter adapter = new UserAdapter(user,playerDao.getByUser(user));
-            userAdapters.add(adapter);
+            userAdapters.put(user.getId(),adapter);
         }
         return userAdapters;
     }
 
-    @RequestMapping(value = "/users/challenge", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Collection<UserAdapter> getChallengeUsers() {
-        List<UserAdapter> userAdapters = new ArrayList<>();
-        for (UserAdapter userAdapter : get()) {
-            for(Division d : userAdapter.getDivisions()) {
-                if (d.isChallenge()) {
-                    userAdapters.add(userAdapter);
-                    break;
-                }
-            }
-        }
-        return userAdapters;
-    }
-
-
-    @RequestMapping(value = "/results", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Collection<PlayerResult> getResults(Principal principal) {
-        return playerResultDao.get();
-    }
-
-    public User get(String login) {
-        return dao.get(login);
+    public UserAdapter get(String login) {
+        User u = dao.get(login);
+        return get(u.getId());
     }
 
 }

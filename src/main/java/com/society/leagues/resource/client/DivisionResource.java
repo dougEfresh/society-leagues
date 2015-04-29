@@ -21,7 +21,7 @@ public class DivisionResource {
     @Autowired DivisionDao divisionDao;
 
     @RequestMapping(value = "/divisions", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<Integer,Division> teams() {
+    public Map<Integer,Division> divisions() {
         Map<Integer,Division> divisions = new HashMap<>();
         for (Division d: divisionDao.get()) {
             divisions.put(d.getId(),d);

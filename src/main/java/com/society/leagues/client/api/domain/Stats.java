@@ -40,20 +40,6 @@ public class Stats {
         this.matches = matches;
     }
 
-    public double getPercentage() {
-        if ( matches == 0 )
-            return 0;
-
-        return new Double(loses)/new Double(matches);
-    }
-
-    public double getRackPercentage() {
-        if ( matches == 0 )
-            return 0;
-        return new Double(racksLost)/new Double(racksWon+racksLost);
-    }
-
-
     public void addWin(int racks, int racksLost) {
         wins++;
         matches++;

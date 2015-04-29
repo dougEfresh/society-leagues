@@ -2,6 +2,8 @@ package com.society.leagues.resource.client;
 
 import com.society.leagues.adapters.SeasonAdapter;
 import com.society.leagues.client.api.domain.Player;
+import com.society.leagues.client.api.domain.Season;
+import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.dao.DivisionDao;
 import com.society.leagues.dao.PlayerDao;
 import com.society.leagues.dao.SeasonDao;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +37,6 @@ public class SeasonResource {
             seasons.get(player.getSeason().getId()).addPlayer(player);
             seasons.get(player.getSeason().getId()).addTeam(player.getTeam());
         }
-
         return seasons;
     }
 }

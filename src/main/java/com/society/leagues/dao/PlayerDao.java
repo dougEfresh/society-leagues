@@ -46,7 +46,7 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
     };
 
     public List<Player> getByUser(User user) {
-        List<Player> players = get().stream().filter(p -> p.getUser().equals(user)).collect(Collectors.toList());
+        List<Player> players = get().stream().filter(p -> p.getUser().getId().equals(user.getId())).collect(Collectors.toList());
         return players;
     }
 

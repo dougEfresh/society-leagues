@@ -20,7 +20,7 @@ public class PlayerResource {
     @Autowired PlayerDao playerDao;
 
     @RequestMapping(value = "/players", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<Integer,PlayerAdapter> teams() {
+    public Map<Integer,PlayerAdapter> players() {
         Map<Integer,PlayerAdapter> adapter = new HashMap<>();
         for (Player player: playerDao.get()) {
             adapter.put(player.getId(), new PlayerAdapter(player));

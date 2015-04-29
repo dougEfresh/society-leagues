@@ -29,7 +29,7 @@ public class StatsResource {
 
     @PostConstruct
     public void init() {
-        getStats();
+        //getStats();
     }
 
     @RequestMapping(value = "/stats", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -47,10 +47,7 @@ public class StatsResource {
 
     @RequestMapping(value = "/stats/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserStats getStats(@PathVariable Integer userId) {
-        if (!cache.isEmpty()) {
-            cache.setCache(getStats());
-        }
-        return  cache.getCache().get(userId);
+        return getUserStats(dao.get(userId));
     }
 
     public UserStats getUserStats(User user) {
@@ -59,7 +56,6 @@ public class StatsResource {
         for (Handicap handicap : Handicap.values()) {
             userStats.addHandicapStats(handicap,playerStats(user,handicap));
         }
-
         return userStats;
     }
 

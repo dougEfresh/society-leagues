@@ -2,6 +2,7 @@ package com.society.leagues.adapters;
 
 import com.society.leagues.client.api.domain.Player;
 import com.society.leagues.client.api.domain.Season;
+import com.society.leagues.client.api.domain.Status;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.division.Division;
 
@@ -51,4 +52,7 @@ public class SeasonAdapter {
         teams.add(team.getId());
     }
 
+    public boolean current() {
+        return this.season.getSeasonStatus() == Status.ACTIVE;
+    }
 }
