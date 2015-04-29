@@ -1,7 +1,9 @@
 package com.society.leagues.resource.client;
 
+import com.society.leagues.adapters.PlayerResultAdapter;
 import com.society.leagues.adapters.TeamMatchAdapter;
 import com.society.leagues.adapters.TeamResultAdapter;
+import com.society.leagues.client.api.domain.PlayerResult;
 import com.society.leagues.client.api.domain.TeamResult;
 import com.society.leagues.dao.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ public class ResultResource {
     @Autowired ChallengeDao challengeDao;
     @Autowired TeamResultDao teamResultDao;
 
+
     @RequestMapping(value = "/result/teams/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TeamResultAdapter> getTeamResults(@PathVariable Integer seasonId) {
         List<TeamResultAdapter> adapter = new ArrayList<>(100);
@@ -41,6 +44,15 @@ public class ResultResource {
         }
 
         return adapter;
+    }
+
+
+    @RequestMapping(value = "/result/players/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PlayerResultAdapter> getPlayerResults(@PathVariable Integer seasonId) {
+        List<PlayerResult> results = playerResultDao.get().stream().filter(r->r.getTeamMatch().getSeason().getId().equals(seasonId)).collect(Collectors.toList());
+        List<PlayerResultAdapter> playerResultAdapters = new ArrayList<>(results.size());
+        playerResultAdapters.addAll(results.stream().map(PlayerResultAdapter::new).collect(Collectors.toList()));
+        return playerResultAdapters;
     }
 
 }
