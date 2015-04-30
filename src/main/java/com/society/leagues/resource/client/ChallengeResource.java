@@ -58,6 +58,7 @@ public class ChallengeResource  {
                 group.setStatus(status);
             }
         }
+	c
         return challenges;
     }
 
@@ -94,9 +95,11 @@ public class ChallengeResource  {
             List<Player> players = playerDao.getByUser(user);
             for (Player player : players) {
                 if (player.getDivision().isChallenge()) {
-                    potentials.add(new UserChallenge(player.getUser()));
-                    break;
-                }
+                     if (player.getEnd() == null && player.getDivision().isChallenge()) {
+                    	potentials.add(new UserChallenge(player.getUser()));
+                    	break;
+                	}
+		}
             }
         }
 
