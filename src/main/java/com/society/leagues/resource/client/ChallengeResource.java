@@ -58,7 +58,6 @@ public class ChallengeResource  {
                 group.setStatus(status);
             }
         }
-	c
         return challenges;
     }
 
