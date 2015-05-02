@@ -36,45 +36,9 @@ public class DataResource {
         Map<String,Object> data = new HashMap<>();
         data.put("divisions",divisionResource.divisions());
         data.put("seasons",seasonResource.getSeasons());
-        data.put("players",playerResource.players());
         data.put("teams",teamResource.teams());
         data.put("users",userResource.get());
-
-        Map<Integer,List<TeamMatchAdapter>> currentMatches = new HashMap<>();
-
-        List<SeasonAdapter> season = seasonResource.getSeasons().values().stream().
-                filter(s -> s.current()).
-                collect(Collectors.toList());
-        List<SeasonAdapter> currentSeasons =  new ArrayList<>();
-
-        //Exclude Challenge
-        for (SeasonAdapter currentSeason : season) {
-            Division d = divisionDao.get(currentSeason.getDivision());
-            if (!d.isChallenge()) {
-                currentSeasons.add(currentSeason);
-            }
-        }
-
-        for (SeasonAdapter currentSeason : currentSeasons) {
-            List<TeamMatchAdapter> matchAdapters = matchResource.getTeamMatches(currentSeason.getSeason().getId());
-            currentMatches.put(currentSeason.getSeason().getId(),matchAdapters);
-        }
-        data.put("currentTeamMatches",currentMatches);
-
-        Map<Integer,List<TeamResultAdapter>> currentTeamResults = new HashMap<>();
-        for (SeasonAdapter currentSeason : currentSeasons) {
-            List<TeamResultAdapter> adapters = resultResource.getTeamResults(currentSeason.getSeason().getId());
-            currentTeamResults.put(currentSeason.getSeason().getId(),adapters);
-        }
-        data.put("currentTeamResults",currentTeamResults);
-
-        Map<Integer,List<PlayerResultAdapter>> currentPlayerResults = new HashMap<>();
-        for (SeasonAdapter currentSeason : currentSeasons) {
-            currentPlayerResults.put(currentSeason.getSeason().getId(),resultResource.getPlayerResults(currentSeason.getSeason().getId()));
-        }
-
-        data.put("currentPlayerResults",currentPlayerResults);
-
+        data.put("results",resultResource.getPlayerResults());
         return data;
     }
 }

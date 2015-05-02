@@ -4,6 +4,9 @@ import com.society.leagues.client.api.SeasonClientApi;
 import com.society.leagues.client.api.admin.SeasonAdminApi;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Status;
+import com.society.leagues.client.api.domain.division.Division;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -11,10 +14,12 @@ import org.springframework.stereotype.Component;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class SeasonDao extends Dao<Season> implements SeasonClientApi,SeasonAdminApi {
-
+    @Autowired DivisionDao divisionDao;
     public static RowMapper<Season> rowMapper = (rs, rowNum) -> {
         Season season = new Season();
         season.setStartDate(rs.getDate("start_date"));
@@ -28,6 +33,19 @@ public class SeasonDao extends Dao<Season> implements SeasonClientApi,SeasonAdmi
         }
         return season;
     };
+
+    public List<Season> getActive() {
+        return get().stream().filter(s->s.getSeasonStatus() == Status.ACTIVE).collect(Collectors.toList());
+    }
+
+    public Division getDivision(Season season) {
+        try {
+            Integer dId = jdbcTemplate.queryForObject("SELECT DISTINCT division_id FROM player WHERE season_id = ?", Integer.class, season.getId());
+            return divisionDao.get(dId);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
 
     @Override
     public Season create(Season season) {

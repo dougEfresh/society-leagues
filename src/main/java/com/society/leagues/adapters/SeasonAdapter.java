@@ -1,24 +1,20 @@
 package com.society.leagues.adapters;
 
-import com.society.leagues.client.api.domain.Player;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Status;
-import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.division.Division;
-
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public class SeasonAdapter {
 
     Season season;
     Integer division;
-    Set<Integer> teams = new HashSet<>();
-    Set<Integer> players = new HashSet<>();
+    List<TeamMatchAdapter> teamMatchAdapters;
 
-    public SeasonAdapter(Season season, Division division) {
+    public SeasonAdapter(Season season, Division division, List<TeamMatchAdapter> teamMatchAdapters) {
         this.season = season;
-        this.division = division.getId();
+        this.division = division == null ? 0 : division.getId();
+        this.teamMatchAdapters = teamMatchAdapters;
     }
 
     public SeasonAdapter() {
@@ -36,23 +32,11 @@ public class SeasonAdapter {
         return division;
     }
 
-    public Set<Integer> getTeams() {
-        return teams;
-    }
-
-    public Set<Integer> getPlayers() {
-        return players;
-    }
-
-    public void addPlayer(Player player) {
-        players.add(player.getId());
-    }
-
-    public void addTeam(Team team) {
-        teams.add(team.getId());
-    }
-
     public boolean current() {
         return this.season.getSeasonStatus() == Status.ACTIVE;
+    }
+
+    public List<TeamMatchAdapter> getTeamMatches() {
+        return teamMatchAdapters;
     }
 }
