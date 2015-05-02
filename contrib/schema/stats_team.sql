@@ -46,8 +46,4 @@ team_home_stats_vw home
 join team_away_stats_vw away 
 on home.team_id=away.team_id and home.season_id=away.season_id 
 group by  home.team_id,home.season_id,away.team_id,away.season_id
-
-
-
-
-
+;
