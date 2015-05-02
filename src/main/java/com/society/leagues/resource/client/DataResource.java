@@ -1,5 +1,6 @@
 package com.society.leagues.resource.client;
 
+import com.society.leagues.WebMapCache;
 import com.society.leagues.dao.DivisionDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -22,9 +23,13 @@ public class DataResource {
     @Autowired ResultResource resultResource;
     @Autowired DivisionDao divisionDao;
     @Autowired StatsResource statsResource;
+    @Autowired WebMapCache<Map<String,Object>> dataCache;
 
     @RequestMapping(value = "/data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String,Object> data() {
+        if (!dataCache.isEmpty()) {
+            return dataCache.getCache();
+        }
         Map<String,Object> data = new HashMap<>();
         data.put("divisions",divisionResource.divisions());
         data.put("seasons",seasonResource.getSeasons());
@@ -33,6 +38,7 @@ public class DataResource {
         data.put("results",resultResource.getPlayerResults());
         data.put("stats",statsResource.getStats());
         data.put("teamStats",statsResource.getTeamStats());
+        dataCache.setCache(data);
         return data;
     }
 }

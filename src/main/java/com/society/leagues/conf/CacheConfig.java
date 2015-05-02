@@ -23,4 +23,9 @@ public class CacheConfig {
         return new WebListCache<>(Collections.emptyList());
     }
 
+    @Bean
+    public WebMapCache<Map<String,Object>> dataCache() {
+        return new WebMapCache<>(Collections.emptyMap());
+    }
+
 }
