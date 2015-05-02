@@ -1,4 +1,4 @@
-alter view player_home_result_vw
+create or replace view player_home_result_vw
 as
  select r.player_home_id, p.user_id,
      case when home_racks > away_racks then 1 else 0 end as win, 
@@ -10,7 +10,7 @@ as
 
 ;
 
-alter view player_away_result_vw
+create or replace view player_away_result_vw
 as
  select player_away_id, p.user_id,
      case when away_racks > home_racks then 1 else 0 end as win, 
@@ -46,7 +46,7 @@ group by player_away_id,user_id
 ;
 
 
-create view user_stats_vw as
+create or replace view user_stats_vw as
 select home.user_id,home.player_home_id as player_id,
        home.matches + away.matches as matches, 
        home.wins + away.wins  as wins , 
@@ -58,16 +58,16 @@ join user_stats_away_vw away
 on home.user_id=away.user_id and home.player_home_id=away.player_away_id
 ;
 
-create view user_stats_all_vw as
+create or replace view user_stats_all_vw as
   select user_id,sum(matches) as matches ,sum(wins) as wins ,sum(loses) as loses , sum(racks_for) as racks_for , sum(racks_against)  as racks_agains from user_stats_vw group by user_id
  ;
 
-create view user_stats_season_vw as
+create or replace view user_stats_season_vw as
   select s.user_id,season_id, sum(matches) as matches ,sum(wins) as wins ,sum(loses) as loses , sum(racks_for) as racks_for , sum(racks_against)  as racks_agains from user_stats_vw s  join player p on p.player_id = s.player_id  group by s.user_id,season_id;
 
-create view user_stats_division_vw as
+create or replace view user_stats_division_vw as
   select s.user_id,division_id, sum(matches) as matches ,sum(wins) as wins ,sum(loses) as loses , sum(racks_for) as racks_for , sum(racks_against)  as racks_agains from user_stats_vw s  join player p on p.player_id = s.player_id  group by s.user_id,division_id;
 
-create view user_stats_challenge_vw as
+create or replace view user_stats_challenge_vw as
   select s.user_id,sum(matches) as matches ,sum(wins) as wins ,sum(loses) as loses , sum(racks_for) as racks_for , sum(racks_against)  as racks_agains from user_stats_vw s  join player p on p.player_id = s.player_id
     join division d on p.division_id = d.division_id where d.division_type like '%CHALLENGE%' group by s.user_id;

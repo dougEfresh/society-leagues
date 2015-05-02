@@ -41,6 +41,7 @@ public class DataResource {
         data.put("users",userResource.get());
         data.put("results",resultResource.getPlayerResults());
         data.put("stats",statsResource.getStats());
+        data.put("teamStats",statsResource.getTeamStats());
         return data;
     }
 }
