@@ -30,6 +30,7 @@ public class DataResource {
     @Autowired MatchResource matchResource;
     @Autowired ResultResource resultResource;
     @Autowired DivisionDao divisionDao;
+    @Autowired StatsResource statsResource;
 
     @RequestMapping(value = "/data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String,Object> data() {
@@ -39,6 +40,7 @@ public class DataResource {
         data.put("teams",teamResource.teams());
         data.put("users",userResource.get());
         data.put("results",resultResource.getPlayerResults());
+        data.put("stats",statsResource.getStats());
         return data;
     }
 }

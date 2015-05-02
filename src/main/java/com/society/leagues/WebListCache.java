@@ -4,15 +4,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.util.Map;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class WebMapCache<T extends Map> {
+public class WebListCache<T extends List> {
     public static final int EVICT_TIMEOUT = 60 * 60 * 1000 ;
     private static Logger logger = LoggerFactory.getLogger(WebMapCache.class);
     final AtomicReference<T> cache;
 
-    public WebMapCache(T cache) {
+    public WebListCache(T cache) {
         this.cache = new AtomicReference<>();
         this.cache.set(cache);
     }
@@ -38,5 +38,4 @@ public class WebMapCache<T extends Map> {
 
         return cache.get().isEmpty();
     }
-
 }

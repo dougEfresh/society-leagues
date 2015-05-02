@@ -1,11 +1,12 @@
 package com.society.leagues.resource.client;
 
+import com.society.leagues.WebListCache;
 import com.society.leagues.WebMapCache;
 import com.society.leagues.client.api.domain.*;
-import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.dao.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,23 +27,28 @@ public class StatsResource {
     @Autowired ChallengeDao challengeDao;
     @Autowired TeamResultDao teamResultDao;
     @Autowired WebMapCache<Map<Integer,UserStats>> cache;
+    @Autowired JdbcTemplate jdbcTemplate;
 
-    @PostConstruct
-    public void init() {
-        //getStats();
-    }
+    List<Map<String,Object>> all;
+    List<Map<String,Object>> season;
+    List<Map<String,Object>> divisions;
+    List<Map<String,Object>> challenge;
 
     @RequestMapping(value = "/stats", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<Integer,UserStats> getStats() {
         if (!cache.isEmpty()) {
             return cache.getCache();
         }
+        all = jdbcTemplate.queryForList("select * from user_stats_all_vw");
+        season = jdbcTemplate.queryForList("select * from user_stats_season_vw");
+        divisions = jdbcTemplate.queryForList("select * from user_stats_division_vw");
+        challenge = jdbcTemplate.queryForList("select * from user_stats_challenge_vw");
+
         Map<Integer,UserStats>  stats = new HashMap<>();
         for (User user : dao.get()) {
             stats.put(user.getId(),getUserStats(user));
         }
-        cache.setCache(stats);
-        return cache.getCache();
+        return stats;
     }
 
     @RequestMapping(value = "/stats/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -52,10 +58,10 @@ public class StatsResource {
 
     public UserStats getUserStats(User user) {
         UserStats userStats = new UserStats();
-        userStats.setPlayerStatsList(playerStats(user));
-        for (Handicap handicap : Handicap.values()) {
-            userStats.addHandicapStats(handicap,playerStats(user,handicap));
-        }
+        userStats.setAll(all.stream().filter(u -> u.get("user_id").equals(user.getId())).findFirst().orElse(null));
+        userStats.setSeason(season.stream().filter(u->u.get("user_id").equals(user.getId())).collect(Collectors.toList()));
+        userStats.setDivision(divisions.stream().filter(u->u.get("user_id").equals(user.getId())).collect(Collectors.toList()));
+        userStats.setChallenge(challenge.stream().filter(u->u.get("user_id").equals(user.getId())).collect(Collectors.toList()));
         return userStats;
     }
 
