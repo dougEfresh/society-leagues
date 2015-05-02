@@ -1,23 +1,14 @@
 package com.society.leagues.resource.client;
 
-import com.society.leagues.adapters.PlayerResultAdapter;
-import com.society.leagues.adapters.SeasonAdapter;
-import com.society.leagues.adapters.TeamMatchAdapter;
-import com.society.leagues.adapters.TeamResultAdapter;
-import com.society.leagues.client.api.domain.TeamResult;
-import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.dao.DivisionDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
 
 @RequestMapping(value = "/api")
 @RestController
