@@ -36,9 +36,6 @@ public class ChallengeResource  {
         User u = userDao.get(userId);
         Map<Status,List<UserChallengeGroup>> challenges = new HashMap<>();
         for (Status status : Status.values()) {
-            if (status == Status.CANCELLED) {
-                continue;
-            }
             challenges.put(status,getUserChallengeGroups(u, status));
         }
         challenges.put(Status.SENT,
@@ -56,6 +53,8 @@ public class ChallengeResource  {
                         filter(c -> !c.getDate().isBefore(LocalDate.now())).
                         collect(Collectors.toList())
         );
+        challenges.put(Status.CANCELLED,Collections.EMPTY_LIST);
+
         for (Status status : challenges.keySet()) {
             for(UserChallengeGroup group : challenges.get(status)) {
                 group.setStatus(status);
