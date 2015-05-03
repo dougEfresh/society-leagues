@@ -15,7 +15,6 @@ import java.util.Map;
 @RestController
 public class DataResource {
     @Autowired DivisionResource divisionResource;
-    @Autowired PlayerResource playerResource;
     @Autowired SeasonResource seasonResource;
     @Autowired UserResource userResource;
     @Autowired TeamResource teamResource;

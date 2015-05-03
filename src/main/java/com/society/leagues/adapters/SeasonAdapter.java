@@ -1,5 +1,6 @@
 package com.society.leagues.adapters;
 
+import com.society.leagues.client.api.domain.Player;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Status;
 import com.society.leagues.client.api.domain.division.Division;

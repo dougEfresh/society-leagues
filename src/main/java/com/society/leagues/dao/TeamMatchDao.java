@@ -39,8 +39,6 @@ public class TeamMatchDao extends Dao<TeamMatch> implements TeamMatchApi, MatchA
          m.setSeason(season);
          m.setDivision(division);
          m.setId(rs.getInt("team_match_id"));
-         m.setPlayersHome(playerDao.findHomeTeamPlayers(m));
-         m.setPlayersAway(playerDao.findAwayTeamPlayers(m));
          return m;
     };
 

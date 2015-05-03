@@ -37,10 +37,10 @@ create or replace view team_stats_vw
 AS
 select 
 home.team_id,home.season_id,
-sum(home.wins) + sum(away.wins) as wins,
-sum(home.loses) + sum(away.loses) as loses,
-sum(home.racks_for) + sum(away.racks_for) as racks_for,
-sum(home.racks_against) + sum(away.racks_against) as racks_against
+cast( sum(home.wins) + sum(away.wins) as unsigned integer)  as wins,
+cast(sum(home.loses) + sum(away.loses)  as unsigned integer ) as loses,
+cast(sum(home.racks_for) + sum(away.racks_for)  as unsigned integer) as racks_for,
+cast(sum(home.racks_against) + sum(away.racks_against)  as unsigned integer ) as racks_against
  from 
 team_home_stats_vw home 
 join team_away_stats_vw away 

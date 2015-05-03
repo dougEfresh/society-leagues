@@ -13,7 +13,6 @@ public class PlayerResultAdapter {
     public PlayerResultAdapter(User user, PlayerResult result) {
         this.user = user;
         this.result = result;
-
     }
 
     public Player winner() {
@@ -78,5 +77,9 @@ public class PlayerResultAdapter {
 
     public TeamMatch teamMatch() {
         return this.result.getTeamMatch();
+    }
+
+    public Integer getTeamMatchId() {
+        return result.getTeamMatch().getId();
     }
 }

@@ -16,8 +16,7 @@ public class TeamMatch extends LeagueObject  {
     @NotNull Division division;
     LocalDateTime matchDate;
     TeamResult result;
-    List<Player> playersHome = Collections.emptyList();
-    List<Player> playersAway = Collections.emptyList();
+
 
     public TeamMatch(Team home, Team away, Season season, LocalDateTime matchDate) {
         this.home = home;
@@ -75,58 +74,6 @@ public class TeamMatch extends LeagueObject  {
 
     public void setResult(TeamResult result) {
         this.result = result;
-    }
-
-    public Team getWinner() {
-        if (result == null)
-            return null;
-
-        if (result.getHomeRacks() > result.getAwayRacks()) {
-            return home;
-        }
-
-        return away;
-    }
-
-    public Team getLoser() {
-        if (result == null)
-            return null;
-
-        if (result.getHomeRacks() < result.getAwayRacks()) {
-            return home;
-        }
-
-        return away;
-    }
-
-    public Integer getWinnerRacks() {
-        if (getWinner() == null)
-            return null;
-
-        return result.getWinnerRacks();
-    }
-
-    public Integer getLoserRacks() {
-        if (getLoser() == null)
-            return null;
-
-        return result.getLoserRacks();
-    }
-
-    public List<Player> getPlayersHome() {
-        return playersHome;
-    }
-
-    public List<Player> getPlayersAway() {
-        return playersAway;
-    }
-
-    public void setPlayersHome(List<Player> playersHome) {
-        this.playersHome = playersHome;
-    }
-
-    public void setPlayersAway(List<Player> playersAway) {
-        this.playersAway = playersAway;
     }
 
     @Override

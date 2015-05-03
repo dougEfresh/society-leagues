@@ -1,24 +1,29 @@
 package com.society.leagues.adapters;
 
+import com.society.leagues.client.api.domain.PlayerResult;
 import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.client.api.domain.TeamResult;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TeamMatchAdapter {
 
     TeamMatch teamMatch;
     TeamResult teamResult;
+    List<PlayerResult> playerResults;
 
-    public TeamMatchAdapter(TeamMatch teamMatch, TeamResult result) {
+    public TeamMatchAdapter(TeamMatch teamMatch, TeamResult result, List<PlayerResult> playerResults) {
         this.teamResult = result;
         this.teamMatch = teamMatch;
+        this.playerResults = playerResults;
     }
 
     public TeamMatchAdapter() {
     }
 
-    public Integer getId() {
+    public Integer getTeamMatchId() {
         return teamMatch.getId();
     }
 
@@ -46,11 +51,15 @@ public class TeamMatchAdapter {
         }
         return teamResult.getHomeRacks();
     }
-
-     public Integer getAwayRacks() {
+    public Integer getAwayRacks() {
         if (teamResult == null) {
             return 0;
         }
         return teamResult.getAwayRacks();
     }
+
+    public List<TeamPlayerResultAdapter> getTeamResults() {
+        return playerResults.stream().map(TeamPlayerResultAdapter::new).collect(Collectors.toList());
+    }
+
 }
