@@ -59,7 +59,11 @@ public class StatsResource {
         if (!statsTeamCache.isEmpty()) {
             return statsTeamCache.getCache();
         }
-        List<Map<String,Object>> stats  = jdbcTemplate.queryForList("select * from  team_stats_vw order by season_id,wins DESC ,racks_for DESC");
+        List<Map<String,Object>> stats  = jdbcTemplate.queryForList("select a.*,b.setWins,b.setLoses from  " +
+                        "team_stats_vw a join team_set_vw b " +
+                        "on a.team_id=b.team_id and a.season_id=b.season_id " +
+                        "order by season_id,wins DESC,setWins DESC, racks_for DESC"
+        );
         Map<Integer,List<TeamStatsSeasonAdapter>> cache = new HashMap<>();
         for (Map<String, Object> stat : stats) {
             Integer seasonId = (Integer) stat.get("season_id");

@@ -33,11 +33,32 @@ select team_id,season_id,sum(win) as wins ,sum(lost) as loses, sum(racks_for) as
  group by team_id,season_id;
 
 
+
+create or replace view team_set_home_vw as 
+select team_id,season_id, sum(win) as setWins, sum(lost) as setLoses  
+from player_home_result_vw a 
+join player p on a.player_home_id=p.player_id 
+group by team_id,season_id;
+
+create or replace view team_set_away_vw as 
+select team_id,season_id, sum(win) as setWins, sum(lost) as setLoses  
+from player_away_result_vw a 
+join player p on a.player_away_id=p.player_id 
+group by team_id,season_id;
+
+create or replace view team_set_vw as 
+select home.team_id,home.season_id,
+cast(home.setWins + away.setWins as unsigned integer)  as setWins,
+cast(home.setLoses + away.setLoses as unsigned integer) as  setLoses
+from team_set_home_vw  home join 
+team_set_away_vw away on home.team_id=away.team_id and home.season_id=away.season_id
+;
+
 create or replace view team_stats_vw
 AS
 select 
 home.team_id,home.season_id,
-cast( sum(home.wins) + sum(away.wins) as unsigned integer)  as wins,
+cast(sum(home.wins) + sum(away.wins) as unsigned integer)  as wins,
 cast(sum(home.loses) + sum(away.loses)  as unsigned integer ) as loses,
 cast(sum(home.racks_for) + sum(away.racks_for)  as unsigned integer) as racks_for,
 cast(sum(home.racks_against) + sum(away.racks_against)  as unsigned integer ) as racks_against
@@ -45,5 +66,6 @@ cast(sum(home.racks_against) + sum(away.racks_against)  as unsigned integer ) as
 team_home_stats_vw home 
 join team_away_stats_vw away 
 on home.team_id=away.team_id and home.season_id=away.season_id 
-group by  home.team_id,home.season_id,away.team_id,away.season_id
+group by home.team_id,home.season_id,away.team_id,away.season_id
 ;
+

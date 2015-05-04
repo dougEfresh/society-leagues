@@ -38,6 +38,15 @@ public class TeamStatsSeasonAdapter {
     }
 
     public Integer getRacksAgainsts() {
+
         return ((BigInteger) stats.get("racks_against")).intValue();
+    }
+
+    public Integer getSetWins() {
+        return ((BigInteger) stats.get("setWins")).intValue();
+    }
+
+    public Integer getSetLoses() {
+        return ((BigInteger) stats.get("setLoses")).intValue();
     }
 }
