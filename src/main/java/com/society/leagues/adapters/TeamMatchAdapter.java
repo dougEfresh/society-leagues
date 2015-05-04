@@ -7,9 +7,7 @@ import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.client.api.domain.TeamResult;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
@@ -34,17 +32,16 @@ public class TeamMatchAdapter {
         return teamMatch.getId();
     }
 
-    @JsonIgnore
     public Integer getResultId() {
         if (teamResult == null) {
-            return 0;
+            return  null;
         }
         return teamResult.getId();
     }
 
     public Integer getWinner() {
         if (teamResult == null) {
-            return 0;
+            return teamMatch.getHome().getId();
         }
         if (teamResult.getHomeRacks() > teamResult.getAwayRacks() ) {
             return teamMatch.getHome().getId();
@@ -53,8 +50,8 @@ public class TeamMatchAdapter {
     }
 
     public Integer getLoser() {
-         if (teamResult == null) {
-            return 0;
+        if (teamResult == null) {
+            return teamMatch.getAway().getId();
         }
         if (teamResult.getHomeRacks() > teamResult.getAwayRacks() ) {
             return teamMatch.getAway().getId();
@@ -64,7 +61,7 @@ public class TeamMatchAdapter {
 
     public Integer getWinnerRacks() {
         if (teamResult == null) {
-            return 0;
+            return null;
         }
         if (teamResult.getHomeRacks() > teamResult.getAwayRacks()) {
             return teamResult.getHomeRacks();
@@ -75,7 +72,7 @@ public class TeamMatchAdapter {
 
     public Integer getLoserRacks() {
         if (teamResult == null) {
-            return 0;
+            return null;
         }
         if (teamResult.getHomeRacks() > teamResult.getAwayRacks()) {
             return teamResult.getAwayRacks();
@@ -95,7 +92,7 @@ public class TeamMatchAdapter {
     public Integer getWinnerSetWins() {
         int wins = 0;
         if (playerResults == null || playerResults.isEmpty()) {
-            return wins;
+            return null;
         }
         List<Player> winners = getTeamResults().stream().map(tr -> find(tr.getWinner())).collect(Collectors.toList());
 
@@ -110,7 +107,7 @@ public class TeamMatchAdapter {
      public Integer getWinnerSetLoses() {
         int loses = 0;
         if (playerResults == null || playerResults.isEmpty()) {
-            return loses;
+            return null;
         }
         List<Player> losers = getTeamResults().stream().map(tr -> find(tr.getLoser())).collect(Collectors.toList());
 
@@ -124,7 +121,7 @@ public class TeamMatchAdapter {
    public Integer getLoserSetWins() {
         int wins = 0;
         if (playerResults == null || playerResults.isEmpty()) {
-            return wins;
+            return null;
         }
         List<Player> winners = getTeamResults().stream().map(tr -> find(tr.getWinner())).collect(Collectors.toList());
         for (Player winner : winners) {
@@ -138,7 +135,7 @@ public class TeamMatchAdapter {
      public Integer getLoserSetLoses() {
         int loses = 0;
         if (playerResults == null || playerResults.isEmpty()) {
-            return loses;
+            return null;
         }
         List<Player> losers = getTeamResults().stream().map(tr -> find(tr.getLoser())).collect(Collectors.toList());
         for (Player loser : losers) {
