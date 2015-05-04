@@ -2,9 +2,7 @@ package com.society.leagues.adapters;
 
 import com.society.leagues.client.api.domain.PlayerResult;
 
-import java.util.ArrayList;
-import java.util.List;
-
+@SuppressWarnings("unused")
 public class TeamPlayerResultAdapter {
 
     PlayerResult result;
@@ -17,19 +15,31 @@ public class TeamPlayerResultAdapter {
 
     }
 
-    public Integer getHomeRacks() {
-        return result.getHomeRacks();
-    }
+    public Integer getWinnerRacks() {
+        if (result.getHomeRacks() > result.getAwayRacks())
+            return result.getHomeRacks();
 
-    public Integer getAwayRacks() {
         return result.getAwayRacks();
     }
 
-    public Integer getHomeUser() {
-        return result.getPlayerHome().getUserId();
+    public Integer getLoserRacks() {
+        if (result.getHomeRacks() > result.getAwayRacks())
+            return result.getAwayRacks();
+
+        return result.getHomeRacks();
     }
 
-    public Integer getAwayUser() {
+    public Integer getWinner() {
+        if (result.getHomeRacks() > result.getAwayRacks())
+            return result.getPlayerHome().getUserId();
+
         return result.getPlayerAway().getUserId();
+    }
+
+    public Integer getLoser() {
+        if (result.getHomeRacks() > result.getAwayRacks())
+            return result.getPlayerAway().getUserId();
+
+        return result.getPlayerHome().getUserId();
     }
 }
