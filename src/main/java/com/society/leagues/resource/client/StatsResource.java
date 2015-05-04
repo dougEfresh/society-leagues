@@ -42,8 +42,8 @@ public class StatsResource {
             return cache.getCache();
         }
         all = jdbcTemplate.queryForList("select user_id as userId,matches,wins,loses,racks_for as racksFor, racks_agains as racksAgainst from user_stats_all_vw");
-        season = jdbcTemplate.queryForList("select user_id as userId,season_id,matches,wins,loses,racks_for as racksFor, racks_agains as racksAgainst from user_stats_season_vw");
-        divisions = jdbcTemplate.queryForList("select user_id as userId,division_id,matches,wins,loses,racks_for as racksFor, racks_agains as racksAgainst from user_stats_division_vw");
+        season = jdbcTemplate.queryForList("select user_id as userId,season_id as seasonId,matches,wins,loses,racks_for as racksFor, racks_agains as racksAgainst from user_stats_season_vw");
+        divisions = jdbcTemplate.queryForList("select user_id as userId,division_id as divisionId,matches,wins,loses,racks_for as racksFor, racks_agains as racksAgainst from user_stats_division_vw");
         challenge = jdbcTemplate.queryForList("select user_id as userId,matches,wins,loses,racks_for as racksFor, racks_agains as racksAgainst from user_stats_challenge_vw");
 
         Map<Integer,UserStats>  stats = new HashMap<>();
