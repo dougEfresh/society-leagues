@@ -28,9 +28,11 @@ public class TeamResource {
         Collection<Player> players = playerDao.get();
 
         for (Team team: teamDao.get()) {
-            List<Player> teamPlayer = players.stream().filter(p->p.getTeam().equals(team)).collect(Collectors.toList());
-            List<Season> seasonPlayers = teamPlayer.stream().map(Player::getSeason).collect(Collectors.toList());
-            teams.add(new TeamAdapter(team,seasonPlayers));
+            teams.add(new TeamAdapter(team,players.stream().
+                    filter(p->p.getTeam().equals(team)).
+                    filter(p->!p.getDivision().isChallenge()).
+                    collect(Collectors.toList()))
+            );
         }
         return teams;
     }

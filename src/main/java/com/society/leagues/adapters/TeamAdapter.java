@@ -1,21 +1,20 @@
 package com.society.leagues.adapters;
 
+import com.society.leagues.client.api.domain.Player;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Team;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class TeamAdapter {
     Team team;
-    List<Season> seasons;
+    List<Player> players;
 
-    public TeamAdapter(Team team, List<Season> seasons) {
-        this.seasons = seasons;
+    public TeamAdapter(Team team,  List<Player> players) {
         this.team = team;
+        this.players = players;
     }
 
     public TeamAdapter() {
@@ -25,10 +24,15 @@ public class TeamAdapter {
         return team.getId();
     }
 
-    public Set<Integer> getSeasons(){
-        Set<Integer> hashSet = new HashSet<>();
-         hashSet.addAll(seasons.stream().map(Season::getId).collect(Collectors.toList()));
-        return hashSet;
+    public Map<Integer,List<Integer>> getSeasons(){
+        Map<Integer,List<Integer>> seasons = new HashMap<>();
+        for (Player player : players.stream().filter(p->p.getTeam().equals(team)).collect(Collectors.toList())) {
+            if (!seasons.containsKey(player.getSeason().getId())) {
+                seasons.put(player.getSeason().getId(),new ArrayList<>());
+            }
+            seasons.get(player.getSeason().getId()).add(player.getUserId());
+        }
+        return seasons;
     }
 
     public String getName() {
