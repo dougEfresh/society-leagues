@@ -21,7 +21,7 @@ public class TeamAdapter {
     public TeamAdapter() {
     }
 
-    public Integer getId() {
+    public Integer getTeamId() {
         return team.getId();
     }
 
