@@ -30,7 +30,7 @@ public class ResultResource {
         if (!cache.isEmpty()) {
             return cache.getCache();
         }
-        List<PlayerResult> results = playerResultDao.get().stream().filter(r -> r.getTeamMatch().getSeason().getSeasonStatus() == Status.ACTIVE).collect(Collectors.toList());
+        Collection<PlayerResult> results = playerResultDao.get();
         Map<Integer,Map<Integer,List<PlayerResultAdapter>>> seasonResults = new HashMap<>();
         Set<User> users = new HashSet<>();
         for (PlayerResult result : results) {

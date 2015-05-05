@@ -1,6 +1,5 @@
 package com.society.leagues.adapters;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.society.leagues.client.api.domain.Player;
 import com.society.leagues.client.api.domain.PlayerResult;
 import com.society.leagues.client.api.domain.TeamMatch;
@@ -85,7 +84,7 @@ public class TeamMatchAdapter {
         return teamMatch.getMatchDate();
     }
 
-    public List<TeamPlayerResultAdapter> getTeamResults() {
+    public List<TeamPlayerResultAdapter> teamResults() {
         return this.results;
     }
 
@@ -94,7 +93,7 @@ public class TeamMatchAdapter {
         if (playerResults == null || playerResults.isEmpty()) {
             return null;
         }
-        List<Player> winners = getTeamResults().stream().map(tr -> find(tr.getWinner())).collect(Collectors.toList());
+        List<Player> winners = teamResults().stream().map(tr -> find(tr.getWinner())).collect(Collectors.toList());
 
         for (Player winner : winners) {
             if (winner.getTeam().getId().equals(getWinner())) {
@@ -104,12 +103,12 @@ public class TeamMatchAdapter {
         return wins;
     }
 
-     public Integer getWinnerSetLoses() {
+    public Integer getWinnerSetLoses() {
         int loses = 0;
         if (playerResults == null || playerResults.isEmpty()) {
             return null;
         }
-        List<Player> losers = getTeamResults().stream().map(tr -> find(tr.getLoser())).collect(Collectors.toList());
+        List<Player> losers = teamResults().stream().map(tr -> find(tr.getLoser())).collect(Collectors.toList());
 
         for (Player loser : losers) {
             if (loser.getTeam().getId().equals(getWinner())) {
@@ -118,12 +117,13 @@ public class TeamMatchAdapter {
         }
         return loses;
     }
-   public Integer getLoserSetWins() {
+
+    public Integer getLoserSetWins() {
         int wins = 0;
         if (playerResults == null || playerResults.isEmpty()) {
             return null;
         }
-        List<Player> winners = getTeamResults().stream().map(tr -> find(tr.getWinner())).collect(Collectors.toList());
+        List<Player> winners = teamResults().stream().map(tr -> find(tr.getWinner())).collect(Collectors.toList());
         for (Player winner : winners) {
             if (winner.getTeam().getId().equals(getLoser())) {
                 wins++;
@@ -132,12 +132,12 @@ public class TeamMatchAdapter {
         return wins;
     }
 
-     public Integer getLoserSetLoses() {
+    public Integer getLoserSetLoses() {
         int loses = 0;
         if (playerResults == null || playerResults.isEmpty()) {
             return null;
         }
-        List<Player> losers = getTeamResults().stream().map(tr -> find(tr.getLoser())).collect(Collectors.toList());
+        List<Player> losers = teamResults().stream().map(tr -> find(tr.getLoser())).collect(Collectors.toList());
         for (Player loser : losers) {
             if (loser.getTeam().getId().equals(getLoser())) {
                 loses++;

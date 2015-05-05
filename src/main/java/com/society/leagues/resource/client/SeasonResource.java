@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequestMapping(value = "/api")
@@ -37,7 +34,7 @@ public class SeasonResource {
     @RequestMapping(value = "/seasons", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<Integer,SeasonAdapter>  getSeasons() {
         Map<Integer,SeasonAdapter> seasons = new HashMap<>();
-        List<Season> activeSeason = seasonDao.get().stream().filter(s->s.getSeasonStatus() == Status.ACTIVE).collect(Collectors.toList());
+        Collection<Season> activeSeason = seasonDao.get();
         for (Season season : activeSeason) {
             SeasonAdapter seasonAdapter = new SeasonAdapter(
                         season,
