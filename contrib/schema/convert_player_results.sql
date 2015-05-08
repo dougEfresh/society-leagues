@@ -36,7 +36,6 @@ left join
 where lpr.team_match_id is null;
 
 
------------------------------------------
 insert into leagues.player_result(team_match_id,player_home_id,player_away_id,home_racks,away_racks)
 select tm.team_match_id, 
        home.player_id as home_player_id, 

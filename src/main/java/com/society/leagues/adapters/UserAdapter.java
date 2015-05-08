@@ -9,13 +9,19 @@ public class UserAdapter {
 
     User user;
     List<Player> players = new ArrayList<>();
+    Map<Status,List<UserChallengeGroup>> challenges = new HashMap<>();
 
-    public UserAdapter(User user, List<Player> players) {
+    public UserAdapter(User user, List<Player> players, Map<Status,List<UserChallengeGroup>> challenges) {
         this.user = user;
         this.players = players;
+        this.challenges = challenges;
     }
 
     public UserAdapter() {
+    }
+    
+    public Integer getUserId() {
+	return user.getId();
     }
 
     public String getFirstName() {
@@ -54,5 +60,9 @@ public class UserAdapter {
     public boolean isChallenge() {
         Optional<Player> playerOptional = players.stream().filter(p->p.getDivision().isChallenge()).findFirst();
         return playerOptional.isPresent();
+    }
+
+    public Map<Status,List<UserChallengeGroup>> getChallenges() {
+        return challenges;
     }
 }

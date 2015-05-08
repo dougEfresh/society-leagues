@@ -1,9 +1,11 @@
 package com.society.leagues.client.api.domain;
 
+import com.society.leagues.adapters.ChallengeAdapter;
 import com.society.leagues.client.api.domain.division.DivisionType;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class UserChallengeGroup {
     User challenger;
@@ -12,26 +14,32 @@ public class UserChallengeGroup {
     List<Challenge> challenges = new ArrayList<>();
     Status status;
 
-    public User getChallenger() {
-        return challenger;
+    public Integer getChallenger() {
+        return challenger.getId();
     }
 
     public void setChallenger(User challenger) {
         this.challenger = challenger;
     }
 
-    public User getOpponent() {
-        return opponent;
+    public Integer getOpponent() {
+        return opponent.getId();
     }
 
     public void setOpponent(User opponent) {
         this.opponent = opponent;
     }
 
-    public List<Challenge> getChallenges() {
+    public List<Challenge> challenges() {
         return challenges;
     }
 
+    public List<ChallengeAdapter> getChallenges() {
+        if (challenges == null) {
+            return Collections.emptyList();
+        }
+        return challenges.stream().map(ChallengeAdapter::new).collect(Collectors.toList());
+    }
     public void setChallenges(List<Challenge> challenges) {
         this.challenges = challenges;
     }
@@ -50,7 +58,7 @@ public class UserChallengeGroup {
 
     public Set<DivisionType> getGames() {
         Set<DivisionType> games = new HashSet<>();
-        for (Challenge challenge : getChallenges()) {
+        for (Challenge challenge : challenges()) {
             games.add(challenge.getChallenger().getDivision().getType());
         }
         return games;
@@ -58,7 +66,7 @@ public class UserChallengeGroup {
 
     public Set<Slot> getSlots() {
         Set<Slot> slots = new HashSet<>();
-        for (Challenge challenge : getChallenges()) {
+        for (Challenge challenge : challenges()) {
             slots.add(challenge.getSlot());
         }
         return slots;
@@ -67,7 +75,8 @@ public class UserChallengeGroup {
     public void setStatus(Status status) {
         this.status = status;
     }
-    public Status getStatus() {
+
+    public Status status() {
             return status;
     }
 

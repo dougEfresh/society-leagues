@@ -25,6 +25,8 @@ public class UserResource  {
     @Autowired PlayerResultDao playerResultDao;
     @Autowired ChallengeDao challengeDao;
     @Autowired TeamResultDao teamResultDao;
+    @Autowired ChallengeResource challengeResource;
+
     private static Logger logger = LoggerFactory.getLogger(UserResource.class);
 
     @RequestMapping(value = "/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -51,7 +53,7 @@ public class UserResource  {
 
         Map<Integer,UserAdapter> userAdapters = new HashMap<>();
         for (User user : users) {
-            UserAdapter adapter = new UserAdapter(user,playerDao.getByUser(user));
+            UserAdapter adapter = new UserAdapter(user,playerDao.getByUser(user),challengeResource.getChallenges(user.getId()));
             userAdapters.put(user.getId(),adapter);
         }
         return userAdapters;

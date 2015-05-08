@@ -32,7 +32,7 @@ public class SeasonResource {
     @Autowired TeamMatchDao teamMatchDao;
 
     @RequestMapping(value = "/seasons", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<Integer,SeasonAdapter>  getSeasons() {
+    public Map<Integer,SeasonAdapter> getSeasons() {
         Map<Integer,SeasonAdapter> seasons = new HashMap<>();
         Collection<Season> activeSeason = seasonDao.get();
         for (Season season : activeSeason) {

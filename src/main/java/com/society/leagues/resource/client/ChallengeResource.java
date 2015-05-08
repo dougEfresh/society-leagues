@@ -124,14 +124,14 @@ public class ChallengeResource  {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
 	    public  Map<Status,List<UserChallengeGroup>> changeStatus(@PathVariable Integer userId, @PathVariable String status, @RequestBody UserChallengeGroup challengeGroup) {
-        if ( challengeGroup.getChallenges() == null || challengeGroup.getChallenges().isEmpty()) {
+        if ( challengeGroup.challenges() == null || challengeGroup.challenges().isEmpty()) {
             return getChallenges(userId);
         }
         if (Status.valueOf(status) == Status.CANCELLED)
-            challengeGroup.getChallenges().forEach(dao::cancelChallenge);
+            challengeGroup.challenges().forEach(dao::cancelChallenge);
 
         if (Status.valueOf(status) == Status.PENDING) {
-            for (Challenge challenge : challengeGroup.getChallenges()) {
+            for (Challenge challenge : challengeGroup.challenges()) {
                 Challenge c = dao.get(challenge.getId());
                 c.setStatus(Status.PENDING);
                 dao.modifyChallenge(c);
@@ -139,7 +139,7 @@ public class ChallengeResource  {
         }
 
         if (Status.valueOf(status) == Status.ACCEPTED) {
-            challengeGroup.getChallenges().forEach(dao::acceptChallenge);
+            challengeGroup.challenges().forEach(dao::acceptChallenge);
         }
         return getChallenges(userId);
     }
@@ -150,10 +150,10 @@ public class ChallengeResource  {
             consumes = MediaType.APPLICATION_JSON_VALUE)
   public Map<Status,List<UserChallengeGroup>> cancel(@PathVariable Integer userId, @RequestBody UserChallengeGroup challengeGroup) {
         User user = userDao.get(userId);
-        Challenge c = challengeGroup.getChallenges().get(0);
+        Challenge c = challengeGroup.challenges().get(0);
         User opponent = userDao.get(dao.get(c.getId()).getOpponent().getUserId());
         User challenger = userDao.get(dao.get(c.getId()).getChallenger().getUserId());
-        dao.cancel(challengeGroup.getChallenges());
+        dao.cancel(challengeGroup.challenges());
         if (user.equals(challenger)) {
             sendEmail(opponent, challenger, Status.CANCELLED);
         } else {
@@ -168,9 +168,9 @@ public class ChallengeResource  {
             consumes = MediaType.APPLICATION_JSON_VALUE)
   public Map<Status,List<UserChallengeGroup>> notify(@PathVariable Integer userId, @RequestBody UserChallengeGroup challengeGroup) {
         User user = userDao.get(userId);
-        Challenge c = challengeGroup.getChallenges().get(0);
+        Challenge c = challengeGroup.challenges().get(0);
         User opponent =userDao.get(dao.get(c.getId()).getOpponent().getUserId());
-        dao.pending(challengeGroup.getChallenges());
+        dao.pending(challengeGroup.challenges());
         sendEmail(opponent,user,Status.NOTIFY);
         return getChallenges(userId);
     }
