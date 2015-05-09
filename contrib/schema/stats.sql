@@ -42,7 +42,7 @@ from player_away_result_vw group by player_away_id,user_id,opponent_handicap;
 
 create or replace view user_stats_union_handicap_vw as 
 select * from user_stats_handicap_home_vw 
-      UNION ALL 
+UNION ALL 
 select * from user_stats_handicap_away_vw;
 
 create or replace view user_stats_handicap_vw as
@@ -52,7 +52,7 @@ sum(wins) as wins,
 sum(loses) as loses,
 sum(racks_for) as racks_for,
 sum(racks_against) as racks_against
-from  user_stats_union_handicap_vw  group by user_id,opponent_handicap
+from user_stats_union_handicap_vw  group by user_id,opponent_handicap
 ;
 
 create or replace  view user_stats_home_vw as 
@@ -91,15 +91,15 @@ on home.user_id=away.user_id and home.player_home_id=away.player_away_id
 ;
 
 create or replace view user_stats_all_vw as
-  select user_id,sum(matches) as matches ,sum(wins) as wins ,sum(loses) as loses , sum(racks_for) as racks_for , sum(racks_against)  as racks_agains from user_stats_vw group by user_id
+  select user_id,sum(matches) as matches ,sum(wins) as wins ,sum(loses) as loses , sum(racks_for) as racks_for , sum(racks_against)  as racks_against from user_stats_vw group by user_id
  ;
 
 create or replace view user_stats_season_vw as
-  select s.user_id,season_id, sum(matches) as matches ,sum(wins) as wins ,sum(loses) as loses , sum(racks_for) as racks_for , sum(racks_against)  as racks_agains from user_stats_vw s  join player p on p.player_id = s.player_id  group by s.user_id,season_id;
+  select s.user_id,season_id, sum(matches) as matches ,sum(wins) as wins ,sum(loses) as loses , sum(racks_for) as racks_for , sum(racks_against)  as racks_against from user_stats_vw s  join player p on p.player_id = s.player_id  group by s.user_id,season_id;
 
 create or replace view user_stats_division_vw as
-  select s.user_id,division_id, sum(matches) as matches ,sum(wins) as wins ,sum(loses) as loses , sum(racks_for) as racks_for , sum(racks_against)  as racks_agains from user_stats_vw s  join player p on p.player_id = s.player_id  group by s.user_id,division_id;
+  select s.user_id,division_id, sum(matches) as matches ,sum(wins) as wins ,sum(loses) as loses , sum(racks_for) as racks_for , sum(racks_against)  as racks_against from user_stats_vw s  join player p on p.player_id = s.player_id  group by s.user_id,division_id;
 
 create or replace view user_stats_challenge_vw as
-  select s.user_id,sum(matches) as matches ,sum(wins) as wins ,sum(loses) as loses , sum(racks_for) as racks_for , sum(racks_against)  as racks_agains from user_stats_vw s  join player p on p.player_id = s.player_id
+  select s.user_id,sum(matches) as matches ,sum(wins) as wins ,sum(loses) as loses , sum(racks_for) as racks_for , sum(racks_against)  as racks_against from user_stats_vw s  join player p on p.player_id = s.player_id
     join division d on p.division_id = d.division_id where d.division_type like '%CHALLENGE%' group by s.user_id;

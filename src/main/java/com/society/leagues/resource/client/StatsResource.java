@@ -35,6 +35,7 @@ public class StatsResource {
     List<Map<String,Object>> season;
     List<Map<String,Object>> divisions;
     List<Map<String,Object>> challenge;
+    List<Map<String,Object>> handicap;
 
     @RequestMapping(value = "/stats/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<Integer,UserStats> getStats() {
@@ -42,10 +43,10 @@ public class StatsResource {
             return cache.getCache();
         }
         all = jdbcTemplate.queryForList("select user_id as userId,matches,wins,loses,racks_for as racksFor, racks_agains as racksAgainst from user_stats_all_vw");
-        season = jdbcTemplate.queryForList("select user_id as userId,season_id as seasonId,matches,wins,loses,racks_for as racksFor, racks_agains as racksAgainst from user_stats_season_vw");
-        divisions = jdbcTemplate.queryForList("select user_id as userId,division_id as divisionId,matches,wins,loses,racks_for as racksFor, racks_agains as racksAgainst from user_stats_division_vw");
-        challenge = jdbcTemplate.queryForList("select user_id as userId,matches,wins,loses,racks_for as racksFor, racks_agains as racksAgainst from user_stats_challenge_vw");
-
+        season = jdbcTemplate.queryForList("select user_id as userId,season_id as seasonId,matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_season_vw");
+        divisions = jdbcTemplate.queryForList("select user_id as userId,division_id as divisionId,matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_division_vw");
+        challenge = jdbcTemplate.queryForList("select user_id as userId,matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_challenge_vw");
+        handicap =  jdbcTemplate.queryForList("select user_id as userId,matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_handicap_vw");
         Map<Integer,UserStats>  stats = new HashMap<>();
         for (User user : dao.get()) {
             stats.put(user.getId(),getUserStats(user));
@@ -81,7 +82,8 @@ public class StatsResource {
         userStats.setAll(all.stream().filter(u -> u.get("userId").equals(user.getId())).findFirst().orElse(null));
         userStats.setSeason(season.stream().filter(u->u.get("userId").equals(user.getId())).collect(Collectors.toList()));
         userStats.setDivision(divisions.stream().filter(u->u.get("userId").equals(user.getId())).collect(Collectors.toList()));
-        userStats.setChallenge(challenge.stream().filter(u->u.get("userId").equals(user.getId())).collect(Collectors.toList()));
+         userStats.setChallenge(challenge.stream().filter(u->u.get("userId").equals(user.getId())).collect(Collectors.toList()));
+         userStats.setHandicap(handicap.stream().filter(u->u.get("userId").equals(user.getId())).collect(Collectors.toList()));
         return userStats;
     }
 

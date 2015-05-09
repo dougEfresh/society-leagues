@@ -1,15 +1,7 @@
 package com.society.leagues.client.api.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.society.leagues.client.api.domain.division.Division;
-import com.society.leagues.client.api.domain.division.DivisionType;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class UserStats {
@@ -18,6 +10,7 @@ public class UserStats {
     List<Map<String,Object>> division;
     List<Map<String,Object>> season;
     List<Map<String,Object>> challenge;
+    List<Map<String,Object>> handicap;
 
     public Map<String,Object> getAll() {
         return all;
@@ -35,6 +28,10 @@ public class UserStats {
         return challenge;
     }
 
+    public List<Map<String, Object>> getHandicap() {
+        return handicap;
+    }
+
     public void setAll(Map<String, Object> all) {
         this.all = all;
     }
@@ -50,4 +47,8 @@ public class UserStats {
     public void setChallenge(List<Map<String, Object>> challenge) {
         this.challenge = challenge;
     }
+    public void setHandicap(List<Map<String, Object>> handicap) {
+        this.handicap = handicap;
+    }
+
 }
