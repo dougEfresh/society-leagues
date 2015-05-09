@@ -61,7 +61,7 @@ public class UserResource  {
 
     public UserAdapter get(String login) {
         User u = dao.get(login);
-        return get(u.getId());
+	return  new UserAdapter(u,playerDao.getByUser(u),challengeResource.getChallenges(u.getId()));
     }
 
 }

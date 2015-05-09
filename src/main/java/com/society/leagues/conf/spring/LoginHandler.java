@@ -26,10 +26,9 @@ public class LoginHandler implements AuthenticationSuccessHandler {
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
         org.springframework.security.core.userdetails.User springUser = (org.springframework.security.core.userdetails.User)authentication.getPrincipal();
-        User u = userDao.get(springUser.getUsername());
         ObjectMapper mapper = new ObjectMapper();
         response.setContentType("application/json;charset=UTF-8");
-        mapper.writer().writeValue(response.getWriter(),userResource.get(u.getId()));
+        mapper.writer().writeValue(response.getWriter(),userResource.get(springUser.getUsername()));
         //response.getWriter().flush();
     }
 }
