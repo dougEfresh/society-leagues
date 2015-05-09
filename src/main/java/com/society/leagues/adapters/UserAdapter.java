@@ -10,6 +10,14 @@ public class UserAdapter {
     User user;
     List<Player> players = new ArrayList<>();
     Map<Status,List<UserChallengeGroup>> challenges = new HashMap<>();
+    public static UserAdapter DEFAULT_USER;
+    static {
+	User u = new User();
+	u.setId(0);
+	u.setFirstName("");
+	u.setLastName("");
+	DEFAULT_USER = new UserAdapter(u,Collections.emptyList(),Collections.emptyMap());
+    }
 
     public UserAdapter(User user, List<Player> players, Map<Status,List<UserChallengeGroup>> challenges) {
         this.user = user;
