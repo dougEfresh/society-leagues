@@ -31,6 +31,9 @@ public class UserResource  {
 
     @RequestMapping(value = "/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserAdapter get(Principal principal) {
+	if (principal == null) {
+	    return null;
+	}
         return  get(principal.getName());
     }
 
