@@ -42,11 +42,11 @@ public class StatsResource {
         if (!cache.isEmpty()) {
             return cache.getCache();
         }
-        all = jdbcTemplate.queryForList("select user_id as userId,matches,wins,loses,racks_for as racksFor, racks_agains as racksAgainst from user_stats_all_vw");
+        all = jdbcTemplate.queryForList("select user_id as userId,matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_all_vw");
         season = jdbcTemplate.queryForList("select user_id as userId,season_id as seasonId,matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_season_vw");
         divisions = jdbcTemplate.queryForList("select user_id as userId,division_id as divisionId,matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_division_vw");
         challenge = jdbcTemplate.queryForList("select user_id as userId,matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_challenge_vw");
-        handicap =  jdbcTemplate.queryForList("select user_id as userId,matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_handicap_vw");
+        handicap = jdbcTemplate.queryForList("select user_id as userId,matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_handicap_vw");
         Map<Integer,UserStats>  stats = new HashMap<>();
         for (User user : dao.get()) {
             stats.put(user.getId(),getUserStats(user));
