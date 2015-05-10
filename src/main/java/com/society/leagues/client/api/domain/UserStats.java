@@ -1,5 +1,7 @@
 package com.society.leagues.client.api.domain;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +31,11 @@ public class UserStats {
     }
 
     public List<Map<String, Object>> getHandicap() {
+        List<Map<String, Object>> handicapStats = new ArrayList<>();
+        for (Map<String, Object> handicapStat : handicap) {
+            Integer hc = (Integer) handicapStat.get("handicap");
+            handicapStat.put("handicap",Handicap.values()[hc]);
+        }
         return handicap;
     }
 
@@ -47,6 +54,7 @@ public class UserStats {
     public void setChallenge(List<Map<String, Object>> challenge) {
         this.challenge = challenge;
     }
+
     public void setHandicap(List<Map<String, Object>> handicap) {
         this.handicap = handicap;
     }

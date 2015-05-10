@@ -54,6 +54,8 @@ dependencies {
     compile 'uk.com.robust-it:cloning:1.9.1'
     compile 'com.sun.mail:javax.mail:1.5.2'
 
+//    compile("org.springframework.social:spring-social-facebook")
+
     //Test
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'org.apache.httpcomponents:httpclient:4.4'

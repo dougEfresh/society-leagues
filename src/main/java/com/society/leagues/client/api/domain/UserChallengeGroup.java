@@ -81,6 +81,20 @@ public class UserChallengeGroup {
             return status;
     }
 
+    public DivisionType getSelectedGame() {
+        if (challenges.size() == 1){
+            return challenges.get(0).getChallenger().getDivision().getType();
+        }
+        return null;
+    }
+
+    public Integer getSelectedSlot() {
+        if (challenges.size() == 1){
+            return challenges.get(0).getSlot().getId();
+        }
+        return 0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

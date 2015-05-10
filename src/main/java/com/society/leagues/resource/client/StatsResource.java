@@ -45,8 +45,8 @@ public class StatsResource {
         all = jdbcTemplate.queryForList("select user_id as userId,matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_all_vw");
         season = jdbcTemplate.queryForList("select user_id as userId,season_id as seasonId,matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_season_vw");
         divisions = jdbcTemplate.queryForList("select user_id as userId,division_id as divisionId,matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_division_vw");
-        challenge = jdbcTemplate.queryForList("select user_id as userId,matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_challenge_vw");
-        handicap = jdbcTemplate.queryForList("select user_id as userId,matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_handicap_vw");
+        challenge = jdbcTemplate.queryForList("select user_id as userId,wins*3+loses as points, matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_challenge_vw");
+        handicap = jdbcTemplate.queryForList("select user_id as userId, opponent_handicap as handicap, matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_handicap_vw");
         Map<Integer,UserStats>  stats = new HashMap<>();
         for (User user : dao.get()) {
             stats.put(user.getId(),getUserStats(user));
@@ -78,13 +78,13 @@ public class StatsResource {
     }
 
      public UserStats getUserStats(User user) {
-        UserStats userStats = new UserStats();
-        userStats.setAll(all.stream().filter(u -> u.get("userId").equals(user.getId())).findFirst().orElse(null));
-        userStats.setSeason(season.stream().filter(u->u.get("userId").equals(user.getId())).collect(Collectors.toList()));
-        userStats.setDivision(divisions.stream().filter(u->u.get("userId").equals(user.getId())).collect(Collectors.toList()));
+         UserStats userStats = new UserStats();
+         userStats.setAll(all.stream().filter(u -> u.get("userId").equals(user.getId())).findFirst().orElse(null));
+         userStats.setSeason(season.stream().filter(u->u.get("userId").equals(user.getId())).collect(Collectors.toList()));
+         userStats.setDivision(divisions.stream().filter(u->u.get("userId").equals(user.getId())).collect(Collectors.toList()));
          userStats.setChallenge(challenge.stream().filter(u->u.get("userId").equals(user.getId())).collect(Collectors.toList()));
          userStats.setHandicap(handicap.stream().filter(u->u.get("userId").equals(user.getId())).collect(Collectors.toList()));
-        return userStats;
+         return userStats;
     }
 
 }
