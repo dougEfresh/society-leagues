@@ -39,7 +39,9 @@ public class SeasonDao extends Dao<Season> implements SeasonClientApi,SeasonAdmi
     public List<Season> getActive() {
         return get().stream().filter(s->s.getSeasonStatus() == Status.ACTIVE).collect(Collectors.toList());
     }
-
+    public List<Season> getInActive() {
+        return get().stream().filter(s->s.getSeasonStatus() != Status.ACTIVE).collect(Collectors.toList());
+    }
 
     @Override
     public Season create(Season season) {

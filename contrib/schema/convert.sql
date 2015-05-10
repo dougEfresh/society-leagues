@@ -4,7 +4,7 @@ select
   case when player_login like '%no_login%' then 'INACTIVE' else 'ACTIVE' end  status
 from leagues_old.player o ;
 
-update leagues.users set `passwd` = '$2a$10$FLsEHJa6l0/e44OdOfPzmOMveMuPJ/gNNfYQ6zWLVss.iwuR5V';
+update leagues.users set `passwd` = '$2a$10$FLsEHJa6l0/e44OdOfPzmOMveMuPJ/gNNfYQ6zWLVss.iwuR5VX5C';
 
 
 replace into leagues.team(team_id,name)
@@ -33,7 +33,7 @@ from
                                end
                             )
 
- group by m.season_id,m.league_id;
+ group by m.season_id,m.league_id,d.division_id;
 
 update leagues.season set start_date= '2014-01-14' where name = '2013,Summer,9-ball';
 update leagues.season set start_date= '2013-05-08' where name = '2014,Winter,Mixed';
@@ -87,6 +87,8 @@ join
    ) away
 on home.match_id=away.match_id
 ;
+
+update leagues.team_match set match_date  = '1978-04-06' where match_date < '2000-01-01';
 
 -- Team results with no player results
 

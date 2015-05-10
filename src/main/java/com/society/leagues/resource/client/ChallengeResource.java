@@ -1,5 +1,6 @@
 package com.society.leagues.resource.client;
 import com.society.leagues.adapters.*;
+import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.email.EmailSender;
 import com.society.leagues.email.EmailService;
 import com.society.leagues.email.EmailTaskRunner;
@@ -31,6 +32,49 @@ public class ChallengeResource  {
     @Value("${service-url:http://leaguesdev.societybilliards.com}") String serviceUrl;
     @Autowired EmailService emailService;
     @Autowired UserResource userResource;
+    @Autowired SeasonDao seasonDao;
+    @Autowired TeamDao teamDao;
+
+
+    @RequestMapping(value = "/challenge/signup/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserAdapter signup(@PathVariable Integer userId) {
+        User u = userDao.get(userId);
+        if (u == null) {
+            logger.info("No user for " + userId);
+            return UserAdapter.DEFAULT_USER;
+        }
+        //TODO check if already challenge user
+        UserAdapter userAdapter =  userResource.get(u.getId());
+        if (userAdapter.isChallenge()) {
+            return userAdapter;
+        }
+        List<Season> challengeSeasons = seasonDao.getActive().stream().filter(s->s.getDivision().isChallenge()).collect(Collectors.toList());
+        Team team = new Team();
+        team.setName(u.getName());
+        if (teamDao.get(u.getName()) == null) {
+            team = teamDao.create(team);
+        } else {
+            team = teamDao.get(u.getName());
+        }
+
+        for (Season challengeSeason : challengeSeasons) {
+            Player player = new Player();
+            player.setTeam(team);
+            player.setUser(u);
+            player.setDivision(challengeSeason.getDivision());
+            player.setSeason(challengeSeason);
+            if (challengeSeason.getDivision().getType() == DivisionType.NINE_BALL_CHALLENGE) {
+                player.setHandicap(Handicap.DPLUS);
+            }
+            if (challengeSeason.getDivision().getType() == DivisionType.EIGHT_BALL_CHALLENGE) {
+                player.setHandicap(Handicap.FOUR);
+            }
+            player.setStart(new Date());
+            playerDao.create(player);
+        }
+
+        return userResource.get(u.getId());
+    }
 
     @RequestMapping(value = "/challenge/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<Status,List<UserChallengeGroup>> getChallenges(@PathVariable Integer userId) {

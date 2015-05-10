@@ -3,8 +3,10 @@ package com.society.leagues.conf;
 import com.society.leagues.WebListCache;
 import com.society.leagues.WebMapCache;
 import com.society.leagues.adapters.PlayerResultAdapter;
+import com.society.leagues.adapters.SeasonAdapter;
 import com.society.leagues.adapters.TeamStatsSeasonAdapter;
 import com.society.leagues.client.api.domain.UserStats;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,7 +28,16 @@ public class CacheConfig {
     }
 
     @Bean
-    public WebMapCache<Map<Integer,Map<Integer,List<PlayerResultAdapter>>>> userResultCache() {
+    public WebMapCache<Map<Integer,Map<Integer,List<PlayerResultAdapter>>>> currentResultCache() {
+        return new WebMapCache<>(Collections.emptyMap());
+    }
+    @Bean
+    public WebMapCache<Map<Integer,Map<Integer,List<PlayerResultAdapter>>>> pastResultCache() {
+        return new WebMapCache<>(Collections.emptyMap());
+    }
+
+    @Bean
+    public WebMapCache<Map<Integer,SeasonAdapter>> pastSeasonCache() {
         return new WebMapCache<>(Collections.emptyMap());
     }
 

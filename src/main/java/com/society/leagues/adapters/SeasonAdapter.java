@@ -29,7 +29,7 @@ public class SeasonAdapter {
     }
 
     public Integer getDivision() {
-        return season.getId();
+        return season.getDivision().getId();
     }
 
     public boolean current() {

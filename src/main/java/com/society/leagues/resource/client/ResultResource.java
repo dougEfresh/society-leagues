@@ -23,13 +23,28 @@ public class ResultResource {
     @Autowired ChallengeDao challengeDao;
     @Autowired TeamResultDao teamResultDao;
     @Autowired SeasonDao seasonDao;
-    @Autowired WebMapCache<Map<Integer,Map<Integer,List<PlayerResultAdapter>>>> cache;
+    @Autowired WebMapCache<Map<Integer,Map<Integer,List<PlayerResultAdapter>>>> currentResultCache;
+    @Autowired WebMapCache<Map<Integer,Map<Integer,List<PlayerResultAdapter>>>> pastResultCache;
 
-    @RequestMapping(value = "/results/users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/results/current/users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<Integer,Map<Integer,List<PlayerResultAdapter>>> getPlayerResults() {
-        if (!cache.isEmpty()) {
-            return cache.getCache();
+        if (!currentResultCache.isEmpty()) {
+            return currentResultCache.getCache();
         }
+        currentResultCache.setCache(getResults(true));
+        return currentResultCache.getCache();
+    }
+
+    @RequestMapping(value = "/results/past/users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<Integer,Map<Integer,List<PlayerResultAdapter>>> getPlayerPastResults() {
+           if (!pastResultCache.isEmpty()) {
+               return pastResultCache.getCache();
+           }
+        pastResultCache.setCache(getResults(false));
+        return pastResultCache.getCache();
+    }
+
+    private Map<Integer,Map<Integer,List<PlayerResultAdapter>>> getResults(boolean current) {
         Collection<PlayerResult> results = playerResultDao.get();
         Map<Integer,Map<Integer,List<PlayerResultAdapter>>> seasonResults = new HashMap<>();
         Set<User> users = new HashSet<>();
@@ -37,8 +52,13 @@ public class ResultResource {
             users.add(result.getPlayerAway().getUser());
             users.add(result.getPlayerHome().getUser());
         }
-
-        for (Season season : seasonDao.getActive()) {
+        List<Season> seasons = new ArrayList<>();
+        if (current) {
+            seasons = seasonDao.getActive();
+        } else {
+            seasons = seasonDao.getInActive();
+        }
+        for (Season season : seasons) {
             Map<Integer,List<PlayerResultAdapter>> userResults = new HashMap<>();
             seasonResults.put(season.getId(),userResults);
 
@@ -55,7 +75,8 @@ public class ResultResource {
                 userResults.put(user.getId(), playerResultAdapters);
             }
         }
-        cache.setCache(seasonResults);
-        return cache.getCache();
+
+        return seasonResults;
     }
+
 }

@@ -8,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,12 @@ public class DataResource {
     @Autowired DivisionDao divisionDao;
     @Autowired StatsResource statsResource;
     @Autowired WebMapCache<Map<String,Object>> dataCache;
+
+    @PostConstruct
+    public void init() {
+        //Load the cache up
+        data();
+    }
 
     @RequestMapping(value = "/data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String,Object> data() {

@@ -1,5 +1,7 @@
 package com.society.leagues.client.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,41 +35,26 @@ public class UserStats {
         return challenge;
     }
 
+    @JsonIgnore
     public List<Map<String, Object>> getHandicapAll() {
-        List<Map<String, Object>> handicapStats = new ArrayList<>();
-        for (Map<String, Object> handicapStat : handicapAll) {
-            Integer hc = (Integer) handicapStat.get("handicap");
-            handicapStat.put("handicap",Handicap.values()[hc]);
-        }
         return handicapAll;
     }
 
+    @JsonIgnore
     public List<Map<String, Object>> getHandicapSeason() {
-        List<Map<String, Object>> handicapStats = new ArrayList<>();
-        for (Map<String, Object> handicapStat : handicapSeason) {
-            Integer hc = (Integer) handicapStat.get("handicap");
-            handicapStat.put("handicap",Handicap.values()[hc]);
-        }
         return handicapSeason;
     }
 
+    @JsonIgnore
     public List<Map<String, Object>> getHandicapDivision() {
-        List<Map<String, Object>> handicapStats = new ArrayList<>();
-        for (Map<String, Object> handicapStat : handicapDivision) {
-            Integer hc = (Integer) handicapStat.get("handicap");
-            handicapStat.put("handicap",Handicap.values()[hc]);
-        }
         return handicapDivision;
     }
 
+    @JsonIgnore
      public List<Map<String, Object>> getHandicapChallenge() {
-        List<Map<String, Object>> handicapStats = new ArrayList<>();
-        for (Map<String, Object> handicapStat : handicapChallenge) {
-            Integer hc = (Integer) handicapStat.get("handicap");
-            handicapStat.put("handicap",Handicap.values()[hc]);
-        }
         return handicapChallenge;
     }
+
 
     public void setAll(Map<String, Object> all) {
         this.all = all;

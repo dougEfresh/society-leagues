@@ -1,5 +1,6 @@
 package com.society.leagues.resource.client;
 
+import com.society.leagues.WebMapCache;
 import com.society.leagues.adapters.SeasonAdapter;
 import com.society.leagues.adapters.TeamMatchAdapter;
 import com.society.leagues.client.api.domain.Player;
@@ -30,6 +31,7 @@ public class SeasonResource {
     @Autowired JdbcTemplate jdbcTemplate;
     @Autowired MatchResource matchResource;
     @Autowired TeamMatchDao teamMatchDao;
+    @Autowired WebMapCache<Map<Integer,SeasonAdapter>> pastSeasonCache;
 
     @RequestMapping(value = "/seasons", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<Integer,SeasonAdapter> getSeasons() {
@@ -43,5 +45,38 @@ public class SeasonResource {
             seasons.put(season.getId(), seasonAdapter);
         }
         return seasons;
+    }
+
+     @RequestMapping(value = "/seasons/current", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<Integer,SeasonAdapter> getSeasonsCurrent() {
+        Map<Integer,SeasonAdapter> seasons = new HashMap<>();
+         Collection<Season> activeSeason = seasonDao.get().stream().filter(s->s.getSeasonStatus() == Status.ACTIVE).collect(Collectors.toList());
+        for (Season season : activeSeason) {
+            SeasonAdapter seasonAdapter = new SeasonAdapter(
+                        season,
+                        matchResource.getTeamMatches(season.getId())
+            );
+            seasons.put(season.getId(), seasonAdapter);
+        }
+        return seasons;
+    }
+
+    @RequestMapping(value = "/seasons/past", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<Integer,SeasonAdapter> getSeasonsPast() {
+        if (!pastSeasonCache.isEmpty()) {
+            return pastSeasonCache.getCache();
+        }
+
+        Map<Integer,SeasonAdapter> seasons = new HashMap<>();
+        Collection<Season> pastSeasons = seasonDao.get().stream().filter(s->s.getSeasonStatus() != Status.ACTIVE).collect(Collectors.toList());
+        for (Season season : pastSeasons) {
+            SeasonAdapter seasonAdapter = new SeasonAdapter(
+                        season,
+                        matchResource.getTeamMatches(season.getId())
+            );
+            seasons.put(season.getId(), seasonAdapter);
+        }
+        pastSeasonCache.setCache(seasons);
+        return pastSeasonCache.getCache();
     }
 }
