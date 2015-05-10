@@ -12,7 +12,10 @@ public class UserStats {
     List<Map<String,Object>> division;
     List<Map<String,Object>> season;
     List<Map<String,Object>> challenge;
-    List<Map<String,Object>> handicap;
+    List<Map<String,Object>> handicapAll;
+    List<Map<String,Object>> handicapDivision;
+    List<Map<String,Object>> handicapSeason;
+    List<Map<String,Object>> handicapChallenge;
 
     public Map<String,Object> getAll() {
         return all;
@@ -30,13 +33,40 @@ public class UserStats {
         return challenge;
     }
 
-    public List<Map<String, Object>> getHandicap() {
+    public List<Map<String, Object>> getHandicapAll() {
         List<Map<String, Object>> handicapStats = new ArrayList<>();
-        for (Map<String, Object> handicapStat : handicap) {
+        for (Map<String, Object> handicapStat : handicapAll) {
             Integer hc = (Integer) handicapStat.get("handicap");
             handicapStat.put("handicap",Handicap.values()[hc]);
         }
-        return handicap;
+        return handicapAll;
+    }
+
+    public List<Map<String, Object>> getHandicapSeason() {
+        List<Map<String, Object>> handicapStats = new ArrayList<>();
+        for (Map<String, Object> handicapStat : handicapSeason) {
+            Integer hc = (Integer) handicapStat.get("handicap");
+            handicapStat.put("handicap",Handicap.values()[hc]);
+        }
+        return handicapSeason;
+    }
+
+    public List<Map<String, Object>> getHandicapDivision() {
+        List<Map<String, Object>> handicapStats = new ArrayList<>();
+        for (Map<String, Object> handicapStat : handicapDivision) {
+            Integer hc = (Integer) handicapStat.get("handicap");
+            handicapStat.put("handicap",Handicap.values()[hc]);
+        }
+        return handicapDivision;
+    }
+
+     public List<Map<String, Object>> getHandicapChallenge() {
+        List<Map<String, Object>> handicapStats = new ArrayList<>();
+        for (Map<String, Object> handicapStat : handicapChallenge) {
+            Integer hc = (Integer) handicapStat.get("handicap");
+            handicapStat.put("handicap",Handicap.values()[hc]);
+        }
+        return handicapChallenge;
     }
 
     public void setAll(Map<String, Object> all) {
@@ -55,8 +85,19 @@ public class UserStats {
         this.challenge = challenge;
     }
 
-    public void setHandicap(List<Map<String, Object>> handicap) {
-        this.handicap = handicap;
+    public void setHandicapAll(List<Map<String, Object>> handicap) {
+        this.handicapAll= handicap;
     }
 
+    public void setHandicapDivision(List<Map<String, Object>> handicap) {
+        this.handicapDivision= handicap;
+    }
+
+    public void setHandicapSeason(List<Map<String, Object>> handicap) {
+        this.handicapSeason= handicap;
+    }
+
+    public void setHandicapChallenge(List<Map<String, Object>> handicap) {
+        this.handicapChallenge= handicap;
+    }
 }

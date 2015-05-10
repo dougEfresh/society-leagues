@@ -159,4 +159,6 @@ public class ChallengeDao extends Dao<Challenge>  {
         return "select * from challenge";
     }
 
+
+
 }

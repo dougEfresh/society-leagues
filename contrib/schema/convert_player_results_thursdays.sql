@@ -29,3 +29,4 @@ join leagues.team_match tm on tm.team_match_id=a.match_id
 join leagues.player home on home.user_id = a.player_id and home.season_id=tm.season_id and tm.division_id=home.division_id and home.team_id = a.team_id
 join leagues.player away on away.user_id = b.player_id and away.season_id=tm.season_id and tm.division_id=away.division_id and away.team_id = b.team_id
 ;
+

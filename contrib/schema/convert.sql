@@ -70,8 +70,8 @@ select match_id,m.season_id,home_team_id,visit_team_id,d.division_id,match_start
 where m.league_id in (1,2,4,6) and home_team_id is not null
 ;
 
-replace into leagues.team_result (team_match_id,home_racks,away_racks)
-select home.match_id,home.racks as home_racks,away.racks as away_racks
+replace into leagues.team_result (team_result_id,team_match_id,home_racks,away_racks)
+select home.match_id,home.match_id,home.racks as home_racks,away.racks as away_racks
  from 
 (select m.match_id,m.home_team_id,
 sum(games_won) racks  from 
