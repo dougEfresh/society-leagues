@@ -20,13 +20,15 @@ import java.util.stream.Collectors;
 @Component
 public class SeasonDao extends Dao<Season> implements SeasonClientApi,SeasonAdminApi {
     @Autowired DivisionDao divisionDao;
-    public static RowMapper<Season> rowMapper = (rs, rowNum) -> {
+
+    public  RowMapper<Season> rowMapper = (rs, rowNum) -> {
         Season season = new Season();
         season.setStartDate(rs.getDate("start_date"));
         season.setEndDate(rs.getDate("end_date"));
         season.setName(rs.getString("name"));
         season.setId(rs.getInt("season_id"));
         season.setRounds(rs.getInt("rounds"));
+        season.setDivision(divisionDao.get(rs.getInt("division_id")));
         String status = rs.getString("season_status");
         if (status != null && !status.isEmpty()) {
             season.setSeasonStatus(Status.valueOf(status));
@@ -38,14 +40,6 @@ public class SeasonDao extends Dao<Season> implements SeasonClientApi,SeasonAdmi
         return get().stream().filter(s->s.getSeasonStatus() == Status.ACTIVE).collect(Collectors.toList());
     }
 
-    public Division getDivision(Season season) {
-        try {
-            Integer dId = jdbcTemplate.queryForObject("SELECT DISTINCT division_id FROM player WHERE season_id = ?", Integer.class, season.getId());
-            return divisionDao.get(dId);
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
-    }
 
     @Override
     public Season create(Season season) {

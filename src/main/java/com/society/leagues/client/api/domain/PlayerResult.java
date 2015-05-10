@@ -7,6 +7,7 @@ public class PlayerResult extends LeagueObject {
     Player playerAway;
     Integer homeRacks;
     Integer awayRacks;
+    Integer matchNumber;
 
     public TeamMatch getTeamMatch() {
         return teamMatch;
@@ -46,6 +47,14 @@ public class PlayerResult extends LeagueObject {
 
     public void setAwayRacks(Integer awayRacks) {
         this.awayRacks = awayRacks;
+    }
+
+    public Integer getMatchNumber() {
+        return matchNumber;
+    }
+
+    public void setMatchNumber(Integer matchNumber) {
+        this.matchNumber = matchNumber;
     }
 
     @Override

@@ -26,6 +26,7 @@ public class UserDao extends Dao<User> implements UserClientApi, UserAdminApi{
         user.setLogin(rs.getString("login"));
         user.setEmail(rs.getString("email"));
         user.setRole(Role.valueOf(rs.getString("role")));
+        user.setStatus(Status.valueOf(rs.getString("status")));
         return user;
     };
 

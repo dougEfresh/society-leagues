@@ -1,8 +1,6 @@
 package com.society.leagues.dao;
 
-import com.society.leagues.client.api.domain.Player;
 import com.society.leagues.client.api.domain.PlayerResult;
-import com.society.leagues.client.api.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,9 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 @Component
 public class PlayerResultDao extends Dao<PlayerResult> {
@@ -27,6 +22,7 @@ public class PlayerResultDao extends Dao<PlayerResult> {
         result.setPlayerAway(playerDao.get(rs.getInt("player_away_id")));
         result.setPlayerHome(playerDao.get(rs.getInt("player_home_id")));
         result.setTeamMatch(teamMatchDao.get(rs.getInt("team_match_id")));
+        result.setMatchNumber(rs.getInt("match_number"));
         return result;
     };
 

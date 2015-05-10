@@ -38,7 +38,6 @@ public class SeasonResource {
         for (Season season : activeSeason) {
             SeasonAdapter seasonAdapter = new SeasonAdapter(
                         season,
-                        seasonDao.getDivision(season),
                         matchResource.getTeamMatches(season.getId())
             );
             seasons.put(season.getId(), seasonAdapter);

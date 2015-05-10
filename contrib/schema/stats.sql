@@ -31,13 +31,15 @@ select  user_id, opponent_handicap, count(*) as matches, sum(win) as wins, sum(l
 ;
 create or replace view user_stats_handicap_home_vw
 AS
-select  user_id, opponent_handicap, count(*) as matches, sum(win) as wins, sum(lost) as loses, sum(racks_for) as racks_for ,sum(racks_against) as racks_against
-  from player_home_result_vw group by player_home_id,user_id,opponent_handicap;
+select  p.user_id, opponent_handicap, season_id,count(*) as matches, sum(win) as wins, sum(lost) as loses, sum(racks_for) as racks_for ,sum(racks_against) as racks_against
+  from player_home_result_vw home join player p on home.player_home_id=p.player_id
+  group by player_home_id,p.user_id,opponent_handicap,p.season_id;
 
 create or replace view user_stats_handicap_away_vw
 AS
-select  user_id, opponent_handicap, count(*) as matches, sum(win) as wins, sum(lost) as loses, sum(racks_for) as racks_for ,sum(racks_against) as racks_against  
-from player_away_result_vw group by player_away_id,user_id,opponent_handicap;
+select  p.user_id, opponent_handicap, season_id,count(*) as matches, sum(win) as wins, sum(lost) as loses, sum(racks_for) as racks_for ,sum(racks_against) as racks_against
+  from player_away_result_vw away join player p on away.player_away_id=p.player_id
+  group by player_away_id,p.user_id,opponent_handicap,p.season_id;
 
 
 create or replace view user_stats_union_handicap_vw as 
@@ -45,17 +47,59 @@ select * from user_stats_handicap_home_vw
 UNION ALL 
 select * from user_stats_handicap_away_vw;
 
-create or replace view user_stats_handicap_vw as
-select user_id,opponent_handicap,
+create or replace view user_stats_handicap_all_vw as
+select user_id,
+  opponent_handicap,
 sum(matches) as matches,
 sum(wins) as wins,
 sum(loses) as loses,
 sum(racks_for) as racks_for,
 sum(racks_against) as racks_against
-from user_stats_union_handicap_vw  group by user_id,opponent_handicap
+from user_stats_union_handicap_vw  group by
+  user_id,opponent_handicap
 ;
 
-create or replace  view user_stats_home_vw as 
+create or replace view user_stats_handicap_season_vw as
+select user_id,
+  opponent_handicap,
+  season_id,
+sum(matches) as matches,
+sum(wins) as wins,
+sum(loses) as loses,
+sum(racks_for) as racks_for,
+sum(racks_against) as racks_against
+from user_stats_union_handicap_vw  group by
+  user_id,opponent_handicap,season_id
+;
+
+create or replace view user_stats_handicap_division_vw as
+select user_id,
+  opponent_handicap,
+  s.division_id,
+sum(matches) as matches,
+sum(wins) as wins,
+sum(loses) as loses,
+sum(racks_for) as racks_for,
+sum(racks_against) as racks_against
+from user_stats_union_handicap_vw u join season s on s.season_id=u.season_id
+  group by
+  user_id,opponent_handicap,s.division_Id
+;
+
+create or replace view user_stats_handicap_challenge_vw as
+select user_id,
+  opponent_handicap,
+sum(matches) as matches,
+sum(wins) as wins,
+sum(loses) as loses,
+sum(racks_for) as racks_for,
+sum(racks_against) as racks_against
+from user_stats_union_handicap_vw u join season s on s.season_id=u.season_id
+  where s.name like '%CHALLENGE%'
+  group by  user_id,opponent_handicap
+;
+
+create or replace  view user_stats_home_vw as
 select user_id,player_home_id,
 count(*) as matches,
 sum(win) as wins,

@@ -41,7 +41,6 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
         player.setSeason(season);
         player.setUser(userDao.get(rs.getInt("user_id")));
         player.setId(rs.getInt("player_id"));
-
         return player;
     };
 

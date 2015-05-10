@@ -8,6 +8,7 @@ public enum DivisionType {
     NINE_BALL_MIXED_MONDAYS(LeagueType.TEAM),
     NINE_BALL_TUESDAYS(LeagueType.TEAM),
     EIGHT_BALL_CHALLENGE(LeagueType.INDIVIDUAL),
+    STRAIGHT(LeagueType.INDIVIDUAL),
     NINE_BALL_CHALLENGE(LeagueType.INDIVIDUAL);
 
     final LeagueType leagueType;

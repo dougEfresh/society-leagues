@@ -18,6 +18,7 @@ public class User extends LeagueObject {
     @NotNull Role role;
     Set<Integer> playerIds = new TreeSet<>();
     List<Player> players = new ArrayList<>();
+    Status status;
 
     public User(String login, String password, Role role) {
         this.login = login;
@@ -118,6 +119,14 @@ public class User extends LeagueObject {
 
     public String getName() {
         return firstName + " " + lastName;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     @Override

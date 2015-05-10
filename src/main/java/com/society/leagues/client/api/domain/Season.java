@@ -1,5 +1,7 @@
 package com.society.leagues.client.api.domain;
 
+import com.society.leagues.client.api.domain.division.Division;
+
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -15,6 +17,8 @@ public class Season extends LeagueObject {
     Integer rounds;
     @NotNull
     Status seasonStatus;
+    @NotNull
+    Division division;
 
     public Season(String name, Date startDate, Integer rounds) {
         this.name = name;
@@ -71,6 +75,14 @@ public class Season extends LeagueObject {
 
     public void setRounds(Integer rounds) {
         this.rounds = rounds;
+    }
+
+    public Division getDivision() {
+        return division;
+    }
+
+    public void setDivision(Division division) {
+        this.division = division;
     }
 
     @Override
