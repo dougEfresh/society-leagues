@@ -35,7 +35,6 @@ public class UserStats {
         return challenge;
     }
 
-    @JsonIgnore
     public List<Map<String, Object>> getHandicapAll() {
         return handicapAll;
     }

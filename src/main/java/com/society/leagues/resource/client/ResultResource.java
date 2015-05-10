@@ -4,12 +4,16 @@ import com.society.leagues.WebMapCache;
 import com.society.leagues.adapters.PlayerResultAdapter;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.dao.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,7 +28,22 @@ public class ResultResource {
     @Autowired TeamResultDao teamResultDao;
     @Autowired SeasonDao seasonDao;
     @Autowired WebMapCache<Map<Integer,Map<Integer,List<PlayerResultAdapter>>>> currentResultCache;
-    @Autowired WebMapCache<Map<Integer,Map<Integer,List<PlayerResultAdapter>>>> pastResultCache;
+     Map<Integer,Map<Integer,List<PlayerResultAdapter>>> pastResultCache = Collections.emptyMap();
+    private static Logger logger = LoggerFactory.getLogger(DataResource.class);
+
+    @PostConstruct
+    public void init() {
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                logger.info("Getting past results");
+                pastResultCache = getResults(false);
+                logger.info("Done getting past results");
+            }
+        });
+        t.setDaemon(true);
+        t.start();
+    }
 
     @RequestMapping(value = "/results/current/users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<Integer,Map<Integer,List<PlayerResultAdapter>>> getPlayerResults() {
@@ -35,14 +54,11 @@ public class ResultResource {
         return currentResultCache.getCache();
     }
 
-    @RequestMapping(value = "/results/past/users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<Integer,Map<Integer,List<PlayerResultAdapter>>> getPlayerPastResults() {
-           if (!pastResultCache.isEmpty()) {
-               return pastResultCache.getCache();
-           }
-        pastResultCache.setCache(getResults(false));
-        return pastResultCache.getCache();
+    @RequestMapping(value = "/results/past/users/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<Integer,List<PlayerResultAdapter>> getPlayerPastResults(@PathVariable Integer seasonId) {
+        return pastResultCache.get(seasonId);
     }
+
 
     private Map<Integer,Map<Integer,List<PlayerResultAdapter>>> getResults(boolean current) {
         Collection<PlayerResult> results = playerResultDao.get();

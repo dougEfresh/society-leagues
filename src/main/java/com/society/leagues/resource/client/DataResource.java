@@ -3,6 +3,8 @@ package com.society.leagues.resource.client;
 import com.society.leagues.WebMapCache;
 import com.society.leagues.adapters.UserAdapter;
 import com.society.leagues.dao.DivisionDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,11 +29,14 @@ public class DataResource {
     @Autowired DivisionDao divisionDao;
     @Autowired StatsResource statsResource;
     @Autowired WebMapCache<Map<String,Object>> dataCache;
+    private static Logger logger = LoggerFactory.getLogger(DataResource.class);
 
     @PostConstruct
     public void init() {
         //Load the cache up
+        logger.info("Pre-Caching data");
         data();
+        logger.info("Finished pre-Caching data");
     }
 
     @RequestMapping(value = "/data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -47,7 +52,7 @@ public class DataResource {
         data.put("results",resultResource.getPlayerResults());
         data.put("stats",statsResource.getStats());
         data.put("teamStats",statsResource.getTeamStats());
-        dataCache.setCache(data);
+        //dataCache.setCache(data);
         return data;
     }
 }
