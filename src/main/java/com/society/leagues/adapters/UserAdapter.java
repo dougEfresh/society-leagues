@@ -73,4 +73,9 @@ public class UserAdapter {
     public Map<Status,List<UserChallengeGroup>> getChallenges() {
         return challenges;
     }
+
+    public void setChallenges(Map<Status,List<UserChallengeGroup>> challenges) {
+	this.challenges = challenges;
+    }
+
 }
