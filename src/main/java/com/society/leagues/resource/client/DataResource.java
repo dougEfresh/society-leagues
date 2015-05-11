@@ -46,7 +46,7 @@ public class DataResource {
         }
         Map<String,Object> data = new HashMap<>();
         data.put("divisions",divisionResource.divisions());
-        data.put("seasons",seasonResource.getSeasons());
+        data.put("seasons",seasonResource.getSeasonsCurrent());
         data.put("teams",teamResource.teams());
         data.put("users",userResource.get());
         data.put("results",resultResource.getCurrentResults());
