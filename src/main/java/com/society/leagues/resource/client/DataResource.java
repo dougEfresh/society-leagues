@@ -49,10 +49,10 @@ public class DataResource {
         data.put("seasons",seasonResource.getSeasons());
         data.put("teams",teamResource.teams());
         data.put("users",userResource.get());
-        //data.put("results",resultResource.getPlayerResults());
+        data.put("results",resultResource.getCurrentResults());
         data.put("stats",statsResource.getStats());
         data.put("teamStats",statsResource.getTeamStats());
-        //dataCache.setCache(data);
+        dataCache.setCache(data);
         return data;
     }
 }
