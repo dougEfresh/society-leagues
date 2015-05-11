@@ -2,6 +2,7 @@ package com.society.leagues.resource.client;
 
 import com.society.leagues.WebMapCache;
 import com.society.leagues.adapters.PlayerResultAdapter;
+import com.society.leagues.adapters.PlayerResultRawAdapter;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.dao.*;
 import org.slf4j.Logger;
@@ -28,7 +29,8 @@ public class ResultResource {
     @Autowired TeamResultDao teamResultDao;
     @Autowired SeasonDao seasonDao;
     @Autowired WebMapCache<Map<Integer,Map<Integer,List<PlayerResultAdapter>>>> currentResultCache;
-     Map<Integer,Map<Integer,List<PlayerResultAdapter>>> pastResultCache = Collections.emptyMap();
+    Map<Integer,Map<Integer,List<PlayerResultAdapter>>> pastResultCache = Collections.emptyMap();
+    List<PlayerResultRawAdapter> pastResults = Collections.emptyList();
     private static Logger logger = LoggerFactory.getLogger(DataResource.class);
 
     @PostConstruct
@@ -37,7 +39,7 @@ public class ResultResource {
             @Override
             public void run() {
                 logger.info("Getting past results");
-                pastResultCache = getResults(false);
+                //pastResultCache = getResults(false);
                 logger.info("Done getting past results");
             }
         });
@@ -45,54 +47,53 @@ public class ResultResource {
         t.start();
     }
 
-    @RequestMapping(value = "/results/current/users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<Integer,Map<Integer,List<PlayerResultAdapter>>> getPlayerResults() {
-        if (!currentResultCache.isEmpty()) {
-            return currentResultCache.getCache();
-        }
-        currentResultCache.setCache(getResults(true));
-        return currentResultCache.getCache();
+      @RequestMapping(value = "/results/current", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PlayerResultRawAdapter> getCurrentResults() {
+        return getPlayerResults(true);
     }
 
-    @RequestMapping(value = "/results/past/users/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<Integer,List<PlayerResultAdapter>> getPlayerPastResults(@PathVariable Integer seasonId) {
-        return pastResultCache.get(seasonId);
+    @RequestMapping(value = "/results/past", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PlayerResultRawAdapter> getPastResults() {
+        if (pastResults.isEmpty()) {
+            pastResults = getPlayerResults(false);
+        }
+        return pastResults;
     }
 
-
-    private Map<Integer,Map<Integer,List<PlayerResultAdapter>>> getResults(boolean current) {
-        Collection<PlayerResult> results = playerResultDao.get();
-        Map<Integer,Map<Integer,List<PlayerResultAdapter>>> seasonResults = new HashMap<>();
-        Set<User> users = new HashSet<>();
-        for (PlayerResult result : results) {
-            users.add(result.getPlayerAway().getUser());
-            users.add(result.getPlayerHome().getUser());
+    @RequestMapping(value = "/results/past/season/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PlayerResultRawAdapter> getPastResults(@PathVariable Integer seasonId) {
+        if (pastResults.isEmpty()) {
+            pastResults = getPlayerResults(false);
         }
-        List<Season> seasons = new ArrayList<>();
-        if (current) {
-            seasons = seasonDao.getActive();
+        return pastResults.stream().filter(p->p.getSeasonId().equals(seasonId)).collect(Collectors.toList());
+    }
+
+    private List<PlayerResultRawAdapter> getPlayerResults(boolean active) {
+        //    u.getName().contains("FORFEIT") || u.getName().contains("BYE")  || u.getName().contains("HANDICAP")
+        List<PlayerResult> results;
+        if (active) {
+            results = playerResultDao.get().stream().filter(p->p.getTeamMatch().getSeason().getSeasonStatus() == Status.ACTIVE).collect(Collectors.toList());
         } else {
-            seasons = seasonDao.getInActive();
+            results = playerResultDao.get().stream().filter(p->p.getTeamMatch().getSeason().getSeasonStatus() != Status.ACTIVE).collect(Collectors.toList());
         }
-        for (Season season : seasons) {
-            Map<Integer,List<PlayerResultAdapter>> userResults = new HashMap<>();
-            seasonResults.put(season.getId(),userResults);
-
-            for (User user : users) {
-                List<PlayerResult> userPlayerResults = results.stream().filter(
-                        p -> p.getPlayerAway().getUser().equals(user) ||
-                                p.getPlayerHome().getUser().equals(user)
-                ).filter(p ->p.getPlayerHome().getSeason().equals(season))
-                        .collect(Collectors.toList());
-                if (userPlayerResults.isEmpty()) {
-                    continue;
-                }
-                List<PlayerResultAdapter> playerResultAdapters = userPlayerResults.stream().map(userPlayerResult -> new PlayerResultAdapter(user, userPlayerResult)).collect(Collectors.toList());
-                userResults.put(user.getId(), playerResultAdapters);
+        List<PlayerResultRawAdapter> resultsAdapter = new ArrayList<>(results.size());
+        for (PlayerResult playerResult : results) {
+            if (playerResult.getPlayerAway().getUser().getName().contains("FORFEIT") ||
+                    playerResult.getPlayerAway().getUser().getName().contains("BYE") ||
+                    playerResult.getPlayerAway().getUser().getName().contains("HANDICAP")
+                    ) {
+                continue;
             }
-        }
 
-        return seasonResults;
+            if (playerResult.getPlayerHome().getUser().getName().contains("FORFEIT") ||
+                    playerResult.getPlayerHome().getUser().getName().contains("BYE") ||
+                    playerResult.getPlayerHome().getUser().getName().contains("HANDICAP")
+                    ) {
+                continue;
+            }
+            resultsAdapter.add(new PlayerResultRawAdapter(playerResult));
+        }
+        return resultsAdapter;
     }
 
 }

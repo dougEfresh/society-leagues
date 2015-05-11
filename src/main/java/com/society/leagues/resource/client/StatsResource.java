@@ -6,6 +6,8 @@ import com.society.leagues.adapters.TeamSeasonAdapter;
 import com.society.leagues.adapters.TeamStatsSeasonAdapter;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.dao.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/api")
 @SuppressWarnings("unused")
 public class StatsResource {
+    private static Logger logger = LoggerFactory.getLogger(DataResource.class);
 
     @Autowired UserDao dao;
     @Autowired PlayerDao playerDao;
@@ -45,14 +48,24 @@ public class StatsResource {
         if (!cache.isEmpty()) {
             return cache.getCache();
         }
+        logger.info("Getting all stats");
         all = jdbcTemplate.queryForList("select user_id as userId,matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_all_vw");
+        logger.info("Getting season stats");
         season = jdbcTemplate.queryForList("select user_id as userId,season_id as seasonId,matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_season_vw");
+        logger.info("Getting division stats");
         divisions = jdbcTemplate.queryForList("select user_id as userId,division_id as divisionId,matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_division_vw");
+        logger.info("Getting challenge stats");
         challenge = jdbcTemplate.queryForList("select user_id as userId,wins*3+loses as points, matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_challenge_vw");
+        logger.info("Getting handicap stats");
         handicapAll = jdbcTemplate.queryForList("select user_id as userId, opponent_handicap as handicap, matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_handicap_all_vw");
-        handicapSeason = jdbcTemplate.queryForList("select user_id as userId, opponent_handicap as handicap, season_id as seasonId, matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_handicap_season_vw");
-        handicapDivision = jdbcTemplate.queryForList("select user_id as userId, opponent_handicap as handicap, division_id as divisionId, matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_handicap_division_vw");
-        handicapChallenge = jdbcTemplate.queryForList("select user_id as userId, opponent_handicap as handicap, matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_handicap_challenge_vw");
+        //handicapSeason = jdbcTemplate.queryForList("select user_id as userId, opponent_handicap as handicap, season_id as seasonId, matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_handicap_season_vw");
+        //handicapDivision = jdbcTemplate.queryForList("select user_id as userId, opponent_handicap as handicap, division_id as divisionId, matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_handicap_division_vw");
+        //handicapChallenge = jdbcTemplate.queryForList("select user_id as userId, opponent_handicap as handicap, matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_handicap_challenge_vw");
+
+        handicapSeason = Collections.emptyList();
+        handicapDivision = Collections.emptyList();
+        handicapChallenge = Collections.emptyList();
+
         Map<Integer,UserStats>  stats = new HashMap<>();
         for (User user : dao.get()) {
             stats.put(user.getId(),getUserStats(user));

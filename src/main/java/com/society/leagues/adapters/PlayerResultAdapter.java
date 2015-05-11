@@ -51,7 +51,7 @@ public class PlayerResultAdapter {
         return result.getPlayerAway().getHandicap();
     }
 
-     public Handicap getOpponentHandicap() {
+    public Handicap getOpponentHandicap() {
         if (result.getPlayerHome().getUser().equals(user)) {
             return result.getPlayerAway().getHandicap();
         }
