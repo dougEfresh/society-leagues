@@ -85,12 +85,12 @@ public class ChallengeResource  {
         }
         challenges.put(Status.SENT,
                 challenges.get(Status.PENDING).stream().
-                        filter(c -> c.getChallenger().equals(u)).
+                        filter(c -> c.getChallenger().equals(u.getId())).
                         collect(Collectors.toList())
         );
         challenges.put(Status.PENDING,
                 challenges.get(Status.PENDING).stream().
-                        filter(c -> !c.getChallenger().equals(u)).
+                        filter(c -> !c.getChallenger().equals(u.getId())).
                         collect(Collectors.toList())
         );
         challenges.put(Status.ACCEPTED,
@@ -98,7 +98,7 @@ public class ChallengeResource  {
                         filter(c -> !c.getDate().isBefore(LocalDate.now())).
                         collect(Collectors.toList())
         );
-        challenges.put(Status.CANCELLED,Collections.EMPTY_LIST);
+        challenges.put(Status.CANCELLED,Collections.emptyList());
 
         for (Status status : challenges.keySet()) {
             for(UserChallengeGroup group : challenges.get(status)) {
@@ -299,7 +299,7 @@ public class ChallengeResource  {
         }
 
         sendEmail(opponent,u,Status.NOTIFY);
-        return userResource.get(u.getId());
+        return userResource.get(u.getLogin());
     }
 
     private void createChallenge(User challenger, User opponent, DivisionType type, Slot slot) {
