@@ -11,6 +11,7 @@ public class UserAdapter {
     List<Player> players = new ArrayList<>();
     Map<Status,List<UserChallengeGroup>> challenges = new HashMap<>();
     public static UserAdapter DEFAULT_USER;
+
     static {
 	User u = new User();
 	u.setId(0);
@@ -44,23 +45,18 @@ public class UserAdapter {
         return user.getRole();
     }
 
-    public Set<Integer> getCurrentSeasons() {
+    public Set<Integer> getSeasons() {
         Set<Integer> ids = new HashSet<>();
         for (Player player : players.stream().filter(p-> !p.getDivision().isChallenge()).collect(Collectors.toList())) {
-            if (player.getSeason().getSeasonStatus() == Status.ACTIVE) {
                 ids.add(player.getSeason().getId());
-            }
         }
         return ids;
     }
 
-    public Set<TeamSeasonAdapter> getCurrentTeams() {
-        Set<TeamSeasonAdapter> teams = new HashSet<>();
+    public Set<Integer> getTeams() {
+        Set<Integer> teams = new HashSet<>();
         for (Player player : players.stream().filter(p-> !p.getDivision().isChallenge()).collect(Collectors.toList())) {
-            if (player.getSeason().getSeasonStatus() == Status.ACTIVE) {
-                TeamSeasonAdapter team = new TeamSeasonAdapter(player.getTeam(),player.getSeason());
-                teams.add(team);
-            }
+            teams.add(player.getTeam().getId());
         }
         return teams;
     }

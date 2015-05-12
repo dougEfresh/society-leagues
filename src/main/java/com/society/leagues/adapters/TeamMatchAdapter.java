@@ -5,6 +5,7 @@ import com.society.leagues.client.api.domain.PlayerResult;
 import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.client.api.domain.TeamResult;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -80,8 +81,8 @@ public class TeamMatchAdapter {
         return teamResult.getHomeRacks();
     }
 
-    public LocalDateTime matchDate() {
-        return teamMatch.getMatchDate();
+    public LocalDate getMatchDate() {
+        return teamMatch.getMatchDate().toLocalDate();
     }
 
     public List<TeamPlayerResultAdapter> teamResults() {
@@ -145,6 +146,11 @@ public class TeamMatchAdapter {
         }
         return loses;
     }
+
+    public Integer getSeasonId() {
+        return teamMatch.getSeason().getId();
+    }
+
 
     private Player find(Integer u) {
         for (PlayerResult playerResult : playerResults) {

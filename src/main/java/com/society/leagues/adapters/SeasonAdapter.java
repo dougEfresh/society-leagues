@@ -3,40 +3,45 @@ package com.society.leagues.adapters;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Status;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 public class SeasonAdapter {
 
     Season season;
-    Map<LocalDateTime,List<TeamMatchAdapter>> teamMatchAdapters;
 
-    public SeasonAdapter(Season season, Map<LocalDateTime,List<TeamMatchAdapter>> teamMatchAdapters) {
+    public SeasonAdapter(Season season) {
         this.season = season;
-        this.teamMatchAdapters = teamMatchAdapters;
     }
 
     public SeasonAdapter() {
     }
 
-    public Season getSeason() {
-        return season;
+    public Integer getId() {
+        return season.getId();
     }
 
-    public void setSeason(Season season) {
-        this.season = season;
+    public String getName() {
+        return season.getName();
+    }
+
+    public Date getStartDate() {
+        return season.getStartDate();
+    }
+
+    public Date getEndDate() {
+
+        return season.getEndDate();
+    }
+
+    public Status getStatus() {
+        return season.getSeasonStatus();
     }
 
     public Integer getDivision() {
         return season.getDivision().getId();
-    }
-
-    public boolean current() {
-        return this.season.getSeasonStatus() == Status.ACTIVE;
-    }
-
-    public Map<LocalDateTime,List<TeamMatchAdapter>> getTeamMatches() {
-        return teamMatchAdapters;
     }
 }

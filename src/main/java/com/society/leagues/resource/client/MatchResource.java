@@ -1,6 +1,7 @@
 package com.society.leagues.resource.client;
 
 import com.society.leagues.adapters.TeamMatchAdapter;
+import com.society.leagues.client.api.domain.Status;
 import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.dao.PlayerResultDao;
 import com.society.leagues.dao.TeamMatchDao;
@@ -36,14 +37,31 @@ public class MatchResource {
             List<TeamMatchAdapter> matchDate = new ArrayList<>(10);
             for (TeamMatch m : matches.stream().filter(tm->tm.getMatchDate().isEqual(date)).collect(Collectors.toList())) {
                 TeamMatchAdapter adapter = new TeamMatchAdapter(m,
-                    teamResultDao.getByMatch(m.getId()),
-                    playerResultDao.get().stream()
-                            .filter(p->p.getTeamMatch().getId().equals(m.getId()))
-                            .collect(Collectors.toList()));
+                        teamResultDao.getByMatch(m.getId()),
+                        playerResultDao.get().stream()
+                                .filter(p->p.getTeamMatch().getId().equals(m.getId()))
+                                .collect(Collectors.toList()));
                 matchDate.add(adapter);
             }
             retVal.put(date,matchDate);
         }
         return retVal;
     }
+
+
+
+    @RequestMapping(value = "/match/teams/current", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<TeamMatchAdapter> getTeamMatchesCurrent() {
+        List<TeamMatch> matches = teamMatchDao.get().stream().filter(m->m.getSeason().getSeasonStatus() == Status.ACTIVE).collect(Collectors.toList());
+        List<TeamMatchAdapter> adapter = new ArrayList<>();
+        for (TeamMatch match : matches) {
+            adapter.add(new TeamMatchAdapter(
+                    match,
+                    teamResultDao.getByMatch(match.getId()),
+                    playerResultDao.get().stream().filter(p->p.getTeamMatch().getId().equals(match.getId())).collect(Collectors.toList())));
+        }
+        return adapter;
+    }
+
+
 }

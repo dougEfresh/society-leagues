@@ -43,7 +43,7 @@ public class UserResource  {
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<Integer,UserAdapter> get() {
+    public List<UserAdapter> get() {
         List<User> users = dao.get().stream().sorted(new Comparator<User>() {
             @Override
             public int compare(User o1, User o2) {
@@ -53,13 +53,7 @@ public class UserResource  {
                         u.getName().contains("FORFEIT") || u.getName().contains("BYE")  || u.getName().contains("HANDICAP")
                 )
         ).collect(Collectors.toList());
-
-        Map<Integer,UserAdapter> userAdapters = new HashMap<>();
-        for (User user : users) {
-            UserAdapter adapter = new UserAdapter(user,playerDao.getByUser(user),challengeResource.getChallenges(user.getId()));
-            userAdapters.put(user.getId(),adapter);
-        }
-        return userAdapters;
+        return users.stream().map(user -> new UserAdapter(user, playerDao.getByUser(user), challengeResource.getChallenges(user.getId()))).collect(Collectors.toList());
     }
 
     public UserAdapter get(String login) {
