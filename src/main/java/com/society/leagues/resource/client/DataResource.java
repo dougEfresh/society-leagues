@@ -51,7 +51,7 @@ public class DataResource {
         data.put("users",userResource.get());
         data.put("userResults",resultResource.getCurrentResults());
         data.put("teamResults",matchResource.getTeamMatchesCurrent());
-        data.put("stats",statsResource.getStats());
+        data.put("userStats",statsResource.getStats());
         data.put("teamStats", statsResource.getTeamStats());
         dataCache.setCache(data);
         return data;
