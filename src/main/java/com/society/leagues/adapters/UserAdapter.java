@@ -1,7 +1,7 @@
 package com.society.leagues.adapters;
 
 import com.society.leagues.client.api.domain.*;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -47,8 +47,8 @@ public class UserAdapter {
 
     public Set<Integer> getSeasons() {
         Set<Integer> ids = new HashSet<>();
-        for (Player player : players.stream().filter(p-> !p.getDivision().isChallenge()).collect(Collectors.toList())) {
-                ids.add(player.getSeason().getId());
+        for (Player player : players) {
+	    ids.add(player.getSeason().getId());
         }
         return ids;
     }
@@ -61,8 +61,9 @@ public class UserAdapter {
         return teams;
     }
 
+    @JsonIgnore
     public boolean isChallenge() {
-        Optional<Player> playerOptional = players.stream().filter(p->p.getDivision().isChallenge()).findFirst();
+        Optional<Player> playerOptional =  players.stream().filter(p->p.getDivision().isChallenge()).findFirst();
         return playerOptional.isPresent();
     }
 
