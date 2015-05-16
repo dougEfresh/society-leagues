@@ -45,6 +45,7 @@ public class DataResource {
         if (!dataCache.isEmpty()) {
 	    //don't cache slots
 	    dataCache.getCache().put("slots", challengeResource.getSlots());
+	    dataCache.getCache().put("users",userResource.get());
             return dataCache.getCache();
         }
         Map<String,Object> data = new HashMap<>();
