@@ -332,7 +332,7 @@ public class ChallengeResource  {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.ALL_VALUE)
-    public List<Slot> getSlots() throws ParseException {
+    public List<Slot> getSlots() {
         LocalDate now = LocalDate.now().with(DayOfWeek.SUNDAY);
         LocalDate end = LocalDate.now().plusDays(40);
         List<Slot> slots = new ArrayList<>();

@@ -49,7 +49,6 @@ public class Slot extends LeagueObject {
                 .appendValue(ChronoField.HOUR_OF_DAY, 2)
                 .appendLiteral(":00").toFormatter()
 				);
-				//                .appendValue(ChronoField.MINUTE_OF_DAY, 2).toFormatter());
     }
 
     @Override
