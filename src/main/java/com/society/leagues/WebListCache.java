@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class WebListCache<T extends List> {
-    public static final int EVICT_TIMEOUT = 60 * 60 * 1000 ;
+    public static final int EVICT_TIMEOUT =  60 * 1000 ;
     private static Logger logger = LoggerFactory.getLogger(WebMapCache.class);
     final AtomicReference<T> cache;
 
