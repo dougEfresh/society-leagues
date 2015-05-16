@@ -15,7 +15,11 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -324,18 +328,23 @@ public class ChallengeResource  {
             dao.requestChallenge(challenge);
     }
 
-    @RequestMapping(value = "/challenge/slots/{date}",
+    @RequestMapping(value = "/challenge/slots",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.ALL_VALUE)
-    public List<Slot> getSlots(@PathVariable(value = "date") String date) throws ParseException {
-        return slotDao.get(LocalDate.parse(date).atStartOfDay()).stream().sorted(new Comparator<Slot>() {
-            @Override
-            public int compare(Slot o1, Slot o2) {
-                return o1.getLocalDateTime().compareTo(o2.getLocalDateTime());
-            }
-        }).collect(Collectors.toList());
+    public List<Slot> getSlots() throws ParseException {
+        LocalDate now = LocalDate.now().with(DayOfWeek.SUNDAY);
+        LocalDate end = LocalDate.now().plusDays(40);
+        List<Slot> slots = new ArrayList<>();
+        while(now.isBefore(end)) {
+            slots.addAll(slotDao.get(now.atStartOfDay()).stream().sorted(new Comparator<Slot>() {
+                @Override
+                public int compare(Slot o1, Slot o2) {
+                    return o1.getLocalDateTime().compareTo(o2.getLocalDateTime());
+                    }
+            }).collect(Collectors.toList()));
+            now = now.plusDays(7);
+        }
+        return slots;
     }
-
-
 }

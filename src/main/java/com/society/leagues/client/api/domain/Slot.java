@@ -1,5 +1,7 @@
 package com.society.leagues.client.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -41,6 +43,7 @@ public class Slot extends LeagueObject {
         this.allocated = allocated;
     }
 
+    @JsonIgnore
     public String getTime() {
         return this.time.format(new DateTimeFormatterBuilder()
                 .appendValue(ChronoField.HOUR_OF_DAY, 2)
