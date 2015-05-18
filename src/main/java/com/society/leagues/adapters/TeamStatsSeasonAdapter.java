@@ -1,7 +1,6 @@
 package com.society.leagues.adapters;
 
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
 
@@ -29,7 +28,7 @@ public class TeamStatsSeasonAdapter {
         return ((BigInteger) stats.get("wins")).intValue();
     }
 
-    public Integer getLost() {
+    public Integer getLoses() {
         return ((BigInteger) stats.get("loses")).intValue();
     }
 
@@ -37,7 +36,7 @@ public class TeamStatsSeasonAdapter {
         return ((BigInteger) stats.get("racks_for")).intValue();
     }
 
-    public Integer getRacksAgainsts() {
+    public Integer getracksAgainst() {
 
         return ((BigInteger) stats.get("racks_against")).intValue();
     }
