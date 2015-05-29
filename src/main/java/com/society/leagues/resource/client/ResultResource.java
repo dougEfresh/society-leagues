@@ -69,12 +69,18 @@ public class ResultResource {
     }
 
     private List<PlayerResultRawAdapter> getPlayerResults(boolean active) {
-        //    u.getName().contains("FORFEIT") || u.getName().contains("BYE")  || u.getName().contains("HANDICAP")
+        /**
+         * Only grab challenge league results
+         */
         List<PlayerResult> results;
         if (active) {
-            results = playerResultDao.get().stream().filter(p->p.getTeamMatch().getSeason().getSeasonStatus() == Status.ACTIVE).collect(Collectors.toList());
+            results = playerResultDao.get().stream().
+                    filter(p->p.getTeamMatch().getSeason().getSeasonStatus() == Status.ACTIVE).
+                    filter(p->p.getTeamMatch().getSeason().getDivision().isChallenge())
+                    .collect(Collectors.toList());
         } else {
-            results = playerResultDao.get().stream().filter(p->p.getTeamMatch().getSeason().getSeasonStatus() != Status.ACTIVE).collect(Collectors.toList());
+            results = playerResultDao.get().stream().filter(p->p.getTeamMatch().getSeason().getSeasonStatus() != Status.ACTIVE)
+                    .collect(Collectors.toList());
         }
         List<PlayerResultRawAdapter> resultsAdapter = new ArrayList<>(results.size());
         for (PlayerResult playerResult : results) {

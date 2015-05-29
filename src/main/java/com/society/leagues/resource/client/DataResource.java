@@ -43,9 +43,9 @@ public class DataResource {
     @RequestMapping(value = "/data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String,Object> data() {
         if (!dataCache.isEmpty()) {
-	    //don't cache slots
-	    dataCache.getCache().put("slots", challengeResource.getSlots());
-	    dataCache.getCache().put("users",userResource.get());
+            //don't cache slots
+            dataCache.getCache().put("slots", challengeResource.getSlots());
+            dataCache.getCache().put("users",userResource.get());
             return dataCache.getCache();
         }
         Map<String,Object> data = new HashMap<>();
@@ -57,7 +57,7 @@ public class DataResource {
         data.put("teamResults",matchResource.getTeamMatchesCurrent());
         data.put("userStats",statsResource.getStats());
         data.put("teamStats", statsResource.getTeamStats());
-	data.put("slots", statsResource.getTeamStats());
+        data.put("slots", statsResource.getTeamStats());
         dataCache.setCache(data);
         return data;
     }

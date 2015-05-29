@@ -52,7 +52,10 @@ public class MatchResource {
 
     @RequestMapping(value = "/match/teams/current", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TeamMatchAdapter> getTeamMatchesCurrent() {
-        List<TeamMatch> matches = teamMatchDao.get().stream().filter(m->m.getSeason().getSeasonStatus() == Status.ACTIVE).collect(Collectors.toList());
+        List<TeamMatch> matches = teamMatchDao.get().stream().
+                filter(m->m.getSeason().getSeasonStatus() == Status.ACTIVE).
+                filter(m->m.getSeason().getDivision().isChallenge()).
+                collect(Collectors.toList());
         List<TeamMatchAdapter> adapter = new ArrayList<>();
         for (TeamMatch match : matches) {
             adapter.add(new TeamMatchAdapter(
