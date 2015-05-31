@@ -109,7 +109,7 @@ public class UserDao extends Dao<User> implements UserClientApi, UserAdminApi{
 
     @Override
     public User get(String login) {
-        return get().stream().filter(u -> u.getLogin().equals(login)).findFirst().orElse(null);
+        return get().stream().filter(u -> u.getLogin().equalsIgnoreCase(login)).findFirst().orElse(null);
     }
 
 }

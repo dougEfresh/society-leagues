@@ -39,7 +39,7 @@ public class UserResource  {
 
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserAdapter get(@PathVariable Integer id) {
-        return get().get(id);
+        return get().stream().filter(u->u.getUserId().equals(id)).findFirst().orElse(null);
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

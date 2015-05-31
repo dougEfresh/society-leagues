@@ -1,6 +1,5 @@
 package com.society.leagues.resource.client;
 import com.society.leagues.adapters.*;
-import com.society.leagues.client.api.domain.division.Division;
 import com.society.leagues.email.EmailSender;
 import com.society.leagues.email.EmailService;
 import com.society.leagues.email.EmailTaskRunner;
@@ -14,22 +13,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalField;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @RequestMapping(value = "/api")
 @RestController
+@SuppressWarnings("unused")
 public class ChallengeResource  {
     private static Logger logger = LoggerFactory.getLogger(ChallengeResource.class);
     @Autowired ChallengeDao dao;
     @Autowired PlayerDao playerDao;
-    @Autowired PlayerResultDao playerResultDao;
     @Autowired UserDao userDao;
     @Autowired SlotDao slotDao;
     @Autowired EmailSender emailSender;
@@ -249,6 +244,7 @@ public class ChallengeResource  {
         for (Challenge c : challenges) {
             if (c.getChallenger().equals(challenge.getChallenger()) &&
                     c.getOpponent().equals(challenge.getOpponent()) &&
+                    (c.getStatus() != Status.CANCELLED) &&
                     c.getSlot().equals(challenge.getSlot())
                     ) {
                 logger.warn("Trying to create a request for one that already exists:" + c.getId());
@@ -268,12 +264,7 @@ public class ChallengeResource  {
         LocalDate end = LocalDate.now().plusDays(40);
         List<Slot> slots = new ArrayList<>();
         while(now.isBefore(end)) {
-            slots.addAll(slotDao.get(now.atStartOfDay()).stream().sorted(new Comparator<Slot>() {
-                @Override
-                public int compare(Slot o1, Slot o2) {
-                    return o1.getLocalDateTime().compareTo(o2.getLocalDateTime());
-                    }
-            }).collect(Collectors.toList()));
+            slots.addAll(slotDao.get(now.atStartOfDay()).stream().sorted((o1, o2) -> o1.getLocalDateTime().compareTo(o2.getLocalDateTime())).collect(Collectors.toList()));
             now = now.plusDays(7);
         }
         return slots;

@@ -1,7 +1,5 @@
 package com.society.leagues.client.api.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +70,6 @@ public class User extends LeagueObject {
         this.email = email;
     }
 
-    @JsonIgnore
     public String getPassword() {
         return password;
     }
