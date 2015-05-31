@@ -16,8 +16,6 @@ import java.sql.Statement;
 
 @Component
 public class UserDao extends Dao<User> implements UserClientApi, UserAdminApi{
-    @Autowired PlayerDao playerDao;
-
     public RowMapper<User> rowMapper = (rs, rowNum) -> {
         User user = new User();
         user.setId(rs.getInt("user_id"));

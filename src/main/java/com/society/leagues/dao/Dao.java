@@ -75,7 +75,8 @@ public abstract class Dao<Q extends LeagueObject> implements ClientApi<Q> {
             GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(st,keyHolder);
             thing.setId(keyHolder.getKey().intValue());
-            refreshCache();
+            cache.add(thing);
+            //refreshCache();
         } catch (Throwable t) {
             logger.error(t.getMessage(),t);
             return null;
@@ -86,7 +87,8 @@ public abstract class Dao<Q extends LeagueObject> implements ClientApi<Q> {
     public Boolean delete(Q thing, String sql) {
         try {
             Boolean returned = jdbcTemplate.update(sql, thing.getId()) > 0;
-            refreshCache();
+            cache.remove(thing);
+            //refreshCache();
             return returned;
         } catch (Throwable t) {
             logger.error(t.getMessage(),t);
@@ -94,11 +96,11 @@ public abstract class Dao<Q extends LeagueObject> implements ClientApi<Q> {
         return Boolean.FALSE;
     }
 
-    public <T extends LeagueObject> T modify(T thing, String sql, Object ...args) {
+    public Q modify(Q thing, String sql, Object ...args) {
         try {
             if (jdbcTemplate.update(sql,args) <= 0)
                 return null;
-            refreshCache();
+            cache.modify(thing.getId(),thing);
             return thing;
         } catch (Throwable t) {
             logger.error(t.getMessage(),t);
@@ -110,6 +112,7 @@ public abstract class Dao<Q extends LeagueObject> implements ClientApi<Q> {
         try {
             if (jdbcTemplate.update(sql,args) <= 0)
                 return null;
+
             return thing;
         } catch (Throwable t) {
             logger.error(t.getMessage(),t);

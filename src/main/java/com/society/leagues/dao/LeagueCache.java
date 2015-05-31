@@ -18,6 +18,17 @@ public class LeagueCache<T extends LeagueObject> {
 
     private Map<Integer,T> cache = new HashMap<>();
 
+    public synchronized void modify(Integer id, T thing) {
+        cache.put(id,thing);
+    }
+
+    public synchronized void remove(T thing) {
+        cache.remove(thing);
+    }
+
+    public synchronized void add(T thing) {
+        cache.put(thing.getId(),thing);
+    }
     public synchronized final Collection<T> get() {
         //return cloner.deepClone(cache.values());
         return cache.values();
