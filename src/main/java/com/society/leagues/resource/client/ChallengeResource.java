@@ -80,7 +80,7 @@ public class ChallengeResource  {
         User u = userDao.get(userId);
         Map<Status,List<UserChallengeGroup>> challenges = new HashMap<>();
         for (Status status : Status.values()) {
-            if (status != status)
+            if (status != Status.CANCELLED)
                 challenges.put(status,getUserChallengeGroups(u, status));
         }
         challenges.put(Status.SENT,
