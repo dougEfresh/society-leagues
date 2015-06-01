@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -65,41 +64,13 @@ public class ChallengeDao extends Dao<Challenge>  {
     public Challenge acceptChallenge(Challenge challenge) {
         return modify(challenge,"UPDATE challenge SET status  = ? WHERE challenge_id = ?", Status.ACCEPTED.name(), challenge.getId());
     }
-    
-    public List<Challenge> listChallenges(Integer userId) {
-        User u  = userDao.get(userId);
-        if (u == null)
-            return Collections.emptyList();
-
-        return get().stream().filter(c-> c.getOpponent().getUser().equals(u) || c.getChallenger().getUser().equals(u)).collect(Collectors.toList());
-    }
-
-    public Challenge cancelChallenge(Challenge challenge) {
-        return modify(challenge,"UPDATE challenge SET status  = ? WHERE challenge_id = ?", Status.CANCELLED.name(), challenge.getId());
-    }
-
-    public void pending(List<Challenge> challenges) {
-        for (Challenge challenge : challenges) {
-            modifyNoRefresh(challenge,"UPDATE challenge SET status  = ? WHERE challenge_id = ?", Status.PENDING.name(), challenge.getId());
-        }
-        refreshCache();
-    }
 
     public void cancel(List<Challenge> challenges) {
         for (Challenge challenge : challenges) {
-            modifyNoRefresh(challenge,"UPDATE challenge SET status  = ? WHERE challenge_id = ?", Status.CANCELLED.name(), challenge.getId());
+            modify(challenge, "UPDATE challenge SET status  = ? WHERE challenge_id = ?", Status.CANCELLED.name(), challenge.getId());
         }
-        refreshCache();
     }
 
-    public List<Challenge> getChallenges(User u, Status status) {
-        List<Player> players = playerDao.getByUser(u);
-        List<Challenge> challenges = new ArrayList<>();
-        for (Player player : players) {
-            challenges.addAll(getByPlayer(player).stream().filter(c -> c.getStatus() == status).collect(Collectors.toList()));
-        }
-        return  challenges;
-    }
 
     public Challenge modifyChallenge(Challenge challenge) {
         return modify(challenge, "update challenge set " +
@@ -115,26 +86,12 @@ public class ChallengeDao extends Dao<Challenge>  {
                 challenge.getId());
     }
 
-    public List<LocalDateTime> slots(LocalDateTime date) {
-        return Slot.getDefault(date);
-    }
-
     private List<Player> findChallengeUsers(Division division,Handicap handicap, Collection<Player> players) {
         return players.stream().
                 filter(p -> p.getDivision().getId().equals(division.getId()) &&
                         p.getHandicap().ordinal() >= handicap.ordinal()-3 &&
                         p.getHandicap().ordinal() <= handicap.ordinal()+3).
                 collect(Collectors.toList());
-    }
-
-    public List<Challenge> getByPlayer(Player p) {
-        if (p == null) {
-            return Collections.emptyList();
-        }
-        return get().stream().
-                filter(c -> c.getChallenger().equals(p) ||
-                                c.getOpponent().equals(p)
-                ).collect(Collectors.toList());
     }
 
     @Override
@@ -144,21 +101,28 @@ public class ChallengeDao extends Dao<Challenge>  {
 
     final RowMapper<Challenge> mapper = (rs, rowNum) -> {
         Challenge challenge = new Challenge();
-        challenge.setSlot(slotDao.get(rs.getInt("slot_id")));
+        Slot s = new Slot();
+        s.setAllocated(rs.getInt("allocated"));
+        s.setId(rs.getInt("c.slot_id"));
+        s.setTime(rs.getTimestamp("slot_time").toLocalDateTime());
+        challenge.setSlot(s);
         challenge.setStatus(Status.valueOf(rs.getString("status")));
         challenge.setId(rs.getInt("challenge_id"));
         challenge.setChallenger(playerDao.get(rs.getInt("player_challenger_id")));
         challenge.setOpponent(playerDao.get(rs.getInt("player_opponent_id")));
         return challenge;
     };
-    
+
+    @Override
+    public String getIdName() {
+        return "challenge_id";
+    }
+
     final static String CREATE = "INSERT INTO challenge(player_challenger_id,player_opponent_id,slot_id,status) VALUES (?,?,?,?)";
 
     @Override
     public String getSql() {
-        return "select * from challenge";
+        return "select * from challenge c join slot s on c.slot_id=s.slot_id";
     }
-
-
 
 }

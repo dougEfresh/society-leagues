@@ -47,7 +47,7 @@ public class ResultResource {
         t.start();
     }
 
-      @RequestMapping(value = "/results/current", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/results/current", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PlayerResultRawAdapter> getCurrentResults() {
         return getPlayerResults(true);
     }

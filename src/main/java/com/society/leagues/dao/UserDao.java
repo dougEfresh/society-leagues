@@ -48,7 +48,7 @@ public class UserDao extends Dao<User> implements UserClientApi, UserAdminApi{
 
     @Override
     public User modify(User user) {
-        return  modify(user,MODIFY,
+        return  modify(user, MODIFY,
                 user.getLogin(),
                 user.getRole().name(),
                 user.getFirstName(),
@@ -110,4 +110,8 @@ public class UserDao extends Dao<User> implements UserClientApi, UserAdminApi{
         return get().stream().filter(u -> u.getLogin().equalsIgnoreCase(login)).findFirst().orElse(null);
     }
 
+    @Override
+    public String getIdName() {
+        return "user_id";
+    }
 }

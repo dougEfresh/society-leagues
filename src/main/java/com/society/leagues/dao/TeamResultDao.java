@@ -60,6 +60,11 @@ public class TeamResultDao extends Dao<TeamResult> implements TeamResultAdminApi
         };
     }
 
+    @Override
+    public String getIdName() {
+        return "team_result_id";
+    }
+
     final static String CREATE = "INSERT INTO team_result(team_match_id,home_racks,away_racks) VALUES (?,?,?)";
     final static String MODIFY = "UPDATE team_result set team_match_id = ?, home_racks = ?, away_racks = ? where team_result_id = ?";
 }

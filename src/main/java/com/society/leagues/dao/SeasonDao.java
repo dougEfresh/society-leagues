@@ -88,6 +88,11 @@ public class SeasonDao extends Dao<Season> implements SeasonClientApi,SeasonAdmi
     }
 
     @Override
+    public String getIdName() {
+        return "season_id";
+    }
+
+    @Override
     public Season get(String name) {
         return get().stream().filter(s -> s.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
     }

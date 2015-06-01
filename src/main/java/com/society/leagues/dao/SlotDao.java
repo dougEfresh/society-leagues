@@ -63,4 +63,9 @@ public class SlotDao extends Dao<Slot> {
         }
         return slots;
     }
+
+    @Override
+    public String getIdName() {
+        return "slot_id";
+    }
 }

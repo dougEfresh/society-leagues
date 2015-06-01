@@ -49,14 +49,23 @@ public class DataResource {
             return dataCache.getCache();
         }
         Map<String,Object> data = new HashMap<>();
+        logger.info("Getting divisions");
         data.put("divisions",divisionResource.divisions());
+        logger.info("Getting seasons");
         data.put("seasons",seasonResource.getSeasons());
+        logger.info("Getting teams");
         data.put("teams",teamResource.teams());
+        logger.info("Getting users");
         data.put("users",userResource.get());
+        logger.info("Getting user results");
         data.put("userResults",resultResource.getCurrentResults());
+        logger.info("Getting team results");
         data.put("teamResults",matchResource.getTeamMatchesCurrent());
+        logger.info("Getting user stats");
         data.put("userStats",statsResource.getStats());
+        logger.info("Getting team stats");
         data.put("teamStats", statsResource.getTeamStats());
+        logger.info("Getting slots");
         data.put("slots", statsResource.getTeamStats());
         dataCache.setCache(data);
         return data;

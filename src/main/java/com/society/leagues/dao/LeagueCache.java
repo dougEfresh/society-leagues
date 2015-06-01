@@ -1,20 +1,11 @@
 package com.society.leagues.dao;
 
-import com.rits.cloning.Cloner;
 import com.society.leagues.client.api.domain.LeagueObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
 
 
 public class LeagueCache<T extends LeagueObject> {
-    final Cloner cloner;
-
-    public LeagueCache(Cloner cloner) {
-        this.cloner = cloner;
-    }
 
     private Map<Integer,T> cache = new HashMap<>();
 
@@ -23,14 +14,14 @@ public class LeagueCache<T extends LeagueObject> {
     }
 
     public synchronized void remove(T thing) {
-        cache.remove(thing);
+        cache.remove(thing.getId());
     }
 
     public synchronized void add(T thing) {
         cache.put(thing.getId(),thing);
     }
+
     public synchronized final Collection<T> get() {
-        //return cloner.deepClone(cache.values());
         return cache.values();
     }
     
@@ -51,15 +42,11 @@ public class LeagueCache<T extends LeagueObject> {
         return objects;
         //return cloner.deepClone(objects);
     }
-    
-    public synchronized void clear() {
-        cache.clear();
-    }
 
     public synchronized void set(Collection<T> objects) {
         if (objects == null)
             return;
-
+        cache.clear();
         objects.stream().forEach(o -> cache.put(o.getId(),o));
     }
 

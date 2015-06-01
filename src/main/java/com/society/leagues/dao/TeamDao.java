@@ -53,6 +53,11 @@ public class TeamDao extends Dao<Team> implements TeamClientApi, TeamAdminApi {
         return rowMapper;
     }
 
+    @Override
+    public String getIdName() {
+        return "team_id";
+    }
+
     final static String CREATE = "INSERT INTO team (name) VALUES (?)";
 
 }

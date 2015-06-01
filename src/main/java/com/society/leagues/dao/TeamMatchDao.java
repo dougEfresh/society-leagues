@@ -78,6 +78,12 @@ public class TeamMatchDao extends Dao<TeamMatch> implements TeamMatchApi, MatchA
             return ps;
         };
     }
+
+    @Override
+    public String getIdName() {
+        return "team_match_id";
+    }
+
     static String CREATE = "INSERT INTO team_match " +
             "(" +
             "home_team_id,away_team_id,season_id,division_id,match_date) " +

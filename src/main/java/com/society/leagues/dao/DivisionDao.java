@@ -56,6 +56,11 @@ public class DivisionDao extends Dao<Division> implements DivisionAdminApi, Divi
         };
     }
 
+    @Override
+    public String getIdName() {
+        return "division_id";
+    }
+
     final static String CREATE = "INSERT INTO division(league_type,division_type) VALUES (?,?)";
 
 }

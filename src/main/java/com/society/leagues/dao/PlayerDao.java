@@ -60,15 +60,6 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
     }
 
     @Override
-    public Player get(Integer id) {
-        List<Player> players = get(Arrays.asList(id));
-        if (players == null || players.isEmpty())
-            return null;
-
-        return players.get(0);
-    }
-
-    @Override
     public Player modify(final Player player) {
         return modify(player,MODIFY,
                 player.getSeason().getId(),
@@ -78,20 +69,6 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
                 player.getId()
         );
 
-    }
-
-    public List<Player> findHomeTeamPlayers(TeamMatch match) {
-        return get().stream().filter(p -> p.getTeam().equals(match.getHome()) &&
-                        p.getDivision().equals(match.getDivision()) &&
-                        p.getSeason().equals(match.getSeason())
-        ).collect(Collectors.toList());
-    }
-
-    public List<Player> findAwayTeamPlayers(TeamMatch match) {
-        return get().stream().filter(p -> p.getTeam().equals(match.getAway()) &&
-                        p.getDivision().equals(match.getDivision()) &&
-                        p.getSeason().equals(match.getSeason())
-        ).collect(Collectors.toList());
     }
 
     protected PreparedStatementCreator getCreateStatement(final Player player) {
@@ -143,6 +120,11 @@ public class PlayerDao extends Dao<Player> implements PlayerClientApi, PlayerAdm
     @Override
     public RowMapper<Player> getRowMapper() {
             return rowMapper;
+    }
+
+    @Override
+    public String getIdName() {
+        return "player_id";
     }
 
     @Override

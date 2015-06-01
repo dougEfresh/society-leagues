@@ -1,6 +1,5 @@
 package com.society.leagues.dao;
 
-import com.rits.cloning.Cloner;
 import com.society.leagues.client.api.ClientApi;
 import com.society.leagues.client.api.domain.LeagueObject;
 import org.slf4j.Logger;
@@ -10,7 +9,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
@@ -19,14 +17,14 @@ import java.util.stream.Collectors;
 public abstract class Dao<Q extends LeagueObject> implements ClientApi<Q> {
     static Logger logger = LoggerFactory.getLogger(Dao.class);
     @Autowired JdbcTemplate jdbcTemplate;
-    @Autowired Cloner cloner;
     protected LeagueCache<Q> cache;
 
     @PostConstruct
     public void init() {
-        cache = new LeagueCache<>(cloner);
+        cache = new LeagueCache<>();
     }
 
+    public abstract String getIdName();
     /**
      * The sql to get the LeagueObject Q
      * @return String
@@ -40,12 +38,14 @@ public abstract class Dao<Q extends LeagueObject> implements ClientApi<Q> {
     public abstract RowMapper<Q> getRowMapper();
 
     public Q get(Integer id) {
-        Q obj = cache.get(id);
-        if (obj != null)
-            return obj;
-
-        refreshCache();
+        if (cache.isEmpty()) {
+            refreshCache();
+        }
         return cache.get(id);
+    }
+
+    private Q getNoCache(Integer id) {
+        return jdbcTemplate.queryForObject(getSql() + " where " + getIdName() + " = ?", getRowMapper(), id);
     }
 
     @Override
@@ -61,7 +61,7 @@ public abstract class Dao<Q extends LeagueObject> implements ClientApi<Q> {
         return get().stream().filter(o -> id.contains(o.getId())).collect(Collectors.toList());
     }
 
-    public List<Q> list(String sql, Object ...args) {
+    private List<Q> list(String sql, Object ...args) {
         try {
             return jdbcTemplate.query(sql, getRowMapper(),args);
         } catch (Throwable t){
@@ -75,20 +75,19 @@ public abstract class Dao<Q extends LeagueObject> implements ClientApi<Q> {
             GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(st,keyHolder);
             thing.setId(keyHolder.getKey().intValue());
-            cache.add(thing);
-            //refreshCache();
+            Q n = getNoCache(keyHolder.getKey().intValue());
+            cache.add(n);
+            return n;
         } catch (Throwable t) {
             logger.error(t.getMessage(),t);
             return null;
         }
-        return thing;
     }
 
     public Boolean delete(Q thing, String sql) {
         try {
             Boolean returned = jdbcTemplate.update(sql, thing.getId()) > 0;
             cache.remove(thing);
-            //refreshCache();
             return returned;
         } catch (Throwable t) {
             logger.error(t.getMessage(),t);
@@ -100,30 +99,17 @@ public abstract class Dao<Q extends LeagueObject> implements ClientApi<Q> {
         try {
             if (jdbcTemplate.update(sql,args) <= 0)
                 return null;
-            cache.modify(thing.getId(),thing);
-            return thing;
+
+            cache.modify(thing.getId(),getNoCache(thing.getId()));
+            return cache.get(thing.getId());
         } catch (Throwable t) {
             logger.error(t.getMessage(),t);
         }
         return null;
     }
 
-    public <T extends LeagueObject> T modifyNoRefresh(T thing, String sql, Object ...args) {
-        try {
-            if (jdbcTemplate.update(sql,args) <= 0)
-                return null;
-
-            return thing;
-        } catch (Throwable t) {
-            logger.error(t.getMessage(),t);
-        }
-        return null;
-    }
-
-    static final int HALF_AN_HOUR_IN_MILLISECONDS = 30 * 60 * 1000;
-    @Scheduled(fixedRate = HALF_AN_HOUR_IN_MILLISECONDS)
     protected synchronized void refreshCache() {
-        cache.clear();
+        logger.info("Refreshing cache " + this.getClass().getCanonicalName());
         cache.set(list(getSql()));
     }
 }

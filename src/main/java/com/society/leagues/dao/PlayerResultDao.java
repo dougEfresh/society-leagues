@@ -70,5 +70,10 @@ public class PlayerResultDao extends Dao<PlayerResult> {
         return rowMapper;
     }
 
+    @Override
+    public String getIdName() {
+        return "player_result_id";
+    }
+
     static String CREATE = "insert into player_result (team_match_id,player_home_id,player_away_id,home_racks,away_racks) VALUES(?,?,?,?,?)";
 }

@@ -101,8 +101,10 @@ public class ChallengeResource  {
         challenges.put(Status.CANCELLED,Collections.emptyList());
 
         for (Status status : challenges.keySet()) {
-            for(UserChallengeGroup group : challenges.get(status)) {
-                group.setStatus(status);
+            if (status != Status.CANCELLED) {
+                for (UserChallengeGroup group : challenges.get(status)) {
+                    group.setStatus(status);
+                }
             }
         }
         return challenges;
@@ -222,11 +224,16 @@ public class ChallengeResource  {
         User opponent = userDao.get(request.getOpponent().getId());
 
         for (Slot slot : request.getSlots()) {
+            Slot s  = slotDao.get(slot.getId());
+            if (s == null) {
+                logger.error("Slot not found: " + slot.getId() );
+                return UserAdapter.DEFAULT_USER;
+            }
             if (request.isEight())
-                createChallenge(u,opponent,DivisionType.EIGHT_BALL_CHALLENGE,slot);
+                createChallenge(u,opponent,DivisionType.EIGHT_BALL_CHALLENGE,s);
 
             if (request.isNine())
-                createChallenge(u,opponent,DivisionType.NINE_BALL_CHALLENGE,slot);
+                createChallenge(u,opponent,DivisionType.NINE_BALL_CHALLENGE,s);
         }
 
         sendEmail(opponent,u,Status.NOTIFY);
