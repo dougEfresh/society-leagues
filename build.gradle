@@ -51,10 +51,9 @@ dependencies {
     compile 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
     compile 'org.codehaus.groovy:groovy-all:2.3.8'
-    compile 'uk.com.robust-it:cloning:1.9.1'
-    compile 'com.sun.mail:javax.mail:1.5.2'
 
-//    compile("org.springframework.social:spring-social-facebook")
+    compile  'com.netflix.feign:feign-core:8.1.0'
+    compile  'com.netflix.feign:feign-jackson:8.1.0'
 
     //Test
     testCompile 'org.springframework.boot:spring-boot-starter-test'

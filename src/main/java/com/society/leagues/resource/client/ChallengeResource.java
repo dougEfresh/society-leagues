@@ -1,8 +1,6 @@
 package com.society.leagues.resource.client;
 import com.society.leagues.adapters.*;
 import com.society.leagues.email.EmailSender;
-import com.society.leagues.email.EmailService;
-import com.society.leagues.email.EmailTaskRunner;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.api.domain.division.DivisionType;
 import com.society.leagues.dao.*;
@@ -29,7 +27,6 @@ public class ChallengeResource  {
     @Autowired SlotDao slotDao;
     @Autowired EmailSender emailSender;
     @Value("${service-url:http://leaguesdev.societybilliards.com}") String serviceUrl;
-    @Autowired EmailService emailService;
     @Autowired UserResource userResource;
     @Autowired SeasonDao seasonDao;
     @Autowired TeamDao teamDao;
@@ -181,7 +178,6 @@ public class ChallengeResource  {
     private void sendEmail(User to, User from, Status status) {
         String subject;
         String body;
-        EmailTaskRunner taskRunner;
 
         switch (status) {
             case NOTIFY:
@@ -209,9 +205,9 @@ public class ChallengeResource  {
                 return;
 
         }
-        logger.info("Creating an email to " + to.getName() + " subject:" + subject + " ");
-        taskRunner = new EmailTaskRunner(emailSender,subject,body,to.getEmail());
-        emailService.add(taskRunner);
+        logger.info("Creating an email to " + to.getEmail() + " subject:" + subject + " ");
+        emailSender.email(to.getEmail(),subject,body);
+
     }
 
     @RequestMapping(value = "/challenge/request",
