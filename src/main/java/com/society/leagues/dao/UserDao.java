@@ -46,6 +46,10 @@ public class UserDao extends Dao<User> implements UserClientApi, UserAdminApi{
         return  delete(user,"UPDATE users set status = 0 where user_id = ?");
     }
 
+    public Boolean purge(User user) {
+        return delete(user,"delete from  users where user_id = ?");
+    }
+
     @Override
     public User modify(User user) {
         return  modify(user, MODIFY,

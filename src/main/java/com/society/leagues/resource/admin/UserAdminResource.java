@@ -38,5 +38,15 @@ public class UserAdminResource {
             return null;
         }
       return challengeResource.signup(returned.getId());
+        }
+
+    @RequestMapping(value = "/user/purge/{id}/{userId}",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.ALL_VALUE)
+    public Boolean purge(@PathVariable Integer id ,@PathVariable Integer userId) {
+        User u = new User();
+        u.setId(userId);
+        return userDao.purge(u);
     }
 }
