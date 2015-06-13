@@ -24,8 +24,6 @@ public class ChallengeDao extends Dao<Challenge>  {
     @Autowired UserDao userDao;
     @Autowired SlotDao slotDao;
 
-    @Value("${email-override:}") String emailOverride;
-    
     public Collection<Player> getPotentials(Integer id) {
         try {
             User challenger = userDao.get(id);
@@ -108,6 +106,7 @@ public class ChallengeDao extends Dao<Challenge>  {
         challenge.setSlot(s);
         challenge.setStatus(Status.valueOf(rs.getString("status")));
         challenge.setId(rs.getInt("challenge_id"));
+//        challenge.setId(rs.getInt("team_match_id"));
         challenge.setChallenger(playerDao.get(rs.getInt("player_challenger_id")));
         challenge.setOpponent(playerDao.get(rs.getInt("player_opponent_id")));
         return challenge;

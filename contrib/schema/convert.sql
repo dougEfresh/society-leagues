@@ -40,7 +40,7 @@ update leagues.season set start_date= '2013-05-08' where name = '2014,Winter,Mix
 update leagues.season set season_status = 'ACTIVE' where name like '2015%';
 update leagues.season set season_status = 'INACTIVE' where name not like '2015%';
 update leagues.season set season_status = 'ACTIVE' where name like '%Challenge%';
-
+update season set season_status = 'INACTIVE' where name like '%2015,Winter%'; 
 
 /*
 insert into leagues.division(division_type,league_type)
@@ -53,20 +53,14 @@ insert into leagues.division(division_type,league_type)
 VALUES ('EIGHT_BALL_CHALLENGE','INDIVIDUAL');
 insert into leagues.division(division_type,league_type)
 VALUES ('NINE_BALL_CHALLENGE','INDIVIDUAL');
+insert into leagues.division(division_type,league_type)
+VALUES ('EIGHT_BALL_MIXED_MONDAYS','TEAM');
 */
 
-replace into leagues.team_match (team_match_id,season_id,home_team_id,away_team_id,division_id,match_date)
-select match_id,m.season_id,home_team_id,visit_team_id,d.division_id,match_start_date
+replace into leagues.team_match (team_match_id,season_id,home_team_id,away_team_id,match_date)
+select match_id,m.season_id,home_team_id,visit_team_id,match_start_date
  from leagues_old.match_schedule m
    left join leagues.season s on  m.season_id=s.season_id
-   left join leagues.division d on d.division_type =
- (case
-  when s.name like '%9-Ball%' then 'NINE_BALL_TUESDAYS'
-  when s.name like '%Thurs%' then  'EIGHT_BALL_THURSDAYS'
-  when s.name like '%Wed%' then 'EIGHT_BALL_WEDNESDAYS'
-  when s.name like '%Mixed%' then 'EIGHT_BALL_MIXED_MONDAYS'
-   else null
- end)
 where m.league_id in (1,2,4,6) and home_team_id is not null
 ;
 
