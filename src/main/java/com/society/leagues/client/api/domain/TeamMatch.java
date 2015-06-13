@@ -13,7 +13,6 @@ public class TeamMatch extends LeagueObject  {
     @NotNull Team home;
     @NotNull Team away;
     @NotNull Season season;
-    @NotNull Division division;
     LocalDateTime matchDate;
     TeamResult result;
 
@@ -61,11 +60,7 @@ public class TeamMatch extends LeagueObject  {
     }
 
     public Division getDivision() {
-        return division;
-    }
-
-    public void setDivision(Division division) {
-        this.division = division;
+        return this.season.getDivision();
     }
 
     public TeamResult getResult() {
@@ -81,7 +76,6 @@ public class TeamMatch extends LeagueObject  {
         return "TeamMatch{" +
                 "home=" + home +
                 ", away=" + away +
-                ", division=" + division +
                 ", matchDate=" + matchDate +
                 '}';
     }

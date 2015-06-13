@@ -216,7 +216,6 @@ public class SchemaData {
                 Player challenger = challenge.getChallenger();
                 TeamMatch teamMatch = new TeamMatch();
                 teamMatch.setHome(challenger.getTeam());
-                teamMatch.setDivision(challenger.getDivision());
                 teamMatch.setSeason(challenger.getSeason());
                 teamMatch.setMatchDate(challenge.getSlot().getLocalDateTime());
                 teamMatch.setAway(challenge.getOpponent().getTeam());

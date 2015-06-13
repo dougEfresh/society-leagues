@@ -30,14 +30,12 @@ public class TeamMatchDao extends Dao<TeamMatch> implements TeamMatchApi, MatchA
          Season season = seasonDao.get(rs.getInt("season_id"));
          Team home = teamDao.get(rs.getInt("home_team_id"));
          Team away = teamDao.get(rs.getInt("away_team_id"));
-         Division division = divisionDao.get(rs.getInt("division_id"));
 
          TeamMatch m = new TeamMatch();
          m.setMatchDate(rs.getTimestamp("match_date").toLocalDateTime());
          m.setAway(away);
          m.setHome(home);
          m.setSeason(season);
-         m.setDivision(division);
          m.setId(rs.getInt("team_match_id"));
          return m;
     };
@@ -86,9 +84,9 @@ public class TeamMatchDao extends Dao<TeamMatch> implements TeamMatchApi, MatchA
 
     static String CREATE = "INSERT INTO team_match " +
             "(" +
-            "home_team_id,away_team_id,season_id,division_id,match_date) " +
+            "home_team_id,away_team_id,season_id,match_date) " +
             "VALUES " +
-            "(?,?,?,?,?)";
+            "(?,?,?,?)";
 
     static String MODIFY = "UPDATE team_match " +
             "set " +
