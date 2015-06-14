@@ -33,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired PrincipleDetailsService principleDetailsService;
     @Autowired DataSource datasource;
     @Value("${security-disable:false}")
-    boolean disableSecurity = false;
+    boolean securityDisabled = false;
 
     AuthenticationFailureHandler fHandler = (request, response, exception) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
 
@@ -57,30 +57,34 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         CsrfTokenResponseHeaderBindingFilter csrfTokenFilter = new CsrfTokenResponseHeaderBindingFilter();
         http.addFilterAfter(csrfTokenFilter, CsrfFilter.class);
-        if (!disableSecurity) {
+        if (securityDisabled) {
+            http.csrf().disable()
+                    .authorizeRequests()
+                    .antMatchers("/**").permitAll()
+                    .anyRequest().authenticated().and()
+                    .exceptionHandling().authenticationEntryPoint(new AuthenticationEntry("/index.html")).and()
+                    .formLogin().permitAll().loginProcessingUrl("/api/authenticate")
+                    .usernameParameter("username").passwordParameter("password")
+                    .successHandler(loginHandler).failureHandler(fHandler).and()
+                    .logout().logoutUrl("/api/logout").logoutSuccessHandler(logoutHandler).and()
+                    .rememberMe().key("_spring_security_remember_me").tokenValiditySeconds(14400 * 5)
+                    .tokenRepository(tokenRepository());
+        } else {
             http.csrf().disable()
                     .authorizeRequests()
                     .antMatchers("/api/authenticate**").permitAll()
                     .antMatchers("/api/logout**").permitAll()
                     .anyRequest().authenticated().and()
                     .exceptionHandling().authenticationEntryPoint(new AuthenticationEntry("/index.html")).and()
-                    .formLogin().permitAll().loginProcessingUrl("/api/authenticate").usernameParameter("username").passwordParameter("password")
+                    .formLogin().permitAll().loginProcessingUrl("/api/authenticate")
+                    .usernameParameter("username").passwordParameter("password")
                     .successHandler(loginHandler).failureHandler(fHandler).and()
                     .logout().logoutUrl("/api/logout").logoutSuccessHandler(logoutHandler).and()
-                    .rememberMe().key("_spring_security_remember_me").tokenValiditySeconds(86400 * 30).tokenRepository(tokenRepository());
-        } else {
-
-            http.csrf().disable().authorizeRequests().antMatchers("/**").permitAll().
-                    anyRequest().authenticated().and()
-                    .exceptionHandling().authenticationEntryPoint(new AuthenticationEntry("/index.html")).and()
-                    .formLogin().permitAll().loginProcessingUrl("/api/authenticate").usernameParameter("username").passwordParameter("password")
-                    .successHandler(loginHandler).failureHandler(fHandler).and()
-                    .logout().logoutUrl("/api/logout").logoutSuccessHandler(logoutHandler).and()
-                    .rememberMe().key("_spring_security_remember_me").tokenValiditySeconds(14400 * 5).tokenRepository(tokenRepository());
+                    .rememberMe().key("_spring_security_remember_me").tokenValiditySeconds(86400 * 30)
+                    .tokenRepository(tokenRepository());
         }
     }
-
-    @Bean
+@Bean
     public JdbcTokenRepositoryImpl tokenRepository() {
         JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
         tokenRepository.setCreateTableOnStartup(false);
