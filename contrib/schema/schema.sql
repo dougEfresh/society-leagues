@@ -68,6 +68,8 @@ VALUES ('NINE_BALL_CHALLENGE','INDIVIDUAL');
 insert into leagues.division(division_type,league_type)
 VALUES ('EIGHT_BALL_MIXED_MONDAYS','TEAM');
 
+insert into leagues.division(league_type,division_type) VALUES ('INDIVIDUAL','STRAIGHT'); 
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -193,7 +195,7 @@ CREATE TABLE `season` (
   `updated` timestamp NULL DEFAULT NULL,
   `rounds` int(11) NOT NULL,
   `season_status` varchar(255) NOT NULL,
-  `division_id` int(11) DEFAULT NULL,
+  `division_id` int(11) NOT NULL,
   `start_date` date DEFAULT NULL,
   PRIMARY KEY (`season_id`),
   KEY `division_id` (`division_id`),
