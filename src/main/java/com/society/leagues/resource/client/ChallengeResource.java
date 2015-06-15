@@ -143,9 +143,9 @@ public class ChallengeResource  {
         User challenger = userDao.get(dao.get(c.getId()).getChallenger().getUserId());
         dao.cancel(challengeGroup.challenges());
         if (user.equals(challenger)) {
-            sendEmail(opponent, challenger, Status.CANCELLED);
+            sendEmail(opponent, challenger, Status.CANCELLED, null);
         } else {
-            sendEmail(challenger, opponent, Status.CANCELLED);
+            sendEmail(challenger, opponent, Status.CANCELLED, null);
         }
         return userResource.get(user.getLogin());
     }
@@ -171,33 +171,34 @@ public class ChallengeResource  {
         }
         dao.cancel(toCancel);
         dao.acceptChallenge(c);
-        sendEmail(opponent, user, Status.ACCEPTED);
+        sendEmail(opponent, user, Status.ACCEPTED,challenge);
         return userResource.get(user.getLogin());
     }
 
-    private void sendEmail(User to, User from, Status status) {
+    private void sendEmail(User to, User from, Status status, Challenge challenge) {
         String subject;
         String body;
 
         switch (status) {
             case NOTIFY:
-                subject = "Society Leagues - Challenge Request From " + from.getName();
-                body =  String.format("Hello %s,\nYou have a challenge request from %s.\nClick %s for details and approve!\n" +
-                                "Thanks,    From the wonderful people of Society\n",
-                        to.getName(), from.getName(), serviceUrl);
+                subject = "Society Leagues - Challenge Request - " + from.getName();
+                body =  String.format(
+				      "You've been challenged! %s respectfully yet aggressively requests a match with you.\n" +
+                                "Click %s/#/app/challenge/pending for details\n",
+                        from.getName(), serviceUrl);
                 break;
             case ACCEPTED:
-                subject = "Society Leagues - Challenge Request Accepted - " + from.getName();
-                body = String.format("Hello %s,\nYour challenge from %s has been accepted.\nSee %s for details.\n" +
-                                "Thanks,    From the wonderful people of Society\n",
-                                to.getName(), from.getName(), serviceUrl);
+                subject = "Society Leagues - Challenge Accepted - " + from.getName();
+                body = String.format("Your challenge from %s has been accepted.\n" +
+                        "See %s/#/app/challenge/accepted for details."
+                        , from.getName(), serviceUrl);
 
                 break;
             case CANCELLED:
-                subject = "Society Leagues - Challenge Request Declined - " + from.getName();
-                body = String.format("Hello %s,\n%s has declined the challenge.\nClick %s for another challenge.\n" +
-                                "Thanks,    From the wonderful people of Society\n",
-                                to.getName(), from.getName(), serviceUrl);
+                subject = "Society Leagues - Challenge Declined - " + from.getName();
+                body = String.format("%s has declined the challenge.\n" +
+                                "Don't worry! You can click %s/#/app/challenge/request to challenge someone else!\n",
+                                from.getName(), serviceUrl);
 
                 break;
             default:
@@ -232,7 +233,7 @@ public class ChallengeResource  {
                 createChallenge(u,opponent,DivisionType.NINE_BALL_CHALLENGE,s);
         }
 
-        sendEmail(opponent,u,Status.NOTIFY);
+        sendEmail(opponent,u,Status.NOTIFY,null);
         return userResource.get(u.getLogin());
     }
 
