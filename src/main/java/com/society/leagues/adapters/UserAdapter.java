@@ -48,7 +48,7 @@ public class UserAdapter {
     public Set<Integer> getSeasons() {
         Set<Integer> ids = new HashSet<>();
         for (Player player : players) {
-	    ids.add(player.getSeason().getId());
+            ids.add(player.getSeason().getId());
         }
         return ids;
     }
@@ -59,6 +59,25 @@ public class UserAdapter {
             teams.add(player.getTeam().getId());
         }
         return teams;
+    }
+
+    public Map<Integer,Handicap> getCurrentHandicap() {
+        Map<Integer,Handicap> handicap = new HashMap<>();
+        for(Integer seasonId: getSeasons()) {
+            handicap.put(seasonId,players.stream().filter(p->p.getSeason().getId().equals(seasonId)).max(new Comparator<Player>() {
+                @Override
+                public int compare(Player player, Player t1) {
+                    if (player.getEnd() == null ) {
+                        return 1;
+                    }
+                    if (t1.getEnd() == null) {
+                        return 1;
+                    }
+                    return player.getEnd().compareTo(t1.getEnd());
+                }
+            }).get().getHandicap());
+        }
+        return handicap;
     }
 
     @JsonIgnore
