@@ -184,20 +184,20 @@ public class ChallengeResource  {
                 subject = "Society Leagues - Challenge Request - " + from.getName();
                 body =  String.format(
 				      "You've been challenged! %s respectfully yet aggressively requests a match with you.\n" +
-                                "Click %s/#/app/challenge/pending for details\n",
+                                "Click %s#/app/challenge/pending for details\n",
                         from.getName(), serviceUrl);
                 break;
             case ACCEPTED:
                 subject = "Society Leagues - Challenge Accepted - " + from.getName();
                 body = String.format("Your challenge from %s has been accepted.\n" +
-                        "See %s/#/app/challenge/accepted for details."
+                        "See %s#/app/challenge/accepted for details."
                         , from.getName(), serviceUrl);
 
                 break;
             case CANCELLED:
                 subject = "Society Leagues - Challenge Declined - " + from.getName();
                 body = String.format("%s has declined the challenge.\n" +
-                                "Don't worry! You can click %s/#/app/challenge/request to challenge someone else!\n",
+                                "Don't worry! You can click %s#/app/challenge/request to challenge someone else!\n",
                                 from.getName(), serviceUrl);
 
                 break;
