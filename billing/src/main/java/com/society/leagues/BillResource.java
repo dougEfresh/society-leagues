@@ -18,6 +18,8 @@ public class BillResource {
     @RequestMapping(value = "/api/v1/billing/challenge/{token}/{userId}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String,Object> challengePayment(@PathVariable String token, @PathVariable Integer id) {
 
+	return null;
+
     }
 
 }
