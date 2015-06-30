@@ -73,6 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             http.csrf().disable()
                     .authorizeRequests()
                     .antMatchers("/api/authenticate**").permitAll()
+                    .antMatchers("/api/reset**").permitAll()
                     .antMatchers("/api/logout**").permitAll()
                     .anyRequest().authenticated().and()
                     .exceptionHandling().authenticationEntryPoint(new AuthenticationEntry("/index.html")).and()
