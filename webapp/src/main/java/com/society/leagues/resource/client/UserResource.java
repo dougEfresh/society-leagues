@@ -7,6 +7,7 @@ import com.society.leagues.email.EmailSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,6 +30,7 @@ public class UserResource  {
     @Autowired ChallengeResource challengeResource;
     @Autowired EmailSender emailSender;
     static Map<String,LocalDateTime> resetTokens = new HashMap<>();
+    @Value("${service-url:http://leaguesdev.societybilliards.com}") String serviceUrl;
 
     private static Logger logger = LoggerFactory.getLogger(UserResource.class);
 
@@ -51,7 +53,14 @@ public class UserResource  {
         logger.info("Reset Token Request: " + token  +" from " + user.getLogin());
         resetTokens.put(token,LocalDateTime.now());
         Map<String,String> map = new HashMap<>();
-        map.put("token",token);
+        map.put("token","a" + token);
+        emailSender.email(user.getEmail(),"Password Reset Request",
+                String.format("Hello %s,\n     Please click: %s/%s=%s \n to reset your password.",
+                        user.getFirstName(),
+                        serviceUrl,
+                        "/#/reset?token",
+                        token)
+        );
         return map;
     }
 
