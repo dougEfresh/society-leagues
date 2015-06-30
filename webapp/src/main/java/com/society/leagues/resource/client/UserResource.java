@@ -87,7 +87,7 @@ public class UserResource  {
         }
         resetUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         resetTokens.remove(token);
-        if (dao.modify(resetUser) != null) {
+        if (dao.modifyPassword(resetUser)) {
             return get(user.getLogin());
         }
         return null;

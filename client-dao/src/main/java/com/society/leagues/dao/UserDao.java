@@ -50,6 +50,12 @@ public class UserDao extends Dao<User> implements UserClientApi, UserAdminApi{
         return delete(user,"delete from  users where user_id = ?");
     }
 
+    public Boolean modifyPassword(User user) {
+        return  jdbcTemplate.update("update users set passwd = ? where user_id = ?",
+                user.getPassword(),user
+                .getId()) > 0;
+    }
+
     @Override
     public User modify(User user) {
         return  modify(user, MODIFY,
