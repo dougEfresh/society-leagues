@@ -54,9 +54,14 @@ public class UserResource  {
         resetTokens.put(token,LocalDateTime.now());
         Map<String,String> map = new HashMap<>();
         map.put("token","a" + token);
-        emailSender.email(user.getLogin(),"Password Reset Request",
-                String.format("Hello %s,\n     Please click: %s/%s=%s \n to reset your password.",
-                        user.getFirstName(),
+        User u = dao.get(user.getLogin());
+        if (u == null) {
+            return map;
+        }
+
+        emailSender.email(u.getEmail(),"Password Reset Request",
+                String.format("Hello %s,\n     Please click: %s%s=%s \n to reset your password.",
+                        u.getFirstName(),
                         serviceUrl,
                         "/#/reset?token",
                         token)
