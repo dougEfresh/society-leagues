@@ -54,7 +54,7 @@ public class UserResource  {
         resetTokens.put(token,LocalDateTime.now());
         Map<String,String> map = new HashMap<>();
         map.put("token","a" + token);
-        emailSender.email(user.getEmail(),"Password Reset Request",
+        emailSender.email(user.getLogin(),"Password Reset Request",
                 String.format("Hello %s,\n     Please click: %s/%s=%s \n to reset your password.",
                         user.getFirstName(),
                         serviceUrl,
