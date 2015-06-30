@@ -52,13 +52,18 @@ public class ChallengeResource  {
         } else {
             team = teamDao.get(u.getName());
         }
-        Season season = seasonDao.get().stream().filter(s->s.getDivision().getType() == DivisionType.NINE_BALL_CHALLENGE).findFirst().get();
+        Season season = seasonDao.get().stream().
+                filter(s->s.getDivision().getType() == DivisionType.NINE_BALL_CHALLENGE).
+                findFirst().get();
         Player player = new Player();
         player.setTeam(team);
         player.setUser(u);
         player.setDivision(season.getDivision());
         player.setSeason(season);
-        Player ninePlayer = playerDao.getByUser(u).stream().filter(p->p.getSeason().getSeasonStatus() == Status.ACTIVE && p.getSeason().getDivision().getType() == DivisionType.NINE_BALL_TUESDAYS ).findFirst().orElse(null);
+        Player ninePlayer = playerDao.getByUser(u).stream().
+                filter(p->p.getSeason().getSeasonStatus() == Status.ACTIVE
+                && p.getSeason().getDivision().getType() == DivisionType.NINE_BALL_TUESDAYS ).
+                findFirst().orElse(null);
         if (ninePlayer == null) {
             player.setHandicap(Handicap.DPLUS);
         } else {
