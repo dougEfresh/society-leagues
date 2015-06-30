@@ -52,23 +52,21 @@ public class ChallengeResource  {
         } else {
             team = teamDao.get(u.getName());
         }
-
-        for (Season challengeSeason : challengeSeasons) {
-            Player player = new Player();
-            player.setTeam(team);
-            player.setUser(u);
-            player.setDivision(challengeSeason.getDivision());
-            player.setSeason(challengeSeason);
-            if (challengeSeason.getDivision().getType() == DivisionType.NINE_BALL_CHALLENGE) {
-                player.setHandicap(Handicap.DPLUS);
-            }
-            if (challengeSeason.getDivision().getType() == DivisionType.EIGHT_BALL_CHALLENGE) {
-                player.setHandicap(Handicap.FOUR);
-            }
-            player.setStart(new Date());
-            playerDao.create(player);
+        Season season = seasonDao.get().stream().filter(s->s.getDivision().getType() == DivisionType.NINE_BALL_CHALLENGE).findFirst().get();
+        Player player = new Player();
+        player.setTeam(team);
+        player.setUser(u);
+        player.setDivision(season.getDivision());
+        player.setSeason(season);
+        Player ninePlayer = playerDao.getByUser(u).stream().filter(p->p.getSeason().getSeasonStatus() == Status.ACTIVE && p.getSeason().getDivision().getType() == DivisionType.NINE_BALL_TUESDAYS ).findFirst().orElse(null);
+        if (ninePlayer == null) {
+            player.setHandicap(Handicap.DPLUS);
+        } else {
+            player.setHandicap(ninePlayer.getHandicap());
         }
 
+        player.setStart(new Date());
+        playerDao.create(player);
         return userResource.get(u.getId());
     }
 

@@ -38,7 +38,7 @@ public class UserAdminResource {
             return null;
         }
       return challengeResource.signup(returned.getId());
-        }
+  }
 
     @RequestMapping(value = "/user/purge/{id}/{userId}",
             method = RequestMethod.POST,
@@ -48,5 +48,10 @@ public class UserAdminResource {
         User u = new User();
         u.setId(userId);
         return userDao.purge(u);
+    }
+
+    @RequestMapping(value = "/user/modify", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
+    public User modify(@RequestBody User user) {
+        return userDao.modify(user);
     }
 }
