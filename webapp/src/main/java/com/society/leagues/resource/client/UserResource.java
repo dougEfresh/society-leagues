@@ -69,6 +69,28 @@ public class UserResource  {
         return map;
     }
 
+    @RequestMapping(value = "/reset/register", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public Map<String,String> register(@RequestBody User user) {
+        String token = UUID.randomUUID().toString().replaceAll("-","");
+        logger.info("Reset Token Request: " + token  +" from " + user.getLogin());
+        resetTokens.put(token,LocalDateTime.now());
+        Map<String,String> map = new HashMap<>();
+        map.put("token","a" + token);
+        User u = dao.get(user.getLogin());
+        if (u == null) {
+            return map;
+        }
+
+        emailSender.email(u.getEmail(),"Register Request - Society Billiards",
+                String.format("Hello %s,\n     Please click: %s%s=%s \n to register your new password.",
+                        u.getFirstName(),
+                        serviceUrl,
+                        "/#/reset?token",
+                        token)
+        );
+        return map;
+    }
+
     @RequestMapping(value = "/reset/request/{login:.+}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Map<String,String> reset(@PathVariable String login) {
         User u = dao.get(login);
