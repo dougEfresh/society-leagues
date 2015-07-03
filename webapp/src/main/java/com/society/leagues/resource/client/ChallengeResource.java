@@ -31,7 +31,6 @@ public class ChallengeResource  {
     @Autowired SeasonDao seasonDao;
     @Autowired TeamDao teamDao;
 
-
     @RequestMapping(value = "/challenge/signup/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserAdapter signup(@PathVariable Integer userId) {
         User u = userDao.get(userId);
@@ -272,7 +271,11 @@ public class ChallengeResource  {
         LocalDate end = LocalDate.now().plusDays(40);
         List<Slot> slots = new ArrayList<>();
         while(now.isBefore(end)) {
-            slots.addAll(slotDao.get(now.atStartOfDay()).stream().filter(s->s.getAllocated() < 5).sorted((o1, o2) -> o1.getLocalDateTime().compareTo(o2.getLocalDateTime())).collect(Collectors.toList()));
+            slots.addAll(slotDao.get(now.atStartOfDay()).stream().
+                    filter(s->s.getAllocated() < 5).
+                    sorted((o1, o2) -> o1.getLocalDateTime().
+                            compareTo(o2.getLocalDateTime())).
+                    collect(Collectors.toList()));
             now = now.plusDays(7);
         }
         return slots;

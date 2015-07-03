@@ -85,7 +85,7 @@ public class UserResource  {
                 String.format("Hello %s,\n     Please click: %s%s=%s \n to register your new password.",
                         u.getFirstName(),
                         serviceUrl,
-                        "/#/reset?token",
+                        "/#/register?token",
                         token)
         );
         return map;
@@ -99,6 +99,22 @@ public class UserResource  {
         }
         return reset(u);
     }
+
+    @RequestMapping(value = "/reset/register/challenge/{token}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public UserAdapter registerChallenge(@PathVariable String token, @RequestBody User user) {
+        logger.info("Got reset password request for " + token + " " + user.getLogin());
+        User resetUser = dao.get(user.getLogin());
+        if (!resetTokens.containsKey(token)) {
+            return null;
+        }
+        resetUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        resetTokens.remove(token);
+        if (dao.modifyPassword(resetUser)) {
+            return challengeResource.signup(resetUser.getId());
+        }
+        return null;
+    }
+
 
     @RequestMapping(value = "/reset/password/{token}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserAdapter reset(@PathVariable String token, @RequestBody User user) {
