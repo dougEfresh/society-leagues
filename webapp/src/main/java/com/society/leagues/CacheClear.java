@@ -31,7 +31,7 @@ public class CacheClear {
         }
     }
 
-    @RequestMapping(value = "/api/cache/clear/{token}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
+    @RequestMapping(value = "/api/cache/clear/{tokenRequest}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
     public Boolean clear(@PathVariable String tokenRequest) {
         if (token == null || token.isEmpty()) {
             return false;
