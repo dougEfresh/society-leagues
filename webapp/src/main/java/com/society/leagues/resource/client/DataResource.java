@@ -66,7 +66,7 @@ public class DataResource {
         logger.info("Getting team stats");
         data.put("teamStats", statsResource.getTeamStats());
         logger.info("Getting slots");
-        data.put("slots", statsResource.getTeamStats());
+        dataCache.getCache().put("slots", challengeResource.getSlots());
         dataCache.setCache(data);
         return data;
     }
