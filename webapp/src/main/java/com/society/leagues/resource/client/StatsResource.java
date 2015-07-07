@@ -1,8 +1,6 @@
 package com.society.leagues.resource.client;
 
-import com.society.leagues.WebListCache;
 import com.society.leagues.WebMapCache;
-import com.society.leagues.adapters.TeamSeasonAdapter;
 import com.society.leagues.adapters.TeamStatsSeasonAdapter;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.dao.*;

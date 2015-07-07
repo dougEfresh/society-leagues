@@ -1,6 +1,5 @@
 package com.society.leagues.conf;
 
-import com.society.leagues.WebListCache;
 import com.society.leagues.WebMapCache;
 import com.society.leagues.adapters.PlayerResultAdapter;
 import com.society.leagues.adapters.SeasonAdapter;

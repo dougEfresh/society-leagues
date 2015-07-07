@@ -13,16 +13,12 @@ public class CacheClear {
     public static final int EVICT_TIMEOUT =  60 * 1000 * 5 ;
     private static Logger logger = LoggerFactory.getLogger(WebMapCache.class);
     @Autowired List<WebMapCache> webMapCaches;
-    @Autowired List<WebListCache> webListCaches;
 
     @Scheduled(fixedRate = EVICT_TIMEOUT)
     public void evict() {
         logger.info("Evicting Cache");
         for (WebMapCache webMapCach : webMapCaches) {
             webMapCach.evict();
-        }
-        for (WebListCache webListCach : webListCaches) {
-            webListCach.evict();
         }
     }
 
