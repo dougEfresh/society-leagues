@@ -2,14 +2,11 @@ package com.society.leagues;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class WebMapCache<T extends Map> {
-    public static final int EVICT_TIMEOUT = 60 * 1000 ;
-    private static Logger logger = LoggerFactory.getLogger(WebMapCache.class);
     final AtomicReference<T> cache;
 
     public WebMapCache(T cache) {
@@ -17,9 +14,7 @@ public class WebMapCache<T extends Map> {
         this.cache.set(cache);
     }
 
-    @Scheduled(fixedRate = EVICT_TIMEOUT)
     public void evict() {
-        logger.info("Evicting Cache");
         cache.get().clear();
     }
 
