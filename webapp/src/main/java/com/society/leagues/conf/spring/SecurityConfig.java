@@ -67,7 +67,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .usernameParameter("username").passwordParameter("password")
                     .successHandler(loginHandler).failureHandler(fHandler).and()
                     .logout().logoutUrl("/api/logout").logoutSuccessHandler(logoutHandler).and()
-                    .rememberMe().key("_spring_security_remember_me").tokenValiditySeconds(14400 * 5)
+                    .rememberMe().key("_spring_security_remember_me").tokenValiditySeconds(86400 * 50)
                     .tokenRepository(tokenRepository());
         } else {
             http.csrf().disable()
