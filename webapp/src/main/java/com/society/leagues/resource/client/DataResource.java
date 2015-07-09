@@ -46,6 +46,7 @@ public class DataResource {
             //don't cache slots
             dataCache.getCache().put("slots", challengeResource.getSlots());
             dataCache.getCache().put("users",userResource.get());
+            dataCache.getCache().put("challenges",challengeResource.getCurrentChallenges());
             return dataCache.getCache();
         }
         Map<String,Object> data = new HashMap<>();
@@ -67,7 +68,9 @@ public class DataResource {
         data.put("teamStats", statsResource.getTeamStats());
         logger.info("Getting slots");
         data.put("slots",challengeResource.getSlots());
+        data.put("challenges",challengeResource.getCurrentChallenges());
         dataCache.setCache(data);
+
         return data;
     }
 }
