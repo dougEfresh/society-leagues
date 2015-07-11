@@ -109,6 +109,17 @@ public class UserChallengeGroup {
     }
 
     @Override
+    public String toString() {
+        return "UserChallengeGroup{" +
+                "challenger=" + challenger +
+                ", opponent=" + opponent +
+                ", date=" + date +
+                ", challenges=" + challenges +
+                ", status=" + status +
+                '}';
+    }
+
+    @Override
     public int hashCode() {
         int result = challenger != null ? challenger.hashCode() : 0;
         result = 31 * result + (opponent != null ? opponent.hashCode() : 0);

@@ -1,5 +1,6 @@
 package com.society.leagues.spring;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import java.text.SimpleDateFormat;
 @SuppressWarnings("unused")
 public class JacksonConfig {
     @Value("${pretty-print:false}") boolean prettyPrint = false;
+    @Autowired DateTimeSerializer dateTimeSerializer;
 
     @Bean
     @Primary
@@ -19,6 +21,7 @@ public class JacksonConfig {
         Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
         return builder.indentOutput(prettyPrint).
                 dateFormat(new SimpleDateFormat("yyyy-MM-dd")).
+                serializers(dateTimeSerializer).
                 defaultViewInclusion(true);
     }
 

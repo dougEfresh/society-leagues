@@ -44,7 +44,8 @@ public class ChallengeResource  {
         if (userAdapter.isChallenge()) {
             return userAdapter;
         }
-        List<Season> challengeSeasons = seasonDao.getActive().stream().filter(s->s.getDivision().isChallenge()).collect(Collectors.toList());
+        List<Season> challengeSeasons = seasonDao.getActive().stream().
+                filter(s->s.getDivision().isChallenge()).collect(Collectors.toList());
         Team team = new Team();
         team.setName(u.getName());
         if (teamDao.get(u.getName()) == null) {
@@ -150,6 +151,7 @@ public class ChallengeResource  {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
   public UserAdapter cancel(@PathVariable Integer userId, @RequestBody UserChallengeGroup challengeGroup) {
+        logger.info("Got Cancel Request " + challengeGroup.toString());
         User user = userDao.get(userId);
         Challenge c = challengeGroup.challenges().get(0);
         User opponent = userDao.get(dao.get(c.getId()).getOpponent().getUserId());
@@ -168,6 +170,7 @@ public class ChallengeResource  {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
     public UserAdapter accept(@PathVariable Integer userId, @RequestBody Challenge challenge) {
+        logger.info("Got Accept " + challenge);
         User user = userDao.get(userId);
         final Challenge c  = dao.get(challenge.getId());
         if (user == null || c == null) {
@@ -175,11 +178,13 @@ public class ChallengeResource  {
         }
         User opponent = userDao.get(c.getChallenger().getUserId());
         List<Challenge> toCancel = dao.get().stream().
-                filter(ch->ch.getSlot().getLocalDateTime().toLocalDate().isEqual(c.getSlot().getLocalDateTime().toLocalDate())).
-                filter(ch->ch.getChallenger().getUser().equals(c.getChallenger().getUser()) || ch.getOpponent().getUser().equals(c.getOpponent().getUser())).
+                filter(ch->ch.getSlot().getLocalDateTime().toLocalDate().
+                        isEqual(c.getSlot().getLocalDateTime().toLocalDate())).
+                filter(ch->ch.getChallenger().getUser().equals(c.getChallenger().getUser())
+                        && ch.getOpponent().getUser().equals(c.getOpponent().getUser())).
                 collect(Collectors.toList());
         for (Challenge ch : toCancel) {
-            logger.info("Cancel: " + ch.getSlot().getLocalDateTime().toLocalDate() + " " +  ch.getId()  + " " + ch.getChallenger().getDivision().getType());
+            logger.info("Cancel: " + ch);
             ch.setStatus(Status.CANCELLED);
         }
         dao.cancel(toCancel);

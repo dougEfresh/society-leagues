@@ -28,9 +28,7 @@ bootRun {
         args project.args.split('\\s+')
     }
 
-    jvmArgs = [ '-Dsecurity-disable=true','-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005', '-Dembedded=true' ,'-Dgenerate=true',
-    //jvmArgs = [ '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005', '-Dembedded=true' ,
-                '-Xmx512m', '-Dserver.port=8081']
+    jvmArgs = [ '-Dserver.port=8081','-Dsecurity-disable=true','-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005' ]
 }
 
 dependencies {
@@ -56,7 +54,8 @@ dependencies {
 
     compile  'com.netflix.feign:feign-core:8.1.0'
     compile  'com.netflix.feign:feign-jackson:8.1.0'
-
+    //Pdf
+    compile 'com.itextpdf:itextpdf:5.5.6'
     //Test
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'org.apache.httpcomponents:httpclient:4.4'

@@ -28,7 +28,7 @@ public class UserAdminResource {
         return userResource.get(returned.getId());
     }
 
-  @RequestMapping(value = "/user/create/{id}/challenge",
+    @RequestMapping(value = "/user/create/{id}/challenge",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.ALL_VALUE)

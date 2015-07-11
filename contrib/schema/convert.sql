@@ -61,22 +61,22 @@ replace into leagues.team_match (team_match_id,season_id,home_team_id,away_team_
 select match_id,m.season_id,home_team_id,visit_team_id,match_start_date
  from leagues_old.match_schedule m
    left join leagues.season s on  m.season_id=s.season_id
-where m.league_id in (1,2,4,6) and home_team_id is not null
+where m.league_id in (1,2,4,6) and home_team_id is not null and s.season_id in (67,68,69,70)
 ;
 
 replace into leagues.team_result (team_result_id,team_match_id,home_racks,away_racks)
 select home.match_id,home.match_id,home.racks as home_racks,away.racks as away_racks
  from 
 (select m.match_id,m.home_team_id,
-sum(games_won) racks  from 
-  leagues_old.match_schedule m join leagues_old.result_ind rt on m.match_id=rt.match_id  and m.home_team_id = rt.team_id
- where league_id   in (1,2,4,6)
+sum(games_won) racks
+from  leagues_old.match_schedule m join leagues_old.result_ind rt on m.match_id=rt.match_id  and m.home_team_id = rt.team_id
+ where league_id   in (1,2,4,6) and m.season_id in  (68)
 group by m.match_id,m.home_team_id) home 
 join
    (select m.match_id,m.visit_team_id,
       sum(games_won) as racks  from
      leagues_old.match_schedule m join leagues_old.result_ind rt on m.match_id=rt.match_id  and m.visit_team_id = rt.team_id
-   where league_id   in (1,2,4,6)
+   where league_id   in (1,2,4,6)  and m.season_id in  (68)
    group by m.match_id,m.visit_team_id
    ) away
 on home.match_id=away.match_id
