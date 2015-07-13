@@ -23,6 +23,7 @@ public class ChallengeDao extends Dao<Challenge>  {
     @Autowired JdbcTemplate jdbcTemplate;
     @Autowired UserDao userDao;
     @Autowired SlotDao slotDao;
+    @Autowired TeamMatchDao teamMatchDao;
 
     public Collection<Player> getPotentials(Integer id) {
         try {
@@ -69,6 +70,14 @@ public class ChallengeDao extends Dao<Challenge>  {
         }
     }
 
+    public Challenge updateTeamMatch(Challenge challenge) {
+        return modify(
+                challenge,
+                "update challenge set team_match_id = ? where challenge_id = ?",
+                challenge.getTeamMatch().getId(),
+                challenge.getId()
+        );
+    }
 
     public Challenge modifyChallenge(Challenge challenge) {
         return modify(challenge, "update challenge set " +
@@ -109,6 +118,8 @@ public class ChallengeDao extends Dao<Challenge>  {
 //        challenge.setId(rs.getInt("team_match_id"));
         challenge.setChallenger(playerDao.get(rs.getInt("player_challenger_id")));
         challenge.setOpponent(playerDao.get(rs.getInt("player_opponent_id")));
+        if (rs.getInt("team_match_id") != 0)
+            challenge.setTeamMatch(teamMatchDao.get(rs.getInt("team_match_id")));
         return challenge;
     };
 

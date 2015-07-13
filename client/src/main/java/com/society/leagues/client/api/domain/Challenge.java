@@ -5,6 +5,7 @@ public class Challenge extends LeagueObject {
     Player challenger;
     Player opponent;
     Slot slot;
+    TeamMatch teamMatch;
 
     public Challenge() {
     }
@@ -39,6 +40,14 @@ public class Challenge extends LeagueObject {
 
     public void setSlot(Slot slot) {
         this.slot = slot;
+    }
+
+    public TeamMatch getTeamMatch() {
+        return teamMatch;
+    }
+
+    public void setTeamMatch(TeamMatch teamMatch) {
+        this.teamMatch = teamMatch;
     }
 
     @Override

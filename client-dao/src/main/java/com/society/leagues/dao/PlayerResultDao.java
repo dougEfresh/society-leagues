@@ -1,6 +1,7 @@
 package com.society.leagues.dao;
 
 import com.society.leagues.client.api.domain.PlayerResult;
+import com.society.leagues.client.api.domain.TeamMatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 
 @Component
 public class PlayerResultDao extends Dao<PlayerResult> {
@@ -47,8 +49,8 @@ public class PlayerResultDao extends Dao<PlayerResult> {
         return modify(playerResult,
                 "update player_result set " +
                         "team_match_id =?, " +
-                        "home_player_id=?," +
-                        "away_player_id=?," +
+                        "player_home_id=?," +
+                        "player_away_id=?," +
                         "home_racks=?," +
                         "away_racks=? " +
                         "where player_result_id = ?",

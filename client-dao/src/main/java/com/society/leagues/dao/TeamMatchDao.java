@@ -67,7 +67,6 @@ public class TeamMatchDao extends Dao<TeamMatch> implements TeamMatchApi, MatchA
             ps.setInt(i++, teamMatch.getHome().getId());
             ps.setInt(i++, teamMatch.getAway().getId());
             ps.setInt(i++, teamMatch.getSeason().getId());
-            ps.setInt(i++, teamMatch.getDivision().getId());
             if (teamMatch.getMatchDate() == null) {
                 ps.setTimestamp(i++, null);
             } else {
