@@ -283,17 +283,20 @@ public class ChallengeResource  {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.ALL_VALUE)
     public List<Slot> getSlots() {
-        LocalDate now = LocalDate.now().with(DayOfWeek.SUNDAY);
+        LocalDate sunday = LocalDate.now().with(DayOfWeek.SUNDAY);
+        final LocalDate now = LocalDate.now();
         LocalDate end = LocalDate.now().plusDays(40);
         List<Slot> slots = new ArrayList<>();
-        slots.addAll(slotDao.get().stream().filter(s->s.getLocalDateTime().isBefore(now)).collect(Collectors.toList()));
-        while(now.isBefore(end)) {
-            slots.addAll(slotDao.get(now.atStartOfDay()).stream().
+        slots.addAll(slotDao.get().stream().
+                filter(s->s.getLocalDateTime().isBefore(now.atStartOfDay())).
+                collect(Collectors.toList()));
+        while(sunday.isBefore(end)) {
+            slots.addAll(slotDao.get(sunday.atStartOfDay()).stream().
                     filter(s->s.getAllocated() < 5).
                     sorted((o1, o2) -> o1.getLocalDateTime().
                             compareTo(o2.getLocalDateTime())).
                     collect(Collectors.toList()));
-            now = now.plusDays(7);
+            sunday = sunday.plusDays(7);
         }
         return slots;
     }
