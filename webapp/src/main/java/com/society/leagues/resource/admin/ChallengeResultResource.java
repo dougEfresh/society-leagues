@@ -34,13 +34,13 @@ public class ChallengeResultResource {
             @PathVariable Integer challengeId,
             @PathVariable Integer challengerRacks,
             @PathVariable Integer opponentRacks) {
-        //if (principal == null) {
-          //  throw new RuntimeException("Not a valid admin user ");
-        ///}
-        //User user = userDao.get(principal.getName());
-        ///if (user == null || !user.isAdmin()) {
-//            throw new RuntimeException("Not a valid admin user ");
-  //      }
+        if (principal == null) {
+              throw new RuntimeException("Not a valid admin user ");
+        }
+        User user = userDao.get(principal.getName());
+        if (user == null || !user.isAdmin()) {
+            throw new RuntimeException("Not a valid admin user ");
+        }
         Challenge c = challengeDao.get(challengeId);
         if (c == null) {
             throw new RuntimeException("Invalid Challenge " + challengeId);

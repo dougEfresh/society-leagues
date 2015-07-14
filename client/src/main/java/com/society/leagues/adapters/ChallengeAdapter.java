@@ -5,6 +5,8 @@ import com.society.leagues.client.api.domain.Slot;
 import com.society.leagues.client.api.domain.Status;
 import com.society.leagues.client.api.domain.division.DivisionType;
 
+import java.time.LocalDateTime;
+
 public class ChallengeAdapter {
 
     Challenge challenge;
@@ -39,5 +41,9 @@ public class ChallengeAdapter {
 
     public Status getStatus() {
         return challenge.getStatus();
+    }
+
+    public Integer getTeamMatchId() {
+        return challenge.getTeamMatch() == null ? 0 : challenge.getTeamMatch().getId();
     }
 }
