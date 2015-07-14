@@ -286,6 +286,7 @@ public class ChallengeResource  {
         LocalDate now = LocalDate.now().with(DayOfWeek.SUNDAY);
         LocalDate end = LocalDate.now().plusDays(40);
         List<Slot> slots = new ArrayList<>();
+        slots.addAll(slotDao.get().stream().filter(s->s.getLocalDateTime().isBefore(now)).collect(Collectors.toList()));
         while(now.isBefore(end)) {
             slots.addAll(slotDao.get(now.atStartOfDay()).stream().
                     filter(s->s.getAllocated() < 5).
