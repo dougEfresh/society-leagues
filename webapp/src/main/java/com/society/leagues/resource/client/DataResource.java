@@ -47,6 +47,10 @@ public class DataResource {
             dataCache.getCache().put("slots", challengeResource.getSlots());
             dataCache.getCache().put("users",userResource.get());
             dataCache.getCache().put("challenges",challengeResource.getCurrentChallenges());
+            dataCache.getCache().put("userResults",resultResource.getCurrentResults());
+            dataCache.getCache().put("teamResults", matchResource.getTeamMatchesCurrent());
+            dataCache.getCache().put("userStats",statsResource.getStats());
+            dataCache.getCache().put("teamStats",statsResource.getTeamStats());
             return dataCache.getCache();
         }
         Map<String,Object> data = new HashMap<>();
