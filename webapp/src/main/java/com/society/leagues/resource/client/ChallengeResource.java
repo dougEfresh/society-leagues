@@ -138,10 +138,10 @@ public class ChallengeResource  {
     @RequestMapping(value = "/challenges", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ChallengeAdapter> getCurrentChallenges() {
         LocalDateTime midnight = LocalDate.now().atStartOfDay();
-        List<Challenge> challenges = dao.get().stream().filter(
-                c -> c.getSlot().getLocalDateTime().isAfter(midnight)
-        ).filter(ch -> ch.getStatus() == Status.PENDING ||
-                ch.getStatus() == Status.ACCEPTED).
+        List<Challenge> challenges = dao.get().stream().
+                //filter(c -> c.getSlot().getLocalDateTime().isAfter(midnight)).
+                        filter(ch -> ch.getStatus() == Status.PENDING ||
+                        ch.getStatus() == Status.ACCEPTED).
                 collect(Collectors.toList());
         return  challenges.stream().map(ChallengeAdapter::new).collect(Collectors.toList());
     }
