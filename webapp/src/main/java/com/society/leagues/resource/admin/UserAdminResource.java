@@ -25,7 +25,7 @@ public class UserAdminResource {
         if (returned == null) {
             return null;
         }
-        return userResource.get(returned.getId());
+        return challengeResource.signup(returned.getId());
     }
 
     @RequestMapping(value = "/user/create/{id}/challenge",
@@ -37,7 +37,7 @@ public class UserAdminResource {
         if (returned == null) {
             return null;
         }
-      return challengeResource.signup(returned.getId());
+        return challengeResource.signup(returned.getId());
   }
 
     @RequestMapping(value = "/user/purge/{id}/{userId}",
