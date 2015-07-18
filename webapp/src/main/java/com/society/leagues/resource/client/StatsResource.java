@@ -43,9 +43,6 @@ public class StatsResource {
 
     @RequestMapping(value = "/stats/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<Integer,UserStats> getStats() {
-        if (!cache.isEmpty()) {
-            return cache.getCache();
-        }
         logger.info("Getting all stats");
         all = jdbcTemplate.queryForList("select user_id as userId,matches,wins,loses,racks_for as racksFor, racks_against as racksAgainst from user_stats_all_vw");
         logger.info("Getting season stats");
@@ -65,10 +62,11 @@ public class StatsResource {
         //handicapChallenge = Collections.emptyList();
 
         Map<Integer,UserStats>  stats = new HashMap<>();
+
         for (User user : dao.get()) {
             stats.put(user.getId(),getUserStats(user));
         }
-        cache.setCache(stats);
+//        cache.setCache(stats);
         return stats;
     }
 
