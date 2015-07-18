@@ -17,7 +17,7 @@ import java.util.List;
 @Component
 @RestController
 public class CacheClear {
-    public static final int EVICT_TIMEOUT =  60 * 1000 * 30 ;
+    public static final int EVICT_TIMEOUT =  60 * 1000 * 6 ;
     private static Logger logger = LoggerFactory.getLogger(WebMapCache.class);
     @Autowired List<WebMapCache> webMapCaches;
     @Value("${cache-token:}")

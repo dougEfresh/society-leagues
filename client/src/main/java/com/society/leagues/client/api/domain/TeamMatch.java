@@ -74,7 +74,8 @@ public class TeamMatch extends LeagueObject  {
     @Override
     public String toString() {
         return "TeamMatch{" +
-                "home=" + home +
+                "id="+ id +
+                ", home=" + home +
                 ", away=" + away +
                 ", matchDate=" + matchDate +
                 '}';
