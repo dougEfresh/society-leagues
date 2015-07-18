@@ -14,6 +14,7 @@ public class UserChallengeGroup {
     LocalDate date;
     List<Challenge> challenges = new ArrayList<>();
     Status status;
+    String message;
 
     public Integer getChallenger() {
         return challenger.getId();
@@ -93,6 +94,18 @@ public class UserChallengeGroup {
             return challenges.get(0).getSlot().getId();
         }
         return 0;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     @Override

@@ -107,10 +107,12 @@ public class UserResource  {
         if (!resetTokens.containsKey(token)) {
             return null;
         }
-        resetUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        resetTokens.remove(token);
-        if (dao.modifyPassword(resetUser)) {
-            return challengeResource.signup(resetUser.getId());
+        if (user.getPassword() != null && !(user.getPassword().isEmpty())) {
+            resetUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+            resetTokens.remove(token);
+            if (dao.modifyPassword(resetUser)) {
+                return challengeResource.signup(resetUser.getId());
+            }
         }
         return null;
     }

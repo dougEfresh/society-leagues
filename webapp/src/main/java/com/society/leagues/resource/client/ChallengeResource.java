@@ -158,9 +158,9 @@ public class ChallengeResource  {
         User challenger = userDao.get(dao.get(c.getId()).getChallenger().getUserId());
         dao.cancel(challengeGroup.challenges());
         if (user.equals(challenger)) {
-            sendEmail(opponent, challenger, Status.CANCELLED, null);
+            sendEmail(opponent, challenger, Status.CANCELLED, null, challengeGroup.getMessage());
         } else {
-            sendEmail(challenger, opponent, Status.CANCELLED, null);
+            sendEmail(challenger, opponent, Status.CANCELLED, null, challengeGroup.getMessage());
         }
         return userResource.get(user.getLogin());
     }
@@ -189,11 +189,11 @@ public class ChallengeResource  {
         }
         dao.cancel(toCancel);
         dao.acceptChallenge(c);
-        sendEmail(opponent, user, Status.ACCEPTED,challenge);
+        sendEmail(opponent, user, Status.ACCEPTED,challenge,null);
         return userResource.get(user.getLogin());
     }
 
-    private void sendEmail(User to, User from, Status status, Challenge challenge) {
+    private void sendEmail(User to, User from, Status status, Challenge challenge, String message) {
         String subject;
         String body;
 
@@ -214,9 +214,10 @@ public class ChallengeResource  {
                 break;
             case CANCELLED:
                 subject = "Society Leagues - Challenge Declined - " + from.getName();
-                body = String.format("%s has declined the challenge.\n" +
+                body = String.format("%s\n-------\n%s has declined the challenge.\n" +
                                 "Don't worry! You can click %s#/app/challenge/main to challenge someone else!\n",
-                                from.getName(), serviceUrl);
+                                message,
+                        from.getName(), serviceUrl);
 
                 break;
             default:
@@ -251,7 +252,7 @@ public class ChallengeResource  {
                 createChallenge(u,opponent,DivisionType.NINE_BALL_CHALLENGE,s);
         }
 
-        sendEmail(opponent,u,Status.NOTIFY,null);
+        sendEmail(opponent,u,Status.NOTIFY,null,null);
         return userResource.get(u.getLogin());
     }
 
