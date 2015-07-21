@@ -214,9 +214,9 @@ public class ChallengeResource  {
                 break;
             case CANCELLED:
                 subject = "Society Leagues - Challenge Declined - " + from.getName();
-                body = String.format("%s\n-------\n%s has declined the challenge.\n" +
+                body = String.format("%s\n*****\n%s has declined the challenge.\n" +
                                 "Don't worry! You can click %s#/app/challenge/main to challenge someone else!\n",
-                                message,
+                                message == null ? "": message,
                         from.getName(), serviceUrl);
 
                 break;
