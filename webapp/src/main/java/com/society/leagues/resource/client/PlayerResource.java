@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,7 @@ public class PlayerResource {
         if (user == null || user.getRole() != Role.ADMIN)  {
             throw new RuntimeException("Invalid Admin User");
         }
-        Player old  = playerDao.get().stream().filter(p->p.getDivision().isChallenge()).
+        Player old = playerDao.get().stream().filter(p->p.getDivision().isChallenge()).
                 filter(p->p.getUserId().equals(userId)).
                 filter(p->p.getEnd() == null).findFirst().orElseGet(null);
         if (old == null) {
@@ -56,7 +57,9 @@ public class PlayerResource {
                 challengeDao.modifyChallenge(challenge);
             }
         }
-
+        old.setEnd(new Date());
+        old.setId(oldId);
+        playerDao.modify(old);
         return userResource.get(userId);
     }
 }

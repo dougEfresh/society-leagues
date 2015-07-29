@@ -64,14 +64,16 @@ public class UserAdapter {
     public Map<Integer,Handicap> getCurrentHandicap() {
         Map<Integer,Handicap> handicap = new HashMap<>();
         for(Integer seasonId: getSeasons()) {
+            players.stream().filter(p->p.getSeason().getId().equals(seasonId))
             handicap.put(seasonId,players.stream().filter(p->p.getSeason().getId().equals(seasonId)).max(new Comparator<Player>() {
                 @Override
                 public int compare(Player player, Player t1) {
+                    //Total Hack
                     if (player.getEnd() == null ) {
-                        return 1;
+                        return player.getId().compareTo(t1.getId());
                     }
                     if (t1.getEnd() == null) {
-                        return 1;
+                        return player.getId().compareTo(t1.getId());
                     }
                     return player.getEnd().compareTo(t1.getEnd());
                 }
@@ -79,6 +81,7 @@ public class UserAdapter {
         }
         return handicap;
     }
+
 
     @JsonIgnore
     public boolean isChallenge() {
