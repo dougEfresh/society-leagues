@@ -98,6 +98,6 @@ public class PlayerResultRawAdapter {
         return result.getTeamMatch().getSeason().getId();
     }
 
-    public Integer getResultId() { return result.getId()}
+    public Integer getResultId() { return result.getId(); }
 
 }
