@@ -125,8 +125,8 @@ public class UserAdapter {
             } else if (playerResultRawAdapter.getWinnerRacks() - playerResultRawAdapter.getLoserRacks() == 1) {
                 points += 1;
             }
-
-            matchPoints.add(new MatchPoints(chalengeResult.getId(), points, (double) points/(p/(p-matchNum)), (int) matchNum));
+            String calc = String.format("%s/(%s/%s)",points,p,p-matchNum);
+            matchPoints.add(new MatchPoints(chalengeResult.getId(), points, (double) points/(p/(p-matchNum)), (int) matchNum, calc));
             matchNum++;
         }
         return matchPoints;
