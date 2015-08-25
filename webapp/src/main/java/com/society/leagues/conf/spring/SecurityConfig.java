@@ -86,7 +86,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .tokenRepository(tokenRepository());
         }
     }
-@Bean
+
+    @Bean
     public JdbcTokenRepositoryImpl tokenRepository() {
         JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
         tokenRepository.setCreateTableOnStartup(false);
