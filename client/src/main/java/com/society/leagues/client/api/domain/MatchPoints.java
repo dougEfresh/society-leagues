@@ -2,14 +2,14 @@ package com.society.leagues.client.api.domain;
 
 public class MatchPoints {
 
-    Integer matchId;
+    Integer resultId;
     Integer points;
     Double weightedAvg;
     Integer matchNum;
     String calculation;
 
-    public MatchPoints(Integer matchId, Integer points, Double weightedAvg, Integer matchNum, String calculation) {
-        this.matchId = matchId;
+    public MatchPoints(Integer resultId, Integer points, Double weightedAvg, Integer matchNum, String calculation) {
+        this.resultId = resultId;
         this.points = points;
         this.weightedAvg = weightedAvg;
         this.matchNum = matchNum;
@@ -19,8 +19,8 @@ public class MatchPoints {
     public MatchPoints() {
     }
 
-    public Integer getMatchId() {
-        return matchId;
+    public Integer getResultId() {
+        return resultId;
     }
 
     public Integer getPoints() {
