@@ -10,14 +10,15 @@ public class UserAdapter {
     User user;
     List<Player> players = new ArrayList<>();
     Map<Status,List<UserChallengeGroup>> challenges = new HashMap<>();
+    List<PlayerResult> chalengeResults;
     public static UserAdapter DEFAULT_USER;
-
+    public static Integer period = 10;
     static {
-	User u = new User();
-	u.setId(0);
-	u.setFirstName("");
-	u.setLastName("");
-	DEFAULT_USER = new UserAdapter(u,Collections.emptyList(),Collections.emptyMap());
+        User u = new User();
+        u.setId(0);
+        u.setFirstName("");
+        u.setLastName("");
+        DEFAULT_USER = new UserAdapter(u,Collections.emptyList(),Collections.emptyMap());
     }
 
     public UserAdapter(User user, List<Player> players, Map<Status,List<UserChallengeGroup>> challenges) {
@@ -64,11 +65,11 @@ public class UserAdapter {
     public Map<Integer,Handicap> getCurrentHandicap() {
         Map<Integer,Handicap> handicap = new HashMap<>();
         for(Integer seasonId: getSeasons()) {
-            handicap.put(seasonId,players.stream().filter(p->p.getSeason().getId().equals(seasonId)).max(new Comparator<Player>() {
+            handicap.put(seasonId, players.stream().filter(p -> p.getSeason().getId().equals(seasonId)).max(new Comparator<Player>() {
                 @Override
                 public int compare(Player player, Player t1) {
                     //Total Hack
-                    if (player.getEnd() == null ) {
+                    if (player.getEnd() == null) {
                         return player.getId().compareTo(t1.getId());
                     }
                     if (t1.getEnd() == null) {
@@ -81,7 +82,6 @@ public class UserAdapter {
         return handicap;
     }
 
-
     @JsonIgnore
     public boolean isChallenge() {
         Optional<Player> playerOptional =  players.stream().filter(p->p.getDivision().isChallenge()).findFirst();
@@ -92,8 +92,44 @@ public class UserAdapter {
         return challenges;
     }
 
+    public void setChallengeResults(List<PlayerResult> results) {
+        this.chalengeResults = results;
+    }
+
     public void setChallenges(Map<Status,List<UserChallengeGroup>> challenges) {
 	this.challenges = challenges;
+    }
+
+    public List<MatchPoints> getPoints() {
+        List<MatchPoints> matchPoints = new ArrayList<>();
+        if (chalengeResults == null) {
+            return matchPoints;
+        }
+        chalengeResults.sort(new Comparator<PlayerResult>() {
+            @Override
+            public int compare(PlayerResult playerResult, PlayerResult t1) {
+                return t1.getTeamMatch().getMatchDate().compareTo(playerResult.getTeamMatch().getMatchDate());
+            }
+        });
+
+        double matchNum = 0;
+        double p = (double) period;
+        for (PlayerResult chalengeResult : chalengeResults) {
+            if (matchNum > 7) {
+                break;
+            }
+            PlayerResultRawAdapter playerResultRawAdapter = new PlayerResultRawAdapter(chalengeResult);
+            int points = 1;
+            if (playerResultRawAdapter.getWinner().equals(this.getUserId())) {
+                points += 2;
+            } else if (playerResultRawAdapter.getWinnerRacks() - playerResultRawAdapter.getLoserRacks() == 1) {
+                points += 1;
+            }
+
+            matchPoints.add(new MatchPoints(chalengeResult.getId(), points, (double) points/(p/(p-matchNum)), (int) matchNum));
+            matchNum++;
+        }
+        return matchPoints;
     }
 
 }

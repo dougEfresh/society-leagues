@@ -28,7 +28,6 @@ public class LeagueCache<T extends LeagueObject> {
     public synchronized final T get(Integer id)  {
         List<T> objects = get(Arrays.asList(id));
         return objects.isEmpty() ? null : objects.get(0);
-        //return objects.isEmpty() ? null : cloner.deepClone(objects.get(0));
     }
         
     public synchronized final List<T> get(List<Integer> ids)  {
@@ -40,7 +39,6 @@ public class LeagueCache<T extends LeagueObject> {
         } );
 
         return objects;
-        //return cloner.deepClone(objects);
     }
 
     public synchronized void set(Collection<T> objects) {

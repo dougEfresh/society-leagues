@@ -78,6 +78,7 @@ public class PlayerResultRawAdapter {
         }
         return result.getPlayerAway().getTeam().getId();
     }
+
     public Integer getLoserTeam() {
         if (result.getHomeRacks() > result.getAwayRacks()) {
             return result.getPlayerAway().getTeam().getId();

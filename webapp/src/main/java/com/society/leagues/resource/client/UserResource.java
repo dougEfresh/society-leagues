@@ -4,6 +4,7 @@ import com.society.leagues.adapters.UserAdapter;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.dao.*;
 import com.society.leagues.email.EmailSender;
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -117,7 +119,6 @@ public class UserResource  {
         return null;
     }
 
-
     @RequestMapping(value = "/reset/password/{token}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserAdapter reset(@PathVariable String token, @RequestBody User user) {
         logger.info("Got reset password request for " + token + " " + user.getLogin());
@@ -141,15 +142,31 @@ public class UserResource  {
                 return o1.getName().compareTo(o2.getName());
             }
         }).filter(u -> !(
-                        u.getName().contains("FORFEIT") || u.getName().contains("BYE")  || u.getName().contains("HANDICAP")
+                        u.getName().contains("FORFEIT") || u.getName().contains("BYE") || u.getName().contains("HANDICAP")
                 )
         ).collect(Collectors.toList());
-        return users.stream().map(user -> new UserAdapter(user, playerDao.getByUser(user), challengeResource.getChallenges(user.getId()))).collect(Collectors.toList());
+        List<UserAdapter> userAdapters = users.stream().map(user -> new UserAdapter(user, playerDao.getByUser(user), challengeResource.getChallenges(user.getId()))).collect(Collectors.toList());
+        LocalDateTime elevenWeeks = LocalDateTime.now().minusWeeks(11);
+        List<PlayerResult> results = playerResultDao.get().stream().filter(r -> r.getTeamMatch().getDivision().isChallenge()).collect(Collectors.toList());
+        for (UserAdapter userAdapter : userAdapters) {
+            userAdapter.setChallengeResults(
+                    results.stream().filter(
+                            r -> r.getPlayerAway().getUserId().equals(userAdapter.getUserId()) ||
+                                    r.getPlayerHome().getUserId().equals(userAdapter.getUserId())).
+                            collect(Collectors.toList()));
+        }
+        return userAdapters;
     }
 
     public UserAdapter get(String login) {
         User u = dao.get(login);
         return  new UserAdapter(u,playerDao.getByUser(u),challengeResource.getChallenges(u.getId()));
+    }
+
+    @RequestMapping(value = "/period/{period}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Integer setPeriod(@PathVariable Integer period) {
+        UserAdapter.period = period;
+        return period;
     }
 
     @Scheduled(fixedRate = 1000*60*10)
