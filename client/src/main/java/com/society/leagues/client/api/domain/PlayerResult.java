@@ -1,10 +1,13 @@
 package com.society.leagues.client.api.domain;
 
 
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
 public class PlayerResult extends LeagueObject {
-    TeamMatch teamMatch;
-    Player playerHome;
-    Player playerAway;
+
+    @DBRef TeamMatch teamMatch;
+    @DBRef User playerHome;
+    @DBRef User playerAway;
     Integer homeRacks;
     Integer awayRacks;
     Integer matchNumber;
@@ -17,19 +20,19 @@ public class PlayerResult extends LeagueObject {
         this.teamMatch = teamMatch;
     }
 
-    public Player getPlayerHome() {
+    public User getPlayerHome() {
         return playerHome;
     }
 
-    public void setPlayerHome(Player playerHome) {
+    public void setPlayerHome(User playerHome) {
         this.playerHome = playerHome;
     }
 
-    public Player getPlayerAway() {
+    public User getPlayerAway() {
         return playerAway;
     }
 
-    public void setPlayerAway(Player playerAway) {
+    public void setPlayerAway(User playerAway) {
         this.playerAway = playerAway;
     }
 

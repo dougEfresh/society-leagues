@@ -1,21 +1,22 @@
 package com.society.leagues.client.api.domain;
 
 
-import com.society.leagues.client.api.domain.division.Division;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 
-public class TeamMatch extends LeagueObject  {
-    @NotNull Team home;
-    @NotNull Team away;
-    @NotNull Season season;
+public class TeamMatch extends LeagueObject {
+    @NotNull
+    Team home;
+    @NotNull
+    Team away;
+    @NotNull @DBRef
+    Season season;
     LocalDateTime matchDate;
-    TeamResult result;
 
+    Integer homeRacks = -1;
+    Integer awayRacks = -1;
 
     public TeamMatch(Team home, Team away, Season season, LocalDateTime matchDate) {
         this.home = home;
@@ -63,12 +64,20 @@ public class TeamMatch extends LeagueObject  {
         return this.season.getDivision();
     }
 
-    public TeamResult getResult() {
-        return result;
+    public Integer getAwayRacks() {
+        return awayRacks;
     }
 
-    public void setResult(TeamResult result) {
-        this.result = result;
+    public void setAwayRacks(Integer awayRacks) {
+        this.awayRacks = awayRacks;
+    }
+
+    public Integer getHomeRacks() {
+        return homeRacks;
+    }
+
+    public void setHomeRacks(Integer homeRacks) {
+        this.homeRacks = homeRacks;
     }
 
     @Override

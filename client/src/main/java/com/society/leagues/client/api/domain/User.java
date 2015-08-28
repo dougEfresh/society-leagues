@@ -1,10 +1,13 @@
 package com.society.leagues.client.api.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 public class User extends LeagueObject {
 
@@ -14,28 +17,22 @@ public class User extends LeagueObject {
     String password;
     @NotNull String login;
     @NotNull Role role;
-    Set<Integer> playerIds = new TreeSet<>();
-    List<Player> players = new ArrayList<>();
     Status status;
 
-    public User(String login, String password, Role role) {
-        this.login = login;
-        this.password = password;
-        this.role = role;
-    }
-    
-    public User (Integer id) {
-        setId(id);
-    }
-
-    public User(String login, String password) {
-        this.login = login;
-        this.password = password;
-        this.role = Role.PLAYER;
-    }
+    @JsonSerialize(using = DateTimeSerializer.class)
+    @JsonDeserialize(using = DateTimeDeSerializer.class)
+    LocalDateTime created;
+    @DBRef List<HandicapSeason> handicapSeasons = new ArrayList<HandicapSeason>();
+    @DBRef List<TeamSeason> teamSeasons = new ArrayList<TeamSeason>();
 
     public User() {
+        this.created = LocalDateTime.now();
+    }
 
+    public static User defaultUser() {
+        User u = new User();
+        u.setId("0");
+        return u;
     }
 
     public User(String firstName, String lastName, String password, String login, Role role) {
@@ -102,18 +99,6 @@ public class User extends LeagueObject {
         return Role.isAdmin(role);
     }
 
-    public Set<Integer> getPlayerIds() {
-        return playerIds;
-    }
-
-    public void addPlayerId(Player player) {
-        playerIds.add(player.getId());
-    }
-
-    public void addPlayer(Player player) {
-        players.add(player);
-    }
-
     public String getName() {
         return firstName + " " + lastName;
     }
@@ -124,6 +109,38 @@ public class User extends LeagueObject {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public List<HandicapSeason> getHandicapSeasons() {
+        return handicapSeasons;
+    }
+
+    public void setHandicapSeasons(List<HandicapSeason> handicapSeasons) {
+        this.handicapSeasons = handicapSeasons;
+    }
+
+    public List<TeamSeason> getTeamSeasons() {
+        return teamSeasons;
+    }
+
+    public void setTeamSeasons(List<TeamSeason> teamSeasons) {
+        this.teamSeasons = teamSeasons;
+    }
+
+    public void addTeam(TeamSeason ts) {
+        this.teamSeasons.add(ts);
+    }
+
+    public void addHandicap(HandicapSeason hc) {
+        this.handicapSeasons.add(hc);
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
     }
 
     @Override

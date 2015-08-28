@@ -10,7 +10,6 @@ public class Team extends LeagueObject {
     @NotNull
     String name;
     Date created;
-    TeamStatus status;
     
     public static final Team bye = new Team("Bye",null);
 
@@ -34,22 +33,12 @@ public class Team extends LeagueObject {
         this.name = name;
     }
 
-    @JsonIgnore
     public Date getCreated() {
         return created;
     }
 
     public void setCreated(Date created) {
         this.created = created;
-    }
-
-    @JsonIgnore
-    public TeamStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(TeamStatus status) {
-        this.status = status;
     }
 
     @Override
@@ -77,9 +66,4 @@ public class Team extends LeagueObject {
                 '}';
     }
 
-    @JsonIgnore
-    @Override
-    public Integer getId() {
-        return super.getId();
-    }
 }

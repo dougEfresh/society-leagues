@@ -1,13 +1,18 @@
 package com.society.leagues.client.api.domain;
 
-public class LeagueObject implements Comparable<LeagueObject>{
-    protected Integer id;
 
-    public Integer getId() {
+import org.springframework.data.annotation.Id;
+
+public class LeagueObject implements Comparable<LeagueObject>{
+
+    @Id
+    protected String id;
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

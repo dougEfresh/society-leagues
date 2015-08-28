@@ -29,7 +29,6 @@ bootRun {
 
 dependencies {
     compile project(':client')
-    compile project(':client-dao')
     compile 'org.slf4j:slf4j-api:1.7.7'
 
     //DB
@@ -43,6 +42,8 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-security'
     compile 'org.springframework.boot:spring-boot-starter-tomcat'
+    compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
     compile 'com.allanditzel:spring-security-csrf-token-filter:1.1'
     compile 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
@@ -52,6 +53,7 @@ dependencies {
     compile  'com.netflix.feign:feign-jackson:8.1.0'
     //Pdf
     compile 'com.itextpdf:itextpdf:5.5.6'
+
     //Test
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'org.apache.httpcomponents:httpclient:4.4'

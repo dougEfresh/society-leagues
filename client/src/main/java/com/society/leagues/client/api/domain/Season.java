@@ -1,30 +1,23 @@
 package com.society.leagues.client.api.domain;
 
-import com.society.leagues.client.api.domain.division.Division;
-
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
-
 public class Season extends LeagueObject {
 
-    @NotNull
-    String name;
-    @NotNull
-    Date startDate;
+    @NotNull String name;
+    @NotNull Date startDate;
     Date endDate;
-    @NotNull
-    Integer rounds;
-    @NotNull
-    Status seasonStatus;
-    @NotNull
-    Division division;
+    @NotNull Integer rounds;
+    @NotNull Status seasonStatus;
+    @NotNull Division division;
 
-    public Season(String name, Date startDate, Integer rounds) {
+    public Season(String name, Date startDate, Integer rounds, Division division) {
         this.name = name;
         this.startDate = startDate;
         this.rounds = rounds;
         this.seasonStatus = Status.PENDING;
+        this.division = division;
     }
     
     public Season(String name, Date startDate, Integer rounds, Status status) {

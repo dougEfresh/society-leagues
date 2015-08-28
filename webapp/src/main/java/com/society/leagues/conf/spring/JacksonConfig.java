@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 @Configuration
 @SuppressWarnings("unused")
 public class JacksonConfig {
-    @Autowired  DateTimeSerializer dateTimeSerializer;
-    @Autowired  DateTimeDeSerializer dateTimeDeSerializer;
+    //@Autowired  DateTimeSerializer dateTimeSerializer;
+    //@Autowired  DateTimeDeSerializer dateTimeDeSerializer;
     @Autowired  DateSerializer dateSerializer;
     @Autowired  DateDeSerializer dateDeSerializer;
     @Value("${pretty-print:false}") boolean prettyPrint = false;
@@ -26,8 +26,8 @@ public class JacksonConfig {
         Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
         return builder.indentOutput(prettyPrint).dateFormat(new SimpleDateFormat("yyyy-MM-dd")).
                 defaultViewInclusion(true).
-                serializers(dateTimeSerializer, dateSerializer).
-                deserializerByType(LocalDateTime.class, dateTimeDeSerializer).
+                serializers(dateSerializer).
+                //deserializerByType(LocalDateTime.class, dateTimeDeSerializer).
                 deserializerByType(LocalDate.class,dateDeSerializer);
     }
 
