@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 
 @RestController
@@ -18,11 +19,10 @@ import java.security.Principal;
 public class UserResource {
 
     @Autowired UserRepository userRepository;
-
     private static Logger logger = LoggerFactory.getLogger(UserResource.class);
 
     @RequestMapping(value = "/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public User get(Principal principal) {
+    public User get(Principal principal, HttpServletRequest request) {
         if (principal == null) {
             return User.defaultUser();
         }

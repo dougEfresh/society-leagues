@@ -15,9 +15,7 @@ import org.springframework.boot.test.OutputCapture;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.LinkedMultiValueMap;
@@ -52,7 +50,7 @@ public class TestUser {
 
     private RestTemplate restTemplate = new RestTemplate();
     static boolean initialized = false;
-    HttpHeaders requestHeaders = new HttpHeaders();
+    static HttpHeaders requestHeaders = new HttpHeaders();
 
     @Before
     public void setUp() {
@@ -89,22 +87,29 @@ public class TestUser {
         assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
         assertEquals(responseEntity.getBody().getLogin(),"test");
         assertTrue(responseEntity.getHeaders().containsKey("Set-Cookie"));
-        requestHeaders.add("Cookie","JSESSIONID=" + responseEntity.getHeaders().get("Set-Cookie").get(1).split(";")[0]);
+        requestHeaders.add("Cookie",responseEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0]);
     }
 
     @Test
     public void testUser() {
+        HttpEntity requestEntity = new HttpEntity(null, requestHeaders);
+
         User newUser = userRepository.findByLogin("test");
-        ResponseEntity<User> responseEntity = restTemplate.getForEntity(host + "/api/user/" + newUser.getId(),User.class);
+        ResponseEntity<User> responseEntity = restTemplate.exchange(host + "/api/user/" + newUser.getId(), HttpMethod.GET,requestEntity,User.class);
         User returned = responseEntity.getBody();
         assertEquals(returned.getId(),newUser.getId());
         assertEquals(returned.getLogin(),newUser.getLogin());
 
-        responseEntity = restTemplate.getForEntity(host + "/api/user/login" + newUser.getLogin(),User.class);
+        responseEntity = restTemplate.exchange(host + "/api/user/login/" + newUser.getLogin(), HttpMethod.GET,requestEntity,User.class);
         returned = responseEntity.getBody();
         assertEquals(returned.getId(),newUser.getId());
         assertEquals(returned.getLogin(),newUser.getLogin());
 
+
+        responseEntity = restTemplate.exchange(host + "/api/user", HttpMethod.GET,requestEntity,User.class);
+        returned = responseEntity.getBody();
+        assertEquals(returned.getId(),newUser.getId());
+        assertEquals(returned.getLogin(),newUser.getLogin());
     }
 
      @Test
