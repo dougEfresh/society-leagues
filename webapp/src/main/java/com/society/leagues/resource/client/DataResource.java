@@ -29,32 +29,10 @@ public class DataResource {
     @Autowired DivisionDao divisionDao;
     @Autowired StatsResource statsResource;
     @Autowired ChallengeResource challengeResource;
-    @Autowired WebMapCache<Map<String,Object>> dataCache;
     private static Logger logger = LoggerFactory.getLogger(DataResource.class);
-
-    @PostConstruct
-    public void init() {
-        //Load the cache up
-        logger.info("Pre-Caching data");
-        data();
-        logger.info("Finished pre-Caching data");
-    }
 
     @RequestMapping(value = "/data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String,Object> data() {
-        /*
-        if (!dataCache.isEmpty()) {
-            //don't cache slots
-            dataCache.getCache().put("slots", challengeResource.getSlots());
-            dataCache.getCache().put("users",userResource.get());
-            dataCache.getCache().put("challenges",challengeResource.getCurrentChallenges());
-            dataCache.getCache().put("userResults",resultResource.getCurrentResults());
-            dataCache.getCache().put("teamResults", matchResource.getTeamMatchesCurrent());
-            dataCache.getCache().put("userStats",statsResource.getStats());
-            dataCache.getCache().put("teamStats",statsResource.getTeamStats());
-            return dataCache.getCache();
-        }
-        */
         Map<String,Object> data = new HashMap<>();
         logger.info("Getting divisions");
         data.put("divisions",divisionResource.divisions());
@@ -75,7 +53,6 @@ public class DataResource {
         logger.info("Getting slots");
         data.put("slots",challengeResource.getSlots());
         data.put("challenges",challengeResource.getCurrentChallenges());
-        //dataCache.setCache(data);
 
         return data;
     }

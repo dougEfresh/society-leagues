@@ -9,7 +9,7 @@ buildscript {
       mavenLocal()
   }
   dependencies {
-    classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.3.RELEASE'
+    classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE'
   }
 }
 
@@ -24,11 +24,7 @@ jar {
 }
 
 bootRun {
-    if ( project.hasProperty('args') ) {
-        args project.args.split('\\s+')
-    }
-
-    jvmArgs = [ '-Dserver.port=8081','-Dsecurity-disable=true','-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005' ]
+    jvmArgs = [ '-Dserver.port=8081','-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005' ]
 }
 
 dependencies {
