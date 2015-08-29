@@ -1,5 +1,6 @@
 package com.society.leagues.client.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -67,6 +68,7 @@ public class User extends LeagueObject {
         this.email = email;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }

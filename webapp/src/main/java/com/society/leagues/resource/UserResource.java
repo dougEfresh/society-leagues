@@ -6,10 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -30,12 +28,38 @@ public class UserResource {
     }
 
     @RequestMapping(value = "/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_USER')")
     public User getById(@PathVariable String id) {
         return userRepository.findOne(id);
     }
 
     @RequestMapping(value = "/user/login/{login}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_USER')")
     public User get(@PathVariable String login) {
         return userRepository.findByLogin(login);
     }
+
+    @RequestMapping(value = "/user/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public User create(@RequestBody User user) {
+        User oldUser = userRepository.findByLogin(user.getLogin());
+        if (oldUser != null) {
+            return oldUser;
+        }
+        return userRepository.save(user);
+    }
+
+
+    @RequestMapping(value = "/user/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public User modify(@RequestBody User user) {
+        User existingUser = userRepository.findByLogin(user.getLogin());
+        if (existingUser == null) {
+            return User.defaultUser();
+        }
+        return userRepository.save(user);
+    }
+
+
+
 }

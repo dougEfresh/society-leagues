@@ -57,6 +57,7 @@ dependencies {
     //Test
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'org.apache.httpcomponents:httpclient:4.4'
+    testCompile 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:1.50.0'
 }
 
 task integrationTest(type: Test) {

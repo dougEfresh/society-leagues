@@ -20,18 +20,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class})
-@WebIntegrationTest("security-disable=true")
+@WebIntegrationTest
 public class TestUser {
 
     private static Logger logger = Logger.getLogger(TestUser.class);
@@ -51,6 +51,7 @@ public class TestUser {
     private RestTemplate restTemplate = new RestTemplate();
     static boolean initialized = false;
     static HttpHeaders requestHeaders = new HttpHeaders();
+    static String JSESSIONID = "";
 
     @Before
     public void setUp() {
@@ -82,12 +83,13 @@ public class TestUser {
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
         map.add("username","test");
-        map.add("password","abc123");
+        map.add("password", "abc123");
         ResponseEntity<User> responseEntity = restTemplate.postForEntity(host + "/api/authenticate", map, User.class);
         assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
-        assertEquals(responseEntity.getBody().getLogin(),"test");
+        assertEquals(responseEntity.getBody().getLogin(), "test");
         assertTrue(responseEntity.getHeaders().containsKey("Set-Cookie"));
-        requestHeaders.add("Cookie",responseEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0]);
+        JSESSIONID = responseEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
+        requestHeaders.add("Cookie", JSESSIONID);
     }
 
     @Test
@@ -95,6 +97,7 @@ public class TestUser {
         HttpEntity requestEntity = new HttpEntity(null, requestHeaders);
 
         User newUser = userRepository.findByLogin("test");
+
         ResponseEntity<User> responseEntity = restTemplate.exchange(host + "/api/user/" + newUser.getId(), HttpMethod.GET,requestEntity,User.class);
         User returned = responseEntity.getBody();
         assertEquals(returned.getId(),newUser.getId());
@@ -112,9 +115,44 @@ public class TestUser {
         assertEquals(returned.getLogin(),newUser.getLogin());
     }
 
-     @Test
+     @Test(expected = HttpClientErrorException.class)
      public void testLogin() {
-
-
+         ResponseEntity<User> responseEntity = restTemplate.getForEntity(host + "/api/user" ,User.class);
+         assertEquals(HttpStatus.UNAUTHORIZED,responseEntity.getStatusCode());
      }
+
+    @Test
+    public void testCreate() {
+        User u = new User();
+        u.setLogin("user");
+        u.setFirstName("blah");
+        u.setLastName("asdsa");
+        u.setEmail("me@you.com");
+        u.setRole(Role.PLAYER);
+        u.setPassword(new BCryptPasswordEncoder().encode("abc123"));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("Cookie", JSESSIONID);
+        HttpEntity requestEntity = new HttpEntity(u, headers);
+
+        User response = restTemplate.postForEntity(host +"/api/user/create",requestEntity,User.class).getBody();
+        assertNotNull(response.getId());
+        assertNull(response.getPassword());
+        assertEquals("user",response.getLogin());
+
+    }
+
+    @Test
+    public void testModify() {
+        User newUser = userRepository.findByLogin("test");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("Cookie", JSESSIONID);
+        newUser.setFirstName("new name");
+        HttpEntity requestEntity = new HttpEntity(newUser, headers);
+        User response = restTemplate.postForEntity(host +"/api/user/modify",requestEntity,User.class).getBody();
+        assertNotNull(response.getId());
+        assertNull(response.getPassword());
+        assertEquals("new name",response.getFirstName());
+    }
 }

@@ -27,6 +27,9 @@ public class PrincipleDetailsService implements UserDetailsService {
         //TODO Add ROLE_ADMIN ?
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         User u = userRepository.findByLogin(username);
+        if (u.isAdmin()) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        }
         return new org.springframework.security.core.userdetails.User(
                 username,
                 u.getPassword(),
