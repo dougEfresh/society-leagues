@@ -16,7 +16,7 @@ public class Season extends LeagueObject {
         this.name = name;
         this.startDate = startDate;
         this.rounds = rounds;
-        this.seasonStatus = Status.PENDING;
+        this.seasonStatus = Status.ACTIVE;
         this.division = division;
     }
     

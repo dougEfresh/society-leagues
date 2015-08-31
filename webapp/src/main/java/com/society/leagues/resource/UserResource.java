@@ -49,7 +49,6 @@ public class UserResource {
         return userRepository.save(user);
     }
 
-
     @RequestMapping(value = "/user/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public User modify(@RequestBody User user) {

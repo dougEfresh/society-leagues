@@ -1,6 +1,10 @@
 package com.society.leagues.client.api.domain;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.society.leagues.client.api.domain.converters.DateTimeDeSerializer;
+import com.society.leagues.client.api.domain.converters.DateTimeSerializer;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;
@@ -11,8 +15,10 @@ public class TeamMatch extends LeagueObject {
     Team home;
     @NotNull
     Team away;
-    @NotNull @DBRef
-    Season season;
+    @NotNull @DBRef Season season;
+
+    @JsonSerialize(using = DateTimeSerializer.class)
+    @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime matchDate;
 
     Integer homeRacks = -1;

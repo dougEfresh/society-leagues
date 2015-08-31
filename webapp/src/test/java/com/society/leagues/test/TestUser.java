@@ -41,55 +41,17 @@ public class TestUser {
     private String host = "http://localhost";
 
     @Autowired UserRepository userRepository;
-    @Autowired SeasonRepository seasonRepository;
-    @Autowired TeamSeasonRepository teamSeasonRepository;
-    @Autowired TeamRepository teamRepository;
-    @Autowired HandicapSeasonRepository handicapSeasonRepository;
-    @Autowired TeamMatchRepository tmRepository;
-    @Autowired List<MongoRepository> repositories;
+    @Autowired Utils utils;
 
     private RestTemplate restTemplate = new RestTemplate();
     static boolean initialized = false;
     static HttpHeaders requestHeaders = new HttpHeaders();
-    static String JSESSIONID = "";
 
     @Before
     public void setUp() {
         host += ":" + port;
-        if (initialized)
-            return ;
-
-        initialized = true;
-        for (MongoRepository repository : repositories) {
-            repository.deleteAll();
-        }
-
-        Team t = teamRepository.save(new Team("testteam"));
-        Team t2 = teamRepository.save(new Team("anotherteam"));
-        Season s = seasonRepository.save(new Season("9 ball ", new Date(),-1, Division.NINE_BALL_CHALLENGE));
-        TeamSeason ts = teamSeasonRepository.save(new TeamSeason(s, t));
-        HandicapSeason hs = handicapSeasonRepository.save(new HandicapSeason(Handicap.A, s));
-
-        User u = new User();
-        u.setLogin("test");
-        u.setFirstName("blah");
-        u.setLastName("asdsa");
-        u.setEmail("me@you.com");
-        u.setRole(Role.ADMIN);
-        u.addHandicap(hs);
-        u.addTeam(ts);
-        u.setPassword(new BCryptPasswordEncoder().encode("abc123"));
-        userRepository.save(u);
-
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-        map.add("username","test");
-        map.add("password", "abc123");
-        ResponseEntity<User> responseEntity = restTemplate.postForEntity(host + "/api/authenticate", map, User.class);
-        assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
-        assertEquals(responseEntity.getBody().getLogin(), "test");
-        assertTrue(responseEntity.getHeaders().containsKey("Set-Cookie"));
-        JSESSIONID = responseEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
-        requestHeaders.add("Cookie", JSESSIONID);
+        utils.createAdminUser();
+        requestHeaders.add("Cookie", utils.getSessionId(host + "/api/authenticate"));
     }
 
     @Test
@@ -115,8 +77,8 @@ public class TestUser {
         assertEquals(returned.getLogin(),newUser.getLogin());
     }
 
-     @Test(expected = HttpClientErrorException.class)
-     public void testLogin() {
+    @Test(expected = HttpClientErrorException.class)
+    public void testLogin() {
          ResponseEntity<User> responseEntity = restTemplate.getForEntity(host + "/api/user" ,User.class);
          assertEquals(HttpStatus.UNAUTHORIZED,responseEntity.getStatusCode());
      }
@@ -132,7 +94,7 @@ public class TestUser {
         u.setPassword(new BCryptPasswordEncoder().encode("abc123"));
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Cookie", JSESSIONID);
+        headers.add("Cookie", Utils.JSESSIONID);
         HttpEntity requestEntity = new HttpEntity(u, headers);
 
         User response = restTemplate.postForEntity(host +"/api/user/create",requestEntity,User.class).getBody();
@@ -147,7 +109,7 @@ public class TestUser {
         User newUser = userRepository.findByLogin("test");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Cookie", JSESSIONID);
+        headers.add("Cookie", Utils.JSESSIONID);
         newUser.setFirstName("new name");
         HttpEntity requestEntity = new HttpEntity(newUser, headers);
         User response = restTemplate.postForEntity(host +"/api/user/modify",requestEntity,User.class).getBody();

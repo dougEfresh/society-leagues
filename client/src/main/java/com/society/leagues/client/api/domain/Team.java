@@ -1,28 +1,37 @@
 package com.society.leagues.client.api.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.society.leagues.client.api.domain.converters.DateTimeDeSerializer;
+import com.society.leagues.client.api.domain.converters.DateTimeSerializer;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Team extends LeagueObject {
 
-    @NotNull
-    String name;
-    Date created;
-    
-    public static final Team bye = new Team("Bye",null);
+    @DBRef Season season;
+    @NotNull String name;
+    @JsonSerialize(using = DateTimeSerializer.class)
+    @JsonDeserialize(using = DateTimeDeSerializer.class)
+    LocalDateTime created;
 
-    public Team(String name) {
+    public Team(Season season, String name) {
+        this.season = season;
         this.name = name;
+        this.created = LocalDateTime.now();
     }
 
-    public Team(String name, Date created) {
-        this.name = name;
-        this.created = created;
-    }
-    
     public Team() {
+    }
+
+    public Season getSeason() {
+        return season;
+    }
+
+    public void setSeason(Season season) {
+        this.season = season;
     }
 
     public String getName() {
@@ -33,37 +42,11 @@ public class Team extends LeagueObject {
         this.name = name;
     }
 
-    public Date getCreated() {
+    public LocalDateTime getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(LocalDateTime created) {
         this.created = created;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Team)) return false;
-
-        Team team = (Team) o;
-
-        if (!name.equals(team.name)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return name.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "Team{" +
-                "name='" + name + '\'' +
-                ", id=" + id +
-                '}';
-    }
-
 }

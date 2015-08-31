@@ -3,6 +3,8 @@ package com.society.leagues.client.api.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.society.leagues.client.api.domain.converters.DateTimeDeSerializer;
+import com.society.leagues.client.api.domain.converters.DateTimeSerializer;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;
@@ -24,11 +26,12 @@ public class User extends LeagueObject {
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime created;
     @DBRef List<HandicapSeason> handicapSeasons = new ArrayList<HandicapSeason>();
-    @DBRef List<TeamSeason> teamSeasons = new ArrayList<TeamSeason>();
+    @DBRef List<Team> teams = new ArrayList<Team>();
 
     public User() {
         this.created = LocalDateTime.now();
     }
+    public User(String id) {this.id = id;}
 
     public static User defaultUser() {
         User u = new User();
@@ -121,16 +124,16 @@ public class User extends LeagueObject {
         this.handicapSeasons = handicapSeasons;
     }
 
-    public List<TeamSeason> getTeamSeasons() {
-        return teamSeasons;
+    public List<Team> getTeams() {
+        return teams;
     }
 
-    public void setTeamSeasons(List<TeamSeason> teamSeasons) {
-        this.teamSeasons = teamSeasons;
+    public void setTeams(List<Team> teams) {
+        this.teams = teams;
     }
 
-    public void addTeam(TeamSeason ts) {
-        this.teamSeasons.add(ts);
+    public void addTeam(Team ts) {
+        this.teams.add(ts);
     }
 
     public void addHandicap(HandicapSeason hc) {
