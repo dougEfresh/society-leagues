@@ -15,7 +15,6 @@ public class TeamMatch extends LeagueObject {
     Team home;
     @NotNull
     Team away;
-    @NotNull @DBRef Season season;
 
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
@@ -24,10 +23,9 @@ public class TeamMatch extends LeagueObject {
     Integer homeRacks = -1;
     Integer awayRacks = -1;
 
-    public TeamMatch(Team home, Team away, Season season, LocalDateTime matchDate) {
+    public TeamMatch(Team home, Team away,LocalDateTime matchDate) {
         this.home = home;
         this.away = away;
-        this.season = season;
         this.matchDate = matchDate;
     }
 
@@ -59,15 +57,11 @@ public class TeamMatch extends LeagueObject {
     }
 
     public Season getSeason() {
-        return season;
-    }
-
-    public void setSeason(Season season) {
-        this.season = season;
+        return home.getSeason();
     }
 
     public Division getDivision() {
-        return this.season.getDivision();
+        return getSeason().getDivision();
     }
 
     public Integer getAwayRacks() {

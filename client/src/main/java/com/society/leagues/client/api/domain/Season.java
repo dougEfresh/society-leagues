@@ -30,6 +30,10 @@ public class Season extends LeagueObject {
     public Season() {
     }
 
+    public Season(String id) {
+        this.id = id;
+    }
+
     public Status getSeasonStatus() {
         return seasonStatus;
     }

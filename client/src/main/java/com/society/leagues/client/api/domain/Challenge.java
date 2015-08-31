@@ -6,16 +6,15 @@ import java.util.List;
 
 public class Challenge extends LeagueObject {
     Status status;
-    @DBRef User challenger;
-    @DBRef User opponent;
+    @DBRef Team challenger;
+    @DBRef Team opponent;
     @DBRef List<Slot> slots;
     @DBRef Slot acceptedSlot;
-    TeamMatch teamMatch;
 
     public Challenge() {
     }
 
-    public Challenge(Status status, User challenger, User opponent, List<Slot> slots) {
+    public Challenge(Status status, Team challenger, Team opponent, List<Slot> slots) {
         this.status = status;
         this.challenger = challenger;
         this.opponent = opponent;
@@ -30,19 +29,19 @@ public class Challenge extends LeagueObject {
         this.acceptedSlot = acceptedSlot;
     }
 
-    public User getChallenger() {
+    public Team getChallenger() {
         return challenger;
     }
 
-    public void setChallenger(User challenger) {
+    public void setChallenger(Team challenger) {
         this.challenger = challenger;
     }
 
-    public User getOpponent() {
+    public Team getOpponent() {
         return opponent;
     }
 
-    public void setOpponent(User opponent) {
+    public void setOpponent(Team opponent) {
         this.opponent = opponent;
     }
 
@@ -62,12 +61,8 @@ public class Challenge extends LeagueObject {
         this.status = status;
     }
 
-    public TeamMatch getTeamMatch() {
-        return teamMatch;
-    }
-
-    public void setTeamMatch(TeamMatch teamMatch) {
-        this.teamMatch = teamMatch;
+    public Season getSeason() {
+        return challenger.getSeason();
     }
 
 }

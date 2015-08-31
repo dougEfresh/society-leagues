@@ -32,7 +32,7 @@ public class TestChallenge {
     @Value("${local.server.port}")
 	private int port;
     private String host = "http://localhost";
-    @Autowired ChallengRepository challengRepository;
+    @Autowired ChallengeRepository challengeRepository;
     @Autowired UserRepository userRepository;
     @Autowired SlotRepository slotRepository;
     @Autowired Utils utils;
@@ -49,8 +49,8 @@ public class TestChallenge {
 
     @Test
     public void testCreateChallenge() {
-        User ch = new User(utils.createRandomUser().getId());
-        User op = new User(utils.createRandomUser().getId());
+        Team ch = new Team(utils.createRandomTeam().getId());
+        Team op = new Team(utils.createRandomTeam().getId());
 
         List<Slot> slots = new ArrayList<>();
         for( Slot s : Arrays.asList(new Slot(LocalDateTime.now().minusHours(1)), new Slot(LocalDateTime.now().minusHours(2)), new Slot(LocalDateTime.now().minusHours(3)))) {
@@ -70,8 +70,10 @@ public class TestChallenge {
         assertEquals(op.getId(), newChallenge.getOpponent().getId());
 
 
-        assertNotNull(newChallenge.getChallenger().getFirstName());
-        assertNotNull(newChallenge.getOpponent().getFirstName());
+        assertNotNull(newChallenge.getChallenger().getMembers());
+        assertNotNull(newChallenge.getOpponent().getMembers());
+        assertFalse(newChallenge.getChallenger().getMembers().isEmpty());
+        assertFalse(newChallenge.getOpponent().getMembers().isEmpty());
 
         assertEquals(3, newChallenge.getSlots().size());
         assertEquals(Status.PENDING,newChallenge.getStatus());
@@ -84,16 +86,17 @@ public class TestChallenge {
 
     @Test
     public void testAcceptChallenge() {
-        User u1 = new User(utils.createRandomUser().getId());
-        User u2 = new User(utils.createRandomUser().getId());
+        Team ch = new Team(utils.createRandomTeam().getId());
+        Team op = new Team(utils.createRandomTeam().getId());
+
         List<Slot> slots = new ArrayList<>();
         for(Slot s : Arrays.asList(new Slot(LocalDateTime.now().minusHours(1)), new Slot(LocalDateTime.now().minusHours(2)), new Slot(LocalDateTime.now().minusHours(3)))) {
             Slot slotId = new Slot();
             slotId.setId(slotRepository.save(s).getId());
             slots.add(slotId);
         }
-        Challenge c = new Challenge(Status.PENDING,u1,u2,slots);
-        c = challengRepository.save(c);
+        Challenge c = new Challenge(Status.PENDING,ch,op,slots);
+        c = challengeRepository.save(c);
         c.setAcceptedSlot(slotRepository.findOne(c.getSlots().get(0).getId()));
         HttpEntity requestEntity = new HttpEntity(c, requestHeaders);
         TeamMatch tm = restTemplate.postForEntity(host + "/api/challenge/accept",requestEntity,TeamMatch.class).getBody();
@@ -102,17 +105,18 @@ public class TestChallenge {
 
     @Test
     public void testDeclineChallenge() {
-        User u1 = new User(utils.createRandomUser().getId());
-        User u2 = new User(utils.createRandomUser().getId());
+        Team ch = new Team(utils.createRandomTeam().getId());
+        Team op = new Team(utils.createRandomTeam().getId());
+
         List<Slot> slots = new ArrayList<>();
         for( Slot s : Arrays.asList(new Slot(LocalDateTime.now().minusHours(1)), new Slot(LocalDateTime.now().minusHours(2)), new Slot(LocalDateTime.now().minusHours(3)))) {
             Slot slotId = new Slot();
             slotId.setId(slotRepository.save(s).getId());
             slots.add(slotId);
         }
-        Challenge c = new Challenge(Status.ACCEPTED,u1,u2,slots);
+        Challenge c = new Challenge(Status.ACCEPTED,ch,op,slots);
         c.setAcceptedSlot(slots.get(0));
-        c = challengRepository.save(c);
+        c = challengeRepository.save(c);
         HttpEntity requestEntity = new HttpEntity(c, requestHeaders);
         Challenge newChallenge = restTemplate.postForEntity(host + "/api/challenge/decline",requestEntity, Challenge.class).getBody();
         assertEquals(newChallenge.getStatus(), Status.CANCELLED);

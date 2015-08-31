@@ -5,27 +5,17 @@ import com.society.leagues.client.api.domain.*;
 import com.society.leagues.mongo.*;
 import org.apache.log4j.Logger;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.OutputCapture;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
-import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -37,14 +27,11 @@ public class TestUser {
     private static Logger logger = Logger.getLogger(TestUser.class);
 
     @Value("${local.server.port}")
-	private int port;
-    private String host = "http://localhost";
-
+	int port;
+    String host = "http://localhost";
     @Autowired UserRepository userRepository;
     @Autowired Utils utils;
-
-    private RestTemplate restTemplate = new RestTemplate();
-    static boolean initialized = false;
+    RestTemplate restTemplate = new RestTemplate();
     static HttpHeaders requestHeaders = new HttpHeaders();
 
     @Before

@@ -26,7 +26,6 @@ public class User extends LeagueObject {
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime created;
     @DBRef List<HandicapSeason> handicapSeasons = new ArrayList<HandicapSeason>();
-    @DBRef List<Team> teams = new ArrayList<Team>();
 
     public User() {
         this.created = LocalDateTime.now();
@@ -122,18 +121,6 @@ public class User extends LeagueObject {
 
     public void setHandicapSeasons(List<HandicapSeason> handicapSeasons) {
         this.handicapSeasons = handicapSeasons;
-    }
-
-    public List<Team> getTeams() {
-        return teams;
-    }
-
-    public void setTeams(List<Team> teams) {
-        this.teams = teams;
-    }
-
-    public void addTeam(Team ts) {
-        this.teams.add(ts);
     }
 
     public void addHandicap(HandicapSeason hc) {
