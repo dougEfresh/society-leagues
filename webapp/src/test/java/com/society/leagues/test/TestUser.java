@@ -58,7 +58,6 @@ public class TestUser {
         assertEquals(returned.getId(),newUser.getId());
         assertEquals(returned.getLogin(),newUser.getLogin());
 
-
         responseEntity = restTemplate.exchange(host + "/api/user", HttpMethod.GET,requestEntity,User.class);
         returned = responseEntity.getBody();
         assertEquals(returned.getId(),newUser.getId());
@@ -85,7 +84,7 @@ public class TestUser {
         headers.add("Cookie", Utils.JSESSIONID);
         HttpEntity requestEntity = new HttpEntity(u, headers);
 
-        User response = restTemplate.postForEntity(host +"/api/admin/user/create",requestEntity,User.class).getBody();
+        User response = restTemplate.postForEntity(host +"/api/user/admin/create",requestEntity,User.class).getBody();
         assertNotNull(response.getId());
         assertNull(response.getPassword());
         assertEquals("user",response.getLogin());
@@ -100,7 +99,7 @@ public class TestUser {
         headers.add("Cookie", Utils.JSESSIONID);
         newUser.setFirstName("new name");
         HttpEntity requestEntity = new HttpEntity(newUser, headers);
-        User response = restTemplate.postForEntity(host +"/api/admin/user/modify",requestEntity,User.class).getBody();
+        User response = restTemplate.postForEntity(host +"/api/user/admin/modify",requestEntity,User.class).getBody();
         assertNotNull(response.getId());
         assertNull(response.getPassword());
         assertEquals("new name",response.getFirstName());

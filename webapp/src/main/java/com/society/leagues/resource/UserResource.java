@@ -20,7 +20,7 @@ public class UserResource {
     @Autowired LeagueService leagueService;
     private static Logger logger = LoggerFactory.getLogger(UserResource.class);
 
-    @RequestMapping(value = "/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public User get(Principal principal, HttpServletRequest request) {
         if (principal == null) {
             return User.defaultUser();
