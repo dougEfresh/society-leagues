@@ -2,6 +2,7 @@ package com.society.leagues.resource;
 
 import com.society.leagues.Service.LeagueService;
 import com.society.leagues.client.api.domain.*;
+import com.society.leagues.mongo.ChallengeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,14 +12,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/api/challenge")
+@SuppressWarnings("unused")
 public class ChallengeResource {
 
     @Autowired LeagueService leagueService;
-
-    @RequestMapping(value = "/challenge/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Autowired ChallengeRepository challengeRepository;
+    @RequestMapping(value = "/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public Challenge create(@RequestBody Challenge challenge, Principal principal, HttpServletRequest request) {
         if (principal == null) {
             return new Challenge();
@@ -34,7 +39,7 @@ public class ChallengeResource {
         return new Challenge();
     }
 
-    @RequestMapping(value = "/challenge/accept", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/accept", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public TeamMatch accept(@RequestBody Challenge challenge, Principal principal, HttpServletRequest request) {
         if (principal == null) {
             return null;
@@ -57,7 +62,7 @@ public class ChallengeResource {
         return null;
     }
 
-     @RequestMapping(value = "/challenge/decline", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/decline", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
      public Challenge decline(@RequestBody Challenge challenge, Principal principal, HttpServletRequest request) {
          if (principal == null) {
             return null;
@@ -66,5 +71,11 @@ public class ChallengeResource {
          c.setStatus(Status.CANCELLED);
          c.setAcceptedSlot(null);
          return leagueService.save(c);
+    }
+
+    @RequestMapping(value = "/get", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public List<Challenge> get(Principal principal) {
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
+        return leagueService.findAll(Challenge.class).stream().filter(c->c.getSlots().get(0).getLocalDateTime().isAfter(yesterday)).collect(Collectors.toList());
     }
 }

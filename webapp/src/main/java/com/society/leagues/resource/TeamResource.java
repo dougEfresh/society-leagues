@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/team")
+@SuppressWarnings("unused")
 public class TeamResource {
 
     @Autowired LeagueService leagueService;
@@ -58,8 +59,7 @@ public class TeamResource {
         return leagueService.save(existingTeam);
     }
 
-    @RequestMapping(value = "/get/{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/get/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public Team get(Principal principal, @PathVariable String id) {
         Team existingTeam = leagueService.findOne(new Team(id));
         if (existingTeam == null) {
@@ -68,15 +68,9 @@ public class TeamResource {
         return existingTeam;
     }
 
-     @RequestMapping(value = "/get/season/{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Team getTeamSeason(Principal principal, @PathVariable String id) {
+    @RequestMapping(value = "/get/season/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public List<Team> getTeamSeason(Principal principal, @PathVariable String id) {
          Season s = leagueService.findOne(new Season(id));
-
-        Team existingTeam = leagueService.findOne(new Team(id));
-        if (existingTeam == null) {
-            return null;
-        }
-        return existingTeam;
+         return leagueService.findTeamBySeason(s);
     }
 }

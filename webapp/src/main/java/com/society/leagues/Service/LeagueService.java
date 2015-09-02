@@ -1,14 +1,12 @@
 package com.society.leagues.Service;
 
-import com.society.leagues.client.api.domain.LeagueObject;
-import com.society.leagues.client.api.domain.Season;
-import com.society.leagues.client.api.domain.Team;
-import com.society.leagues.client.api.domain.User;
+import com.society.leagues.client.api.domain.*;
 import com.society.leagues.mongo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -20,11 +18,19 @@ public class LeagueService {
     @Autowired TeamMatchRepository teamMatchRepository;
     @Autowired HandicapSeasonRepository handicapSeasonRepository;
     @Autowired TeamRepository teamRepository;
+    @Autowired SeasonRepository seasonRepository;
+    @Autowired PlayerResultRepository playerResultRepository;
 
     public <T extends LeagueObject> T save(T entity) {
         MongoRepository repo = getRepo(entity);
         repo.save(entity);
         return (T) repo.findOne(entity.getId());
+    }
+
+    public <T extends LeagueObject> Boolean delete(T entity) {
+        MongoRepository repo = getRepo(entity);
+        repo.delete(entity);
+        return Boolean.TRUE;
     }
 
     public <T extends LeagueObject> T findOne(T entity) {
@@ -38,6 +44,29 @@ public class LeagueService {
 
     public List<Team> findTeamBySeason(Season season) {
         return teamRepository.findBySeason(season);
+    }
+
+    public List<TeamMatch> findTeamMatchBySeason(Season season) {
+        return teamMatchRepository.findBySeason(season);
+    }
+
+    public <T extends LeagueObject> List<T> findAll(Class<T> clz) {
+        try {
+            MongoRepository repo = getRepo(clz.newInstance());
+            return repo.findAll();
+        } catch (InstantiationException e) {
+            return Collections.emptyList();
+        } catch (IllegalAccessException e) {
+            return Collections.emptyList();
+        }
+    }
+
+    public List<PlayerResult> findPlayerResultBySeason(Season s) {
+        return playerResultRepository.findBySeason(s);
+    }
+
+    public List<PlayerResult> findPlayerResultByUser(User u) {
+        return playerResultRepository.findByPlayerHomeOrPlayerAway(u);
     }
 
     private MongoRepository getRepo(LeagueObject entity) {
@@ -60,8 +89,14 @@ public class LeagueService {
         if (clz.getCanonicalName().endsWith("HandicapSeason")) {
             return handicapSeasonRepository;
         }
+        if (clz.getCanonicalName().endsWith("Season")) {
+            return seasonRepository;
+        }
+
+        if (clz.getCanonicalName().endsWith("PlayerResult")) {
+            return playerResultRepository;
+        }
 
         return null;
     }
-
 }

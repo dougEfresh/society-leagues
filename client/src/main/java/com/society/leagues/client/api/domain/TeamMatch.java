@@ -11,10 +11,9 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class TeamMatch extends LeagueObject {
-    @NotNull
-    Team home;
-    @NotNull
-    Team away;
+    @NotNull Team home;
+    @NotNull Team away;
+    @DBRef Season season;
 
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
@@ -23,13 +22,18 @@ public class TeamMatch extends LeagueObject {
     Integer homeRacks = -1;
     Integer awayRacks = -1;
 
-    public TeamMatch(Team home, Team away,LocalDateTime matchDate) {
+    public TeamMatch(Team home, Team away, LocalDateTime matchDate) {
         this.home = home;
         this.away = away;
         this.matchDate = matchDate;
+        this.season = home.getSeason();
     }
 
     public TeamMatch() {
+    }
+
+    public TeamMatch(String id) {
+        this.id = id;
     }
 
     public Team getHome() {
@@ -57,7 +61,7 @@ public class TeamMatch extends LeagueObject {
     }
 
     public Season getSeason() {
-        return home.getSeason();
+        return season;
     }
 
     public Division getDivision() {

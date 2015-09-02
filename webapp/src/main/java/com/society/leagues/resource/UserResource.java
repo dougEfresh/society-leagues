@@ -14,6 +14,7 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping(value = "/api/user")
+@SuppressWarnings("unused")
 public class UserResource {
 
     @Autowired LeagueService leagueService;

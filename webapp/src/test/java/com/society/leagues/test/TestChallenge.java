@@ -2,8 +2,8 @@ package com.society.leagues.test;
 
 
 import com.society.leagues.Main;
+import com.society.leagues.Service.LeagueService;
 import com.society.leagues.client.api.domain.*;
-import com.society.leagues.mongo.*;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,9 +32,7 @@ public class TestChallenge {
     @Value("${local.server.port}")
 	private int port;
     private String host = "http://localhost";
-    @Autowired ChallengeRepository challengeRepository;
-    @Autowired UserRepository userRepository;
-    @Autowired SlotRepository slotRepository;
+    @Autowired LeagueService leagueService;
     @Autowired Utils utils;
     private RestTemplate restTemplate = new RestTemplate();
     static HttpHeaders requestHeaders = new HttpHeaders();
@@ -55,7 +53,7 @@ public class TestChallenge {
         List<Slot> slots = new ArrayList<>();
         for( Slot s : Arrays.asList(new Slot(LocalDateTime.now().minusHours(1)), new Slot(LocalDateTime.now().minusHours(2)), new Slot(LocalDateTime.now().minusHours(3)))) {
             Slot slotId = new Slot();
-            slotId.setId(slotRepository.save(s).getId());
+            slotId.setId(leagueService.save(s).getId());
             slots.add(slotId);
         }
         Challenge c = new Challenge(Status.PENDING,ch,op,slots);
@@ -92,12 +90,12 @@ public class TestChallenge {
         List<Slot> slots = new ArrayList<>();
         for(Slot s : Arrays.asList(new Slot(LocalDateTime.now().minusHours(1)), new Slot(LocalDateTime.now().minusHours(2)), new Slot(LocalDateTime.now().minusHours(3)))) {
             Slot slotId = new Slot();
-            slotId.setId(slotRepository.save(s).getId());
+            slotId.setId(leagueService.save(s).getId());
             slots.add(slotId);
         }
         Challenge c = new Challenge(Status.PENDING,ch,op,slots);
-        c = challengeRepository.save(c);
-        c.setAcceptedSlot(slotRepository.findOne(c.getSlots().get(0).getId()));
+        c = leagueService.save(c);
+        c.setAcceptedSlot(leagueService.findOne(c.getSlots().get(0)));
         HttpEntity requestEntity = new HttpEntity(c, requestHeaders);
         TeamMatch tm = restTemplate.postForEntity(host + "/api/challenge/accept",requestEntity,TeamMatch.class).getBody();
         assertEquals(tm.getMatchDate(),c.getAcceptedSlot().getLocalDateTime());
@@ -111,15 +109,43 @@ public class TestChallenge {
         List<Slot> slots = new ArrayList<>();
         for( Slot s : Arrays.asList(new Slot(LocalDateTime.now().minusHours(1)), new Slot(LocalDateTime.now().minusHours(2)), new Slot(LocalDateTime.now().minusHours(3)))) {
             Slot slotId = new Slot();
-            slotId.setId(slotRepository.save(s).getId());
+            slotId.setId(leagueService.save(s).getId());
             slots.add(slotId);
         }
         Challenge c = new Challenge(Status.ACCEPTED,ch,op,slots);
         c.setAcceptedSlot(slots.get(0));
-        c = challengeRepository.save(c);
+        c = leagueService.save(c);
         HttpEntity requestEntity = new HttpEntity(c, requestHeaders);
         Challenge newChallenge = restTemplate.postForEntity(host + "/api/challenge/decline",requestEntity, Challenge.class).getBody();
         assertEquals(newChallenge.getStatus(), Status.CANCELLED);
         assertNull(newChallenge.getAcceptedSlot());
+    }
+
+    @Test
+    public void testGet() {
+        Team ch = new Team(utils.createRandomTeam().getId());
+        Team op = new Team(utils.createRandomTeam().getId());
+
+        List<Slot> slots = new ArrayList<>();
+        for( Slot s : Arrays.asList(new Slot(LocalDateTime.now().minusHours(1)), new Slot(LocalDateTime.now().minusHours(2)), new Slot(LocalDateTime.now().minusHours(3)))) {
+            Slot slotId = new Slot();
+            slotId.setId(leagueService.save(s).getId());
+            slots.add(slotId);
+        }
+        Challenge c = new Challenge(Status.ACCEPTED,ch,op,slots);
+        c = leagueService.save(c);
+
+        slots = new ArrayList<>();
+        for( Slot s : Arrays.asList(new Slot(LocalDateTime.now().minusDays(1)), new Slot(LocalDateTime.now().minusDays(1)), new Slot(LocalDateTime.now().minusDays(1)))) {
+            Slot slotId = new Slot();
+            slotId.setId(leagueService.save(s).getId());
+            slots.add(slotId);
+        }
+        Challenge yesterday = leagueService.save(new Challenge(Status.ACCEPTED,ch,op,slots));
+        HttpEntity requestEntity = new HttpEntity(null, requestHeaders);
+        List<Challenge> challenges = Arrays.asList(restTemplate.exchange(host +"/api/challenge/get",HttpMethod.GET,requestEntity,Challenge[].class).getBody());
+
+        assertTrue(challenges.contains(c));
+        assertFalse(challenges.contains(yesterday));
     }
 }

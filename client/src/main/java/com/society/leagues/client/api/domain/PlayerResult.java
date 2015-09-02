@@ -8,9 +8,31 @@ public class PlayerResult extends LeagueObject {
     @DBRef TeamMatch teamMatch;
     @DBRef User playerHome;
     @DBRef User playerAway;
+    @DBRef Season season;
     Integer homeRacks;
     Integer awayRacks;
     Integer matchNumber;
+    Handicap playerHomeHandicap;
+    Handicap playerAwayHandicap;
+
+    public PlayerResult() {
+    }
+
+    public PlayerResult(TeamMatch teamMatch, User playerHome, User playerAway, Season season, Integer homeRacks, Integer awayRacks, Integer matchNumber, Handicap playerHomeHandicap, Handicap playerAwayHandicap) {
+        this.teamMatch = teamMatch;
+        this.playerHome = playerHome;
+        this.playerAway = playerAway;
+        this.season = season;
+        this.homeRacks = homeRacks;
+        this.awayRacks = awayRacks;
+        this.matchNumber = matchNumber;
+        this.playerHomeHandicap = playerHomeHandicap;
+        this.playerAwayHandicap = playerAwayHandicap;
+    }
+
+    public PlayerResult(String id) {
+        this.id = id;
+    }
 
     public TeamMatch getTeamMatch() {
         return teamMatch;
@@ -58,6 +80,30 @@ public class PlayerResult extends LeagueObject {
 
     public void setMatchNumber(Integer matchNumber) {
         this.matchNumber = matchNumber;
+    }
+
+    public Season getSeason() {
+        return season;
+    }
+
+    public void setSeason(Season season) {
+        this.season = season;
+    }
+
+    public Handicap getPlayerHomeHandicap() {
+        return playerHomeHandicap;
+    }
+
+    public void setPlayerHomeHandicap(Handicap playerHomeHandicap) {
+        this.playerHomeHandicap = playerHomeHandicap;
+    }
+
+    public Handicap getPlayerAwayHandicap() {
+        return playerAwayHandicap;
+    }
+
+    public void setPlayerAwayHandicap(Handicap playerAwayHandicap) {
+        this.playerAwayHandicap = playerAwayHandicap;
     }
 
     @Override

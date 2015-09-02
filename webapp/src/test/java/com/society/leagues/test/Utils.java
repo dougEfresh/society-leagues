@@ -59,6 +59,10 @@ public class Utils {
     }
 
 
+    public Season createRandomSeason() {
+        return leagueService.save(new Season(UUID.randomUUID().toString(),new Date(),-1,Division.NINE_BALL_CHALLENGE));
+    }
+
     public Team createRandomTeam() {
         Season s = seasonRepository.findAll().stream().filter(sn->sn.getDivision() == Division.NINE_BALL_CHALLENGE).findFirst().orElse(null);
         if (s == null) {
@@ -87,7 +91,6 @@ public class Utils {
         if (s == null) {
             s = leagueService.save(new Season("9 ball ", new Date(), -1, Division.NINE_BALL_CHALLENGE));
         }
-        Team ts = leagueService.save(new Team(s,UUID.randomUUID().toString()));
         HandicapSeason hs = leagueService.save(new HandicapSeason(Handicap.A, s));
 
         User u = new User();
@@ -100,8 +103,6 @@ public class Utils {
         u.addHandicap(hs);
         u.setPassword(new BCryptPasswordEncoder().encode("abc123"));
         u = leagueService.save(u);
-        ts.addMember(u);
-        leagueService.save(ts);
         return u;
     }
 
