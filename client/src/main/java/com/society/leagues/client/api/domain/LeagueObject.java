@@ -6,10 +6,20 @@ import org.springframework.data.annotation.Id;
 public class LeagueObject implements Comparable<LeagueObject>{
 
     @Id
-    protected String id;
+    String id;
+
+    String legacyId;
 
     public String getId() {
         return id;
+    }
+
+    public String getLegacyId() {
+        return legacyId;
+    }
+
+    public void setLegacyId(String legacyId) {
+        this.legacyId = legacyId;
     }
 
     public void setId(String id) {

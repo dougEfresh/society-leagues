@@ -23,7 +23,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true,securedEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @SuppressWarnings("unused")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired LoginHandler loginHandler;
@@ -39,9 +39,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         response.getWriter().print("ok");
         response.getWriter().flush();
     };
+
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/css/**", "/img/**", "/js/**", "/login**", "/login.html","/api/users*");
+        web.ignoring().antMatchers("/health","/css/**", "/img/**", "/js/**", "/login**", "/login.html","/api/users*");
     }
 
     @Override

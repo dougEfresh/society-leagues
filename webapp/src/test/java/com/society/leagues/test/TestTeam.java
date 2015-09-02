@@ -5,7 +5,6 @@ import com.society.leagues.Service.LeagueService;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.User;
-import com.society.leagues.mongo.UserRepository;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
