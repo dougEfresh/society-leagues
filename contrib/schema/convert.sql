@@ -86,3 +86,27 @@ update leagues.team_match set match_date  = '1978-04-06' where match_date < '200
 
 -- Team results with no player results
 
+select r.*,m.season_id,hc.hcd_name
+from result_ind r join match_schedule m on r.match_id=m.match_id
+LEFT JOIN handicap_display hc ON hc.hcd_id=r.player_handicap
+limit 100 ;
+
+
+select count(*) r.*,
+case when h.home_team_id is null then 'away' else 'home' end home_or_away,
+case when h.season_id is null then a.season_id else h.season_id end season_id,
+hc.hcd_name
+from result_ind r
+left join match_schedule h on r.match_id=h.match_id and h.home_team_id=r.team_id
+left join match_schedule a on r.match_id=a.match_id and a.visit_team_id=r.team_id
+LEFT JOIN handicap_display hc ON hc.hcd_id=r.player_handicap
+limit 10;
+limit 100 ;
+
+
+select count(*)
+from result_ind r
+left join match_schedule h on r.match_id=h.match_id and h.home_team_id=r.team_id
+left join match_schedule a on r.match_id=a.match_id and a.visit_team_id=r.team_id
+LEFT JOIN handicap_display hc ON hc.hcd_id=r.player_handicap
+

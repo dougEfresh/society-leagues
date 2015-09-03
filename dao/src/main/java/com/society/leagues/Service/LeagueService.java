@@ -2,6 +2,7 @@ package com.society.leagues.Service;
 
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.mongo.*;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Component;
@@ -20,9 +21,14 @@ public class LeagueService {
     @Autowired TeamRepository teamRepository;
     @Autowired SeasonRepository seasonRepository;
     @Autowired PlayerResultRepository playerResultRepository;
+    private static Logger logger = Logger.getLogger(LeagueService.class);
+    int counter = 0;
 
     public <T extends LeagueObject> T save(T entity) {
         MongoRepository repo = getRepo(entity);
+        if (entity.getId() == null && counter++ % 100 == 0) {
+            //logger.info("Saving entity " + entity.toString());
+        }
         repo.save(entity);
         return (T) repo.findOne(entity.getId());
     }

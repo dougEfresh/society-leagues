@@ -88,7 +88,6 @@ public class TestUser {
         assertNotNull(response.getId());
         assertNull(response.getPassword());
         assertEquals("user",response.getLogin());
-
     }
 
     @Test

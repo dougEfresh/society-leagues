@@ -28,5 +28,24 @@ public enum Handicap {
     APLUS,
     OPEN,
     OPENPLUS,
-    PRO
+    PRO;
+
+    public static Handicap get(String hc) {
+        if (hc == null) {
+            return null;
+        }
+        hc = hc.replace("+","PLUS").toUpperCase();
+        try {
+            Integer h = new Integer(hc);
+            return Handicap.values()[h-1];
+        } catch (NumberFormatException e) {
+
+        }
+        try {
+            return Handicap.valueOf(hc);
+        } catch (Throwable r) {
+
+        }
+        return null;
+    }
 }

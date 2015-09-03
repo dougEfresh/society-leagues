@@ -8,17 +8,17 @@ public class LeagueObject implements Comparable<LeagueObject>{
     @Id
     String id;
 
-    String legacyId;
+    Integer legacyId;
 
     public String getId() {
         return id;
     }
 
-    public String getLegacyId() {
+    public Integer getLegacyId() {
         return legacyId;
     }
 
-    public void setLegacyId(String legacyId) {
+    public void setLegacyId(Integer legacyId) {
         this.legacyId = legacyId;
     }
 

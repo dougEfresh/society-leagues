@@ -36,6 +36,10 @@ public class TeamMatch extends LeagueObject {
         this.id = id;
     }
 
+    public void setSeason(Season season) {
+        this.season = season;
+    }
+
     public Team getHome() {
         return home;
     }
@@ -87,10 +91,13 @@ public class TeamMatch extends LeagueObject {
     @Override
     public String toString() {
         return "TeamMatch{" +
-                "id="+ id +
-                ", home=" + home +
-                ", away=" + away +
+                "legacyId=" + getLegacyId() + " " +
+                "home=" + (home == null ? "" : home.getName()) +
+                ", away=" + (away == null ? "" : away.getName()) +
+                ", season=" + season +
                 ", matchDate=" + matchDate +
+                ", homeRacks=" + homeRacks +
+                ", awayRacks=" + awayRacks +
                 '}';
     }
 }

@@ -10,7 +10,9 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class User extends LeagueObject {
 
@@ -25,7 +27,7 @@ public class User extends LeagueObject {
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime created;
-    @DBRef List<HandicapSeason> handicapSeasons = new ArrayList<HandicapSeason>();
+    @DBRef Set<HandicapSeason> handicapSeasons = new HashSet<>();
 
     public User() {
         this.created = LocalDateTime.now();
@@ -62,6 +64,7 @@ public class User extends LeagueObject {
         this.lastName = lastName;
     }
 
+    @JsonIgnore
     public String getEmail() {
         return email;
     }
@@ -79,6 +82,7 @@ public class User extends LeagueObject {
         this.password = password;
     }
 
+    @JsonIgnore
     public String getLogin() {
         return login;
     }
@@ -88,7 +92,8 @@ public class User extends LeagueObject {
     }
 
     public Role getRole() {
-        return role;
+
+        return role == null ? Role.PLAYER : role;
     }
 
     public void setRole(Role role) {
@@ -111,16 +116,16 @@ public class User extends LeagueObject {
         return status;
     }
 
+    public void setHandicapSeasons(Set<HandicapSeason> handicapSeasons) {
+        this.handicapSeasons = handicapSeasons;
+    }
+
     public void setStatus(Status status) {
         this.status = status;
     }
 
-    public List<HandicapSeason> getHandicapSeasons() {
+    public Set<HandicapSeason> getHandicapSeasons() {
         return handicapSeasons;
-    }
-
-    public void setHandicapSeasons(List<HandicapSeason> handicapSeasons) {
-        this.handicapSeasons = handicapSeasons;
     }
 
     public void addHandicap(HandicapSeason hc) {
@@ -137,7 +142,7 @@ public class User extends LeagueObject {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "User{   212-9=826 3211 212 570 4821 - c1-1-114-8310756" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +

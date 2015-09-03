@@ -1,5 +1,7 @@
 package com.society.leagues;
 
+import com.society.leagues.resource.ConvertResource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -14,6 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableAutoConfiguration
 @EnableScheduling
 public class Main implements CommandLineRunner {
+    @Autowired ConvertResource convertResource;
 
     public static void main(String[] args) throws Exception {
         SpringApplication app = new SpringApplication(Main.class);
@@ -23,6 +26,18 @@ public class Main implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        for (String arg : args) {
+            if (arg.toLowerCase().contains("convert")) {
+//                convertResource.convertUser();
+//                convertResource.converSeason();
+//                convertResource.converTeamMatch();
+//                convertResource.converTeamMatchResult();
+//                convertResource.convertPlayerResults();
+                convertResource.findUserSeasons();
+                System.exit(0);
+            }
+        }
+
     }
 
 }

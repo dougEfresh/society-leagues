@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface TeamMatchRepository extends MongoRepository<TeamMatch,String> {
     List<TeamMatch> findBySeason(Season season);
+    TeamMatch findByLegacyId(Integer id);
 }

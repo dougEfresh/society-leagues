@@ -9,7 +9,9 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Team extends LeagueObject {
 
@@ -18,7 +20,7 @@ public class Team extends LeagueObject {
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime created;
-    @DBRef List<User> members;
+    @DBRef Set<User> members = new HashSet<>();
     @DBRef User captain;
 
     public Team(Season season, String name) {
@@ -42,29 +44,21 @@ public class Team extends LeagueObject {
         this.season = season;
     }
 
-    public List<User> getMembers() {
+    public Set<User> getMembers() {
         return members;
     }
 
-    public void setMembers(List<User> members) {
+    public void setMembers(Set<User> members) {
         this.members = members;
     }
 
     public void addMember(User user) {
-        if (this.members == null) {
-            this.members = new ArrayList<>();
-        }
         this.members.add(user);
     }
 
     public void addMembers(List<User> users) {
-        if (this.members == null) {
-            this.members = new ArrayList<>();
-        }
         for (User user : users) {
-            if (!this.members.contains(user)) {
-                this.members.add(user);
-            }
+            this.members.add(user);
         }
     }
 
@@ -106,5 +100,15 @@ public class Team extends LeagueObject {
 
     public void setCaptain(User captain) {
         this.captain = captain;
+    }
+
+    @Override
+    public String toString() {
+        return "Team{" +
+                "season=" + season +
+                ", name='" + name + '\'' +
+                ", created=" + created +
+                ", captain=" + captain +
+                '}';
     }
 }

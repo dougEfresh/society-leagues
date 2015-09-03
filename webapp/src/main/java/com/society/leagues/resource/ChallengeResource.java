@@ -23,6 +23,7 @@ public class ChallengeResource {
 
     @Autowired LeagueService leagueService;
     @Autowired ChallengeRepository challengeRepository;
+
     @RequestMapping(value = "/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public Challenge create(@RequestBody Challenge challenge, Principal principal, HttpServletRequest request) {
         if (principal == null) {

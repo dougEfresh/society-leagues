@@ -8,7 +8,7 @@ public class PlayerResult extends LeagueObject {
     @DBRef TeamMatch teamMatch;
     @DBRef User playerHome;
     @DBRef User playerAway;
-    @DBRef Season season;
+    @DBRef Season season; //TODO remove reference
     Integer homeRacks;
     Integer awayRacks;
     Integer matchNumber;
@@ -106,14 +106,36 @@ public class PlayerResult extends LeagueObject {
         this.playerAwayHandicap = playerAwayHandicap;
     }
 
+    public User getWinner() {
+        return null;
+    }
+
+    public HandicapSeason getHandicap() {
+        return null;
+    }
+
+    public User getLoser() {
+        return null;
+    }
+
+    public User getLoserHandicap() {
+        return null;
+    }
+
+
+
     @Override
     public String toString() {
         return "PlayerResult{" +
                 "teamMatch=" + teamMatch +
-                ", playerHome=" + playerHome.getId() +
-                ", playerAway=" + playerAway.getId() +
+                ", playerHome=" + playerHome +
+                ", playerAway=" + playerAway +
+                ", season=" + season +
                 ", homeRacks=" + homeRacks +
                 ", awayRacks=" + awayRacks +
+                ", matchNumber=" + matchNumber +
+                ", playerHomeHandicap=" + playerHomeHandicap +
+                ", playerAwayHandicap=" + playerAwayHandicap +
                 '}';
     }
 }
