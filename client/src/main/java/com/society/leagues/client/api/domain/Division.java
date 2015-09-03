@@ -25,6 +25,10 @@ public enum Division {
         return type == EIGHT_BALL_CHALLENGE || type == NINE_BALL_CHALLENGE;
     }
 
+    public boolean isChallenge() {
+        return this == EIGHT_BALL_CHALLENGE || this == NINE_BALL_CHALLENGE;
+    }
+
     @Override
     public String toString() {
         return this.name();

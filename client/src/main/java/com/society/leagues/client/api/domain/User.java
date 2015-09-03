@@ -140,6 +140,10 @@ public class User extends LeagueObject {
         this.created = created;
     }
 
+    public boolean isChallenge() {
+        return handicapSeasons.stream().filter(s->s.getSeason().getDivision().isChallenge()).count() > 0;
+    }
+
     @Override
     public String toString() {
         return "User{   212-9=826 3211 212 570 4821 - c1-1-114-8310756" +
