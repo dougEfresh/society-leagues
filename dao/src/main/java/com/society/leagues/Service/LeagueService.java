@@ -7,8 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 @Component
 public class LeagueService {
@@ -22,12 +31,19 @@ public class LeagueService {
     @Autowired SeasonRepository seasonRepository;
     @Autowired PlayerResultRepository playerResultRepository;
     private static Logger logger = Logger.getLogger(LeagueService.class);
-    int counter = 0;
+    Validator validator;
+
+    @PostConstruct
+    public void init() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+    }
 
     public <T extends LeagueObject> T save(T entity) {
         MongoRepository repo = getRepo(entity);
-        if (entity.getId() == null && counter++ % 100 == 0) {
-            //logger.info("Saving entity " + entity.toString());
+        Set<ConstraintViolation<T>> constraintViolations = validator.validate(entity);
+        if (!constraintViolations.isEmpty()) {
+            throw  new RuntimeException("Could not validate " + entity);
         }
         repo.save(entity);
         return (T) repo.findOne(entity.getId());
@@ -56,6 +72,12 @@ public class LeagueService {
         return teamMatchRepository.findBySeason(season);
     }
 
+     public List<TeamMatch> findTeamMatchByTeam(Team team) {
+         List<TeamMatch> matches = teamMatchRepository.findByHome(team);
+         matches.addAll(teamMatchRepository.findByAway(team));
+         return matches;
+    }
+
     public <T extends LeagueObject> List<T> findAll(Class<T> clz) {
         try {
             MongoRepository repo = getRepo(clz.newInstance());
@@ -72,7 +94,11 @@ public class LeagueService {
     }
 
     public List<PlayerResult> findPlayerResultByUser(User u) {
-        return playerResultRepository.findByPlayerHomeOrPlayerAway(u);
+        //TODO Optimize
+        List<PlayerResult> results = new ArrayList<>();
+        results.addAll(playerResultRepository.findByPlayerHome(u));
+        results.addAll(playerResultRepository.findByPlayerAway(u));
+        return results;
     }
 
     private MongoRepository getRepo(LeagueObject entity) {

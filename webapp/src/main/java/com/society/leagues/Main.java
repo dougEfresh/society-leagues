@@ -28,12 +28,14 @@ public class Main implements CommandLineRunner {
     public void run(String... args) throws Exception {
         for (String arg : args) {
             if (arg.toLowerCase().contains("convert")) {
-//                convertResource.convertUser();
-//                convertResource.converSeason();
+                //convertResource.convertUser();
+                //convertResource.convertSeason();
+                //convertResource.convertTeam();
 //                convertResource.converTeamMatch();
 //                convertResource.converTeamMatchResult();
-//                convertResource.convertPlayerResults();
-                convertResource.findUserSeasons();
+                //convertResource.convertPlayerResults();
+                convertResource.userHandicap();
+//                convertResource.findUserSeasons();
                 System.exit(0);
             }
         }

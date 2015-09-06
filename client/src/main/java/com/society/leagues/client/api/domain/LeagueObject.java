@@ -28,6 +28,9 @@ public class LeagueObject implements Comparable<LeagueObject>{
 
     @Override
     public boolean equals(Object o) {
+        if (o == null)
+            return false;
+
         if (this == o) return true;
         if (!(o instanceof LeagueObject)) return false;
 

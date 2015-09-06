@@ -104,10 +104,17 @@ public class TestTeamMatch {
     public void testTeamGetSeason() {
         Team home = utils.createRandomTeam();
         Team away = utils.createRandomTeam();
+        User u = utils.createRandomUser();
+        home.addMember(u);
+        home = leagueService.save(home);
         TeamMatch tm = leagueService.save(new TeamMatch(home, away, LocalDateTime.now()));
         HttpEntity requestEntity = new HttpEntity(null, requestHeaders);
-        List<TeamMatch> teams = Arrays.asList(restTemplate.exchange(host + "/api/teammatch/get/season/" + tm.getSeason().getId(), HttpMethod.GET, requestEntity, TeamMatch[].class).getBody());
+        List<TeamMatch> teams = Arrays.asList(restTemplate.exchange(host + "/api/teammatch/get/user/" + u.getId() + "/current", HttpMethod.GET, requestEntity, TeamMatch[].class).getBody());
         assertNotNull(teams);
         assertTrue(teams.size() > 0);
+        for (TeamMatch team : teams) {
+            assertTrue(team.hasUser(u));
+            assertTrue(team.getSeason().isActive());
+        }
     }
 }

@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class})
-@WebIntegrationTest("server.port=8081")
+@WebIntegrationTest
 public class TestPlayerResult {
 
     private static Logger logger = Logger.getLogger(TestUser.class);
@@ -122,7 +122,7 @@ public class TestPlayerResult {
         assertEquals(pr.getId(),returned.getId());
     }
 
-    //@Test
+    @Test
     public void testGetSeason() {
         HttpEntity requestEntity = new HttpEntity(null, requestHeaders);
         Team home = utils.createRandomTeam();
@@ -136,7 +136,7 @@ public class TestPlayerResult {
         tm = leagueService.save(tm);
         PlayerResult pr = new PlayerResult(tm,playerHome,playerAway,home.getSeason(),6,7,0, Handicap.B,Handicap.BPLUS);
         pr = leagueService.save(pr);
-        List<PlayerResult> teams = Arrays.asList(restTemplate.exchange(host + "/api/playerresult/get/season/" + pr.getSeason().getId(), HttpMethod.GET, requestEntity, PlayerResult[].class).getBody());
+        List<PlayerResult> teams = Arrays.asList(restTemplate.exchange(host + "/api/playerresult/get/user/" + pr.getPlayerAway().getId() + "/current", HttpMethod.GET, requestEntity, PlayerResult[].class).getBody());
         assertNotNull(teams);
         assertTrue(teams.size() > 0);
     }

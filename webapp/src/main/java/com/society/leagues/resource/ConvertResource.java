@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -19,8 +20,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping(value = "/api/convert")
+@Component
 public class ConvertResource {
     private static Logger logger = Logger.getLogger(ConvertResource.class);
 
@@ -32,15 +32,16 @@ public class ConvertResource {
     @Autowired PlayerResultRepository playerResultRepository;
     @Autowired JdbcTemplate jdbcTemplate;
 
-    @RequestMapping(value = "user", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public Boolean convertUser() {
+    public void convertUser() {
 
         logger.info("Convert users");
         userRepository.deleteAll();
+        logger.info("Deleted users");
         List<Map<String,Object>> results = jdbcTemplate.queryForList("select\n" +
                 " player_id,player_login,first_name,last_name, player_login ,\n" +
                 "  case when player_login like '%no_login%' then 'INACTIVE' else 'ACTIVE' end  status\n" +
                 "from player");
+        int cnt =0;
         for (Map<String, Object> result : results) {
             User u = new User();
             u.setLegacyId((Integer) (result.get("player_id")));
@@ -52,16 +53,21 @@ public class ConvertResource {
             u.setPassword(new BCryptPasswordEncoder().encode("abc123"));
             User user = leagueService.findByLogin(u.getLogin());
             if (user == null) {
+                cnt++;
+                logger.info("Adding user " + u.getName());
                 leagueService.save(u);
             }
         }
-        return true;
+
+        if (cnt != results.size()) {
+            throw new RuntimeException("Unable to verify users");
+        }
     }
 
-    @RequestMapping(value = "season", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public Boolean converSeason() {
+    public Boolean convertSeason() {
         logger.info("Convert season");
         seasonRepository.deleteAll();
+        logger.info("Deleted seeasons ");
         List<Map<String,Object>> results = jdbcTemplate.queryForList(
                 "select m.season_id,concat(season_year,',',sn_name,',',league_game) as name,\n" +
                 " min(match_start_date) as start_date, max(match_start_date) as end_date\n" +
@@ -106,70 +112,86 @@ public class ConvertResource {
         return true;
     }
 
-    @RequestMapping(value = "teammatch", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public void convertTeam() {
+        logger.info("Teams ");
+        teamRepository.deleteAll();
+        logger.info("Delated Teams");
+
+        List<Map<String,Object>> results = jdbcTemplate.queryForList("select * from team_division where season_id is not null and season_id > 66 ");
+        List<Season> seasons = leagueService.findAll(Season.class);
+        /*
+        +-------------+---------+--------------------------------+-----------+--------------+-----------+-----------+--------------+-------------+-------------+---------------+------------+
+| division_id | team_id | name  | season_id | division_day | league_id | time_slot | league_game  | league_type | season_year | season_number | start_date
+         */
+        for (Map<String, Object> result : results) {
+            Team t = new Team();
+            t.setLegacyId((Integer) result.get("team_id"));
+            t.setName(result.get("name").toString());
+            Integer id = (Integer) result.get("season_id");
+            Season s = seasons.stream().filter(sn->sn.getLegacyId().equals(id)).findFirst().orElse(null);
+            if (s == null) {
+                throw new RuntimeException("Could not find season " + id);
+            }
+            t.setSeason(s);
+            leagueService.save(t);
+        }
+        List<User> users = leagueService.findAll(User.class);
+        results = jdbcTemplate.queryForList(" select t.*,d.season_id  from team_player t join division d on t.tp_division  = d.division_id where division_id is not null and season_id > 66");
+        for (Map<String, Object> result : results) {
+            List<Team> teams = leagueService.findAll(Team.class);
+            Integer id = (Integer) result.get("season_id");
+            Integer tid = (Integer) result.get("tp_team");
+            Season season = seasons.stream().filter(sn->sn.getLegacyId().equals(id)).findFirst().orElse(null);
+            if (season == null) {
+                throw new RuntimeException("Could not find season " + id);
+            }
+            Team team = teams.stream().filter(t -> t.getLegacyId().equals(tid)).filter(t->t.getSeason().getLegacyId().equals(id)).findFirst().orElse(null);
+            if (team == null) {
+                logger.error("Could not find team " + tid);
+                continue;
+            }
+            Integer pid = (Integer) result.get("tp_player");
+            User user = users.stream().filter(u->u.getLegacyId().equals(pid)).findFirst().orElse(null);
+            if (user == null) {
+                throw new RuntimeException("Could not find user " + pid);
+            }
+            team.addMember(user);
+            leagueService.save(team);
+        }
+    }
+
     public Boolean converTeamMatch() {
         logger.info("Convert team match");
         teamMatchRepository.deleteAll();
-        teamRepository.deleteAll();
-        List<Map<String,Object>> teams = jdbcTemplate.queryForList("select team_id,name from team");
-        List<Map<String,Object>> matches = jdbcTemplate.queryForList("select match_id,m.season_id,home_team_id,visit_team_id,match_start_date from match_schedule m where match_start_date > 2000-01-01");
-        List<Team>  teamRepo = new ArrayList<>(100);
-        teamRepo = teamRepository.findAll();
-        List<TeamMatch> teamMatchList = leagueService.findAll(TeamMatch.class);
+        List<Map<String,Object>> matches = jdbcTemplate.
+                queryForList("select match_id,m.season_id,home_team_id,visit_team_id,match_start_date " +
+                        "from match_schedule m " +
+                        "where match_start_date > 2000-01-01 and m.season_id > 66 " +
+                        " and  (home_team_id is not null and visit_team_id is not null) order by match_id");
+
+        List<Team> teams  = leagueService.findAll(Team.class);
 
         for (Map<String, Object> match : matches) {
+            Integer mid = (Integer) match.get("match_id");
             TeamMatch tm = new TeamMatch();
-            tm.setLegacyId((Integer) match.get("match_id"));
-            TeamMatch existing = teamMatchList.stream().filter(t->tm.getLegacyId().equals(t.getLegacyId())).findFirst().orElse(null);
-            if (existing != null) {
-                continue;
+            tm.setLegacyId(mid);
+            Team home = teams.stream().filter(t->t.getLegacyId().equals(match.get("home_team_id"))).filter(t->t.getSeason().getLegacyId().equals(match.get("season_id"))).findFirst().orElse(null);
+            if (home == null) {
+                throw  new RuntimeException("no team for " +match.get("home_team_id") );
             }
+
+            Team away = teams.stream().filter(t -> t.getLegacyId().equals(match.get("visit_team_id"))).filter(t->t.getSeason().getLegacyId().equals(match.get("season_id"))).findFirst().orElse(null);
+
+            if (away == null) {
+                throw new RuntimeException("no team for " + match.get("visit_team_id"));
+            }
+
+            tm.setHome(home);
+            tm.setAway(away);
+            tm.setSeason(home.getSeason());
             Timestamp ts = (Timestamp) match.get("match_start_date");
             tm.setMatchDate(ts.toLocalDateTime());
-            final Integer home_team_id = (Integer) (match.get("home_team_id"));
-            Map<String,Object> homeTeam = teams.stream().filter(t->t.get("team_id").equals(home_team_id)).findFirst().orElse(null);
-            if (homeTeam == null) {
-                continue;
-            }
-
-            final Integer away_team_id = (Integer) (match.get("visit_team_id"));
-            Map<String,Object> away_team = teams.stream().filter(t->t.get("team_id").equals(away_team_id)).findFirst().orElse(null);
-            if (away_team == null) {
-                continue;
-            }
-            Season s = seasonRepository.findByLegacyId((Integer) match.get("season_id"));
-            if (s == null) {
-                continue;
-            }
-            tm.setSeason(s);
-            Team h = teamRepo.stream().filter(
-                    t->t.getSeason().equals(s)).
-                    filter(t -> t.getName().equals(homeTeam.get("name"))).
-                    findFirst().orElse(null);
-            if (h == null) {
-                h = new Team();
-                h.setLegacyId((Integer) homeTeam.get("team_id"));
-                h.setName(homeTeam.get("name").toString());
-                h.setSeason(s);
-                logger.info("Adding team " + h);
-                h = leagueService.save(h);
-                teamRepo.add(h);
-            }
-            tm.setHome(h);
-
-            Team a = teamRepo.stream().filter(t -> t.getSeason().equals(s)).filter(t -> t.getName().equals(away_team.get("name"))).findFirst().orElse(null);
-            if (a == null) {
-                a = new Team();
-                a.setLegacyId((Integer) away_team.get("team_id"));
-                a.setName(away_team.get("name").toString());
-                a.setSeason(s);
-                logger.info("Adding team " + a);
-                a = leagueService.save(a);
-                teamRepo.add(a);
-            }
-            tm.setAway(a);
             leagueService.save(tm);
-            //System.out.println(tm.toString());
         }
         return true;
     }
@@ -181,15 +203,16 @@ public class ConvertResource {
                 "(select m.match_id,m.home_team_id,\n" +
                 "sum(games_won) racks\n" +
                 "from  match_schedule m join result_ind rt on m.match_id=rt.match_id  and m.home_team_id = rt.team_id\n" +
-                " \n" +
+                "where m.season_id > 66 \n" +
                 "group by m.match_id,m.home_team_id) home \n" +
                 "join\n" +
                 "   (select m.match_id,m.visit_team_id,\n" +
                 "      sum(games_won) as racks  from\n" +
                 "    match_schedule m join result_ind rt on m.match_id=rt.match_id  and m.visit_team_id = rt.team_id\n" +
-                "   group by m.match_id,m.visit_team_id\n" +
+                "    where m.season_id > 66 group by m.match_id,m.visit_team_id\n" +
                 "   ) away\n" +
                 "on home.match_id=away.match_id");
+
         List<TeamMatch> teamMatchList = leagueService.findAll(TeamMatch.class);
         int unmatch = 0 ;
         for (Map<String, Object> result : results) {
@@ -257,70 +280,51 @@ public class ConvertResource {
             if (result.get("home_or_away").equals("home")) {
                 r.setPlayerHome(u);
                 r.setHomeRacks((Integer) result.get("games_won"));
-                r.setPlayerHomeHandicap(Handicap.get(result.get("hcd_name") == null ? null : result.get("hcd_name").toString()));
+                Handicap handicap = Handicap.get(result.get("hcd_name") == null ? null : result.get("hcd_name").toString());
+                if (handicap == null)
+                    logger.warn("Handicap " + result.get("hcd_name") + " is null");
+
+                r.setPlayerHomeHandicap(handicap);
                 home.addMember(u);
             } else {
                 r.setPlayerAway(u);
                 r.setAwayRacks((Integer) result.get("games_won"));
-                r.setPlayerAwayHandicap(Handicap.get(result.get("hcd_name") == null ? null: result.get("hcd_name").toString() ));
+                Handicap handicap = Handicap.get(result.get("hcd_name") == null ? null : result.get("hcd_name").toString());
+                if (handicap == null)
+                    logger.warn("Handicap " + result.get("hcd_name") + " is null");
+
+                r.setPlayerAwayHandicap(handicap);
                 away.addMember(u);
             }
             r.setMatchNumber((Integer) result.get("match_number"));
             r = leagueService.save(r);
             playerResults.add(r);
-            Team orgHome = leagueService.findOne(home);
-            Team orgAway= leagueService.findOne(away);
-            if (!away.getMembers().equals(orgAway.getMembers())) {
-                r.getTeamMatch().setAway(leagueService.save(away));
-                logger.info("Updating pr.getPlayerHome().equals(u) ? pr.getPlayerHomeHandicap() : pr.getPlayerAwayHandicap(team " + r.getTeamMatch().getAway().getName());
-            }
-
-            if (!home.getMembers().equals(orgHome.getMembers())) {
-                r.getTeamMatch().setHome(leagueService.save(home));
-                logger.info("Updating team " + r.getTeamMatch().getHome().getName());
-            }
-
         }
+
+        playerResults = leagueService.findAll(PlayerResult.class);
     }
 
-    public void findUserSeasons() {
-        List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().filter(pr -> pr.getSeason().getSeasonStatus() == Status.ACTIVE).collect(Collectors.toList());
-        List<Season> seasons = leagueService.findAll(Season.class).stream().
-                filter(s -> s.getSeasonStatus() == Status.ACTIVE).collect(Collectors.toList());
-        List<HandicapSeason> handicapSeasons = leagueService.findAll(HandicapSeason.class);
-//        for(User u : leagueService.findAll(User.class).stream().filter(user->user.getLastName().equals("Chimento")).collect(Collectors.toList())) {
-        for(User u : leagueService.findAll(User.class)) {
-            u.setHandicapSeasons(new HashSet<>());
-            User noHandicaps = leagueService.save(u);
-            for (Season s : seasons) {
-                PlayerResult pr = results.stream().
-                        filter(r -> r.getSeason().equals(s)).
-                        filter(r->r.getPlayerAway() != null && r.getPlayerHome() != null).
-                        filter(r->r.getPlayerHome().equals(noHandicaps) || r.getPlayerAway().equals(noHandicaps)).
-                        filter(r->r.getTeamMatch() != null).
-                        filter(r->r.getTeamMatch().getMatchDate() != null).
-                        sorted(new Comparator<PlayerResult>() {
-                            @Override
-                            public int compare(PlayerResult playerResult, PlayerResult t1) {
-                                return t1.getTeamMatch().getMatchDate().compareTo(playerResult.getTeamMatch().getMatchDate());
-                            }
-                        }).findFirst().orElse(null);
-
-                if (pr == null) {
-                    //logger.info("No player results for " + u);
+    public void userHandicap() {
+        List<PlayerResult> playerResults = leagueService.findAll(PlayerResult.class);
+        List<User> users = leagueService.findAll(User.class);
+        List<Season> seasons = leagueService.findAll(Season.class);
+        for (User user : users) {
+            user.getHandicapSeasons().clear();
+            List<PlayerResult> userResults = playerResults.stream().filter(r->r.hasUser(user)).collect(Collectors.toList());
+            for (Season season : seasons) {
+                PlayerResult result = userResults.stream().filter(r->r.getSeason().equals(season)).sorted(new Comparator<PlayerResult>() {
+                    @Override
+                    public int compare(PlayerResult playerResult, PlayerResult t1) {
+                        return t1.getMatchDate().compareTo(playerResult.getMatchDate());
+                    }
+                }).findFirst().orElse(null);
+                if (result == null) {
                     continue;
                 }
-                Handicap handicap = pr.getPlayerHome().equals(noHandicaps) ? pr.getPlayerHomeHandicap() : pr.getPlayerAwayHandicap();
-                //HandicapSeason hs = new HandicapSeason(),s);
-                HandicapSeason hs = handicapSeasons.stream().filter(h->h.getSeason().equals(s)).filter(h->h.getHandicap() == handicap).
-                        findFirst().orElse(null);
-                if (hs == null) {
-                    hs = leagueService.save(new HandicapSeason(handicap,s));
-                    handicapSeasons.add(hs);
-                }
-                noHandicaps.addHandicap(hs);
-                leagueService.save(noHandicaps);
+                HandicapSeason hs = new HandicapSeason(result.getHandicap(user),season);
+                user.addHandicap(hs);
             }
+            leagueService.save(user);
         }
     }
 

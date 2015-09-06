@@ -14,6 +14,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -39,7 +40,7 @@ public class Utils {
         if (adminUser != null) {
             return adminUser;
         }
-        Season s = seasonRepository.save(new Season("9 ball ", new Date(),-1, Division.NINE_BALL_CHALLENGE));
+        Season s = seasonRepository.save(new Season("9 ball ", LocalDateTime.now(),-1, Division.NINE_BALL_CHALLENGE));
         Team t = teamRepository.save(new Team(s,"testteam"));
         HandicapSeason hs = handicapSeasonRepository.save(new HandicapSeason(Handicap.A, s));
 
@@ -60,13 +61,13 @@ public class Utils {
 
 
     public Season createRandomSeason() {
-        return leagueService.save(new Season(UUID.randomUUID().toString(),new Date(),-1,Division.NINE_BALL_CHALLENGE));
+        return leagueService.save(new Season(UUID.randomUUID().toString(),LocalDateTime.now(),-1,Division.NINE_BALL_CHALLENGE));
     }
 
     public Team createRandomTeam() {
         Season s = seasonRepository.findAll().stream().filter(sn->sn.getDivision() == Division.NINE_BALL_CHALLENGE).findFirst().orElse(null);
         if (s == null) {
-            s = leagueService.save(new Season("9 ball ", new Date(), -1, Division.NINE_BALL_CHALLENGE));
+            s = leagueService.save(new Season("9 ball ", LocalDateTime.now(), -1, Division.NINE_BALL_CHALLENGE));
         }
         Team ts = leagueService.save(new Team(s,UUID.randomUUID().toString()));
         HandicapSeason hs = leagueService.save(new HandicapSeason(Handicap.A, s));
@@ -89,7 +90,7 @@ public class Utils {
     public User createRandomUser() {
         Season s = seasonRepository.findAll().stream().filter(sn->sn.getDivision() == Division.NINE_BALL_CHALLENGE).findFirst().orElse(null);
         if (s == null) {
-            s = leagueService.save(new Season("9 ball ", new Date(), -1, Division.NINE_BALL_CHALLENGE));
+            s = leagueService.save(new Season("9 ball ", LocalDateTime.now(), -1, Division.NINE_BALL_CHALLENGE));
         }
         HandicapSeason hs = leagueService.save(new HandicapSeason(Handicap.A, s));
 
@@ -116,7 +117,6 @@ public class Utils {
         map.add("password", "abc123");
         ResponseEntity<User> responseEntity = restTemplate.postForEntity(url, map, User.class);
         assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
-        assertEquals(responseEntity.getBody().getLogin(), "test");
         assertTrue(responseEntity.getHeaders().containsKey("Set-Cookie"));
         JSESSIONID =  responseEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
         return JSESSIONID;

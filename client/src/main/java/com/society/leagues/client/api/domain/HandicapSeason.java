@@ -30,4 +30,25 @@ public class HandicapSeason extends LeagueObject {
     public void setSeason(Season season) {
         this.season = season;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        HandicapSeason that = (HandicapSeason) o;
+
+        if (!season.equals(that.season)) return false;
+        return handicap == that.handicap;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + season.hashCode();
+        result = 31 * result + handicap.hashCode();
+        return result;
+    }
 }

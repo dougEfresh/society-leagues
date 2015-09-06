@@ -1,7 +1,11 @@
 package com.society.leagues.client.api.domain;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.society.leagues.client.api.domain.converters.DateTimeDeSerializer;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+
+import java.time.LocalDateTime;
 
 public class PlayerResult extends LeagueObject {
 
@@ -107,22 +111,82 @@ public class PlayerResult extends LeagueObject {
     }
 
     public User getWinner() {
-        return null;
+        if (homeRacks  == null ||  awayRacks == null)
+            return null;
+
+        return homeRacks > awayRacks ? playerHome : playerAway;
     }
 
-    public HandicapSeason getHandicap() {
-        return null;
+    public Integer getWinnerRacks() {
+        if (homeRacks  == null ||  awayRacks == null)
+            return null;
+
+        return homeRacks > awayRacks ? homeRacks : awayRacks;
+    }
+
+    public Handicap getWinnerHandicap() {
+        if (getWinner() == null)
+            return null;
+        HandicapSeason hc =  getWinner().getHandicapSeasons().stream().filter(s->s.getSeason().equals(getSeason())).findFirst().orElse(null);
+        if (hc == null) {return null;}
+        return hc.getHandicap();
     }
 
     public User getLoser() {
+         if (homeRacks  == null ||  awayRacks == null)
+            return null;
+
+        return homeRacks > awayRacks ? playerAway : playerHome;
+    }
+
+    public Integer getLoserRacks() {
+        if (homeRacks  == null ||  awayRacks == null)
+            return null;
+
+        return homeRacks > awayRacks ? awayRacks : homeRacks;
+    }
+
+    public Handicap getLoserHandicap() {
+        if (getLoser() == null)
+            return null;
+        HandicapSeason hc =  getLoser().getHandicapSeasons().stream().filter(s->s.getSeason().equals(getSeason())).findFirst().orElse(null);
+        if (hc == null) {return null;}
+        return hc.getHandicap();
+    }
+
+    public boolean isWinner(User u) {
+        return u != null && u.equals(getWinner());
+    }
+
+
+    @JsonDeserialize(using = DateTimeDeSerializer.class)
+    public LocalDateTime getMatchDate() {
+        if (getTeamMatch() == null)
+            return null;
+        return getTeamMatch().getMatchDate();
+    }
+
+    public boolean hasUser(User u) {
+        return u!= null && (u.equals(playerHome) || u.equals(playerAway));
+    }
+
+    public boolean hasTeam(Team t) {
+        return t!= null && (t.equals(getTeamMatch().getHome()) || t.equals(getTeamMatch().getAway()));
+    }
+
+    public Handicap getHandicap(User u) {
+        if (u.equals(playerAway)) {
+            return playerAwayHandicap ;
+        }
+        if (u.equals(playerHome)) {
+            return playerAwayHandicap ;
+        }
         return null;
     }
 
-    public User getLoserHandicap() {
-        return null;
+    public boolean isNine() {
+        return getSeason().getDivision() == Division.NINE_BALL_TUESDAYS || getSeason().getDivision() == Division.NINE_BALL_CHALLENGE;
     }
-
-
 
     @Override
     public String toString() {

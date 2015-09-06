@@ -4,13 +4,17 @@ import com.society.leagues.Service.LeagueService;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.TeamMatch;
+import com.society.leagues.client.api.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/teammatch")
@@ -55,5 +59,18 @@ public class TeamMatchResource {
     public List<TeamMatch> getTeamMatchSeason(Principal principal, @PathVariable String id) {
          Season s = leagueService.findOne(new Season(id));
          return leagueService.findTeamMatchBySeason(s);
+    }
+
+    @RequestMapping(value = "/get/user/{id}/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public List<TeamMatch> getTeamMatchUser(Principal principal, @PathVariable String id, @PathVariable String type) {
+        User u = leagueService.findOne(new User(id));
+        List<Team> userTeams = leagueService.findAll(Team.class).stream().
+                filter(tm -> tm.getMembers().contains(u)).filter(t -> t.getSeason().isActive())
+                .collect(Collectors.toList());
+        List<TeamMatch> teamMatches = new ArrayList<>();
+        for (Team userTeam : userTeams) {
+            teamMatches.addAll(leagueService.findTeamMatchByTeam(userTeam));
+        }
+        return teamMatches;
     }
 }

@@ -27,7 +27,7 @@ public class User extends LeagueObject {
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime created;
-    @DBRef Set<HandicapSeason> handicapSeasons = new HashSet<>();
+    Set<HandicapSeason> handicapSeasons = new HashSet<>();
 
     public User() {
         this.created = LocalDateTime.now();

@@ -102,6 +102,10 @@ public class Team extends LeagueObject {
         this.captain = captain;
     }
 
+    public boolean isNine() {
+      return season.isNine();
+    }
+
     @Override
     public String toString() {
         return "Team{" +

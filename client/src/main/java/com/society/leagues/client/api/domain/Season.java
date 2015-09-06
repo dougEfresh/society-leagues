@@ -93,6 +93,15 @@ public class Season extends LeagueObject {
         this.division = division;
     }
 
+    public boolean isActive() {
+        return this.seasonStatus == Status.ACTIVE;
+    }
+
+    public boolean isNine(){
+        return getDivision() ==  Division.NINE_BALL_CHALLENGE || getDivision() == Division.NINE_BALL_TUESDAYS;
+    }
+
+
     @Override
     public String toString() {
         return "Season{" +

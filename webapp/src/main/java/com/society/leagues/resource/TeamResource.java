@@ -11,7 +11,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/team")
@@ -59,7 +61,7 @@ public class TeamResource {
         return leagueService.save(existingTeam);
     }
 
-    @RequestMapping(value = "/get/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Team get(Principal principal, @PathVariable String id) {
         Team existingTeam = leagueService.findOne(new Team(id));
         if (existingTeam == null) {
@@ -73,4 +75,16 @@ public class TeamResource {
          Season s = leagueService.findOne(new Season(id));
          return leagueService.findTeamBySeason(s);
     }
+
+    @RequestMapping(value = "/get/{id}/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public List<Team> getTeamSeason(Principal principal, @PathVariable String id, @PathVariable String type) {
+        User u = leagueService.findOne(new User(id));
+        if (u == null) {
+            return  Collections.emptyList();
+        }
+
+        return leagueService.findAll(Team.class).stream().filter(t->t.getMembers().contains(u)).filter(t->t.getSeason().isActive()).collect(Collectors.toList());
+    }
+
+
 }

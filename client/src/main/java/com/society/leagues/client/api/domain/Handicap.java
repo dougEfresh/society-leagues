@@ -35,6 +35,13 @@ public enum Handicap {
             return null;
         }
         hc = hc.replace("+","PLUS").toUpperCase();
+        if (hc.equals("O")) {
+            return OPEN;
+        }
+
+        if (hc.equals("P")) {
+            return PRO;
+        }
         try {
             Integer h = new Integer(hc);
             return Handicap.values()[h-1];
