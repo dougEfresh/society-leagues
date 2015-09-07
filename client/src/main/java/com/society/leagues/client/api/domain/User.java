@@ -144,9 +144,20 @@ public class User extends LeagueObject {
         return handicapSeasons.stream().filter(s->s.getSeason().getDivision().isChallenge()).count() > 0;
     }
 
+    public boolean hasSameSeason(User u) {
+        for (HandicapSeason u1 : handicapSeasons) {
+            for (HandicapSeason u2: u.getHandicapSeasons()) {
+                if (u1.getSeason().equals(u2.getSeason())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
-        return "User{   212-9=826 3211 212 570 4821 - c1-1-114-8310756" +
+        return "user{   212-9=826 3211 212 570 4821 - c1-1-114-8310756" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +

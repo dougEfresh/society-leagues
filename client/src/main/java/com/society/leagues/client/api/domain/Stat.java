@@ -13,8 +13,9 @@ public class Stat {
     Integer setWins = 0;
     Integer setLoses = 0;
     Integer matches = 0;
+    String type;
     Team team;
-    User User;
+    User user;
 
     public Stat() {
     }
@@ -22,7 +23,7 @@ public class Stat {
     public static Stat buildTeamStats(final Team team, final List<TeamMatch> matches) {
         Stat s = new Stat();
         s.setTeam(team);
-        List<TeamMatch> results = matches.stream().filter(tm->tm.hasResults()).collect(Collectors.toList());
+        List<TeamMatch> results = matches.stream().filter(TeamMatch::hasResults).collect(Collectors.toList());
         s.matches = results.size();
         for (TeamMatch result : results) {
             if (result.isWinner(team)) {
@@ -67,6 +68,74 @@ public class Stat {
         }
         return stats;
     }
+
+    public static Stat buildPlayerTeamStats(final User u, Team team , final List<PlayerResult> matches) {
+        Stat s = new Stat();
+        s.setUser(u);
+        s.setTeam(team);
+        for (PlayerResult match : matches) {
+            if (!match.hasUser(u)) {
+                continue;
+            }
+            s.matches++;
+            if (match.isWinner(u)) {
+                s.wins++;
+                s.racksWon += match.getWinnerRacks();
+                s.racksLost += match.getLoserRacks();
+            } else {
+                s.loses++;
+                s.racksWon += match.getLoserRacks();
+                s.racksLost += match.getWinnerRacks();
+            }
+        }
+        return s;
+    }
+
+
+    public static Stat buildStats(final User u, final List<Stat> stats) {
+        Stat s = new Stat();
+        s.setUser(u);
+        s.type = "all";
+        for (Stat stat : stats) {
+            s.racksLost += stat.racksLost;
+            s.racksWon += stat.racksWon;
+            s.wins += stat.wins;
+            s.loses += stat.loses;
+            s.matches += stat.matches;
+            s.setWins += stat.setWins;
+            s.setLoses += stat.setLoses;
+        }
+        return s;
+    }
+
+
+    public String getType() {
+        if (type != null) {
+            return type;
+        }
+
+        if (user != null && team != null) {
+            return "season";
+        }
+
+        if (user == null && team != null) {
+            return "team";
+        }
+
+        return "unknown";
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Season getSeason() {
+        if (team == null) {
+            return null;
+        }
+        return team.getSeason();
+    }
+
 
     public Integer getWins() {
         return wins;
@@ -117,15 +186,11 @@ public class Stat {
     }
 
     public User getUser() {
-        return User;
+        return user;
     }
 
     public void setUser(User user) {
-        User = user;
-    }
-
-    public Season getSeason() {
-        return team != null ? team.getSeason() : null;
+        this.user = user;
     }
 
     public Integer getSetLoses() {

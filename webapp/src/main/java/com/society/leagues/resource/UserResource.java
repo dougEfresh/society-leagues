@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/user")
@@ -58,6 +62,19 @@ public class UserResource {
             return User.defaultUser();
         }
         return leagueService.save(user);
+    }
+
+    @RequestMapping(value = "/season/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<User> listByUser(@PathVariable String id) {
+        User u = leagueService.findOne(new User(id));
+        return  leagueService.findAll(User.class).stream().filter(user -> user.hasSameSeason(u)).
+                sorted(new Comparator<User>() {
+                    @Override
+                    public int compare(User user, User t1) {
+                        return user.getName().compareTo(t1.getName());
+                    }
+                }).
+                collect(Collectors.toList());
     }
 
 }

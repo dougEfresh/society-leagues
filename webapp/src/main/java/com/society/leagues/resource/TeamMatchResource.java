@@ -58,7 +58,12 @@ public class TeamMatchResource {
     @RequestMapping(value = "/get/season/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public List<TeamMatch> getTeamMatchSeason(Principal principal, @PathVariable String id) {
          Season s = leagueService.findOne(new Season(id));
-         return leagueService.findTeamMatchBySeason(s);
+         return leagueService.findTeamMatchBySeason(s).stream().sorted(new Comparator<TeamMatch>() {
+             @Override
+             public int compare(TeamMatch teamMatch, TeamMatch t1) {
+                 return t1.getMatchDate().compareTo(teamMatch.getMatchDate());
+             }
+         }).collect(Collectors.toList());
     }
 
     @RequestMapping(value = "/get/user/{id}/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)

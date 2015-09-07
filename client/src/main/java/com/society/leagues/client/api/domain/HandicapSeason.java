@@ -2,10 +2,12 @@ package com.society.leagues.client.api.domain;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
+import javax.validation.constraints.NotNull;
+
 public class HandicapSeason extends LeagueObject {
 
-    @DBRef Season season;
-    Handicap handicap;
+    @NotNull @DBRef Season season;
+    @NotNull Handicap handicap;
 
     public HandicapSeason() {
     }
