@@ -2,6 +2,7 @@ package com.society.leagues.resource;
 
 import com.society.leagues.Service.LeagueService;
 import com.society.leagues.client.api.domain.User;
+import com.wordnik.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@Api(basePath = "/api/user",value = "User" ,description = "User API", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequestMapping(value = "/api/user")
 @SuppressWarnings("unused")
 public class UserResource {

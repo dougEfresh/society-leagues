@@ -4,7 +4,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;
 
-public class HandicapSeason extends LeagueObject {
+public class HandicapSeason {
 
     @NotNull @DBRef Season season;
     @NotNull Handicap handicap;
@@ -18,7 +18,7 @@ public class HandicapSeason extends LeagueObject {
     }
 
     public String getHandicapDisplay() {
-        return this.handicap.name().replace("PLUS","+").replace("PRO","P").replace("OPEN","O").replace("OPEN+","O+");
+        return Handicap.format(handicap);
     }
 
     public Handicap getHandicap() {
@@ -56,5 +56,13 @@ public class HandicapSeason extends LeagueObject {
         result = 31 * result + season.hashCode();
         result = 31 * result + handicap.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "HandicapSeason{" +
+                "season=" + season +
+                ", handicap=" + handicap +
+                '}';
     }
 }

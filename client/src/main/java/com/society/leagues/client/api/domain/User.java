@@ -18,11 +18,11 @@ public class User extends LeagueObject {
 
     @NotNull String firstName;
     @NotNull String lastName;
-    String email;
-    String password;
+    @NotNull String email;
+    @NotNull String password;
     @NotNull String login;
-    @NotNull Role role;
-    Status status;
+    @NotNull Role role = Role.PLAYER;
+    @NotNull Status status;
 
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
@@ -47,7 +47,7 @@ public class User extends LeagueObject {
         this.login = login;
         this.role = role;
     }
-1
+
     public String getFirstName() {
         return firstName;
     }
@@ -98,10 +98,6 @@ public class User extends LeagueObject {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    public void addRole(Role role) {
-         this.role = role;
     }
 
     public boolean isAdmin() {
@@ -155,14 +151,23 @@ public class User extends LeagueObject {
         return false;
     }
 
+
+    public boolean isFake() {
+        return lastName.toLowerCase().contains("handicap") || lastName.toLowerCase().contains("forfeit");
+    }
+
     @Override
     public String toString() {
-        return "user{   212-9=826 3211 212 570 4821 - c1-1-114-8310756" +
+        return "User{" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 ", login='" + login + '\'' +
                 ", role=" + role +
+                ", status=" + status +
+                ", created=" + created +
+                ", handicapSeasons=" + handicapSeasons +
                 '}';
     }
 }

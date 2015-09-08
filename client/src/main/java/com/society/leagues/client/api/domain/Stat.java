@@ -69,6 +69,14 @@ public class Stat {
         return stats;
     }
 
+    public String getHandicap() {
+        if (user == null || team == null) {
+            return "";
+        }
+        HandicapSeason handicapSeason = user.getHandicapSeasons().stream().filter(hs->hs.getSeason().equals(team.getSeason())).findFirst().orElse(null);
+        return handicapSeason == null ? "" : handicapSeason.getHandicapDisplay();
+    }
+
     public static Stat buildPlayerTeamStats(final User u, final Team team , final List<PlayerResult> matches) {
         Stat s = new Stat();
         s.setUser(u);

@@ -5,9 +5,7 @@ import org.springframework.data.annotation.Id;
 
 public class LeagueObject implements Comparable<LeagueObject>{
 
-    @Id
-    String id;
-
+    @Id String id;
     Integer legacyId;
 
     public String getId() {

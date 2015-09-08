@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/season")
@@ -24,8 +25,13 @@ public class SeasonResource {
         return leagueService.findOne(new Season(id));
     }
 
+    @RequestMapping(value = "/get/active", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public List<Season> getActiveSeasons(Principal principal) {
+        return leagueService.findAll(Season.class).stream().filter(s->s.isActive()).collect(Collectors.toList());
+    }
+
     @RequestMapping(value = "/get", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public List<Season> getTeamSeason(Principal principal) {
+    public List<Season> getSeasons(Principal principal) {
         return leagueService.findAll(Season.class);
     }
 }

@@ -4,8 +4,7 @@ public enum Division {
     
     EIGHT_BALL_WEDNESDAYS(LeagueType.TEAM),
     EIGHT_BALL_THURSDAYS(LeagueType.TEAM),
-    EIGHT_BALL_MIXED_MONDAYS(LeagueType.TEAM),
-    NINE_BALL_MIXED_MONDAYS(LeagueType.TEAM),
+    MIXED_MONDAYS(LeagueType.MIXED),
     NINE_BALL_TUESDAYS(LeagueType.TEAM),
     EIGHT_BALL_CHALLENGE(LeagueType.INDIVIDUAL),
     STRAIGHT(LeagueType.INDIVIDUAL),

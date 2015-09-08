@@ -2,13 +2,14 @@ package com.society.leagues.client.api.domain;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class Challenge extends LeagueObject {
-    Status status;
-    @DBRef Team challenger;
-    @DBRef Team opponent;
-    @DBRef List<Slot> slots;
+    @NotNull Status status;
+    @NotNull @DBRef Team challenger;
+    @NotNull @DBRef Team opponent;
+    @NotNull @DBRef List<Slot> slots;
     @DBRef Slot acceptedSlot;
 
     public Challenge() {
@@ -65,4 +66,14 @@ public class Challenge extends LeagueObject {
         return challenger.getSeason();
     }
 
+    @Override
+    public String toString() {
+        return "Challenge{" +
+                "status=" + status +
+                ", challenger=" + challenger +
+                ", opponent=" + opponent +
+                ", slots=" + slots +
+                ", acceptedSlot=" + acceptedSlot +
+                '}';
+    }
 }

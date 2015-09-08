@@ -5,28 +5,28 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.society.leagues.client.api.domain.converters.DateTimeDeSerializer;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class PlayerResult extends LeagueObject {
 
-    @DBRef TeamMatch teamMatch;
-    @DBRef User playerHome;
-    @DBRef User playerAway;
-    @DBRef Season season; //TODO remove reference
-    Integer homeRacks;
-    Integer awayRacks;
-    Integer matchNumber;
-    Handicap playerHomeHandicap;
-    Handicap playerAwayHandicap;
+    @NotNull @DBRef TeamMatch teamMatch;
+    @NotNull @DBRef User playerHome;
+    @NotNull @DBRef User playerAway;
+    @NotNull Integer homeRacks;
+    @NotNull Integer awayRacks;
+    @NotNull Integer matchNumber;
+    @NotNull Handicap playerHomeHandicap;
+    @NotNull Handicap playerAwayHandicap;
 
     public PlayerResult() {
     }
 
-    public PlayerResult(TeamMatch teamMatch, User playerHome, User playerAway, Season season, Integer homeRacks, Integer awayRacks, Integer matchNumber, Handicap playerHomeHandicap, Handicap playerAwayHandicap) {
+    public PlayerResult(TeamMatch teamMatch, User playerHome, User playerAway, Integer homeRacks, Integer awayRacks,
+                        Integer matchNumber, Handicap playerHomeHandicap, Handicap playerAwayHandicap) {
         this.teamMatch = teamMatch;
         this.playerHome = playerHome;
         this.playerAway = playerAway;
-        this.season = season;
         this.homeRacks = homeRacks;
         this.awayRacks = awayRacks;
         this.matchNumber = matchNumber;
@@ -87,11 +87,7 @@ public class PlayerResult extends LeagueObject {
     }
 
     public Season getSeason() {
-        return season;
-    }
-
-    public void setSeason(Season season) {
-        this.season = season;
+        return teamMatch.getSeason();
     }
 
     public Handicap getPlayerHomeHandicap() {
@@ -124,12 +120,12 @@ public class PlayerResult extends LeagueObject {
         return homeRacks > awayRacks ? homeRacks : awayRacks;
     }
 
-    public Handicap getWinnerHandicap() {
+    public String  getWinnerHandicap() {
         if (getWinner() == null)
             return null;
         HandicapSeason hc =  getWinner().getHandicapSeasons().stream().filter(s->s.getSeason().equals(getSeason())).findFirst().orElse(null);
         if (hc == null) {return null;}
-        return hc.getHandicap();
+        return Handicap.format(hc.getHandicap());
     }
 
     public User getLoser() {
@@ -146,12 +142,12 @@ public class PlayerResult extends LeagueObject {
         return homeRacks > awayRacks ? awayRacks : homeRacks;
     }
 
-    public Handicap getLoserHandicap() {
+    public String getLoserHandicap() {
         if (getLoser() == null)
             return null;
         HandicapSeason hc =  getLoser().getHandicapSeasons().stream().filter(s->s.getSeason().equals(getSeason())).findFirst().orElse(null);
         if (hc == null) {return null;}
-        return hc.getHandicap();
+        return Handicap.format(hc.getHandicap());
     }
 
     public boolean isWinner(User u) {
@@ -193,7 +189,6 @@ public class PlayerResult extends LeagueObject {
                 "teamMatch=" + teamMatch +
                 ", playerHome=" + playerHome +
                 ", playerAway=" + playerAway +
-                ", season=" + season +
                 ", homeRacks=" + homeRacks +
                 ", awayRacks=" + awayRacks +
                 ", matchNumber=" + matchNumber +

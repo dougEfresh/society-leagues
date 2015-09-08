@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.society.leagues.client.api.domain.converters.DateTimeDeSerializer;
 import com.society.leagues.client.api.domain.converters.DateTimeSerializer;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
@@ -16,8 +17,8 @@ public class Slot extends LeagueObject {
 
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
-    LocalDateTime time;
-    Integer allocated;
+    @NotNull LocalDateTime time;
+    Integer allocated = 0;
 
     public Slot() {
     }

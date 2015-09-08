@@ -19,7 +19,7 @@ public class Season extends LeagueObject {
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime endDate;
-    @NotNull Integer rounds;
+    @NotNull Integer rounds = -1;
     @NotNull Status seasonStatus;
     @NotNull Division division;
 

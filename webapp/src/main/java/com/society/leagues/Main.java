@@ -1,5 +1,6 @@
 package com.society.leagues;
 
+import com.mangofactory.swagger.plugin.EnableSwagger;
 import com.society.leagues.resource.ConvertResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -12,9 +13,10 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
-@ComponentScan("com.society.leagues")
+@ComponentScan("com.society")
 @EnableAutoConfiguration
 @EnableScheduling
+@EnableSwagger
 public class Main implements CommandLineRunner {
     @Autowired ConvertResource convertResource;
 
@@ -31,11 +33,10 @@ public class Main implements CommandLineRunner {
                 //convertResource.convertUser();
                 //convertResource.convertSeason();
                 //convertResource.convertTeam();
-//                convertResource.converTeamMatch();
-//                convertResource.converTeamMatchResult();
-                //convertResource.convertPlayerResults();
+                //convertResource.converTeamMatch();
+                //convertResource.converTeamMatchResult();
+                convertResource.convertPlayerResults();
                 convertResource.userHandicap();
-//                convertResource.findUserSeasons();
                 System.exit(0);
             }
         }

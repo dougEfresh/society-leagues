@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -38,7 +42,7 @@ public class ConvertResource {
         userRepository.deleteAll();
         logger.info("Deleted users");
         List<Map<String,Object>> results = jdbcTemplate.queryForList("select\n" +
-                " player_id,player_login,first_name,last_name, player_login ,\n" +
+                " player_id,player_login,first_name,last_name, player_login , password,\n" +
                 "  case when player_login like '%no_login%' then 'INACTIVE' else 'ACTIVE' end  status\n" +
                 "from player");
         int cnt =0;
@@ -50,7 +54,13 @@ public class ConvertResource {
             u.setFirstName(result.get("first_name").toString());
             u.setLastName(result.get("last_name").toString());
             u.setStatus(Status.valueOf(result.get("status").toString()));
-            u.setPassword(new BCryptPasswordEncoder().encode("abc123"));
+            if (result.get("password") != null)
+                u.setPassword(new BCryptPasswordEncoder().encode(result.get("password").toString()));
+            else
+                u.setPassword(new BCryptPasswordEncoder().encode(UUID.randomUUID().toString().substring(0,10)));
+
+            u.setRole(result.get("player_group") == null || result.get("player_group").toString().equals("3") ? Role.PLAYER : Role.ADMIN);
+
             User user = leagueService.findByLogin(u.getLogin());
             if (user == null) {
                 cnt++;
@@ -101,11 +111,15 @@ public class ConvertResource {
                 s.setDivision(Division.EIGHT_BALL_WEDNESDAYS);
             }
             if (s.getName().contains("Mixed")) {
-                s.setDivision(Division.NINE_BALL_MIXED_MONDAYS);
+                s.setDivision(Division.MIXED_MONDAYS);
             }
             if (s.getName().contains("9-ball")) {
                 s.setDivision(Division.NINE_BALL_TUESDAYS);
             }
+            if (s.getName().contains("Straight")) {
+                s.setDivision(Division.STRAIGHT);
+            }
+
             s = leagueService.save(s);
             System.out.println(s.toString());
         }
@@ -188,7 +202,6 @@ public class ConvertResource {
 
             tm.setHome(home);
             tm.setAway(away);
-            tm.setSeason(home.getSeason());
             Timestamp ts = (Timestamp) match.get("match_start_date");
             tm.setMatchDate(ts.toLocalDateTime());
             leagueService.save(tm);
@@ -234,6 +247,9 @@ public class ConvertResource {
 
     public void convertPlayerResults() {
         logger.info("Player Results");
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        int errors = 0;
         playerResultRepository.deleteAll();
         List<Map<String,Object>> results = jdbcTemplate.queryForList(
                 "select r.*,\n" +
@@ -248,7 +264,7 @@ public class ConvertResource {
         );
         List<TeamMatch> teamMatchList = leagueService.findAll(TeamMatch.class);
         List<User> users = leagueService.findAll(User.class);
-        List<PlayerResult> playerResults = leagueService.findAll(PlayerResult.class);
+        List<PlayerResult> playerResults =  new ArrayList<>();
         /*
 +-----------+----------+---------+-----------+-----------------+-----------+------------+------
 | result_id | match_id | team_id | player_id | player_handicap | games_won | games_lost | match_number | season_id | hcd_name |
@@ -269,7 +285,6 @@ public class ConvertResource {
                 continue;
             }
             r.setTeamMatch(tm);
-            r.setSeason(tm.getSeason());
             User u  = users.stream().filter(user->user.getLegacyId().equals(result.get("player_id"))).findFirst().orElse(null);
             if (u == null) {
                 continue;
@@ -279,6 +294,11 @@ public class ConvertResource {
 
             if (result.get("home_or_away").equals("home")) {
                 r.setPlayerHome(u);
+                if (result.get("games_won") == null)
+                    r.setHomeRacks(0);
+                else
+                    r.setHomeRacks((Integer) result.get("games_won"));
+
                 r.setHomeRacks((Integer) result.get("games_won"));
                 Handicap handicap = Handicap.get(result.get("hcd_name") == null ? null : result.get("hcd_name").toString());
                 if (handicap == null)
@@ -288,7 +308,10 @@ public class ConvertResource {
                 home.addMember(u);
             } else {
                 r.setPlayerAway(u);
-                r.setAwayRacks((Integer) result.get("games_won"));
+                if (result.get("games_won") == null)
+                    r.setAwayRacks(0);
+                else
+                    r.setAwayRacks((Integer) result.get("games_won"));
                 Handicap handicap = Handicap.get(result.get("hcd_name") == null ? null : result.get("hcd_name").toString());
                 if (handicap == null)
                     logger.warn("Handicap " + result.get("hcd_name") + " is null");
@@ -297,11 +320,24 @@ public class ConvertResource {
                 away.addMember(u);
             }
             r.setMatchNumber((Integer) result.get("match_number"));
-            r = leagueService.save(r);
+
             playerResults.add(r);
         }
-
-        playerResults = leagueService.findAll(PlayerResult.class);
+        errors = 0;
+        for (PlayerResult r : playerResults) {
+             Set<ConstraintViolation<PlayerResult>> constraintViolations = validator.validate(r);
+            if (!constraintViolations.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+                for (ConstraintViolation<PlayerResult> constraintViolation : constraintViolations) {
+                    sb.append(constraintViolation.toString());
+                }
+                logger.error("Could not validate " +playerResults + "\n" + sb.toString());
+                errors++;
+                continue;
+            }
+             leagueService.save(r);
+        }
+        logger.warn("Errors : "+ errors);
     }
 
     public void userHandicap() {

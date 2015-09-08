@@ -12,10 +12,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Team extends LeagueObject {
 
-    @DBRef Season season;
+    @NotNull @DBRef Season season;
     @NotNull String name;
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
@@ -45,7 +46,11 @@ public class Team extends LeagueObject {
     }
 
     public Set<User> getMembers() {
-        return members;
+        HashSet users = new HashSet();
+        users.addAll(members.stream()
+                .filter(u->!u.isFake())
+                .collect(Collectors.toList()));
+        return users;
     }
 
     public void setMembers(Set<User> members) {

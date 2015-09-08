@@ -38,5 +38,6 @@ logger("feign",DEBUG)
 logger("org.apache.http",DEBUG)
 logger("org.apache.http.wire",ERROR)
 logger("org.springframework.web",INFO)
+logger("org.springframework.data.mongodb",DEBUG)
 
 root(INFO, ["FILE", "CONSOLE"])

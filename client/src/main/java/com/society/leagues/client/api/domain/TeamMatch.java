@@ -13,11 +13,9 @@ import java.time.LocalDateTime;
 public class TeamMatch extends LeagueObject {
     @NotNull Team home;
     @NotNull Team away;
-    @DBRef Season season;
-
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
-    LocalDateTime matchDate;
+    @NotNull LocalDateTime matchDate;
 
     Integer homeRacks = -1;
     Integer awayRacks = -1;
@@ -28,7 +26,6 @@ public class TeamMatch extends LeagueObject {
         this.home = home;
         this.away = away;
         this.matchDate = matchDate;
-        this.season = home.getSeason();
     }
 
     public TeamMatch() {
@@ -36,10 +33,6 @@ public class TeamMatch extends LeagueObject {
 
     public TeamMatch(String id) {
         this.id = id;
-    }
-
-    public void setSeason(Season season) {
-        this.season = season;
     }
 
     public Team getHome() {
@@ -67,7 +60,7 @@ public class TeamMatch extends LeagueObject {
     }
 
     public Season getSeason() {
-        return season;
+        return home.getSeason();
     }
 
     public Division getDivision() {
@@ -92,6 +85,10 @@ public class TeamMatch extends LeagueObject {
 
     public boolean hasUser(User user) {
         return home.getMembers().contains(user) || away.getMembers().contains(user);
+    }
+
+    public boolean hasTeam(Team team) {
+        return home.equals(team) || away.equals(team);
     }
 
     public boolean isWinner(Team t) {
@@ -131,19 +128,6 @@ public class TeamMatch extends LeagueObject {
         this.setHomeWins = setHomeWins;
     }
 
-    @Override
-    public String toString() {
-        return "TeamMatch{" +
-                "legacyId=" + getLegacyId() + " " +
-                "home=" + (home == null ? "" : home.getName()) +
-                ", away=" + (away == null ? "" : away.getName()) +
-                ", season=" + season +
-                ", matchDate=" + matchDate +
-                ", homeRacks=" + homeRacks +
-                ", awayRacks=" + awayRacks +
-                '}';
-    }
-
     public boolean hasResults() {
         return homeRacks > 0;
     }
@@ -161,7 +145,7 @@ public class TeamMatch extends LeagueObject {
     }
 
     public Integer getWinnerSetWins() {
-        if (!season.isNine()) {
+        if (!getSeason().isNine()) {
             return  homeRacks > awayRacks  ? homeRacks  : awayRacks;
         }
 
@@ -169,7 +153,7 @@ public class TeamMatch extends LeagueObject {
     }
 
     public Integer getWinnerSetLoses() {
-        if (!season.isNine()) {
+        if (!getSeason().isNine()) {
             return  homeRacks > awayRacks  ? awayRacks  : homeRacks;
         }
 
@@ -177,7 +161,7 @@ public class TeamMatch extends LeagueObject {
     }
 
     public Integer getLoserSetWins() {
-        if (!season.isNine()) {
+        if (!getSeason().isNine()) {
             return  homeRacks > awayRacks  ? awayRacks  : homeRacks;
         }
 
@@ -185,10 +169,23 @@ public class TeamMatch extends LeagueObject {
     }
 
     public Integer getLoserSetLoses() {
-        if (!season.isNine()) {
+        if (!getSeason().isNine()) {
             return  homeRacks > awayRacks  ? homeRacks  : awayRacks;
         }
 
         return homeRacks > awayRacks ? setHomeWins : setAwayWins;
+    }
+
+    @Override
+    public String toString() {
+        return "TeamMatch{" +
+                "home=" + home +
+                ", away=" + away +
+                ", matchDate=" + matchDate +
+                ", homeRacks=" + homeRacks +
+                ", awayRacks=" + awayRacks +
+                ", setHomeWins=" + setHomeWins +
+                ", setAwayWins=" + setAwayWins +
+                '}';
     }
 }
