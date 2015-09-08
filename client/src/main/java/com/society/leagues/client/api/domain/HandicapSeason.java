@@ -17,6 +17,10 @@ public class HandicapSeason extends LeagueObject {
         this.season = season;
     }
 
+    public String getHandicapDisplay() {
+        return this.handicap.name().replace("PLUS","+").replace("PRO","P").replace("OPEN","O").replace("OPEN+","O+");
+    }
+
     public Handicap getHandicap() {
         return handicap;
     }

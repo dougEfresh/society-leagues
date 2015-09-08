@@ -65,14 +65,37 @@ public class StatResource {
     public List<Stat> getSeasonPlayerStats(@PathVariable String id) {
          Season season = leagueService.findOne(new Season(id));
          List<Team> teams = leagueService.findTeamBySeason(season);
+         List<PlayerResult> results = leagueService.findPlayerResultBySeason(season).stream().
+                 filter(r -> r.getLoser() != null && r.getWinner() != null).
+                 collect(Collectors.toList());
+         Map<User,List<PlayerResult>> losers = results.stream().collect(Collectors.groupingBy(r -> r.getLoser(), Collectors.toList()));
+         Map<User,List<PlayerResult>> winners = results.stream().collect(Collectors.groupingBy(r -> r.getWinner(),Collectors.toList()));
+         Map<User,List<PlayerResult>> all = new HashMap<>();
+         for (User user : winners.keySet()) {
+             all.put(user,winners.get(user));
+         }
+         for (User user : losers.keySet()) {
+             if (all.containsKey(user)) {
+                 all.get(user).addAll(losers.get(user));
+             } else {
+                 all.put(user, losers.get(user));
+             }
+         }
          List<Stat> stats = new ArrayList<>(100);
-         for (Team team : teams) {
-              stats.addAll(Stat.buildTeamMemberStats(team, leagueService.findPlayerResultBySeason(team.getSeason())));
+         for (User user : all.keySet()) {
+             Team team = teams.stream().filter(t->t.getMembers().contains(user)).findFirst().orElse(null);
+             if (team == null) {
+                 continue;
+             }
+             stats.add(Stat.buildPlayerTeamStats(user,
+                             team,
+                     all.get(user))
+             );
          }
          return stats.stream().sorted(new Comparator<Stat>() {
              @Override
              public int compare(Stat stat, Stat t1) {
-                 return 0;
+                 return t1.getWinPct().compareTo(stat.getWinPct());
              }
          }).collect(Collectors.toList());
     }
@@ -96,11 +119,11 @@ public class StatResource {
             stats.add(Stat.buildPlayerTeamStats(
                             u,
                             team,
-                            results.stream().filter(r->r.hasTeam(team)).collect(Collectors.toList())
+                            results.stream().filter(r -> r.hasTeam(team)).collect(Collectors.toList())
                     )
             );
         }
-        stats.add(Stat.buildStats(u,stats));
+        stats.add(Stat.buildStats(u, stats));
         return stats;
     }
 }

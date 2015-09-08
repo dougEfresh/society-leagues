@@ -47,7 +47,7 @@ public class User extends LeagueObject {
         this.login = login;
         this.role = role;
     }
-
+1
     public String getFirstName() {
         return firstName;
     }

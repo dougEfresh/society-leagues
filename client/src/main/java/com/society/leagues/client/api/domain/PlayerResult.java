@@ -119,7 +119,7 @@ public class PlayerResult extends LeagueObject {
 
     public Integer getWinnerRacks() {
         if (homeRacks  == null ||  awayRacks == null)
-            return null;
+            return 0;
 
         return homeRacks > awayRacks ? homeRacks : awayRacks;
     }
@@ -141,7 +141,7 @@ public class PlayerResult extends LeagueObject {
 
     public Integer getLoserRacks() {
         if (homeRacks  == null ||  awayRacks == null)
-            return null;
+            return 0;
 
         return homeRacks > awayRacks ? awayRacks : homeRacks;
     }
@@ -157,7 +157,6 @@ public class PlayerResult extends LeagueObject {
     public boolean isWinner(User u) {
         return u != null && u.equals(getWinner());
     }
-
 
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     public LocalDateTime getMatchDate() {

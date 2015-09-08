@@ -69,7 +69,7 @@ public class Stat {
         return stats;
     }
 
-    public static Stat buildPlayerTeamStats(final User u, Team team , final List<PlayerResult> matches) {
+    public static Stat buildPlayerTeamStats(final User u, final Team team , final List<PlayerResult> matches) {
         Stat s = new Stat();
         s.setUser(u);
         s.setTeam(team);
@@ -90,7 +90,6 @@ public class Stat {
         }
         return s;
     }
-
 
     public static Stat buildStats(final User u, final List<Stat> stats) {
         Stat s = new Stat();
