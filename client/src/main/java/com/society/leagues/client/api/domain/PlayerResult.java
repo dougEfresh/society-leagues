@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 
 public class PlayerResult extends LeagueObject {
 
-    @NotNull @DBRef TeamMatch teamMatch;
-    @NotNull @DBRef User playerHome;
-    @NotNull @DBRef User playerAway;
+    @NotNull @DBRef(lazy = true) TeamMatch teamMatch;
+    @NotNull @DBRef(lazy = true) User playerHome;
+    @NotNull @DBRef(lazy = true) User playerAway;
     @NotNull Integer homeRacks;
     @NotNull Integer awayRacks;
     @NotNull Integer matchNumber;
