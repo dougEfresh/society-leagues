@@ -30,8 +30,8 @@ public class CachedCollection<T extends List<? extends LeagueObject>> {
     @Scheduled(fixedRate = 1000*60*5, initialDelay = 1000*60*15)
     public void update() {
         try {
-            lock.tryLock();
-            this.entity.lazySet((T) repo.findAll());
+            if (lock.tryLock())
+                this.entity.lazySet((T) repo.findAll());
         } finally {
             lock.unlock();
         }
