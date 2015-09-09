@@ -13,9 +13,9 @@ public class PlayerResult extends LeagueObject {
     @NotNull @DBRef TeamMatch teamMatch;
     @NotNull @DBRef User playerHome;
     @NotNull @DBRef User playerAway;
-    @NotNull Integer homeRacks;
-    @NotNull Integer awayRacks;
-    @NotNull Integer matchNumber;
+    @NotNull Integer homeRacks = -1;
+    @NotNull Integer awayRacks = -1;
+    @NotNull Integer matchNumber = -1;
     @NotNull Handicap playerHomeHandicap;
     @NotNull Handicap playerAwayHandicap;
 

@@ -22,6 +22,8 @@ public class TeamMatch extends LeagueObject {
     Integer awayRacks = -1;
     Integer setHomeWins = 0;
     Integer setAwayWins = 0;
+    Integer setHomeLost = 0;
+    Integer setAwayLost = 0;
 
     public TeamMatch(Team home, Team away, LocalDateTime matchDate) {
         this.home = home;
@@ -175,6 +177,38 @@ public class TeamMatch extends LeagueObject {
         }
 
         return homeRacks > awayRacks ? setHomeWins : setAwayWins;
+    }
+
+    public void addSetHomeWin() {
+        setHomeWins += 1;
+    }
+
+    public void addSetHomeLost() {
+        setHomeLost += 1;
+    }
+
+    public void addSetAwayLost() {
+        setAwayLost += 1;
+    }
+
+    public void addSetAwayWin() {
+        setAwayWins += 1;
+    }
+
+    public Integer getSetHomeLost() {
+        return setHomeLost;
+    }
+
+    public void setSetHomeLost(Integer setHomeLost) {
+        this.setHomeLost = setHomeLost;
+    }
+
+    public Integer getSetAwayLost() {
+        return setAwayLost;
+    }
+
+    public void setSetAwayLost(Integer setAwayLost) {
+        this.setAwayLost = setAwayLost;
     }
 
     @Override

@@ -155,14 +155,12 @@ public class StatResource {
         List<Stat> teamStats = new ArrayList<>();
         List<PlayerResult> results = leagueService.findAll(PlayerResult.class);
         for (Team team : teams) {
-            results.parallelStream().filter(r->r.hasTeam(team))
             teamStats.add(Stat.buildTeamStats(team,
                     leagueService.findTeamMatchByTeam(team).stream().filter(tm->tm.hasResults()).collect(Collectors.toList())
             ));
         }
         this.teamStats.lazySet(teamStats);
         logger.info("Done Refreshing stats");
-        results.parallelStream().forEach(r->r.clearReference());
     }
 
 

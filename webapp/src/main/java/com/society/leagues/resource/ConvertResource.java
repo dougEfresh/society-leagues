@@ -33,7 +33,7 @@ public class ConvertResource {
     @Autowired TeamMatchRepository teamMatchRepository;
     @Autowired PlayerResultRepository playerResultRepository;
     @Autowired JdbcTemplate jdbcTemplate;
-
+    String defaultPassword = new BCryptPasswordEncoder().encode("abc123");
     public void convertUser() {
 
         logger.info("Convert users");
@@ -53,9 +53,10 @@ public class ConvertResource {
             u.setLastName(result.get("last_name").toString());
             u.setStatus(Status.valueOf(result.get("status").toString()));
             if (result.get("password") != null)
-                u.setPassword(new BCryptPasswordEncoder().encode(result.get("password").toString()));
+                //u.setPassword(new BCryptPasswordEncoder().encode(result.get("password").toString()));
+                u.setPassword(defaultPassword);
             else
-                u.setPassword(new BCryptPasswordEncoder().encode(UUID.randomUUID().toString().substring(0,10)));
+                u.setPassword(defaultPassword);
 
             u.setRole(result.get("player_group") == null || result.get("player_group").toString().equals("3") ? Role.PLAYER : Role.ADMIN);
 
@@ -187,7 +188,7 @@ public class ConvertResource {
             Integer mid = (Integer) match.get("match_id");
             TeamMatch tm = new TeamMatch();
             tm.setLegacyId(mid);
-            Team home = teams.stream().filter(t->t.getLegacyId().equals(match.get("home_team_id"))).filter(t->t.getSeason().getLegacyId().equals(match.get("season_id"))).findFirst().orElse(null);
+            Team home = teams.stream().filter(t -> t.getLegacyId().equals(match.get("home_team_id"))).filter(t->t.getSeason().getLegacyId().equals(match.get("season_id"))).findFirst().orElse(null);
             if (home == null) {
                 throw  new RuntimeException("no team for " +match.get("home_team_id") );
             }
@@ -361,6 +362,7 @@ public class ConvertResource {
     public void userHandicap() {
         logger.info("User Handicaps");
         List<PlayerResult> playerResults = playerResultRepository.findAll();
+        logger.info("Got player results");
         List<User> users =  userRepository.findAll();
         List<Season> seasons = seasonRepository.findAll();
         for (User user : users) {
@@ -381,6 +383,31 @@ public class ConvertResource {
                 user.addHandicap(hs);
             }
             userRepository.save(user);
+        }
+    }
+
+    public void updateSetWinsLoses() {
+        logger.info("Getting  set wins");
+        List<PlayerResult> results = playerResultRepository.findAll().stream().filter(r->r.isNine()).collect(Collectors.toList());
+        List<TeamMatch> teamMatches = teamMatchRepository.findAll().stream().filter(t->t.getSeason().isNine()).collect(Collectors.toList());
+        for (final TeamMatch teamMatch : teamMatches) {
+            List<PlayerResult> toProcess = results.stream().filter(r -> r.hasTeam(teamMatch.getHome())).filter(r -> r.getAwayRacks() + r.getHomeRacks() > 0).collect(Collectors.toList());
+            for (PlayerResult r : toProcess) {
+                if (r.getHomeRacks() > r.getAwayRacks()) {
+                    teamMatch.addSetHomeWin();
+                } else {
+                    teamMatch.addSetHomeLost();
+                }
+            }
+            toProcess = results.stream().filter(r -> r.hasTeam(teamMatch.getAway())).
+                    filter(r -> r.getAwayRacks() + r.getHomeRacks() > 0).collect(Collectors.toList());
+            for (PlayerResult r : toProcess) {
+                if (r.getHomeRacks() > r.getAwayRacks()) {
+                    teamMatch.addSetAwayLost();
+                } else {
+                    teamMatch.addSetAwayWin();
+                }
+            }
         }
     }
 }
