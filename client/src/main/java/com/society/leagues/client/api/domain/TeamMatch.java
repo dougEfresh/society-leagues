@@ -11,16 +11,17 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class TeamMatch extends LeagueObject {
-    @NotNull Team home;
-    @NotNull Team away;
+
+    @DBRef Team home;
+    @DBRef Team away;
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     @NotNull LocalDateTime matchDate;
 
     Integer homeRacks = -1;
     Integer awayRacks = -1;
-    Integer setHomeWins = -1;
-    Integer setAwayWins = -1;
+    Integer setHomeWins = 0;
+    Integer setAwayWins = 0;
 
     public TeamMatch(Team home, Team away, LocalDateTime matchDate) {
         this.home = home;

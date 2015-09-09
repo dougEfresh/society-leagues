@@ -46,11 +46,7 @@ public class Team extends LeagueObject {
     }
 
     public Set<User> getMembers() {
-        HashSet users = new HashSet();
-        users.addAll(members.stream()
-                .filter(u->!u.isFake())
-                .collect(Collectors.toList()));
-        return users;
+        return members;
     }
 
     public void setMembers(Set<User> members) {

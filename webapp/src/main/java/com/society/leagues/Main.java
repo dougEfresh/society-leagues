@@ -31,10 +31,10 @@ public class Main implements CommandLineRunner {
         for (String arg : args) {
             if (arg.toLowerCase().contains("convert")) {
                 //convertResource.convertUser();
-                //convertResource.convertSeason();
-                //convertResource.convertTeam();
-                //convertResource.converTeamMatch();
-                //convertResource.converTeamMatchResult();
+                convertResource.convertSeason();
+                convertResource.convertTeam();
+                convertResource.converTeamMatch();
+                convertResource.converTeamMatchResult();
                 convertResource.convertPlayerResults();
                 convertResource.userHandicap();
                 System.exit(0);

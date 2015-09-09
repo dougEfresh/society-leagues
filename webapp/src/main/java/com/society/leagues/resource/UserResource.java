@@ -69,14 +69,15 @@ public class UserResource {
     @RequestMapping(value = "/season/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<User> listByUser(@PathVariable String id) {
         User u = leagueService.findOne(new User(id));
-        return  leagueService.findAll(User.class).stream().filter(user -> user.hasSameSeason(u)).
+        return leagueService.findAll(User.class).stream().filter(user -> user.hasSameSeason(u)).
+                filter(user->!user.isFake()).
                 sorted(new Comparator<User>() {
                     @Override
                     public int compare(User user, User t1) {
-                        return user.getName().compareTo(t1.getName());
-                    }
-                }).
-                collect(Collectors.toList());
+                return user.getName().compareTo(t1.getName());
+            }
+                })
+                .collect(Collectors.toList());
     }
 
 }

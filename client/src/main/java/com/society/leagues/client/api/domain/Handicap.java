@@ -28,7 +28,8 @@ public enum Handicap {
     APLUS,
     OPEN,
     OPENPLUS,
-    PRO;
+    PRO,
+    UNKNOWN;
 
     public static String format(Handicap hc) {
         String h =  hc.name().replace("PLUS","+").replace("PRO","P").replace("OPEN","O").replace("OPEN+","O+");
@@ -40,7 +41,7 @@ public enum Handicap {
 
     public static Handicap get(String hc) {
         if (hc == null) {
-            return null;
+            return Handicap.UNKNOWN;
         }
         hc = hc.replace("+","PLUS").toUpperCase();
         if (hc.equals("O")) {
@@ -61,6 +62,6 @@ public enum Handicap {
         } catch (Throwable r) {
 
         }
-        return null;
+        return Handicap.UNKNOWN;
     }
 }

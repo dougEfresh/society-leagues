@@ -10,14 +10,17 @@ import java.time.LocalDateTime;
 
 public class PlayerResult extends LeagueObject {
 
-    @NotNull @DBRef(lazy = true) TeamMatch teamMatch;
-    @NotNull @DBRef(lazy = true) User playerHome;
-    @NotNull @DBRef(lazy = true) User playerAway;
+    @NotNull @DBRef TeamMatch teamMatch;
+    @NotNull @DBRef User playerHome;
+    @NotNull @DBRef User playerAway;
     @NotNull Integer homeRacks;
     @NotNull Integer awayRacks;
     @NotNull Integer matchNumber;
     @NotNull Handicap playerHomeHandicap;
     @NotNull Handicap playerAwayHandicap;
+
+    Team referenceTeam = null;
+    User referenceUser = null;
 
     public PlayerResult() {
     }
@@ -107,7 +110,7 @@ public class PlayerResult extends LeagueObject {
     }
 
     public User getWinner() {
-        if (homeRacks  == null ||  awayRacks == null)
+        if (homeRacks  == null || awayRacks == null)
             return null;
 
         return homeRacks > awayRacks ? playerHome : playerAway;
@@ -181,6 +184,109 @@ public class PlayerResult extends LeagueObject {
 
     public boolean isNine() {
         return getSeason().getDivision() == Division.NINE_BALL_TUESDAYS || getSeason().getDivision() == Division.NINE_BALL_CHALLENGE;
+    }
+
+    public void setReferenceTeam(Team referenceTeam) {
+        this.referenceTeam = referenceTeam;
+    }
+
+    public User getOpponent() {
+        if (referenceTeam != null)
+            return referenceTeam.equals(teamMatch.getHome()) ? playerAway : playerHome;
+
+        if (referenceUser != null)
+            return referenceUser.equals(playerHome) ? playerAway : playerHome;
+
+
+        return null;
+
+    }
+
+    public User getTeamMember() {
+        if (referenceTeam != null)
+            return referenceTeam.equals(teamMatch.getHome()) ? playerHome : playerAway;
+
+        return referenceUser;
+    }
+
+    public boolean isWin() {
+        if (referenceTeam != null)
+            return referenceTeam.equals(teamMatch.getHome()) ? homeRacks > awayRacks : awayRacks > homeRacks;
+
+        if (referenceUser != null)
+            return isWinner(referenceUser);
+
+        return false;
+    }
+
+    public String getOpponentHandicap() {
+        if (referenceTeam != null)
+            return referenceTeam.equals(teamMatch.getHome()) ?  Handicap.format(playerAwayHandicap) : Handicap.format(playerHomeHandicap);
+
+        if (referenceUser != null)
+            return referenceUser.equals(playerHome) ? Handicap.format(playerAwayHandicap) : Handicap.format(playerHomeHandicap);
+
+        return null;
+    }
+
+    public String getTeamMemberHandicap() {
+        if (referenceTeam != null)
+            return referenceTeam.equals(teamMatch.getHome()) ?  Handicap.format(playerHomeHandicap) : Handicap.format(playerAwayHandicap);
+
+        if (referenceUser != null)
+            return referenceUser.equals(playerHome) ? Handicap.format(playerHomeHandicap) : Handicap.format(playerAwayHandicap);
+
+        return null;
+    }
+
+    public Team getOpponentTeam() {
+        if (referenceUser != null) {
+            return teamMatch.getHome().getMembers().contains(referenceUser) ? teamMatch.getAway() : teamMatch.getHome();
+        }
+
+        if (referenceTeam != null)
+            return referenceTeam.equals(teamMatch.getHome()) ? teamMatch.getAway() : teamMatch.getHome();
+
+        return null;
+    }
+
+    public Team getTeam() {
+        if (referenceUser != null) {
+            return teamMatch.getHome().getMembers().contains(referenceUser) ? teamMatch.getHome() : teamMatch.getAway();
+        }
+        return referenceTeam;
+    }
+
+    public Integer getTeamMemberRacks() {
+        if (referenceUser != null) {
+            return referenceUser.equals(playerHome) ?  homeRacks : awayRacks;
+        }
+        if (referenceTeam != null) {
+            return referenceTeam.equals(teamMatch.getHome()) ? homeRacks : awayRacks;
+        }
+
+        return 0;
+    }
+
+
+    public Integer getOpponentRacks() {
+        if (referenceUser != null) {
+            return referenceUser.equals(playerHome) ?  awayRacks : homeRacks;
+        }
+        if (referenceTeam != null) {
+            return referenceTeam.equals(teamMatch.getHome()) ? awayRacks : homeRacks;
+        }
+
+        return 0;
+    }
+
+    public void setReferenceUser(User referenceUser) {
+        this.referenceUser = referenceUser;
+    }
+
+    public void clearReference() {
+        referenceTeam = null;
+        referenceUser = null;
     }
 
     @Override

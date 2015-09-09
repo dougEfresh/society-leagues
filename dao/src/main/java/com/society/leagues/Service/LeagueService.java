@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -16,8 +17,6 @@ import javax.validation.ValidatorFactory;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
@@ -43,8 +42,8 @@ public class LeagueService {
     @Autowired @Qualifier("seasonCachedCollection") CachedCollection<List<Season>> seasonCachedCollection;
     @Autowired @Qualifier("playerResultCachedCollection") CachedCollection<List<PlayerResult>> playerResultCachedCollection;
     @Autowired List<CachedCollection> cachedCollections;
+    @Autowired List<MongoRepository> mongoRepositories;
 
-    ExecutorService executorService = Executors.newFixedThreadPool(10);
     Validator validator;
 
     @PostConstruct
@@ -58,7 +57,6 @@ public class LeagueService {
 
     @PreDestroy
     public void destroy() {
-        executorService.shutdownNow();
     }
 
     public <T extends LeagueObject> T save(T entity) {
@@ -74,9 +72,11 @@ public class LeagueService {
         }
         repo.save(entity);
         CachedCollection cachedCollection = getCache(entity);
-        cachedCollection.update();
-        refreshAllCache();
-        return (T) repo.findOne(entity.getId());
+        cachedCollection.get().remove(entity);
+        T newEntity = (T) repo.findOne(entity.getId());
+        //TODO Update old references to new one
+        cachedCollection.get().add(newEntity);
+        return newEntity;
     }
 
     public <T extends LeagueObject> Boolean delete(T entity) {
@@ -126,8 +126,8 @@ public class LeagueService {
     public List<PlayerResult> findPlayerResultBySeason(Season s) {
         return playerResultCachedCollection.get().stream()
                 .filter(pr -> pr.getSeason().equals(s))
-                .filter(pr->!pr.getLoser().isFake())
-                .filter(pr->!pr.getWinner().isFake())
+                .filter(pr -> !pr.getLoser().isFake())
+                .filter(pr -> !pr.getWinner().isFake())
                 .collect(Collectors.toList());
     }
 
@@ -153,11 +153,9 @@ public class LeagueService {
         if (clz.getCanonicalName().endsWith("TeamMatch")) {
             return teamMatchCachedCollection;
         }
-
         if (clz.getCanonicalName().endsWith("Season")) {
             return seasonCachedCollection;
         }
-
         if (clz.getCanonicalName().endsWith("PlayerResult")) {
             return playerResultCachedCollection;
         }
@@ -194,20 +192,23 @@ public class LeagueService {
         return null;
     }
 
+    @Scheduled(fixedRate = 1000*60*5, initialDelay = 1000*60*10)
     public void refreshAllCache() {
-        for (final CachedCollection cachedCollection : cachedCollections) {
-            executorService.submit(new Runnable() {
-                @Override
-                public void run() {
-                    long now = System.currentTimeMillis();
-                    logger.info("Refreshing cache: " + cachedCollection.getClass().getCanonicalName() + " " + cachedCollection.getType() ) ;
-                    cachedCollection.update();
-                    logger.info("Done refreshing cache (" + (System.currentTimeMillis() - now) + ")" + cachedCollection.getClass().getCanonicalName() + " " + cachedCollection.getType()) ;
-                    logger.info("Size " + cachedCollection.getType() + " " + cachedCollection.get().size());
+        logger.info("Refreshing season");
+        seasonCachedCollection.set(seasonRepository.findAll());
+        logger.info("Refreshing user");
+        userCachedCollection.set(userRepository.findAll());
+        logger.info("Refreshing team");
+        teamCachedCollection.set(teamRepository.findAll());
+        logger.info("Refreshing teamMatch");
+        teamMatchCachedCollection.set(teamMatchRepository.findAll());
+        logger.info("Refreshing playerResult");
+        playerResultCachedCollection.set(playerResultRepository.findAll());
+        logger.info("Refreshing Slot");
+        slotCachedCollection.set(slotRepository.findAll());
+        logger.info("Refreshing challenge");
+        challengeCachedCollection.set(challengeRepository.findAll());
 
-                }
-            });
-        }
     }
 
 }

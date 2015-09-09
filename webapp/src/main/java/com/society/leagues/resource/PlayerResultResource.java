@@ -53,7 +53,14 @@ public class PlayerResultResource {
     @RequestMapping(value = "/get/team/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public List<PlayerResult> getPlayerResulTeam(Principal principal, @PathVariable String id) {
         Team t  = leagueService.findOne(new Team(id));
-        return leagueService.findPlayerResultBySeason(t.getSeason()).stream().filter(pr -> pr.hasTeam(t)).collect(Collectors.toList());
+        List<PlayerResult> results = leagueService.findPlayerResultBySeason(t.getSeason()).
+                parallelStream().
+                filter(pr -> pr.hasTeam(t)).collect(Collectors.toList());
+        results.parallelStream().forEach(pr -> pr.setReferenceTeam(t));
+        return results.stream().
+                sorted((playerResult, t1) -> playerResult.getTeamMember().getName().compareTo(t1.getTeamMember().getName())).
+                collect(Collectors.toList());
+
     }
 
     @RequestMapping(value = "/get/user/{id}/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
@@ -66,12 +73,14 @@ public class PlayerResultResource {
                     .collect(Collectors.toList());
 
         if (type.equals("current")) {
-            return leagueService.findPlayerResultByUser(u)
-                    .stream()
-                          .filter(r->r.getTeamMatch() != null)
-                          .filter(r->r.getSeason().getSeasonStatus() == Status.ACTIVE)
+            List<PlayerResult> results = leagueService.findPlayerResultByUser(u);
+            results.parallelStream().forEach(r -> r.setReferenceUser(u));
+
+            return results.parallelStream().filter(r -> r.getTeamMatch() != null)
+                    .filter(r -> r.getSeason().getSeasonStatus() == Status.ACTIVE)
                     .sorted((playerResult, t1) -> t1.getMatchDate().compareTo(playerResult.getMatchDate()))
                     .collect(Collectors.toList());
+
         }
 
         return leagueService.findPlayerResultByUser(u)
