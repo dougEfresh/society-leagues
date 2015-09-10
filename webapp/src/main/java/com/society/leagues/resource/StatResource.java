@@ -50,7 +50,10 @@ public class StatResource {
         if (team == null) {
             return Collections.emptyList();
         }
-        return Stat.buildTeamMemberStats(team, leagueService.findPlayerResultBySeason(team.getSeason()));
+        return Stat.buildTeamMemberStats(team, leagueService.findPlayerResultBySeason(team.getSeason()))
+                .stream().parallel()
+                .filter(s->!s.getUser().isFake())
+                .collect(Collectors.toList());
     }
 
     @RequestMapping(value = "/season/{id}",

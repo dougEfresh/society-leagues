@@ -113,6 +113,22 @@ public class Team extends LeagueObject {
       return season.isNine();
     }
 
+    public boolean hasUser(User u) {
+        if (u == null)
+            return false;
+
+        return members.contains(u);
+    }
+
+    public boolean inSameSeason(User u) {
+        for (HandicapSeason handicapSeason : u.getHandicapSeasons()) {
+            if (handicapSeason.getSeason().equals(season)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         return "Team{" +

@@ -50,6 +50,7 @@ public class HandicapSeason {
 
     }
 
+
     @Override
     public int hashCode() {
         int result = super.hashCode();

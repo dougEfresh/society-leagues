@@ -74,10 +74,14 @@ public class TeamResource {
     }
 
     @JsonView(TeamSummary.class)
-    @RequestMapping(value = "/get/season/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @RequestMapping(value = "/get/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public List<Team> getTeamSeason(Principal principal, @PathVariable String id) {
-         Season s = leagueService.findOne(new Season(id));
-         return leagueService.findTeamBySeason(s);
+         User u = leagueService.findOne(new User(id));
+         return leagueService.findAll(Team.class)
+                 .stream().parallel()
+                 .filter(t->t.hasUser(u) || t.inSameSeason(u))
+                 .collect(Collectors.toList()
+                 );
     }
 
     @JsonView(TeamSummary.class)

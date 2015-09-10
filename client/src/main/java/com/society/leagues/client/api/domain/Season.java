@@ -58,7 +58,19 @@ public class Season extends LeagueObject {
     }
 
     public String getDisplayName() {
-        return name;
+        String[] parts = name.split(",");
+        if (parts.length != 3)
+            return name;
+
+        if (division == Division.NINE_BALL_CHALLENGE) {
+            return "Top Gun";
+        }
+
+        String n =  "'" + parts[0].substring(2) + " " + parts[1]  ;
+        if (isNine()) {
+            return n + " 9-ball";
+        }
+        return n + " " + parts[2];
     }
 
     public void setName(String name) {
