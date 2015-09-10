@@ -6,6 +6,7 @@ import com.society.leagues.mongo.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,8 @@ import javax.validation.Validator;
 public class LeagueService {
 
     final static Logger logger = Logger.getLogger(LeagueService.class);
+    @Value("${use-cache:true}")
+    boolean useCache;
 
     @Autowired ChallengeRepository challengeRepository;
     @Autowired UserRepository userRepository;
@@ -52,7 +55,8 @@ public class LeagueService {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
         logger.info("Refreshing all cache");
-        refreshAllCache();
+        if (useCache)
+            refreshAllCache();
     }
 
     @PreDestroy

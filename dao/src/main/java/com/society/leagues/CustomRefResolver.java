@@ -14,9 +14,6 @@ import org.springframework.data.mongodb.core.mapping.MongoPersistentProperty;
 import java.util.List;
 
 public class CustomRefResolver extends DefaultDbRefResolver {
-    @Value("${use-cache:true}")
-    boolean useCache = true;
-
     private static Logger logger = Logger.getLogger(CustomRefResolver.class);
     List<CachedCollection> cachedCollections;
     static long lookups = 0;
@@ -32,7 +29,7 @@ public class CustomRefResolver extends DefaultDbRefResolver {
     @Override
     public Object resolveDbRef(MongoPersistentProperty property, DBRef dbref, DbRefResolverCallback callback, DbRefProxyHandler handler) {
 
-        if (!useCache || dbref == null || dbref.getCollectionName() == null) {
+        if (dbref == null || dbref.getCollectionName() == null) {
             return super.resolveDbRef(property, dbref, callback, handler);
         }
         CachedCollection cachedCollection = getCache(dbref.getCollectionName());
@@ -56,7 +53,7 @@ public class CustomRefResolver extends DefaultDbRefResolver {
 
     @Override
     public DBObject fetch(DBRef dbRef) {
-        if (!useCache || dbRef == null || dbRef.getCollectionName() == null) {
+        if (dbRef == null || dbRef.getCollectionName() == null) {
             return super.fetch(dbRef);
         }
         lookups++;

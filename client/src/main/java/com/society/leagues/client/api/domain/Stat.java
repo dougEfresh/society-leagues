@@ -13,7 +13,7 @@ public class Stat {
     Integer setWins = 0;
     Integer setLoses = 0;
     Integer matches = 0;
-    String type;
+    StatType type;
     Team team;
     User user;
 
@@ -102,7 +102,7 @@ public class Stat {
     public static Stat buildStats(final User u, final List<Stat> stats) {
         Stat s = new Stat();
         s.setUser(u);
-        s.type = "all";
+        s.type = StatType.ALL;
         for (Stat stat : stats) {
             s.racksLost += stat.racksLost;
             s.racksWon += stat.racksWon;
@@ -116,24 +116,20 @@ public class Stat {
     }
 
 
-    public String getType() {
+    public StatType getType() {
         if (type != null) {
             return type;
         }
 
         if (user != null && team != null) {
-            return "season";
+            return StatType.USER_SEASON;
         }
 
         if (user == null && team != null) {
-            return "team";
+            return StatType.TEAM;
         }
 
-        return "unknown";
-    }
-
-    public void setType(String type) {
-        this.type = type;
+        return StatType.UNKNOWN;
     }
 
     public Season getSeason() {

@@ -91,7 +91,10 @@ public class TeamMatch extends LeagueObject {
     }
 
     public boolean hasTeam(Team team) {
-        return home.equals(team) || away.equals(team);
+        if (home == null || away == null) {
+            return false;
+        }
+        return  home.equals(team) || away.equals(team);
     }
 
     public boolean isWinner(Team t) {

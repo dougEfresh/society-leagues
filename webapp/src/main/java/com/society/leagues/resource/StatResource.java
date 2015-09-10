@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(value = "/api/stat")
 public class StatResource {
-    final AtomicReference<List<Stat>> teamStats = new AtomicReference<>(new ArrayList<>());
+    final AtomicReference<List<Stat>> teamStats = new AtomicReference<>(new ArrayList<>(100));
+    final AtomicReference<List<Stat>> playerStats = new AtomicReference<>(new ArrayList<>(1000));
     @Autowired LeagueService leagueService;
     final static Logger logger = Logger.getLogger(StatResource.class);
 

@@ -409,5 +409,6 @@ public class ConvertResource {
                 }
             }
         }
+        teamMatchRepository.save(teamMatches);
     }
 }

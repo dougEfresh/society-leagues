@@ -4,5 +4,6 @@ public enum StatType {
     USER,
     USER_SEASON,
     ALL,
-    TEAM
+    TEAM,
+    UNKNOWN;
 }
