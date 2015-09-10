@@ -1,10 +1,12 @@
 package com.society.leagues.client.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.society.leagues.client.api.domain.converters.DateTimeDeSerializer;
 import com.society.leagues.client.api.domain.converters.DateTimeSerializer;
+import com.society.leagues.client.api.domain.views.PlayerResultView;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;
@@ -48,6 +50,7 @@ public class User extends LeagueObject {
         this.role = role;
     }
 
+    @JsonView(PlayerResultView.class)
     public String getFirstName() {
         return firstName;
     }
@@ -56,6 +59,7 @@ public class User extends LeagueObject {
         this.firstName = firstName;
     }
 
+    @JsonView(PlayerResultView.class)
     public String getLastName() {
         return lastName;
     }
@@ -91,8 +95,8 @@ public class User extends LeagueObject {
         this.login = login;
     }
 
+    @JsonView(PlayerResultView.class)
     public Role getRole() {
-
         return role == null ? Role.PLAYER : role;
     }
 
@@ -104,10 +108,12 @@ public class User extends LeagueObject {
         return Role.isAdmin(role);
     }
 
+    @JsonView(PlayerResultView.class)
     public String getName() {
         return firstName + " " + lastName;
     }
 
+    @JsonView(PlayerResultView.class)
     public Status getStatus() {
         return status;
     }
@@ -120,6 +126,7 @@ public class User extends LeagueObject {
         this.status = status;
     }
 
+    @JsonView(PlayerResultView.class)
     public Set<HandicapSeason> getHandicapSeasons() {
         return handicapSeasons;
     }
@@ -136,6 +143,7 @@ public class User extends LeagueObject {
         this.created = created;
     }
 
+    @JsonView(PlayerResultView.class)
     public boolean isChallenge() {
         return handicapSeasons.stream().filter(s->s.getSeason().getDivision().isChallenge()).count() > 0;
     }
@@ -151,7 +159,7 @@ public class User extends LeagueObject {
         return false;
     }
 
-
+    @JsonIgnore
     public boolean isFake() {
         return lastName.toLowerCase().contains("handicap") || lastName.toLowerCase().contains("forfeit");
     }

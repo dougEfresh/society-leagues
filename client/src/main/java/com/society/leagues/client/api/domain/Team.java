@@ -5,15 +5,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.society.leagues.client.api.domain.converters.DateTimeDeSerializer;
 import com.society.leagues.client.api.domain.converters.DateTimeSerializer;
+import com.society.leagues.client.api.domain.views.TeamSummary;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Team extends LeagueObject {
 
@@ -22,7 +21,6 @@ public class Team extends LeagueObject {
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime created;
-
     @DBRef Set<User> members = new HashSet<>();
     @DBRef User captain;
 
@@ -39,6 +37,7 @@ public class Team extends LeagueObject {
     public Team() {
     }
 
+    @JsonView(TeamSummary.class)
     public Season getSeason() {
         return season;
     }
@@ -81,6 +80,7 @@ public class Team extends LeagueObject {
         }
     }
 
+    @JsonView(TeamSummary.class)
     public String getName() {
         return name;
     }

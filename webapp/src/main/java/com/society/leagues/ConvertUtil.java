@@ -1,4 +1,4 @@
-package com.society.leagues.resource;
+package com.society.leagues;
 
 
 import com.society.leagues.client.api.domain.*;
@@ -24,8 +24,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class ConvertResource {
-    private static Logger logger = Logger.getLogger(ConvertResource.class);
+public class ConvertUtil {
+    private static Logger logger = Logger.getLogger(ConvertUtil.class);
 
     @Autowired UserRepository userRepository;
     @Autowired SeasonRepository seasonRepository;

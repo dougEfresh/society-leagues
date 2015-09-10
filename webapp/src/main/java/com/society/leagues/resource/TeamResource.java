@@ -1,10 +1,12 @@
 package com.society.leagues.resource;
 
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.society.leagues.Service.LeagueService;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.User;
+import com.society.leagues.client.api.domain.views.TeamSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -61,6 +63,7 @@ public class TeamResource {
         return leagueService.save(existingTeam);
     }
 
+    @JsonView(TeamSummary.class)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Team get(Principal principal, @PathVariable String id) {
         Team existingTeam = leagueService.findOne(new Team(id));
@@ -70,12 +73,14 @@ public class TeamResource {
         return existingTeam;
     }
 
+    @JsonView(TeamSummary.class)
     @RequestMapping(value = "/get/season/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public List<Team> getTeamSeason(Principal principal, @PathVariable String id) {
          Season s = leagueService.findOne(new Season(id));
          return leagueService.findTeamBySeason(s);
     }
 
+    @JsonView(TeamSummary.class)
     @RequestMapping(value = "/get/{id}/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public List<Team> getTeamSeason(Principal principal, @PathVariable String id, @PathVariable String type) {
         User u = leagueService.findOne(new User(id));

@@ -1,6 +1,8 @@
 package com.society.leagues.client.api.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.society.leagues.client.api.domain.views.IdView;
 import org.springframework.data.annotation.Id;
 
 public class LeagueObject implements Comparable<LeagueObject>{
@@ -8,6 +10,7 @@ public class LeagueObject implements Comparable<LeagueObject>{
     @Id String id;
     Integer legacyId;
 
+    @JsonView(IdView.class)
     public String getId() {
         return id;
     }

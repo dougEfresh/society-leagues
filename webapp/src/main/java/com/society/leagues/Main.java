@@ -1,7 +1,6 @@
 package com.society.leagues;
 
 import com.mangofactory.swagger.plugin.EnableSwagger;
-import com.society.leagues.resource.ConvertResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -16,7 +15,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableSwagger
 public class Main implements CommandLineRunner {
-    @Autowired ConvertResource convertResource;
+    @Autowired
+    ConvertUtil convertUtil;
 
     public static void main(String[] args) throws Exception {
         SpringApplication app = new SpringApplication(Main.class);
@@ -28,14 +28,14 @@ public class Main implements CommandLineRunner {
     public void run(String... args) throws Exception {
         for (String arg : args) {
             if (arg.toLowerCase().contains("convert")) {
-                convertResource.convertUser();
-                convertResource.convertSeason();
-                convertResource.convertTeam();
-                convertResource.converTeamMatch();
-                convertResource.converTeamMatchResult();
-                convertResource.convertPlayerResults();
-                convertResource.userHandicap();
-                convertResource.updateSetWinsLoses();
+                convertUtil.convertUser();
+                convertUtil.convertSeason();
+                convertUtil.convertTeam();
+                convertUtil.converTeamMatch();
+                convertUtil.converTeamMatchResult();
+                convertUtil.convertPlayerResults();
+                convertUtil.userHandicap();
+                convertUtil.updateSetWinsLoses();
                 System.exit(0);
             }
         }

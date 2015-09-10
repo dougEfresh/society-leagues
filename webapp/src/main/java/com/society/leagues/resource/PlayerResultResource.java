@@ -1,15 +1,16 @@
 package com.society.leagues.resource;
 
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.society.leagues.Service.LeagueService;
 import com.society.leagues.client.api.domain.*;
+import com.society.leagues.client.api.domain.views.PlayerResultView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +19,6 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unused")
 public class PlayerResultResource {
     @Autowired LeagueService leagueService;
-
 
     @RequestMapping(value = "/admin/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -45,12 +45,14 @@ public class PlayerResultResource {
     }
 
     @RequestMapping(value = "/get/season/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @JsonView(PlayerResultView.class)
     public List<PlayerResult> getPlayerResultSeason(Principal principal, @PathVariable String id) {
         Season s = leagueService.findOne(new Season(id));
         return leagueService.findPlayerResultBySeason(s);
     }
 
     @RequestMapping(value = "/get/team/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @JsonView(PlayerResultView.class)
     public List<PlayerResult> getPlayerResulTeam(Principal principal, @PathVariable String id) {
         Team t  = leagueService.findOne(new Team(id));
         List<PlayerResult> results = leagueService.findPlayerResultBySeason(t.getSeason()).
@@ -64,6 +66,7 @@ public class PlayerResultResource {
     }
 
     @RequestMapping(value = "/get/user/{id}/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @JsonView(PlayerResultView.class)
     public List<PlayerResult> getPlayerResultByUser(Principal principal, @PathVariable String id, @PathVariable String type) {
         User u = leagueService.findOne(new User(id));
         if (type.equals("all"))
