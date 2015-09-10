@@ -214,6 +214,7 @@ public class PlayerResult extends LeagueObject {
         return referenceUser;
     }
 
+
     public boolean isWin() {
         if (referenceTeam != null)
             return referenceTeam.equals(teamMatch.getHome()) ? homeRacks > awayRacks : awayRacks > homeRacks;

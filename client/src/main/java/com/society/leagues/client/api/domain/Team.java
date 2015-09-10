@@ -84,7 +84,7 @@ public class Team extends LeagueObject {
         }
     }
 
-    @JsonView(TeamSummary.class)
+    @JsonView(value = {TeamSummary.class,PlayerResultView.class})
     public String getName() {
         return name;
     }

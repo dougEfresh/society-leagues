@@ -16,8 +16,8 @@ import java.util.List;
 public class CustomRefResolver extends DefaultDbRefResolver {
     private static Logger logger = Logger.getLogger(CustomRefResolver.class);
     List<CachedCollection> cachedCollections;
-    static long lookups = 0;
-    static long cacheHits = 0;
+    static long lookups = 1;
+    static long cacheHits = 1;
     public CustomRefResolver(MongoDbFactory mongoDbFactory) {
         super(mongoDbFactory);
     }
@@ -57,7 +57,9 @@ public class CustomRefResolver extends DefaultDbRefResolver {
             return super.fetch(dbRef);
         }
         lookups++;
-        logger.info(String.format("Cache Stats %s %s : Lookups: %d  CacheHits: %d", dbRef.getCollectionName(),dbRef,lookups,cacheHits));
+        logger.info(String.format("Cache Stats %s %s : Lookups: %d  CacheHits: %d Ratios: %f ",
+                dbRef.getCollectionName(),dbRef,lookups,cacheHits,
+                (double) ((double)lookups/ (double) cacheHits)));
         return super.fetch(dbRef);
     }
 
