@@ -25,6 +25,8 @@ public class TeamMatch extends LeagueObject {
     Integer setHomeLost = 0;
     Integer setAwayLost = 0;
 
+    User referenceUser = null;
+
     public TeamMatch(Team home, Team away, LocalDateTime matchDate) {
         this.home = home;
         this.away = away;
@@ -214,6 +216,13 @@ public class TeamMatch extends LeagueObject {
         this.setAwayLost = setAwayLost;
     }
 
+    public Team getOpponentTeam() {
+        if (referenceUser == null)
+            return null;
+
+        return home.getMembers().contains(referenceUser) ? away : home;
+    }
+
     @Override
     public String toString() {
         return "TeamMatch{" +
@@ -225,5 +234,9 @@ public class TeamMatch extends LeagueObject {
                 ", setHomeWins=" + setHomeWins +
                 ", setAwayWins=" + setAwayWins +
                 '}';
+    }
+
+    public void setReferenceUser(User referenceUser) {
+        this.referenceUser = referenceUser;
     }
 }

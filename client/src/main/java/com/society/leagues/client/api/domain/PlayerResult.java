@@ -1,8 +1,11 @@
 package com.society.leagues.client.api.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.society.leagues.client.api.domain.converters.DateTimeDeSerializer;
+import com.society.leagues.client.api.domain.views.PlayerResultView;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;
@@ -89,6 +92,7 @@ public class PlayerResult extends LeagueObject {
         this.matchNumber = matchNumber;
     }
 
+    @JsonView(PlayerResultView.class)
     public Season getSeason() {
         return teamMatch.getSeason();
     }
@@ -158,6 +162,7 @@ public class PlayerResult extends LeagueObject {
     }
 
     @JsonDeserialize(using = DateTimeDeSerializer.class)
+    @JsonIgnore
     public LocalDateTime getMatchDate() {
         if (getTeamMatch() == null)
             return null;
@@ -250,7 +255,7 @@ public class PlayerResult extends LeagueObject {
         return null;
     }
 
-    public Team getTeam() {
+        public Team getTeam() {
         if (referenceUser != null) {
             return teamMatch.getHome().getMembers().contains(referenceUser) ? teamMatch.getHome() : teamMatch.getAway();
         }

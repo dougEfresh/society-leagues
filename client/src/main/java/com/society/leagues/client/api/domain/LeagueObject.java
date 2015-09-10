@@ -42,6 +42,10 @@ public class LeagueObject implements Comparable<LeagueObject>{
         return true;
     }
 
+    public void merge(LeagueObject object) {
+
+    }
+
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;

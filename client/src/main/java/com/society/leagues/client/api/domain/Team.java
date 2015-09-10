@@ -1,10 +1,12 @@
 package com.society.leagues.client.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.society.leagues.client.api.domain.converters.DateTimeDeSerializer;
 import com.society.leagues.client.api.domain.converters.DateTimeSerializer;
+import com.society.leagues.client.api.domain.views.PlayerResultView;
 import com.society.leagues.client.api.domain.views.TeamSummary;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
@@ -37,7 +39,7 @@ public class Team extends LeagueObject {
     public Team() {
     }
 
-    @JsonView(TeamSummary.class)
+    @JsonView(value = {TeamSummary.class, PlayerResultView.class})
     public Season getSeason() {
         return season;
     }
@@ -46,6 +48,8 @@ public class Team extends LeagueObject {
         this.season = season;
     }
 
+    //@JsonView(value = {TeamSummary.class, PlayerResultView.class})
+    @JsonIgnore
     public Set<User> getMembers() {
         return members;
     }

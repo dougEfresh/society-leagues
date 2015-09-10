@@ -76,6 +76,7 @@ public class TeamMatchResource {
         for (Team userTeam : userTeams) {
             teamMatches.addAll(leagueService.findTeamMatchByTeam(userTeam));
         }
+        teamMatches.parallelStream().forEach(tm->tm.setReferenceUser(u));
         return teamMatches;
     }
 }

@@ -20,7 +20,8 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/api/stat")
 public class StatResource {
     final AtomicReference<List<Stat>> teamStats = new AtomicReference<>(new ArrayList<>(100));
-    final AtomicReference<List<Stat>> playerStats = new AtomicReference<>(new ArrayList<>(1000));
+    final AtomicReference<List<Stat>> seasonStats = new AtomicReference<>(new ArrayList<>(1000));
+
     @Autowired LeagueService leagueService;
     final static Logger logger = Logger.getLogger(StatResource.class);
 
@@ -161,6 +162,23 @@ public class StatResource {
             ));
         }
         this.teamStats.lazySet(teamStats);
+        Map<User,List<PlayerResult>> homeResults = results.parallelStream().collect(Collectors.groupingBy(PlayerResult::getPlayerHome));
+        Map<User,List<PlayerResult>> awayResults = results.parallelStream().collect(Collectors.groupingBy(PlayerResult::getPlayerAway));
+        Map<User,List<PlayerResult>> allResults = new HashMap<User,List<PlayerResult>>(5000);
+        for (User user : homeResults.keySet()) {
+            if (!allResults.containsKey(user)) {
+                allResults.put(user,new ArrayList<>(100));
+            }
+            allResults.get(user).addAll(homeResults.get(user));
+        }
+
+         for (User user : awayResults.keySet()) {
+            if (!allResults.containsKey(user)) {
+                allResults.put(user,new ArrayList<>(100));
+            }
+            allResults.get(user).addAll(awayResults.get(user));
+        }
+
         logger.info("Done Refreshing stats");
     }
 
