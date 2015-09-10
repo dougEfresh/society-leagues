@@ -1,5 +1,6 @@
 package com.society.leagues.client.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.society.leagues.client.api.domain.converters.DateTimeDeSerializer;
@@ -21,6 +22,7 @@ public class Team extends LeagueObject {
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime created;
+
     @DBRef Set<User> members = new HashSet<>();
     @DBRef User captain;
 
