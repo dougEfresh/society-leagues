@@ -28,7 +28,6 @@ public class Utils {
     @Autowired UserRepository userRepository;
     @Autowired SeasonRepository seasonRepository;
     @Autowired TeamRepository teamRepository;
-    @Autowired HandicapSeasonRepository handicapSeasonRepository;
     @Autowired TeamMatchRepository tmRepository;
     @Autowired List<MongoRepository> repositories;
     @Autowired LeagueService leagueService;
@@ -40,9 +39,8 @@ public class Utils {
         if (adminUser != null) {
             return adminUser;
         }
-        Season s = seasonRepository.save(new Season("9 ball ", LocalDateTime.now(),-1, Division.NINE_BALL_CHALLENGE));
-        Team t = teamRepository.save(new Team(s,"testteam"));
-        HandicapSeason hs = handicapSeasonRepository.save(new HandicapSeason(Handicap.A, s));
+        //Season s = seasonRepository.save(new Season("9 ball ", LocalDateTime.now(),-1, Division.NINE_BALL_CHALLENGE));
+        //Team t = teamRepository.save(new Team(s,"testteam"));
 
         User u = new User();
         u.setLogin("test");
@@ -50,12 +48,13 @@ public class Utils {
         u.setLastName("asdsa");
         u.setEmail("me@you.com");
         u.setRole(Role.ADMIN);
-        u.addHandicap(hs);
+        u.setStatus(Status.ACTIVE);
+        //u.addHandicap(new HandicapSeason(Handicap.BPLUS,s));
         u.setPassword(new BCryptPasswordEncoder().encode("abc123"));
 
         u = leagueService.save(u);
-        t.addMember(u);
-        t.setCaptain(u);
+        //t.addMember(u);
+        //t.setCaptain(u);
         return u;
     }
 
@@ -70,7 +69,7 @@ public class Utils {
             s = leagueService.save(new Season("9 ball ", LocalDateTime.now(), -1, Division.NINE_BALL_CHALLENGE));
         }
         Team ts = leagueService.save(new Team(s,UUID.randomUUID().toString()));
-        HandicapSeason hs = leagueService.save(new HandicapSeason(Handicap.A, s));
+        //HandicapSeason hs = leagueService.save(new HandicapSeason(Handicap.A, s));
 
         User u = new User();
         String login = UUID.randomUUID().toString();
@@ -79,7 +78,7 @@ public class Utils {
         u.setLastName("asdsa");
         u.setEmail(login);
         u.setRole(Role.PLAYER);
-        u.addHandicap(hs);
+        u.addHandicap(new HandicapSeason(Handicap.BPLUS,s));
         u.setPassword(new BCryptPasswordEncoder().encode("abc123"));
         u = leagueService.save(u);
         ts.addMember(u);
@@ -88,12 +87,10 @@ public class Utils {
     }
 
     public User createRandomUser() {
-        Season s = seasonRepository.findAll().stream().filter(sn->sn.getDivision() == Division.NINE_BALL_CHALLENGE).findFirst().orElse(null);
+        Season s = leagueService.findAll(Season.class).stream().filter(sn->sn.getDivision() == Division.NINE_BALL_CHALLENGE).findFirst().orElse(null);
         if (s == null) {
             s = leagueService.save(new Season("9 ball ", LocalDateTime.now(), -1, Division.NINE_BALL_CHALLENGE));
         }
-        HandicapSeason hs = leagueService.save(new HandicapSeason(Handicap.A, s));
-
         User u = new User();
         String login = UUID.randomUUID().toString();
         u.setLogin(login);
@@ -101,8 +98,9 @@ public class Utils {
         u.setLastName("asdsa");
         u.setEmail(login);
         u.setRole(Role.PLAYER);
-        u.addHandicap(hs);
+        u.addHandicap(new HandicapSeason(Handicap.BPLUS, s));
         u.setPassword(new BCryptPasswordEncoder().encode("abc123"));
+        u.setStatus(Status.ACTIVE);
         u = leagueService.save(u);
         return u;
     }

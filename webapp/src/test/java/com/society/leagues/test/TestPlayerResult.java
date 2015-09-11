@@ -60,7 +60,7 @@ public class TestPlayerResult {
         LocalDateTime now = LocalDateTime.now();
         TeamMatch tm = new TeamMatch(home,away, now);
         tm = leagueService.save(tm);
-        PlayerResult pr = new PlayerResult(tm,playerHome,playerAway,home.getSeason(),6,7,0, Handicap.B,Handicap.BPLUS);
+        PlayerResult pr = new PlayerResult(tm,playerHome,playerAway,6,7,0, Handicap.B,Handicap.BPLUS);
         HttpEntity requestEntity = new HttpEntity(pr, requestHeaders);
         pr =  restTemplate.postForEntity(host + "/api/playerresult/admin/create",requestEntity,PlayerResult.class).getBody();
         assertNotNull(pr.getId());
@@ -115,7 +115,7 @@ public class TestPlayerResult {
         LocalDateTime now = LocalDateTime.now();
         TeamMatch tm = new TeamMatch(home,away, now);
         tm = leagueService.save(tm);
-        PlayerResult pr = new PlayerResult(tm,playerHome,playerAway,home.getSeason(),6,7,0, Handicap.B,Handicap.BPLUS);
+        PlayerResult pr = new PlayerResult(tm,playerHome,playerAway,6,7,0, Handicap.B,Handicap.BPLUS);
         pr = leagueService.save(pr);
         HttpEntity requestEntity = new HttpEntity(null, requestHeaders);
         PlayerResult returned  = restTemplate.exchange(host + "/api/playerresult/get/" + pr.getId(), HttpMethod.GET, requestEntity, PlayerResult.class).getBody();
@@ -134,7 +134,7 @@ public class TestPlayerResult {
         LocalDateTime now = LocalDateTime.now();
         TeamMatch tm = new TeamMatch(home,away, now);
         tm = leagueService.save(tm);
-        PlayerResult pr = new PlayerResult(tm,playerHome,playerAway,home.getSeason(),6,7,0, Handicap.B,Handicap.BPLUS);
+        PlayerResult pr = new PlayerResult(tm,playerHome,playerAway,6,7,0, Handicap.B,Handicap.BPLUS);
         pr = leagueService.save(pr);
         List<PlayerResult> teams = Arrays.asList(restTemplate.exchange(host + "/api/playerresult/get/user/" + pr.getPlayerAway().getId() + "/current", HttpMethod.GET, requestEntity, PlayerResult[].class).getBody());
         assertNotNull(teams);

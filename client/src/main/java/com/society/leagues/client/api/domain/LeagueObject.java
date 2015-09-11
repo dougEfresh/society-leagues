@@ -43,7 +43,7 @@ public class LeagueObject implements Comparable<LeagueObject>{
     }
 
     public void merge(LeagueObject object) {
-
+        this.legacyId = object.legacyId;
     }
 
     @Override

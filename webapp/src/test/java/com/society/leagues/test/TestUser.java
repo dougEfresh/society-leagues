@@ -9,10 +9,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -22,6 +24,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class})
 @WebIntegrationTest
+@ActiveProfiles(profiles = "test")
 public class TestUser {
 
     private static Logger logger = Logger.getLogger(TestUser.class);
@@ -92,9 +95,8 @@ public class TestUser {
 
     @Test
     public void testModify() {
-        User newUser = userRepository.findByLogin("test");
+        User newUser = utils.createRandomUser();
         HttpHeaders headers = new HttpHeaders();
-
         headers.add("Cookie", Utils.JSESSIONID);
         newUser.setFirstName("new name");
         HttpEntity requestEntity = new HttpEntity(newUser, headers);

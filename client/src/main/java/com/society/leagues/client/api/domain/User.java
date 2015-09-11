@@ -24,7 +24,7 @@ public class User extends LeagueObject {
     @NotNull String password;
     @NotNull String login;
     @NotNull Role role = Role.PLAYER;
-    @NotNull Status status;
+    @NotNull Status status = Status.ACTIVE;
 
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
@@ -162,6 +162,22 @@ public class User extends LeagueObject {
     @JsonIgnore
     public boolean isFake() {
         return lastName.toLowerCase().contains("handicap") || lastName.toLowerCase().contains("forfeit");
+    }
+
+    @Override
+    public void merge(LeagueObject object) {
+        if (!(object instanceof User)) {
+            return;
+        }
+        User u = (User) object;
+        this.firstName = u.firstName;
+        this.lastName = u.lastName;
+        this.login = u.login;
+        this.email = u.email;
+        this.status = u.status;
+        this.role = u.role;
+        this.handicapSeasons = u.handicapSeasons;
+        super.merge(object);
     }
 
     @Override

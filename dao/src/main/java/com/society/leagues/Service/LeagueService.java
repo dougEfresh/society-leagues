@@ -12,7 +12,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import java.util.Collections;
@@ -44,8 +43,6 @@ public class LeagueService {
     @Autowired @Qualifier("teamCachedCollection")  CachedCollection<List<Team>> teamCachedCollection;
     @Autowired @Qualifier("seasonCachedCollection") CachedCollection<List<Season>> seasonCachedCollection;
     @Autowired @Qualifier("playerResultCachedCollection") CachedCollection<List<PlayerResult>> playerResultCachedCollection;
-    @Autowired List<CachedCollection> cachedCollections;
-    @Autowired List<MongoRepository> mongoRepositories;
 
     Validator validator;
 
@@ -59,14 +56,13 @@ public class LeagueService {
             refreshAllCache();
     }
 
-    @PreDestroy
-    public void destroy() {
-    }
-
+    @SuppressWarnings("unchecked")
     public <T extends LeagueObject> T save(T entity) {
         MongoRepository repo = getRepo(entity);
+        if (repo == null) {
+            return  null;
+        }
         Set<ConstraintViolation<T>> constraintViolations = validator.validate(entity);
-
         if (!constraintViolations.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (ConstraintViolation<T> constraintViolation : constraintViolations) {
@@ -75,21 +71,27 @@ public class LeagueService {
             throw  new RuntimeException("Could not validate " + entity + "\n" + sb.toString());
         }
         repo.save(entity);
-        CachedCollection cachedCollection = getCache(entity);
-        cachedCollection.get().remove(entity);
         T newEntity = (T) repo.findOne(entity.getId());
-        //TODO Update old references to new one
-        cachedCollection.get().add(newEntity);
+        if (entity.getId() == null) {
+            CachedCollection c = getCache(entity);
+            if (c == null) {
+                return null;
+            }
+            c.get().add(newEntity);
+        }
         return newEntity;
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends LeagueObject> Boolean delete(T entity) {
         MongoRepository repo = getRepo(entity);
+        assert repo != null;
         repo.delete(entity);
         refreshAllCache();
         return Boolean.TRUE;
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends LeagueObject> T findOne(T entity) {
         CachedCollection<List<T>> repo = getCache(entity);
         if (repo == null) {
@@ -99,24 +101,28 @@ public class LeagueService {
     }
 
     public User findByLogin(String login) {
-        return userRepository.findByLogin(login);
+        return userCachedCollection.get().stream().parallel().filter(u->u.getLogin().equals(login)).findFirst().orElse(null);
     }
 
     public List<Team> findTeamBySeason(Season season) {
-        return teamCachedCollection.get().stream().filter(t->t.getSeason().equals(season)).collect(Collectors.toList());
+        return teamCachedCollection.get().stream().filter(t -> t.getSeason().equals(season)).collect(Collectors.toList());
     }
 
     public List<TeamMatch> findTeamMatchBySeason(Season season) {
-        return teamMatchCachedCollection.get().stream().filter(t->t.getSeason().equals(season)).collect(Collectors.toList());
+        return teamMatchCachedCollection.get().stream().filter(t -> t.getSeason().equals(season)).collect(Collectors.toList());
     }
 
      public List<TeamMatch> findTeamMatchByTeam(Team team) {
          return teamMatchCachedCollection.get().stream().filter(tm->tm.hasTeam(team)).collect(Collectors.toList());
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends LeagueObject> List<T> findAll(Class<T> clz) {
         try {
             CachedCollection<List<T>> cache = getCache(clz.newInstance());
+            if (cache == null) {
+                return null;
+            }
             return cache.get();
         } catch (InstantiationException e) {
             logger.error(e.getMessage(),e);

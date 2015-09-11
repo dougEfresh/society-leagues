@@ -102,7 +102,6 @@ public class TestStat {
          result1.setPlayerHome(home.getMembers().stream().findFirst().get());
          result1.setPlayerAway(away.getMembers().stream().findFirst().get());
          result1.setTeamMatch(match1);
-         result1.setSeason(home.getSeason());
          leagueService.save(result1);
 
          PlayerResult result2 = new PlayerResult();
@@ -111,7 +110,6 @@ public class TestStat {
          result2.setPlayerHome(home.getMembers().stream().findFirst().get());
          result2.setPlayerAway(anotherTeam.getMembers().stream().findFirst().get());
          result2.setTeamMatch(match2);
-         result2.setSeason(home.getSeason());
          leagueService.save(result2);
 
         HttpEntity requestEntity = new HttpEntity(null, requestHeaders);

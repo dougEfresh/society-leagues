@@ -2,6 +2,8 @@ package com.society.leagues.test;
 
 import com.mongodb.Mongo;
 import com.mongodb.MongoClientOptions;
+import com.society.leagues.CachedCollection;
+import com.society.leagues.CustomRefResolver;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
@@ -13,15 +15,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
+import org.springframework.data.mongodb.core.convert.DbRefResolver;
+import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Configuration
-public class MongoConfig {
+@EnableMongoAuditing
+public class TestMongoConfig  extends AbstractMongoConfiguration {
     @Autowired MongoProperties properties;
     @Autowired(required = false)
     MongoClientOptions options;
-    private static final MongodStarter starter = MongodStarter.getDefaultInstance();
+    static final MongodStarter starter = MongodStarter.getDefaultInstance();
+    @Autowired List<CachedCollection> cachedCollections;
+
+    @Override
+    protected String getDatabaseName() {
+        return properties.getDatabase();
+    }
 
     @Bean(destroyMethod = "close")
     public Mongo mongo() throws IOException {
@@ -39,6 +55,17 @@ public class MongoConfig {
     @Bean(destroyMethod = "stop")
     public MongodExecutable mongodExe() throws IOException {
         return starter.prepare(mongodConfig());
+    }
+
+    @Bean
+    @Primary
+    @Override
+    public MappingMongoConverter mappingMongoConverter() throws Exception {
+        CustomRefResolver dbRefResolver = new CustomRefResolver(mongoDbFactory());
+        ((CustomRefResolver) dbRefResolver).setCachedCollections(cachedCollections);
+        MappingMongoConverter converter = new MappingMongoConverter(dbRefResolver, mongoMappingContext());
+        converter.setCustomConversions(customConversions());
+        return converter;
     }
 
     @Bean

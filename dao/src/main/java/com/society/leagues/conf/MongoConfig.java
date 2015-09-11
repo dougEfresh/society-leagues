@@ -11,6 +11,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.convert.DbRefResolver;
 import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
@@ -22,6 +23,7 @@ import java.util.List;
 @Configuration
 @EnableConfigurationProperties(MongoProperties.class)
 @SuppressWarnings("unused")
+@Profile("!test")
 public class MongoConfig extends AbstractMongoConfiguration {
     @Value("${use-cache}")
     boolean useCache;
