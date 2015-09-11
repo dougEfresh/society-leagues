@@ -70,9 +70,11 @@ public class LeagueService {
             }
             throw  new RuntimeException("Could not validate " + entity + "\n" + sb.toString());
         }
+        boolean addNew = entity.getId() == null;
         repo.save(entity);
         T newEntity = (T) repo.findOne(entity.getId());
-        if (entity.getId() == null) {
+
+        if (addNew) {
             CachedCollection c = getCache(entity);
             if (c == null) {
                 return null;
