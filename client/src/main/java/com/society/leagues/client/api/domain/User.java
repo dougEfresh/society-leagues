@@ -4,16 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.society.leagues.client.api.domain.converters.DateTimeDeSerializer;
-import com.society.leagues.client.api.domain.converters.DateTimeSerializer;
-import com.society.leagues.client.api.domain.views.PlayerResultView;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import com.society.leagues.converters.DateTimeDeSerializer;
+import com.society.leagues.converters.DateTimeSerializer;
+import com.society.leagues.client.views.PlayerResultView;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class User extends LeagueObject {
@@ -166,6 +163,7 @@ public class User extends LeagueObject {
 
     @Override
     public void merge(LeagueObject object) {
+        /*
         if (!(object instanceof User)) {
             return;
         }
@@ -177,6 +175,9 @@ public class User extends LeagueObject {
         this.status = u.status;
         this.role = u.role;
         this.handicapSeasons = u.handicapSeasons;
+        this.password = u.password;
+        this.created = u.created;
+        */
         super.merge(object);
     }
 

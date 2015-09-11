@@ -4,7 +4,7 @@ package com.society.leagues.resource;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.society.leagues.Service.LeagueService;
 import com.society.leagues.client.api.domain.*;
-import com.society.leagues.client.api.domain.views.PlayerResultView;
+import com.society.leagues.client.views.PlayerResultView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -62,7 +62,6 @@ public class PlayerResultResource {
                 forEach(pr->pr.setReferenceTeam(pr.getTeamMatch().getHomeRacks() > pr.getTeamMatch().getAwayRacks() ? pr.getTeamMatch().getHome() : pr.getTeamMatch().getAway()));
         return results;
     }
-
 
     @RequestMapping(value = "/get/season/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @JsonView(PlayerResultView.class)

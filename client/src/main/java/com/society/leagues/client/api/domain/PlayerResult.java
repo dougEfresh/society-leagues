@@ -4,8 +4,8 @@ package com.society.leagues.client.api.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.society.leagues.client.api.domain.converters.DateTimeDeSerializer;
-import com.society.leagues.client.api.domain.views.PlayerResultView;
+import com.society.leagues.converters.DateTimeDeSerializer;
+import com.society.leagues.client.views.PlayerResultView;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;

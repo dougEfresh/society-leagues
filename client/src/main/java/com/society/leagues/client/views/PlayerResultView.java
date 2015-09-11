@@ -1,4 +1,4 @@
-package com.society.leagues.client.api.domain.views;
+package com.society.leagues.client.views;
 
 public interface PlayerResultView extends IdView {
 }

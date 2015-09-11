@@ -115,7 +115,7 @@ public class LeagueService {
     }
 
      public List<TeamMatch> findTeamMatchByTeam(Team team) {
-         return teamMatchCachedCollection.get().stream().filter(tm->tm.hasTeam(team)).collect(Collectors.toList());
+         return teamMatchCachedCollection.get().parallelStream().filter(tm->tm.hasTeam(team)).collect(Collectors.toList());
     }
 
     @SuppressWarnings("unchecked")

@@ -11,7 +11,6 @@ import java.util.concurrent.locks.ReentrantLock;
 public class CachedCollection<T extends List<? extends LeagueObject>> {
     final AtomicReference<T> entity = new AtomicReference(new ArrayList<T>());
     final String type;
-    final ReentrantLock lock = new ReentrantLock();
 
     public CachedCollection(String type) {
         this.type = type;

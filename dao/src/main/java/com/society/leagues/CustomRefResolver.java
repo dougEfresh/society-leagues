@@ -11,19 +11,23 @@ import org.springframework.data.mongodb.core.convert.DbRefResolverCallback;
 import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomRefResolver extends DefaultDbRefResolver {
     private static Logger logger = Logger.getLogger(CustomRefResolver.class);
-    List<CachedCollection> cachedCollections;
+    final List<CachedCollection> cachedCollections;
     static long lookups = 1;
     static long cacheHits = 1;
-    public CustomRefResolver(MongoDbFactory mongoDbFactory) {
+
+    public CustomRefResolver(MongoDbFactory mongoDbFactory, List<CachedCollection> cachedCollections) {
         super(mongoDbFactory);
+        this.cachedCollections = cachedCollections;
     }
 
-    public void setCachedCollections(List<CachedCollection> cachedCollections) {
-        this.cachedCollections = cachedCollections;
+    private CustomRefResolver(MongoDbFactory mongoDbFactory) {
+        super(mongoDbFactory);
+        this.cachedCollections = new ArrayList<>();
     }
 
     @Override

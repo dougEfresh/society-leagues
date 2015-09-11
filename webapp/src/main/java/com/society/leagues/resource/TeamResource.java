@@ -3,10 +3,9 @@ package com.society.leagues.resource;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.society.leagues.Service.LeagueService;
-import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.User;
-import com.society.leagues.client.api.domain.views.TeamSummary;
+import com.society.leagues.client.views.TeamSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;

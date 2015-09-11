@@ -61,8 +61,7 @@ public class TestMongoConfig  extends AbstractMongoConfiguration {
     @Primary
     @Override
     public MappingMongoConverter mappingMongoConverter() throws Exception {
-        CustomRefResolver dbRefResolver = new CustomRefResolver(mongoDbFactory());
-        ((CustomRefResolver) dbRefResolver).setCachedCollections(cachedCollections);
+        CustomRefResolver dbRefResolver = new CustomRefResolver(mongoDbFactory(),cachedCollections);
         MappingMongoConverter converter = new MappingMongoConverter(dbRefResolver, mongoMappingContext());
         converter.setCustomConversions(customConversions());
         return converter;

@@ -3,8 +3,8 @@ package com.society.leagues.client.api.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.society.leagues.client.api.domain.converters.DateTimeDeSerializer;
-import com.society.leagues.client.api.domain.converters.DateTimeSerializer;
+import com.society.leagues.converters.DateTimeDeSerializer;
+import com.society.leagues.converters.DateTimeSerializer;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;

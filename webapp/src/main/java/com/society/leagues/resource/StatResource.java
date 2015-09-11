@@ -1,36 +1,26 @@
 package com.society.leagues.resource;
 
 import com.society.leagues.Service.LeagueService;
+import com.society.leagues.Service.StatService;
 import com.society.leagues.client.api.domain.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.PostConstruct;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/stat")
 public class StatResource {
-    final AtomicReference<List<Stat>> teamStats = new AtomicReference<>(new ArrayList<>(100));
-    final AtomicReference<List<Stat>> seasonStats = new AtomicReference<>(new ArrayList<>(1000));
-
     @Autowired LeagueService leagueService;
+    @Autowired StatService statService;
     final static Logger logger = Logger.getLogger(StatResource.class);
 
-    @PostConstruct
-    public void init() {
-        logger.info("Refreshing stats");
-        refresh();
-        logger.info("Done Refreshing stats");
-    }
 
     @RequestMapping(value = "/team/{id}",
             method = RequestMethod.GET,
@@ -38,7 +28,7 @@ public class StatResource {
             consumes = MediaType.ALL_VALUE)
     public Stat getTeamStat(@PathVariable String id) {
         Team team = new Team(id);
-        return teamStats.get().parallelStream().filter(s->s.getTeam().equals(team)).findFirst().orElse(null);
+        return statService.getTeamStats().parallelStream().filter(s->s.getTeam().equals(team)).findFirst().orElse(null);
     }
 
     @RequestMapping(value = "/team/{id}/members",
@@ -62,8 +52,7 @@ public class StatResource {
             consumes = MediaType.ALL_VALUE)
     public List<Stat> getSeasonStats(@PathVariable String id) {
         Season season = leagueService.findOne(new Season(id));
-        List<Stat> stats = teamStats.get();
-        return stats.parallelStream().filter(s->s.getSeason().equals(season)).sorted(new Comparator<Stat>() {
+        return  statService.getTeamStats().parallelStream().filter(s->s.getSeason().equals(season)).sorted(new Comparator<Stat>() {
             @Override
             public int compare(Stat stat, Stat t1) {
                 if (t1.getWins() != stat.getWins()) {
@@ -148,41 +137,8 @@ public class StatResource {
                     )
             );
         }
-        stats.add(Stat.buildStats(u, stats));
+        stats.add(Stat.buildLifeTimeStats(u, stats));
         return stats;
-    }
-
-
-    @Scheduled(fixedRate = 1000*60*5, initialDelay = 1000*60*10)
-    public void refresh() {
-        logger.info("Refreshing stats");
-        List<Team> teams = leagueService.findAll(Team.class);
-        List<Stat> teamStats = new ArrayList<>();
-        List<PlayerResult> results = leagueService.findAll(PlayerResult.class);
-        for (Team team : teams) {
-            teamStats.add(Stat.buildTeamStats(team,
-                    leagueService.findTeamMatchByTeam(team).stream().filter(tm->tm.hasResults()).collect(Collectors.toList())
-            ));
-        }
-        this.teamStats.lazySet(teamStats);
-        Map<User,List<PlayerResult>> homeResults = results.parallelStream().collect(Collectors.groupingBy(PlayerResult::getPlayerHome));
-        Map<User,List<PlayerResult>> awayResults = results.parallelStream().collect(Collectors.groupingBy(PlayerResult::getPlayerAway));
-        Map<User,List<PlayerResult>> allResults = new HashMap<User,List<PlayerResult>>(5000);
-        for (User user : homeResults.keySet()) {
-            if (!allResults.containsKey(user)) {
-                allResults.put(user,new ArrayList<>(100));
-            }
-            allResults.get(user).addAll(homeResults.get(user));
-        }
-
-         for (User user : awayResults.keySet()) {
-            if (!allResults.containsKey(user)) {
-                allResults.put(user,new ArrayList<>(100));
-            }
-            allResults.get(user).addAll(awayResults.get(user));
-        }
-
-        logger.info("Done Refreshing stats");
     }
 
 

@@ -2,8 +2,9 @@ package com.society.leagues.client.api.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.society.leagues.client.api.domain.views.IdView;
+import com.society.leagues.client.views.IdView;
 import org.springframework.data.annotation.Id;
+import org.springframework.util.ReflectionUtils;
 
 public class LeagueObject implements Comparable<LeagueObject>{
 
@@ -43,7 +44,7 @@ public class LeagueObject implements Comparable<LeagueObject>{
     }
 
     public void merge(LeagueObject object) {
-        this.legacyId = object.legacyId;
+        ReflectionUtils.shallowCopyFieldState(object,this);
     }
 
     @Override

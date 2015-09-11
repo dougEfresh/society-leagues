@@ -47,8 +47,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
 	public MappingMongoConverter mappingMongoConverter() throws Exception {
         DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoDbFactory());
         if (useCache) {
-            dbRefResolver = new CustomRefResolver(mongoDbFactory());
-            ((CustomRefResolver) dbRefResolver).setCachedCollections(cachedCollections);
+            dbRefResolver = new CustomRefResolver(mongoDbFactory(),cachedCollections);
         }
 
 		MappingMongoConverter converter = new MappingMongoConverter(dbRefResolver, mongoMappingContext());

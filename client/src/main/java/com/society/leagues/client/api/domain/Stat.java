@@ -2,6 +2,7 @@ package com.society.leagues.client.api.domain;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,8 @@ public class Stat {
     StatType type;
     Team team;
     User user;
+    Season season;
+    Handicap handicap;
 
     public Stat() {
     }
@@ -69,14 +72,6 @@ public class Stat {
         return stats;
     }
 
-    public String getHandicap() {
-        if (user == null || team == null) {
-            return "";
-        }
-        HandicapSeason handicapSeason = user.getHandicapSeasons().stream().filter(hs->hs.getSeason().equals(team.getSeason())).findFirst().orElse(null);
-        return handicapSeason == null ? "" : handicapSeason.getHandicapDisplay();
-    }
-
     public static Stat buildPlayerTeamStats(final User u, final Team team , final List<PlayerResult> matches) {
         Stat s = new Stat();
         s.setUser(u);
@@ -99,7 +94,63 @@ public class Stat {
         return s;
     }
 
-    public static Stat buildStats(final User u, final List<Stat> stats) {
+    public static Stat buildPlayerSeasonStats(final User u, final Season season , final List<PlayerResult> matches) {
+        Stat s = new Stat();
+        s.setUser(u);
+        s.setSeason(season);
+        for (PlayerResult match : matches) {
+            if (!match.hasUser(u)) {
+                continue;
+            }
+            s.matches++;
+            if (match.isWinner(u)) {
+                s.wins++;
+                s.racksWon += match.getWinnerRacks();
+                s.racksLost += match.getLoserRacks();
+            } else {
+                s.loses++;
+                s.racksWon += match.getLoserRacks();
+                s.racksLost += match.getWinnerRacks();
+            }
+        }
+        return s;
+    }
+
+    public String getHandicap() {
+        if (handicap != null) {
+            return Handicap.format(handicap);
+        }
+        if (user == null || team == null) {
+            return "";
+        }
+        HandicapSeason handicapSeason = user.getHandicapSeasons().stream().filter(hs->hs.getSeason().equals(team.getSeason())).findFirst().orElse(null);
+        return handicapSeason == null ? "" : handicapSeason.getHandicapDisplay();
+    }
+
+    private static List<Stat> buildHandicapStats(final User u, final List<PlayerResult> matches) {
+        Stat s = new Stat();
+        s.setUser(u);
+        s.type = StatType.HANDICAP;
+        for (PlayerResult match : matches) {
+            if (!match.hasUser(u)) {
+                continue;
+            }
+            s.matches++;
+            if (match.isWinner(u)) {
+                s.wins++;
+                s.racksWon += match.getWinnerRacks();
+                s.racksLost += match.getLoserRacks();
+            } else {
+                s.loses++;
+                s.racksWon += match.getLoserRacks();
+                s.racksLost += match.getWinnerRacks();
+            }
+        }
+        return Collections.EMPTY_LIST;
+    }
+
+
+    public static Stat buildLifeTimeStats(final User u, final List<Stat> stats) {
         Stat s = new Stat();
         s.setUser(u);
         s.type = StatType.ALL;
@@ -114,7 +165,6 @@ public class Stat {
         }
         return s;
     }
-
 
     public StatType getType() {
         if (type != null) {
@@ -133,12 +183,13 @@ public class Stat {
     }
 
     public Season getSeason() {
-        if (team == null) {
-            return null;
+        if (season != null)
+            return season;
+        if (team != null) {
+            return team.getSeason();
         }
-        return team.getSeason();
+        return null;
     }
-
 
     public Integer getWins() {
         return wins;
@@ -218,6 +269,13 @@ public class Stat {
         }
         return (double)racksWon/((double) racksWon+racksLost);
     }
+
+    public void setSeason(Season season) {
+        this.season = season;
+    }
+
+
+
 
     public Double getWinPct() {
         if (matches == 0) {

@@ -1,5 +1,7 @@
 package com.society.leagues.conf.spring;
 
+import com.society.leagues.converters.DateTimeDeSerializer;
+import com.society.leagues.converters.DateTimeSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +16,8 @@ import java.time.LocalDateTime;
 @Configuration
 @SuppressWarnings("unused")
 public class JacksonConfig {
-    //@Autowired  DateTimeSerializer dateTimeSerializer;
-    //@Autowired  DateTimeDeSerializer dateTimeDeSerializer;
+    @Autowired  DateTimeSerializer dateTimeSerializer;
+    @Autowired  DateTimeDeSerializer dateTimeDeSerializer;
     @Autowired  DateSerializer dateSerializer;
     @Autowired  DateDeSerializer dateDeSerializer;
     @Value("${pretty-print:false}") boolean prettyPrint = false;
@@ -27,8 +29,7 @@ public class JacksonConfig {
         return builder.indentOutput(prettyPrint).dateFormat(new SimpleDateFormat("yyyy-MM-dd")).
                 defaultViewInclusion(true).
                 serializers(dateSerializer).
-                //deserializerByType(LocalDateTime.class, dateTimeDeSerializer).
+                deserializerByType(LocalDateTime.class, dateTimeDeSerializer).
                 deserializerByType(LocalDate.class,dateDeSerializer);
     }
-
 }

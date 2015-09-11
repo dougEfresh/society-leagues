@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.society.leagues.client.api.domain.converters.DateTimeDeSerializer;
-import com.society.leagues.client.api.domain.converters.DateTimeSerializer;
-import com.society.leagues.client.api.domain.views.PlayerResultView;
-import com.society.leagues.client.api.domain.views.TeamSummary;
+import com.society.leagues.converters.DateTimeDeSerializer;
+import com.society.leagues.converters.DateTimeSerializer;
+import com.society.leagues.client.views.PlayerResultView;
+import com.society.leagues.client.views.TeamSummary;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;
@@ -110,7 +110,8 @@ public class Team extends LeagueObject {
     }
 
     public boolean isNine() {
-      return season.isNine();
+      return season != null && season.isNine();
+
     }
 
     public boolean hasUser(User u) {

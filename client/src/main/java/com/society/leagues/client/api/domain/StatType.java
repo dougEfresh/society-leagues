@@ -5,5 +5,6 @@ public enum StatType {
     USER_SEASON,
     ALL,
     TEAM,
+    HANDICAP,
     UNKNOWN;
 }

@@ -5,7 +5,9 @@ import com.mangofactory.swagger.models.dto.ApiInfo;
 import com.mangofactory.swagger.plugin.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 import java.security.Principal;
 
@@ -14,9 +16,12 @@ import java.security.Principal;
 public class SwaggerConfig {
 
     @Autowired SpringSwaggerConfig springSwaggerConfig;
+    @Autowired ApplicationContext context;
+    @Autowired RequestMappingHandlerAdapter[] requestMappingHandlerAdapters;
 
     @Bean
     public SwaggerSpringMvcPlugin publicApi() {
+    //    springSwaggerConfig.jacksonSwaggerSupport().setApplicationContext();
         return new SwaggerSpringMvcPlugin(springSwaggerConfig)
                 .apiInfo(apiInfo())
                 .apiVersion("1")
@@ -24,9 +29,8 @@ public class SwaggerConfig {
                 .ignoredParameterTypes(Principal.class);
     }
 
-
     ApiInfo apiInfo() {
-        return new ApiInfo("Billiard Managament API","Billiards",
+        return new ApiInfo("Billiard Mang. API","Billiards",
                 "", "changeme@example.com", "All Rights Reserved",
                 ""
         );

@@ -1,4 +1,4 @@
-package com.society.leagues.client.api.domain.converters;
+package com.society.leagues.converters;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
