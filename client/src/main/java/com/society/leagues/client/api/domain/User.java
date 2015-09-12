@@ -158,7 +158,8 @@ public class User extends LeagueObject {
 
     @JsonIgnore
     public boolean isFake() {
-        return lastName.toLowerCase().contains("handicap") || lastName.toLowerCase().contains("forfeit");
+        return false;
+        //return lastName.toLowerCase().contains("handicap") || lastName.toLowerCase().contains("forfeit");
     }
 
     @Override
