@@ -1,6 +1,7 @@
 package com.society.leagues.resource;
 
 import com.society.leagues.Service.LeagueService;
+import com.society.leagues.client.api.domain.Handicap;
 import com.society.leagues.client.api.domain.Season;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -25,13 +26,18 @@ public class SeasonResource {
         return leagueService.findOne(new Season(id));
     }
 
-    @RequestMapping(value = "/get/active", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @RequestMapping(value = "/active", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public List<Season> getActiveSeasons(Principal principal) {
         return leagueService.findAll(Season.class).stream().filter(s->s.isActive()).collect(Collectors.toList());
     }
 
-    @RequestMapping(value = "/get", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @RequestMapping(value = {"/get","/",""}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public List<Season> getSeasons(Principal principal) {
         return leagueService.findAll(Season.class);
+    }
+
+     @RequestMapping(value = {"/handicaps"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public Handicap[] getHandicaps(Principal principal) {
+        return Handicap.values();
     }
 }

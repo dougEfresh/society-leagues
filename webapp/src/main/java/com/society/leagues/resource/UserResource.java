@@ -40,7 +40,17 @@ public class UserResource {
         return leagueService.findOne(new User(id));
     }
 
-    @RequestMapping(value = "/login/{login}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<User> all(Principal principal) {
+        User u = get(principal.getName());
+        if (u.isAdmin())
+            return leagueService.findAll(User.class).stream()
+                    .sorted((user, t1) -> user.getName().compareTo(t1.getName())).collect(Collectors.toList());
+
+        return listByUser(u.getId());
+    }
+
+        @RequestMapping(value = "/login/{login}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_USER')")
     public User get(@PathVariable String login) {
         return leagueService.findByLogin(login);
@@ -56,7 +66,10 @@ public class UserResource {
         return leagueService.save(user);
     }
 
-    @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/admin/modify",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public User modify(@RequestBody User user) {
         User existingUser = leagueService.findOne(user);
@@ -64,7 +77,6 @@ public class UserResource {
             return User.defaultUser();
         }
         user.setPassword(existingUser.getPassword());
-        user.setEmail(existingUser.getEmail());
         user.setLogin(existingUser.getLogin());
         return leagueService.save(user);
     }

@@ -24,7 +24,7 @@ jar {
 }
 
 bootRun {
-    jvmArgs = [ '-Dserver.port=8081','-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005' ]
+    jvmArgs = [ '-Dserver.port=8081', '-Dspring.data.mongodb.host=127.0.0.1', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005' ]
 }
 
 dependencies {

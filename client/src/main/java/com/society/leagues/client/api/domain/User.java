@@ -65,7 +65,6 @@ public class User extends LeagueObject {
         this.lastName = lastName;
     }
 
-    @JsonIgnore
     public String getEmail() {
         return email;
     }
@@ -164,21 +163,6 @@ public class User extends LeagueObject {
 
     @Override
     public void merge(LeagueObject object) {
-        /*
-        if (!(object instanceof User)) {
-            return;
-        }
-        User u = (User) object;
-        this.firstName = u.firstName;
-        this.lastName = u.lastName;
-        this.login = u.login;
-        this.email = u.email;
-        this.status = u.status;
-        this.role = u.role;
-        this.handicapSeasons = u.handicapSeasons;
-        this.password = u.password;
-        this.created = u.created;
-        */
         super.merge(object);
     }
 

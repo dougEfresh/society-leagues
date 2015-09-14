@@ -49,7 +49,7 @@ public class TeamMatchResource {
         return leagueService.delete(teamMatch);
     }
 
-    @RequestMapping(value = "/get/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public TeamMatch get(Principal principal, @PathVariable String id) {
         return leagueService.findOne(new TeamMatch(id));
 
