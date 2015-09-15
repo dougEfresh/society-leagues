@@ -43,9 +43,10 @@ public class UserResource {
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<User> all(Principal principal) {
         User u = get(principal.getName());
-        if (u.isAdmin())
+        if (u.isAdmin()) {
             return leagueService.findAll(User.class).stream()
                     .sorted((user, t1) -> user.getName().compareTo(t1.getName())).collect(Collectors.toList());
+        }
 
         return listByUser(u.getId());
     }

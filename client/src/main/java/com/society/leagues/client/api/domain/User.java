@@ -31,6 +31,7 @@ public class User extends LeagueObject {
     public User() {
         this.created = LocalDateTime.now();
     }
+
     public User(String id) {this.id = id;}
 
     public static User defaultUser() {

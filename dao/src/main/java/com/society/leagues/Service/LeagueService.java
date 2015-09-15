@@ -70,16 +70,17 @@ public class LeagueService {
             }
             throw  new RuntimeException("Could not validate " + entity + "\n" + sb.toString());
         }
-        boolean addNew = entity.getId() == null;
         repo.save(entity);
         T newEntity = (T) repo.findOne(entity.getId());
-
-        if (addNew) {
-            CachedCollection c = getCache(entity);
-            if (c == null) {
-                return null;
-            }
+        CachedCollection c = getCache(entity);
+        if (c == null) {
+            return null;
+        }
+        T cached = (T) c.get().stream().filter(u->((LeagueObject) u).getId().equals(newEntity.getId())).findFirst().orElse(null);
+        if (cached == null) {
             c.get().add(newEntity);
+        } else {
+            cached.merge(newEntity);
         }
         return newEntity;
     }
