@@ -50,7 +50,7 @@ public class UserResource {
         return listByUser(u.getId());
     }
 
-        @RequestMapping(value = "/login/{login}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/login/{login}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_USER')")
     public User get(@PathVariable String login) {
         return leagueService.findByLogin(login);
@@ -63,6 +63,7 @@ public class UserResource {
         if (oldUser != null) {
             return oldUser;
         }
+        user.setLogin(user.getEmail());
         return leagueService.save(user);
     }
 
