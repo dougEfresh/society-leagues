@@ -76,7 +76,7 @@ public class ConvertUtil {
     public Boolean convertSeason() {
         logger.info("Convert season");
         seasonRepository.deleteAll();
-        logger.info("Deleted seeasons ");
+        logger.info("Deleted seasons ");
         List<Map<String,Object>> results = jdbcTemplate.queryForList(
                 "select m.season_id,concat(season_year,',',sn_name,',',league_game) as name,\n" +
                         " min(match_start_date) as start_date, max(match_start_date) as end_date\n" +
@@ -90,13 +90,13 @@ public class ConvertUtil {
         List<Season> seasons = new ArrayList<>();
         for (Map<String, Object> result : results) {
             Season s = new Season();
-            s.setName(result.get("name").toString());
+            String name = (String) result.get("name");
             s.setLegacyId((Integer) result.get("season_id"));
             if (seasonRepository.findByLegacyId(s.getLegacyId()) != null) {
                 continue;
             }
             s.setStartDate(LocalDateTime.now());
-            if (!s.getName().contains("2015,Summer")) {
+            if (!name.contains("2015,Summer")) {
                 s.setEndDate(LocalDateTime.now());
                 s.setSeasonStatus(Status.INACTIVE);
             } else {
@@ -388,6 +388,7 @@ public class ConvertUtil {
 
     public void updateSetWinsLoses() {
         logger.info("Getting  set wins");
+        /*
         List<PlayerResult> results = playerResultRepository.findAll().stream().filter(r->r.isNine()).collect(Collectors.toList());
         List<TeamMatch> teamMatches = teamMatchRepository.findAll().stream().filter(t->t.getSeason().isNine()).collect(Collectors.toList());
         for (final TeamMatch teamMatch : teamMatches) {
@@ -410,5 +411,6 @@ public class ConvertUtil {
             }
         }
         teamMatchRepository.save(teamMatches);
+        */
     }
 }

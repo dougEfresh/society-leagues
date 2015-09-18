@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 public class Season extends LeagueObject {
 
-    @NotNull String name;
+    String name;
     @NotNull
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
@@ -21,6 +21,8 @@ public class Season extends LeagueObject {
     @NotNull Integer rounds = -1;
     @NotNull Status seasonStatus;
     @NotNull Division division;
+    String year = LocalDateTime.now().toString().substring(0,4);
+    String type;
 
     public Season(String name, LocalDateTime startDate, Integer rounds, Division division) {
         this.name = name;
@@ -53,7 +55,10 @@ public class Season extends LeagueObject {
     }
 
     public String getName() {
-        return name;
+        if (name != null)
+            return name;
+
+        return String.format("%s,%s,%s",year,type,division);
     }
 
     public String getDisplayName() {
@@ -116,6 +121,17 @@ public class Season extends LeagueObject {
         return getDivision() ==  Division.NINE_BALL_CHALLENGE || getDivision() == Division.NINE_BALL_TUESDAYS;
     }
 
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public String getType() {
+        return type;
+    }
 
     @Override
     public String toString() {

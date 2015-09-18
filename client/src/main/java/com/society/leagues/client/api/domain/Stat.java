@@ -26,7 +26,7 @@ public class Stat {
     public static Stat buildTeamStats(final Team team, final List<TeamMatch> matches) {
         Stat s = new Stat();
         s.setTeam(team);
-        List<TeamMatch> results = matches.stream().filter(TeamMatch::hasResults).collect(Collectors.toList());
+        List<TeamMatch> results = matches.stream().filter(TeamMatch::isHasResults).collect(Collectors.toList());
         s.matches = results.size();
         for (TeamMatch result : results) {
             if (result.isWinner(team)) {

@@ -11,9 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -26,20 +24,16 @@ public class TeamMatchResource {
     @RequestMapping(value = "/admin/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public TeamMatch create(@RequestBody TeamMatch teamMatch) {
-        Team home = leagueService.findOne(teamMatch.getHome());
-        Team away = leagueService.findOne(teamMatch.getAway());
-        teamMatch.setHome(home);
-        teamMatch.setAway(away);
+        teamMatch.setWinner(null);
+        teamMatch.setLoser(null);
         return leagueService.save(teamMatch);
     }
 
     @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public TeamMatch modify(@RequestBody TeamMatch teamMatch) {
-        Team home = leagueService.findOne(teamMatch.getHome());
-        Team away = leagueService.findOne(teamMatch.getAway());
-        teamMatch.setHome(home);
-        teamMatch.setAway(away);
+        teamMatch.setWinner(null);
+        teamMatch.setLoser(null);
         return leagueService.save(teamMatch);
     }
 
@@ -55,7 +49,22 @@ public class TeamMatchResource {
 
     }
 
-    @RequestMapping(value = "/get/season/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @RequestMapping(value = "/members/{id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.ALL_VALUE)
+    public Map<String,Set<User>> getTeamMatchMembers(Principal principal, @PathVariable String id) {
+        TeamMatch tm = leagueService.findOne(new TeamMatch(id));
+        Map<String,Set<User>> members = new HashMap<>();
+        Team w = tm.getHomeRacks() > tm.getAwayRacks() ? tm.getHome() : tm.getAway();
+        Team l = tm.getHomeRacks() > tm.getAwayRacks() ? tm.getAway() : tm.getHome();
+        members.put("winners",w.getMembers());
+        members.put("losers",l.getMembers());
+        return members;
+    }
+
+
+    @RequestMapping(value = {"/get/season/{id}","/season/{id}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public List<TeamMatch> getTeamMatchSeason(Principal principal, @PathVariable String id) {
          Season s = leagueService.findOne(new Season(id));
          return leagueService.findTeamMatchBySeason(s).stream().sorted(new Comparator<TeamMatch>() {

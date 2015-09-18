@@ -40,7 +40,7 @@ public class StatService {
         List<Stat> teamStats = new ArrayList<>();
         for (Team team : teams) {
             teamStats.add(Stat.buildTeamStats(team,
-                    leagueService.findTeamMatchByTeam(team).parallelStream().filter(tm->tm.hasResults()).collect(Collectors.toList())
+                    leagueService.findTeamMatchByTeam(team).parallelStream().filter(tm->tm.isHasResults()).collect(Collectors.toList())
             ));
         }
         this.teamStats.lazySet(teamStats);

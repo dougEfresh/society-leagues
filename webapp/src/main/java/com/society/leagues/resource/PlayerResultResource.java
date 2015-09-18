@@ -11,8 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -44,7 +43,7 @@ public class PlayerResultResource {
         return leagueService.findOne(new PlayerResult(id));
 
     }
-    @RequestMapping(value = "/get/teamMatch/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @RequestMapping(value = "/teammatch/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @JsonView(PlayerResultView.class)
     public List<PlayerResult> getPlayerResultTeamMatch(Principal principal, @PathVariable String id) {
         TeamMatch tm = leagueService.findOne(new TeamMatch(id));
@@ -53,13 +52,16 @@ public class PlayerResultResource {
                 .filter(pr->!pr.getLoser().isFake())
                 .filter(pr->!pr.getWinner().isFake())
                 .sorted(new Comparator<PlayerResult>() {
-            @Override
-            public int compare(PlayerResult playerResult, PlayerResult t1) {
-                return playerResult.getMatchNumber().compareTo(t1.getMatchNumber());
-            }
+                    @Override
+                    public int compare(PlayerResult playerResult, PlayerResult t1) {
+                        return playerResult.getMatchNumber().compareTo(t1.getMatchNumber());
+                    }
         }).collect(Collectors.toList());
         results.stream().parallel().
-                forEach(pr->pr.setReferenceTeam(pr.getTeamMatch().getHomeRacks() > pr.getTeamMatch().getAwayRacks() ? pr.getTeamMatch().getHome() : pr.getTeamMatch().getAway()));
+                forEach(pr->pr.setReferenceTeam(
+                        pr.getTeamMatch().getHomeRacks() > pr.getTeamMatch().getAwayRacks() ?
+                                pr.getTeamMatch().getHome() : pr.getTeamMatch().getAway())
+                );
         return results;
     }
 

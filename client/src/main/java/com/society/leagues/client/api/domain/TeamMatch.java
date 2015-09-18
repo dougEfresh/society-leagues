@@ -10,20 +10,21 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
+@SuppressWarnings("unused")
 public class TeamMatch extends LeagueObject {
 
-    @DBRef Team home;
-    @DBRef Team away;
+    @NotNull @DBRef Team home;
+    @NotNull @DBRef Team away;
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     @NotNull LocalDateTime matchDate;
+    Team winner;
+    Team loser;
 
-    Integer homeRacks = -1;
-    Integer awayRacks = -1;
+    Integer homeRacks = 0;
+    Integer awayRacks = 0;
     Integer setHomeWins = 0;
     Integer setAwayWins = 0;
-    Integer setHomeLost = 0;
-    Integer setAwayLost = 0;
 
     User referenceUser = null;
 
@@ -70,6 +71,14 @@ public class TeamMatch extends LeagueObject {
 
     public Division getDivision() {
         return getSeason().getDivision();
+    }
+
+    public boolean isNine() {
+        return getSeason().isNine();
+    }
+
+    public boolean isChallenge() {
+        return getDivision().isChallenge();
     }
 
     public Integer getAwayRacks() {
@@ -136,8 +145,13 @@ public class TeamMatch extends LeagueObject {
         this.setHomeWins = setHomeWins;
     }
 
-    public boolean hasResults() {
-        return homeRacks > 0;
+    public boolean isHasResults() {
+        if (homeRacks < 0)
+            homeRacks = 0;
+        if (awayRacks < 0)
+            awayRacks = 0;
+
+        return homeRacks + awayRacks > 0;
     }
 
     public Integer getSetWins(Team team) {
@@ -153,23 +167,23 @@ public class TeamMatch extends LeagueObject {
     }
 
     public Integer getWinnerSetWins() {
-        if (!getSeason().isNine()) {
-            return  homeRacks > awayRacks  ? homeRacks  : awayRacks;
+        if (!getSeason().isNine() || getSeason().getDivision().isChallenge()) {
+            return null;
         }
 
         return homeRacks > awayRacks ? setHomeWins : setAwayWins;
     }
 
     public Integer getWinnerSetLoses() {
-        if (!getSeason().isNine()) {
-            return  homeRacks > awayRacks  ? awayRacks  : homeRacks;
+        if (!getSeason().isNine() || getSeason().getDivision().isChallenge()) {
+            return null;
         }
 
         return homeRacks > awayRacks ? setAwayWins : setHomeWins;
     }
 
     public Integer getLoserSetWins() {
-        if (!getSeason().isNine()) {
+        if (!getSeason().isNine() || getSeason().getDivision().isChallenge()) {
             return  homeRacks > awayRacks  ? awayRacks  : homeRacks;
         }
 
@@ -177,43 +191,19 @@ public class TeamMatch extends LeagueObject {
     }
 
     public Integer getLoserSetLoses() {
-        if (!getSeason().isNine()) {
+        if (!getSeason().isNine() || getSeason().getDivision().isChallenge()) {
             return  homeRacks > awayRacks  ? homeRacks  : awayRacks;
         }
 
         return homeRacks > awayRacks ? setHomeWins : setAwayWins;
     }
 
-    public void addSetHomeWin() {
-        setHomeWins += 1;
-    }
-
-    public void addSetHomeLost() {
-        setHomeLost += 1;
-    }
-
-    public void addSetAwayLost() {
-        setAwayLost += 1;
-    }
-
-    public void addSetAwayWin() {
-        setAwayWins += 1;
-    }
-
     public Integer getSetHomeLost() {
-        return setHomeLost;
-    }
-
-    public void setSetHomeLost(Integer setHomeLost) {
-        this.setHomeLost = setHomeLost;
+        return setAwayWins;
     }
 
     public Integer getSetAwayLost() {
-        return setAwayLost;
-    }
-
-    public void setSetAwayLost(Integer setAwayLost) {
-        this.setAwayLost = setAwayLost;
+        return setHomeWins;
     }
 
     public Team getOpponentTeam() {
@@ -221,6 +211,36 @@ public class TeamMatch extends LeagueObject {
             return null;
 
         return home.getMembers().contains(referenceUser) ? away : home;
+    }
+
+    public Integer getWinnerRacks() {
+        if (!isHasResults())
+            return null;
+
+        return homeRacks > awayRacks ? homeRacks : awayRacks;
+    }
+
+    public Integer getLoserRacks() {
+        if (!isHasResults())
+            return null;
+
+        return homeRacks > awayRacks ? awayRacks : homeRacks;
+    }
+
+    public Team getWinner() {
+        return  homeRacks.equals(awayRacks) || homeRacks > awayRacks ? home : away;
+    }
+
+    public Team getLoser() {
+        return homeRacks.equals(awayRacks) || homeRacks > awayRacks ? away : home;
+    }
+
+    public void setWinner(Team winner) {
+        this.winner = winner;
+    }
+
+    public void setLoser(Team loser) {
+        this.loser = loser;
     }
 
     @Override
