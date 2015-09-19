@@ -54,13 +54,13 @@ public class Utils {
 
 
     public Season createRandomSeason() {
-        return leagueService.save(new Season(UUID.randomUUID().toString(),LocalDateTime.now(),-1,Division.NINE_BALL_CHALLENGE));
+        return leagueService.save(new Season(UUID.randomUUID().toString(),LocalDateTime.now(),-1,Division.NINE_BALL_TUESDAYS));
     }
 
     public Team createRandomTeam() {
-        Season s = seasonRepository.findAll().stream().filter(sn->sn.getDivision() == Division.NINE_BALL_CHALLENGE).findFirst().orElse(null);
+        Season s = seasonRepository.findAll().stream().filter(sn->sn.getDivision() == Division.NINE_BALL_TUESDAYS).findFirst().orElse(null);
         if (s == null) {
-            s = leagueService.save(new Season("9 ball ", LocalDateTime.now(), -1, Division.NINE_BALL_CHALLENGE));
+            s = leagueService.save(new Season("9 ball ", LocalDateTime.now(), -1, Division.NINE_BALL_TUESDAYS));
         }
         Team ts = leagueService.save(new Team(s,UUID.randomUUID().toString()));
         //HandicapSeason hs = leagueService.save(new HandicapSeason(Handicap.A, s));
@@ -83,7 +83,7 @@ public class Utils {
     public User createRandomUser() {
         Season s = leagueService.findAll(Season.class).stream().filter(sn->sn.getDivision() == Division.NINE_BALL_CHALLENGE).findFirst().orElse(null);
         if (s == null) {
-            s = leagueService.save(new Season("9 ball ", LocalDateTime.now(), -1, Division.NINE_BALL_CHALLENGE));
+            s = leagueService.save(new Season("9 ball ", LocalDateTime.now(), -1, Division.NINE_BALL_TUESDAYS));
         }
         User u = new User();
         String login = UUID.randomUUID().toString();

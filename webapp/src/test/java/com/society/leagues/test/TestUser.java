@@ -1,6 +1,8 @@
 package com.society.leagues.test;
 
 import com.society.leagues.Main;
+import com.society.leagues.Service.ChallengeService;
+import com.society.leagues.Service.LeagueService;
 import com.society.leagues.Service.UserService;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.mongo.*;
@@ -19,6 +21,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -34,6 +39,8 @@ public class TestUser {
     String host = "http://localhost";
     @Autowired UserRepository userRepository;
     @Autowired UserService userService;
+    @Autowired ChallengeService challengeService;
+    @Autowired LeagueService leagueService;
     @Autowired Utils utils;
     RestTemplate restTemplate = new RestTemplate();
     static HttpHeaders requestHeaders = new HttpHeaders();
@@ -59,12 +66,11 @@ public class TestUser {
         responseEntity = restTemplate.exchange(host + "/api/user/login/" + newUser.getLogin(), HttpMethod.GET,requestEntity,User.class);
         returned = responseEntity.getBody();
         assertEquals(returned.getId(),newUser.getId());
-        assertEquals(returned.getLogin(),newUser.getLogin());
 
         responseEntity = restTemplate.exchange(host + "/api/user", HttpMethod.GET,requestEntity,User.class);
         returned = responseEntity.getBody();
         assertEquals(returned.getId(), newUser.getId());
-        assertEquals(returned.getLogin(), newUser.getLogin());
+
     }
 
     @Test(expected = HttpClientErrorException.class)
@@ -109,7 +115,6 @@ public class TestUser {
     @Test
     public void testPasswordReset() {
         HttpEntity requestEntity = new HttpEntity(null, requestHeaders);
-
         User newUser = userRepository.findByLogin("test");
 
         ResponseEntity<User> responseEntity = restTemplate.exchange(host + "/api/user/" + newUser.getId(), HttpMethod.GET,requestEntity,User.class);
@@ -118,7 +123,7 @@ public class TestUser {
         responseEntity = restTemplate.exchange(host + "/api/user/reset/password/kljkljasd/" + newUser.getId(), HttpMethod.POST, requestEntity, User.class);
         returned = responseEntity.getBody();
         assertEquals("0", returned.getId());
-        String encoded = new BCryptPasswordEncoder().encode("newPassword");
+
         TokenReset reset = userService.resetRequest(newUser);
         assertTrue(!newUser.getTokens().isEmpty());
         assertTrue(newUser.getTokens().contains(reset));
@@ -127,4 +132,14 @@ public class TestUser {
         assertEquals(newUser.getId(),returned.getId());
     }
 
+    @Test
+    public void testChallangeUser() {
+        leagueService.save(new Season(UUID.randomUUID().toString(), LocalDateTime.now(),-1,Division.NINE_BALL_CHALLENGE));
+        User newUser = utils.createRandomUser();
+        Team t = challengeService.createChallengeUser(newUser);
+        assertEquals(newUser.getName(), t.getName());
+        assertTrue(newUser.getHandicapSeasons().stream().filter(hs -> hs.getSeason().getDivision().isChallenge()).count() >0);
+        assertTrue(t.getSeason().getDivision().isChallenge());
+        assertTrue(t.hasUser(newUser));
+    }
 }

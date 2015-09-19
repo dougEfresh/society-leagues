@@ -18,9 +18,12 @@ public class ChallengeService  {
 
         Team t = leagueService.findAll(Team.class).stream().parallel().filter(team->team.getName().equals(user.getName())).findFirst().orElse(null);
         if (t != null) {
-            return t;
+            t.addMember(user);
+            return leagueService.save(t);
+
         }
         t = new Team(challenge,user.getName());
+        t.addMember(user);
         return leagueService.save(t);
     }
 }
