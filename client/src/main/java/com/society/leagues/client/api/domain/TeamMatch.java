@@ -18,8 +18,6 @@ public class TeamMatch extends LeagueObject {
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     @NotNull LocalDateTime matchDate;
-    Team winner;
-    Team loser;
 
     Integer homeRacks = 0;
     Integer awayRacks = 0;
@@ -233,14 +231,6 @@ public class TeamMatch extends LeagueObject {
 
     public Team getLoser() {
         return homeRacks.equals(awayRacks) || homeRacks > awayRacks ? away : home;
-    }
-
-    public void setWinner(Team winner) {
-        this.winner = winner;
-    }
-
-    public void setLoser(Team loser) {
-        this.loser = loser;
     }
 
     @Override

@@ -24,16 +24,12 @@ public class TeamMatchResource {
     @RequestMapping(value = "/admin/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public TeamMatch create(@RequestBody TeamMatch teamMatch) {
-        teamMatch.setWinner(null);
-        teamMatch.setLoser(null);
         return leagueService.save(teamMatch);
     }
 
     @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public TeamMatch modify(@RequestBody TeamMatch teamMatch) {
-        teamMatch.setWinner(null);
-        teamMatch.setLoser(null);
         return leagueService.save(teamMatch);
     }
 

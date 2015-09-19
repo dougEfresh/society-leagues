@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
+@SuppressWarnings("unused")
 public class PlayerResult extends LeagueObject {
 
     @NotNull @DBRef TeamMatch teamMatch;
@@ -18,7 +19,7 @@ public class PlayerResult extends LeagueObject {
     @NotNull @DBRef User playerAway;
     @NotNull Integer homeRacks = -1;
     @NotNull Integer awayRacks = -1;
-    @NotNull Integer matchNumber = -1;
+    @NotNull Integer matchNumber = 0;
     @NotNull Handicap playerHomeHandicap;
     @NotNull Handicap playerAwayHandicap;
 
@@ -219,10 +220,8 @@ public class PlayerResult extends LeagueObject {
         if (referenceTeam != null)
             return referenceTeam.equals(teamMatch.getHome()) ? homeRacks > awayRacks : awayRacks > homeRacks;
 
-        if (referenceUser != null)
-            return isWinner(referenceUser);
+        return referenceUser != null && isWinner(referenceUser);
 
-        return false;
     }
 
     public String getOpponentHandicap() {
@@ -274,6 +273,30 @@ public class PlayerResult extends LeagueObject {
         return 0;
     }
 
+    public Handicap getWinnerTeamHandicap() {
+        return teamMatch.getWinner().hasUser(playerHome) ? playerHomeHandicap : playerAwayHandicap;
+    }
+
+    public Handicap getLoserTeamHandicap() {
+        return teamMatch.getWinner().hasUser(playerHome) ? playerAwayHandicap : playerHomeHandicap;
+    }
+
+
+    public Integer getWinnerTeamRacks() {
+        return teamMatch.getWinner().hasUser(playerHome) ? homeRacks : awayRacks;
+    }
+
+    public Integer getLoserTeamRacks() {
+        return teamMatch.getWinner().hasUser(playerHome) ? awayRacks : homeRacks;
+    }
+
+    public User getWinnerTeamPlayer() {
+        return teamMatch.getWinner().hasUser(playerHome) ? playerHome : playerAway;
+    }
+
+    public User getLoserTeamPlayer() {
+        return teamMatch.getWinner().hasUser(playerHome) ? playerAway : playerHome;
+    }
 
     public Integer getOpponentRacks() {
         if (referenceUser != null) {
