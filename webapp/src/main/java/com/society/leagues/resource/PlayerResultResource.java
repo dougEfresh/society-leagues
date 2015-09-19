@@ -3,6 +3,7 @@ package com.society.leagues.resource;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.society.leagues.Service.LeagueService;
+import com.society.leagues.Service.ResultService;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.views.PlayerResultView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,17 +20,18 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unused")
 public class PlayerResultResource {
     @Autowired LeagueService leagueService;
+    @Autowired ResultService resultService;
 
     @RequestMapping(value = "/admin/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public PlayerResult create(@RequestBody PlayerResult playerResult) {
-        return leagueService.save(playerResult);
+        return resultService.createOrModify(playerResult);
     }
 
     @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public PlayerResult modify(@RequestBody PlayerResult playerResult) {
-        return leagueService.save(playerResult);
+        return resultService.createOrModify(playerResult);
     }
 
     @RequestMapping(value = "/admin/delete", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)

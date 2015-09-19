@@ -28,14 +28,18 @@ public class Main implements CommandLineRunner {
     public void run(String... args) throws Exception {
         for (String arg : args) {
             if (arg.toLowerCase().contains("convert")) {
-                convertUtil.convertUser();
-                convertUtil.convertSeason();
-                convertUtil.convertTeam();
-                convertUtil.converTeamMatch();
-                convertUtil.converTeamMatchResult();
-                convertUtil.convertPlayerResults();
-                convertUtil.userHandicap();
-                convertUtil.updateSetWinsLoses();
+//                convertUtil.convertUser();
+//                convertUtil.convertSeason();
+//                convertUtil.convertTeam();
+///                convertUtil.convertTeamMembers();
+   //             convertUtil.converTeamMatch();
+//                convertUtil.converTeamMatchResult();
+
+                //convertUtil.convertPlayerResults();
+                //convertUtil.userHandicap();
+                //convertUtil.updateSetWinsLoses();
+
+                convertUtil.convertChallengers();
                 System.exit(0);
             }
         }

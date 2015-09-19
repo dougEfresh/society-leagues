@@ -68,8 +68,14 @@ public class UserResource {
         if (oldUser != null) {
             return oldUser;
         }
+
         user.setLogin(user.getEmail());
-        return leagueService.save(user);
+        user = leagueService.save(user);
+        if (user.isChallenge()) {
+            challengeService.createChallengeUser(user);
+        }
+
+        return user;
     }
 
     @RequestMapping(value = "/admin/create/challenge", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -98,7 +104,12 @@ public class UserResource {
         }
         user.setPassword(existingUser.getPassword());
         user.setLogin(existingUser.getLogin());
-        return leagueService.save(user);
+
+        user = leagueService.save(user);
+        if (user.isChallenge()) {
+            challengeService.createChallengeUser(user);
+        }
+        return user;
     }
 
     @RequestMapping(value = "/season/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -125,6 +136,7 @@ public class UserResource {
             logger.error("ERROR ERROR ERROR");
             return null;
         }
+        user = leagueService.findOne(user);
         TokenReset reset = userService.resetRequest(user);
         return u.isAdmin() ? reset : new TokenReset("");
     }

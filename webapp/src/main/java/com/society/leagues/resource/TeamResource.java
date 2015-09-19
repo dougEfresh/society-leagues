@@ -82,6 +82,15 @@ public class TeamResource {
                  .collect(Collectors.toList()
                  );
     }
+    @JsonView(TeamSummary.class)
+    @RequestMapping(value = "/active", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public List<Team> getTeamSeason(Principal principal) {
+         return leagueService.findAll(Team.class)
+                 .stream().parallel()
+                 .filter(t->t.getSeason().isActive())
+                 .collect(Collectors.toList()
+                 );
+    }
 
     @JsonView(TeamSummary.class)
     @RequestMapping(value = "/get/{id}/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
