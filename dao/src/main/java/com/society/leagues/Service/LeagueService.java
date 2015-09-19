@@ -57,7 +57,7 @@ public class LeagueService {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends LeagueObject> T save(T entity) {
+    public <T extends LeagueObject> T save(final T entity) {
         MongoRepository repo = getRepo(entity);
         if (repo == null) {
             return  null;
@@ -107,15 +107,18 @@ public class LeagueService {
         return userCachedCollection.get().stream().parallel().filter(u->u.getLogin().equals(login)).findFirst().orElse(null);
     }
 
+    @Deprecated
     public List<Team> findTeamBySeason(Season season) {
         return teamCachedCollection.get().stream().filter(t -> t.getSeason().equals(season)).collect(Collectors.toList());
     }
 
+    @Deprecated
     public List<TeamMatch> findTeamMatchBySeason(Season season) {
         return teamMatchCachedCollection.get().stream().filter(t -> t.getSeason().equals(season)).collect(Collectors.toList());
     }
 
-     public List<TeamMatch> findTeamMatchByTeam(Team team) {
+    @Deprecated
+    public List<TeamMatch> findTeamMatchByTeam(Team team) {
          return teamMatchCachedCollection.get().parallelStream().filter(tm->tm.hasTeam(team)).collect(Collectors.toList());
     }
 

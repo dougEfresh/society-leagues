@@ -2,8 +2,10 @@ package com.society.leagues.resource;
 
 import com.society.leagues.Service.LeagueService;
 import com.society.leagues.client.api.domain.*;
+import com.society.leagues.email.EmailSender;
 import com.society.leagues.mongo.ChallengeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +17,8 @@ import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping(value = "/api/challenge")
@@ -22,7 +26,9 @@ import java.util.stream.Collectors;
 public class ChallengeResource {
 
     @Autowired LeagueService leagueService;
-    @Autowired ChallengeRepository challengeRepository;
+    @Autowired EmailSender emailSender;
+    @Value("${service-url:http://leaguesdev.societybilliards.com}") String serviceUrl;
+    static final Logger logger = LoggerFactory.getLogger(ChallengeResource.class);
 
     @RequestMapping(value = "/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public Challenge create(@RequestBody Challenge challenge, Principal principal, HttpServletRequest request) {
@@ -30,9 +36,6 @@ public class ChallengeResource {
             return new Challenge();
         }
         User u = leagueService.findByLogin(principal.getName());
-        //Hydrate the object with latest data
-        challenge.setChallenger(leagueService.findOne(challenge.getChallenger()));
-        challenge.setOpponent(leagueService.findOne(challenge.getOpponent()));
         if (challenge.getChallenger().getMembers().contains(u) || challenge.getOpponent().getMembers().contains(u) || u.isAdmin()) {
             return leagueService.save(challenge);
         }
@@ -79,4 +82,42 @@ public class ChallengeResource {
         LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
         return leagueService.findAll(Challenge.class).stream().filter(c->c.getSlots().get(0).getLocalDateTime().isAfter(yesterday)).collect(Collectors.toList());
     }
+
+    private void sendEmail(User to, User from, Status status, Challenge challenge, String message) {
+        String subject;
+        String body;
+
+        switch (status) {
+            case NOTIFY:
+                subject = "Society Leagues - Challenge Request - " + from.getName();
+                body =  String.format(
+				      "You've been challenged! %s respectfully yet aggressively requests a match with you.\n" +
+                                "Click %s#/app/challenge/main for details\n",
+                        from.getName(), serviceUrl);
+                break;
+            case ACCEPTED:
+                subject = "Society Leagues - Challenge Accepted - " + from.getName();
+                body = String.format("Your challenge from %s has been accepted.\n" +
+                        "See %s#/app/challenge/main for details."
+                        , from.getName(), serviceUrl);
+
+                break;
+            case CANCELLED:
+                subject = "Society Leagues - Challenge Declined - " + from.getName();
+                body = String.format("%s\n*****\n%s has declined the challenge.\n" +
+                                "Don't worry! You can click %s#/app/challenge/main to challenge someone else!\n",
+                                message == null ? "": message,
+                        from.getName(), serviceUrl);
+
+                break;
+            default:
+                logger.warn("Got email request for unknown status " + status);
+                return;
+
+        }
+        logger.info("Creating an email to " + to.getEmail() + " subject:" + subject + " ");
+        emailSender.email(to.getEmail(),subject,body);
+
+    }
+
 }

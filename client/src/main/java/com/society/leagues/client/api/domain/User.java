@@ -10,7 +10,9 @@ import com.society.leagues.client.views.PlayerResultView;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class User extends LeagueObject {
@@ -27,6 +29,7 @@ public class User extends LeagueObject {
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime created;
     Set<HandicapSeason> handicapSeasons = new HashSet<>();
+    List<TokenReset>  tokens = new ArrayList<>();
 
     public User() {
         this.created = LocalDateTime.now();
@@ -160,6 +163,15 @@ public class User extends LeagueObject {
     public boolean isFake() {
         return false;
         //return lastName.toLowerCase().contains("handicap") || lastName.toLowerCase().contains("forfeit");
+    }
+
+    @JsonIgnore
+    public List<TokenReset> getTokens() {
+        return tokens;
+    }
+
+    public void setTokens(List<TokenReset> tokens) {
+        this.tokens = tokens;
     }
 
     @Override

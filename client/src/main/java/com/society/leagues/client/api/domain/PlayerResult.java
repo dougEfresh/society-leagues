@@ -203,7 +203,6 @@ public class PlayerResult extends LeagueObject {
         if (referenceUser != null)
             return referenceUser.equals(playerHome) ? playerAway : playerHome;
 
-
         return null;
 
     }
