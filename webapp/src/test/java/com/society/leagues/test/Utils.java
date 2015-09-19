@@ -5,7 +5,6 @@ import com.society.leagues.Service.LeagueService;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.mongo.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,8 +14,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
@@ -27,12 +24,9 @@ public class Utils {
 
     @Autowired UserRepository userRepository;
     @Autowired SeasonRepository seasonRepository;
-    @Autowired TeamRepository teamRepository;
-    @Autowired TeamMatchRepository tmRepository;
-    @Autowired List<MongoRepository> repositories;
     @Autowired LeagueService leagueService;
 
-    static String JSESSIONID = null;
+    static String COOKIE = "";
 
     public User createAdminUser() {
         User adminUser = userRepository.findByLogin("test");
@@ -106,8 +100,8 @@ public class Utils {
     }
 
     public String getSessionId(String url) {
-        if (JSESSIONID != null) {
-            return JSESSIONID;
+        if (COOKIE.length() != 0) {
+            return COOKIE;
         }
         RestTemplate restTemplate = new RestTemplate();
         MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
@@ -116,8 +110,13 @@ public class Utils {
         ResponseEntity<User> responseEntity = restTemplate.postForEntity(url, map, User.class);
         assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
         assertTrue(responseEntity.getHeaders().containsKey("Set-Cookie"));
-        JSESSIONID =  responseEntity.getHeaders().get("Set-Cookie").get(0).split(";")[0];
-        return JSESSIONID;
+        for (String s : responseEntity.getHeaders().get("Set-Cookie")) {
+            COOKIE +=  s.split(";")[0] + ";";
+        }
+        if (COOKIE.length() > 5)
+            COOKIE = COOKIE.substring(0,COOKIE.length()-1);
+
+        return COOKIE;
 
     }
 

@@ -1,5 +1,6 @@
-package com.society.leagues.email;
+package com.society.leagues.Service;
 
+import com.society.leagues.client.api.domain.Email;
 import feign.*;
 import feign.jackson.JacksonEncoder;
 import org.slf4j.LoggerFactory;
@@ -9,22 +10,22 @@ import javax.annotation.PostConstruct;
 
 
 @Component
-public class EmailSender {
-    private static org.slf4j.Logger logger = LoggerFactory.getLogger(EmailSender.class);
+public class EmailService {
+    private static org.slf4j.Logger logger = LoggerFactory.getLogger(com.society.leagues.Service.EmailService.class);
 
     @Value("${email-host:localhost}")
     String emailHost = "localhost";
 
-    interface EmailService {
+    interface EmailServiceApi {
         @RequestLine("POST /api/email/send")
         @Headers("Content-Type: application/json")
         void send(Email email);
     }
-    EmailService service;
+    EmailServiceApi service;
 
     @PostConstruct
     public void init() {
-        service = Feign.builder().logger(new feign.Logger.JavaLogger()).logLevel(feign.Logger.Level.FULL).encoder(new JacksonEncoder()).target(EmailService.class,"http://" + emailHost);
+        service = Feign.builder().logger(new feign.Logger.JavaLogger()).logLevel(feign.Logger.Level.FULL).encoder(new JacksonEncoder()).target(EmailServiceApi.class,"http://" + emailHost);
     }
 
     public void email(String recipient, String subject, String body) {

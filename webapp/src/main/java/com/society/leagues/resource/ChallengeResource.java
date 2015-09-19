@@ -2,8 +2,7 @@ package com.society.leagues.resource;
 
 import com.society.leagues.Service.LeagueService;
 import com.society.leagues.client.api.domain.*;
-import com.society.leagues.email.EmailSender;
-import com.society.leagues.mongo.ChallengeRepository;
+import com.society.leagues.Service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -26,7 +25,8 @@ import org.slf4j.LoggerFactory;
 public class ChallengeResource {
 
     @Autowired LeagueService leagueService;
-    @Autowired EmailSender emailSender;
+    @Autowired
+    EmailService emailService;
     @Value("${service-url:http://leaguesdev.societybilliards.com}") String serviceUrl;
     static final Logger logger = LoggerFactory.getLogger(ChallengeResource.class);
 
@@ -116,7 +116,7 @@ public class ChallengeResource {
 
         }
         logger.info("Creating an email to " + to.getEmail() + " subject:" + subject + " ");
-        emailSender.email(to.getEmail(),subject,body);
+        emailService.email(to.getEmail(),subject,body);
 
     }
 

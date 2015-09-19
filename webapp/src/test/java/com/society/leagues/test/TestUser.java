@@ -1,6 +1,7 @@
 package com.society.leagues.test;
 
 import com.society.leagues.Main;
+import com.society.leagues.Service.UserService;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.mongo.*;
 import org.apache.log4j.Logger;
@@ -9,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.http.*;
@@ -23,7 +23,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class})
-@WebIntegrationTest
+@WebIntegrationTest(randomPort = true)
 @ActiveProfiles(profiles = "test")
 public class TestUser {
 
@@ -33,6 +33,7 @@ public class TestUser {
 	int port;
     String host = "http://localhost";
     @Autowired UserRepository userRepository;
+    @Autowired UserService userService;
     @Autowired Utils utils;
     RestTemplate restTemplate = new RestTemplate();
     static HttpHeaders requestHeaders = new HttpHeaders();
@@ -54,8 +55,7 @@ public class TestUser {
         ResponseEntity<User> responseEntity = restTemplate.exchange(host + "/api/user/" + newUser.getId(), HttpMethod.GET,requestEntity,User.class);
         User returned = responseEntity.getBody();
         assertEquals(returned.getId(),newUser.getId());
-        assertEquals(returned.getLogin(),newUser.getLogin());
-
+        assertNull(returned.getPassword());
         responseEntity = restTemplate.exchange(host + "/api/user/login/" + newUser.getLogin(), HttpMethod.GET,requestEntity,User.class);
         returned = responseEntity.getBody();
         assertEquals(returned.getId(),newUser.getId());
@@ -63,8 +63,8 @@ public class TestUser {
 
         responseEntity = restTemplate.exchange(host + "/api/user", HttpMethod.GET,requestEntity,User.class);
         returned = responseEntity.getBody();
-        assertEquals(returned.getId(),newUser.getId());
-        assertEquals(returned.getLogin(),newUser.getLogin());
+        assertEquals(returned.getId(), newUser.getId());
+        assertEquals(returned.getLogin(), newUser.getLogin());
     }
 
     @Test(expected = HttpClientErrorException.class)
@@ -84,25 +84,47 @@ public class TestUser {
         u.setPassword(new BCryptPasswordEncoder().encode("abc123"));
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Cookie", Utils.JSESSIONID);
+        headers.add("Cookie", Utils.COOKIE);
         HttpEntity requestEntity = new HttpEntity(u, headers);
 
         User response = restTemplate.postForEntity(host +"/api/user/admin/create",requestEntity,User.class).getBody();
         assertNotNull(response.getId());
         assertNull(response.getPassword());
-        assertEquals("user",response.getLogin());
+        assertNull("user",response.getLogin());
     }
 
     @Test
     public void testModify() {
         User newUser = utils.createRandomUser();
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Cookie", Utils.JSESSIONID);
+        headers.add("Cookie", Utils.COOKIE);
         newUser.setFirstName("new name");
         HttpEntity requestEntity = new HttpEntity(newUser, headers);
         User response = restTemplate.postForEntity(host +"/api/user/admin/modify",requestEntity,User.class).getBody();
         assertNotNull(response.getId());
         assertNull(response.getPassword());
-        assertEquals("new name",response.getFirstName());
+        assertEquals("new name", response.getFirstName());
     }
+
+    @Test
+    public void testPasswordReset() {
+        HttpEntity requestEntity = new HttpEntity(null, requestHeaders);
+
+        User newUser = userRepository.findByLogin("test");
+
+        ResponseEntity<User> responseEntity = restTemplate.exchange(host + "/api/user/" + newUser.getId(), HttpMethod.GET,requestEntity,User.class);
+        User returned = responseEntity.getBody();
+        requestEntity = new HttpEntity("newPassword", requestHeaders);
+        responseEntity = restTemplate.exchange(host + "/api/user/reset/password/kljkljasd/" + newUser.getId(), HttpMethod.POST, requestEntity, User.class);
+        returned = responseEntity.getBody();
+        assertEquals("0", returned.getId());
+        String encoded = new BCryptPasswordEncoder().encode("newPassword");
+        TokenReset reset = userService.resetRequest(newUser);
+        assertTrue(!newUser.getTokens().isEmpty());
+        assertTrue(newUser.getTokens().contains(reset));
+        responseEntity = restTemplate.exchange(host + "/api/user/reset/password/" + reset.getToken() + "/" + newUser.getId(), HttpMethod.POST, requestEntity, User.class);
+        returned = responseEntity.getBody();
+        assertEquals(newUser.getId(),returned.getId());
+    }
+
 }
