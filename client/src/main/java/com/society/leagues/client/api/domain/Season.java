@@ -62,19 +62,16 @@ public class Season extends LeagueObject {
     }
 
     public String getDisplayName() {
-        String[] parts = name.split(",");
-        if (parts.length != 3)
-            return name;
-
+        if (this.name != null) {
+            return this.name;
+        }
         if (division == Division.NINE_BALL_CHALLENGE) {
             return "Top Gun";
         }
-
-        String n =  "'" + parts[0].substring(2) + " " + parts[1]  ;
-        if (isNine()) {
-            return n + " 9-ball";
-        }
-        return n + " " + parts[2];
+        String name = "'" + year.substring(2,2) + " ";
+        name += type;
+        name += " " + division.displayName;
+        return name;
     }
 
     public void setName(String name) {
@@ -119,6 +116,10 @@ public class Season extends LeagueObject {
 
     public boolean isNine(){
         return getDivision() ==  Division.NINE_BALL_CHALLENGE || getDivision() == Division.NINE_BALL_TUESDAYS;
+    }
+
+    public boolean isChallenge(){
+        return getDivision().isChallenge();
     }
 
     public String getYear() {

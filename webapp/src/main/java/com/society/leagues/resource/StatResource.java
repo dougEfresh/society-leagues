@@ -16,11 +16,11 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/stat")
+@SuppressWarnings("unused")
 public class StatResource {
     @Autowired LeagueService leagueService;
     @Autowired StatService statService;
     final static Logger logger = Logger.getLogger(StatResource.class);
-
 
     @RequestMapping(value = "/team/{id}",
             method = RequestMethod.GET,

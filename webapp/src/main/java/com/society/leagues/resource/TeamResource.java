@@ -100,7 +100,10 @@ public class TeamResource {
             return  Collections.emptyList();
         }
 
-        return leagueService.findAll(Team.class).stream().filter(t->t.getMembers().contains(u)).filter(t->t.getSeason().isActive()).collect(Collectors.toList());
+        return leagueService.findAll(Team.class).stream().
+                filter(t->t.getMembers().contains(u)).
+                filter(t->t.getSeason().isActive()).collect(Collectors.toList()
+        );
     }
 
 

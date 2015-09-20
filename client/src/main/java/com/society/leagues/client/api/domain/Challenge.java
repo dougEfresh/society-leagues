@@ -1,8 +1,10 @@
 package com.society.leagues.client.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.List;
 
 public class Challenge extends LeagueObject {
@@ -66,6 +68,27 @@ public class Challenge extends LeagueObject {
         return challenger.getSeason();
     }
 
+    public boolean isCancelled() {
+        return  status == Status.CANCELLED;
+    }
+
+    @JsonIgnore
+    public LocalDate getLocalDate() {
+        return slots.get(0).getLocalDateTime().toLocalDate();
+    }
+
+    public String getDate() {
+        return slots.get(0).getLocalDateTime().toString();
+    }
+
+    public User getUserChallenger() {
+        return challenger.getMembers().iterator().next();
+    }
+
+    public User getUserOpponent() {
+        return opponent.getMembers().iterator().next();
+    }
+
     @Override
     public String toString() {
         return "Challenge{" +
@@ -75,5 +98,9 @@ public class Challenge extends LeagueObject {
                 ", slots=" + slots +
                 ", acceptedSlot=" + acceptedSlot +
                 '}';
+    }
+
+    public boolean hasUser(User u) {
+        return challenger.hasUser(u) || opponent.hasUser(u);
     }
 }

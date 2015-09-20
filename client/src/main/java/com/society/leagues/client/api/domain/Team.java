@@ -130,6 +130,10 @@ public class Team extends LeagueObject {
         return false;
     }
 
+    public boolean isChallenge(){
+        return season.getDivision().isChallenge();
+    }
+
     @Override
     public String toString() {
         return "Team{" +

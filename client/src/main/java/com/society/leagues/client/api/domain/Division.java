@@ -10,10 +10,10 @@ public enum Division {
     NINE_BALL_CHALLENGE(LeagueType.INDIVIDUAL,"Top Gun");
 
     final LeagueType leagueType;
-    final String name;
+    final String displayName;
 
     Division(LeagueType leagueType,String name) {
-        this.leagueType = leagueType; this.name = name;
+        this.leagueType = leagueType; this.displayName = name;
     }
 
     public boolean isChallenge() {

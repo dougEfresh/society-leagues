@@ -4,7 +4,6 @@ package com.society.leagues;
 import com.society.leagues.Service.ChallengeService;
 import com.society.leagues.Service.LeagueService;
 import com.society.leagues.Service.ResultService;
-import com.society.leagues.Service.UserService;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.mongo.*;
 import org.apache.log4j.Logger;
@@ -37,6 +36,8 @@ public class ConvertUtil {
     @Autowired TeamMatchRepository teamMatchRepository;
     @Autowired PlayerResultRepository playerResultRepository;
     @Autowired ResultService resultService;
+    @Autowired ChallengeRepository challengeRepository;
+    @Autowired SlotRepository slotRepository;
     @Autowired ChallengeService challengeService;
     @Autowired LeagueService leagueService;
 
@@ -96,20 +97,17 @@ public class ConvertUtil {
                         " join league l on m.league_id=l.league_id\n" +
                         " where match_start_date > '0000-00-00 00:00:00' and m.season_id > 1" +
                         " group by m.season_id,m.league_id;");
-        List<Season> seasons = new ArrayList<>();
+
         for (Map<String, Object> result : results) {
             Season s = new Season();
             String name = (String) result.get("name");
             s.setLegacyId((Integer) result.get("season_id"));
-            if (seasonRepository.findByLegacyId(s.getLegacyId()) != null) {
-                continue;
-            }
-            s.setStartDate(LocalDateTime.now());
-            if (!name.contains("2015,Summer")) {
-                s.setEndDate(LocalDateTime.now());
-                s.setSeasonStatus(Status.INACTIVE);
-            } else {
+            s.setStartDate(LocalDateTime.now().minusDays(100));
+            if (name.contains("2015,Summer")) {
+                s.setEndDate(LocalDateTime.now().minusDays(60));
                 s.setSeasonStatus(Status.ACTIVE);
+            } else {
+                s.setSeasonStatus(Status.INACTIVE);
             }
             s.setYear(name.split(",")[0]);
             s.setType(name.split(",")[1]);
@@ -163,8 +161,9 @@ public class ConvertUtil {
         System.out.println("Created " + teamRepository.findAll().size() + " teams");
     }
     public void convertTeamMembers() {
-       List<Map<String,Object>> results  = jdbcTemplate.queryForList("select distinct player_id,team_id  " +
-               "from result_ind r join match_schedule m on r.match_id = m.match_id  where player_id is not null and team_id is not null and team_id > 0 and player_id > 0");
+       List<Map<String,Object>> results  = jdbcTemplate.queryForList("select distinct player_id,team_id,season_id  " +
+               "from result_ind r join match_schedule m on r.match_id = m.match_id  " +
+               "where player_id is not null and team_id is not null and team_id > 0 and player_id > 0");
         List<User> users = userRepository.findAll();
         List<Team> teams = teamRepository.findAll();
         Map<Integer,User> userMap = new HashMap<>();
@@ -178,9 +177,16 @@ public class ConvertUtil {
         for (Map<String, Object> result : results) {
             Integer id = (Integer) result.get("player_id");
             User u = userMap.get(id);
+            HandicapSeason handicapSeason = u.getHandicapSeasons().stream().
+                    filter(hs->hs.getSeason().getLegacyId().equals(result.get("season_id"))).
+                    findFirst().orElse(null);
+
+            if (handicapSeason == null) {
+                continue;
+            }
             Team t = teamMap.get((Integer) result.get("team_id"));
             if (t == null) {
-                System.err.println("Could not find team " + result.get("team_id") );
+                System.err.println("Could not find team " + result.get("team_id"));
                 continue;
             }
             t.addMember(u);
@@ -442,7 +448,15 @@ public class ConvertUtil {
         //for (PlayerResult result : remove) {
 //            playerResultRepository.delete(result);
   //      }
-    //    leagueService.refreshAllCache();
+        playerResultRepository.deleteAll();
+        challengeRepository.deleteAll();
+        slotRepository.deleteAll();
+        List<TeamMatch> tms = teamMatchRepository.findAll().stream().parallel().filter(tm->tm.getSeason().getDivision().isChallenge()).collect(Collectors.toList());
+        for (TeamMatch teamMatch : tms) {
+            teamMatchRepository.delete(teamMatch);
+        }
+
+        leagueService.refreshAllCache();
         Season challenge = leagueService.findAll(Season.class).stream().filter(s->s.getDivision() == Division.NINE_BALL_CHALLENGE).findFirst().orElse(null);
         if (challenge == null){
             challenge = new Season();
@@ -454,7 +468,7 @@ public class ConvertUtil {
             challenge = leagueService.save(challenge);
         }
 
-        System.err.println("Creating new chllange user");
+        System.err.println("Creating new challenge user");
         List<Map<String,Object>> challengeUsers =
                 jdbcTemplate.queryForList("select distinct u.* from leagues_dev.users u " +
                         "join leagues_dev.player p on u.user_id = p.user_id where p.season_id =  4003; ");
@@ -537,7 +551,9 @@ public class ConvertUtil {
             Handicap awayHandicap = Handicap.values()[(Integer) away.get("handicap")];
             pr.setPlayerHomeHandicap(homeHandicap);
             pr.setPlayerAwayHandicap(awayHandicap);
-            leagueService.save(pr);
+            pr.setAwayRacks((Integer) player_result.get("away_racks"));
+            pr.setHomeRacks((Integer) player_result.get("home_racks"));
+            resultService.createOrModify(pr);
         }
 
         List<PlayerResult> challengeResults = leagueService.findAll(PlayerResult.class).stream().parallel().filter(pr->pr.getSeason().getDivision().isChallenge()).collect(Collectors.toList());
@@ -546,7 +562,8 @@ public class ConvertUtil {
             PlayerResult result = challengeResults.stream().filter(c->c.hasUser(user)).max(new Comparator<PlayerResult>() {
                 @Override
                 public int compare(PlayerResult playerResult, PlayerResult t1) {
-                    return t1.getMatchDate().compareTo(playerResult.getMatchDate());
+                    //return t1.getMatchDate().compareTo(playerResult.getMatchDate());
+                    return playerResult.getMatchDate().compareTo(t1.getMatchDate());
                 }
             }).orElse(null);
             if (result == null){
@@ -615,10 +632,9 @@ public class ConvertUtil {
                 newChallenge.setChallenger(userTeamHome);
                 newChallenge.setOpponent(userTeamAway);
                 newChallenge.setSlots(Arrays.asList(s));
+                leagueService.save(newChallenge);
                 continue;
             }
-
         }
-
     }
 }

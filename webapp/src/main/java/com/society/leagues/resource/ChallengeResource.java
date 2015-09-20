@@ -6,14 +6,13 @@ import com.society.leagues.Service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -25,8 +24,7 @@ import org.slf4j.LoggerFactory;
 public class ChallengeResource {
 
     @Autowired LeagueService leagueService;
-    @Autowired
-    EmailService emailService;
+    @Autowired EmailService emailService;
     @Value("${service-url:http://leaguesdev.societybilliards.com}") String serviceUrl;
     static final Logger logger = LoggerFactory.getLogger(ChallengeResource.class);
 
@@ -77,10 +75,28 @@ public class ChallengeResource {
          return leagueService.save(c);
     }
 
-    @RequestMapping(value = "/get", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @RequestMapping(value = {"/", "","get"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public List<Challenge> get(Principal principal) {
-        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
-        return leagueService.findAll(Challenge.class).stream().filter(c->c.getSlots().get(0).getLocalDateTime().isAfter(yesterday)).collect(Collectors.toList());
+        LocalDate yesterday = LocalDateTime.now().minusDays(1).toLocalDate();
+        List<Challenge> challenges =  leagueService.findAll(Challenge.class).stream().
+                filter(c -> c.getLocalDate().isAfter(yesterday)).
+                filter(c -> !c.isCancelled()).
+                collect(Collectors.toList()
+                );
+        challenges.sort(new Comparator<Challenge>() {
+            @Override
+            public int compare(Challenge challenge, Challenge t1) {
+                return challenge.getLocalDate().compareTo(t1.getLocalDate());
+            }
+        });
+        return challenges;
+    }
+
+
+  @RequestMapping(value = {"/user/{id}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+  public List<Challenge> getByUser(Principal principal,@PathVariable String id) {
+      User u = leagueService.findOne(new User(id));
+      return get(principal).stream().parallel().filter(c -> c.hasUser(u)).collect(Collectors.toList());
     }
 
     private void sendEmail(User to, User from, Status status, Challenge challenge, String message) {
