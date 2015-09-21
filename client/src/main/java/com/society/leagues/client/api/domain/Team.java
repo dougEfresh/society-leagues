@@ -134,6 +134,11 @@ public class Team extends LeagueObject {
         return season.getDivision().isChallenge();
     }
 
+    public User getChallengeUser() {
+        return members.iterator().next();
+    }
+
+
     @Override
     public String toString() {
         return "Team{" +

@@ -8,9 +8,4 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface PlayerResultRepository extends MongoRepository<PlayerResult,String> {
-
-    List<PlayerResult> findBySeason(Season season);
-    List<PlayerResult> findByPlayerHomeOrPlayerAway(User user);
-    List<PlayerResult> findByPlayerHome(User user);
-    List<PlayerResult> findByPlayerAway(User user);
 }

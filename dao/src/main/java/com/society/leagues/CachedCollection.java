@@ -1,19 +1,19 @@
 package com.society.leagues;
 
 import com.society.leagues.client.api.domain.LeagueObject;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.ReentrantLock;
+
 
 public class CachedCollection<T extends List<? extends LeagueObject>> {
     final AtomicReference<T> entity = new AtomicReference(new ArrayList<T>());
-    final String type;
+    final MongoRepository repo;
 
-    public CachedCollection(String type) {
-        this.type = type;
+    public CachedCollection(MongoRepository repo) {
+        this.repo = repo;
     }
 
     public T get() {
@@ -24,7 +24,7 @@ public class CachedCollection<T extends List<? extends LeagueObject>> {
         this.entity.lazySet(collection);
     }
 
-    public String getType() {
-        return type;
+    public MongoRepository getRepo() {
+        return repo;
     }
 }

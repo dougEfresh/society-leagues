@@ -7,16 +7,21 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.scheduling.annotation.EnableScheduling;
+
+import java.util.List;
 
 @Configuration
 @ComponentScan("com.society")
 @EnableAutoConfiguration
 @EnableScheduling
 @EnableSwagger
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class Main implements CommandLineRunner {
-    @Autowired
-    ConvertUtil convertUtil;
+    @Autowired ConvertUtil convertUtil;
+    @Autowired List<MongoRepository>  repositories;
 
     public static void main(String[] args) throws Exception {
         SpringApplication app = new SpringApplication(Main.class);
@@ -31,16 +36,14 @@ public class Main implements CommandLineRunner {
                 convertUtil.convertUser();
                 convertUtil.convertSeason();
                 convertUtil.convertTeam();
-                convertUtil.convertTeamMembers();
-                convertUtil.converTeamMatch();
-                convertUtil.converTeamMatchResult();
-                convertUtil.convertChallengers();
+                //convertUtil.convertTeamMembers();
+                //convertUtil.converTeamMatch();
+                //convertUtil.converTeamMatchResult();
+//                convertUtil.convertChallengers();
 
                 //convertUtil.convertPlayerResults();
                 //convertUtil.userHandicap();
                 //convertUtil.updateSetWinsLoses();
-
-
                 System.exit(0);
             }
         }

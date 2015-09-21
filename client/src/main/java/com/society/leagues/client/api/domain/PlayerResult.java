@@ -7,12 +7,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.client.views.PlayerResultView;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 
 @SuppressWarnings("unused")
-public class PlayerResult extends LeagueObject {
+public class PlayerResult  extends LeagueObject {
 
     @NotNull @DBRef TeamMatch teamMatch;
     @NotNull @DBRef User playerHome;

@@ -19,6 +19,7 @@ public class Stat {
     User user;
     Season season;
     Handicap handicap;
+    Double points = 0d;
 
     public Stat() {
     }
@@ -274,8 +275,13 @@ public class Stat {
         this.season = season;
     }
 
+    public Double getPoints() {
+        return points;
+    }
 
-
+    public void setPoints(Double points) {
+        this.points = points;
+    }
 
     public Double getWinPct() {
         if (matches == 0) {

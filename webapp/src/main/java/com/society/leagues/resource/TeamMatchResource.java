@@ -63,7 +63,7 @@ public class TeamMatchResource {
     @RequestMapping(value = {"/get/season/{id}","/season/{id}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public List<TeamMatch> getTeamMatchSeason(Principal principal, @PathVariable String id) {
          Season s = leagueService.findOne(new Season(id));
-         return leagueService.findTeamMatchBySeason(s).stream().sorted(new Comparator<TeamMatch>() {
+         return leagueService.findAll(TeamMatch.class).stream().parallel().filter(tm -> tm.getSeason().equals(s)).sorted(new Comparator<TeamMatch>() {
              @Override
              public int compare(TeamMatch teamMatch, TeamMatch t1) {
                  return t1.getMatchDate().compareTo(teamMatch.getMatchDate());
@@ -79,7 +79,7 @@ public class TeamMatchResource {
                 .collect(Collectors.toList());
         List<TeamMatch> teamMatches = new ArrayList<>();
         for (Team userTeam : userTeams) {
-            teamMatches.addAll(leagueService.findTeamMatchByTeam(userTeam));
+            teamMatches.addAll(leagueService.findAll(TeamMatch.class).stream().filter(tm->tm.hasTeam(userTeam)).collect(Collectors.toList()));
         }
         teamMatches.parallelStream().forEach(tm->tm.setReferenceUser(u));
         return teamMatches;

@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -19,9 +20,10 @@ public class StatService {
     final AtomicReference<List<Stat>> handicapStats = new AtomicReference<>(new ArrayList<>(2000));
 
     @Autowired LeagueService leagueService;
+
     @PostConstruct
     public void init() {
-        refresh();
+        //refresh();
     }
 
     public List<Stat> getSeasonStats() {
@@ -40,7 +42,10 @@ public class StatService {
         List<Stat> teamStats = new ArrayList<>();
         for (Team team : teams) {
             teamStats.add(Stat.buildTeamStats(team,
-                    leagueService.findTeamMatchByTeam(team).parallelStream().filter(tm->tm.isHasResults()).collect(Collectors.toList())
+                    leagueService.findAll(TeamMatch.class).parallelStream()
+                            .filter(tm -> tm.hasTeam(team))
+                            .filter(TeamMatch::isHasResults)
+                            .collect(Collectors.toList())
             ));
         }
         this.teamStats.lazySet(teamStats);
@@ -91,4 +96,5 @@ public class StatService {
         seasonStats.lazySet(newStats);
         logger.info("Created " + seasonStats.get().size() + " stats for " + users.size() + " users with a total of " + playerResults.size() );
     }
+
 }

@@ -1,6 +1,8 @@
 package com.society.leagues.resource;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.society.leagues.Service.LeagueService;
+import com.society.leagues.Service.ResultService;
 import com.society.leagues.Service.StatService;
 import com.society.leagues.client.api.domain.*;
 import org.apache.log4j.Logger;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -20,6 +23,8 @@ import java.util.stream.Collectors;
 public class StatResource {
     @Autowired LeagueService leagueService;
     @Autowired StatService statService;
+    @Autowired ResultService resultService;
+
     final static Logger logger = Logger.getLogger(StatResource.class);
 
     @RequestMapping(value = "/team/{id}",
@@ -52,24 +57,48 @@ public class StatResource {
             consumes = MediaType.ALL_VALUE)
     public List<Stat> getSeasonStats(@PathVariable String id) {
         Season season = leagueService.findOne(new Season(id));
-        return  statService.getTeamStats().parallelStream().filter(s->s.getSeason().equals(season)).sorted(new Comparator<Stat>() {
+        List<Stat> stats = statService.getTeamStats().parallelStream().filter(s->s.getSeason().equals(season)).sorted(new Comparator<Stat>() {
             @Override
             public int compare(Stat stat, Stat t1) {
-                if (t1.getWins() != stat.getWins()) {
+                if (!Objects.equals(t1.getWins(), stat.getWins())) {
                     return t1.getWins().compareTo(stat.getWins());
                 }
-                if (t1.getLoses() != stat.getLoses()) {
+                if (!Objects.equals(t1.getLoses(), stat.getLoses())) {
                     return stat.getLoses().compareTo(t1.getLoses());
                 }
                 if (stat.getSeason().isNine()) {
 
                 }
-                if (t1.getRacksWon() != stat.getRacksWon()) {
+                if (!Objects.equals(t1.getRacksWon(), stat.getRacksWon())) {
                     return t1.getRacksWon().compareTo(stat.getRacksWon());
                 }
                 return stat.getRacksLost().compareTo(t1.getRacksLost());
             }
         }).collect(Collectors.toList());
+        List<MatchPoints> points = resultService.matchPoints();
+        if (!season.isChallenge())
+            return stats;
+
+        for (Stat stat : stats) {
+            double totalPoints = 0d;
+            User u = stat.getTeam().getMembers().iterator().next();
+            List<MatchPoints> pointsList = points.stream().parallel().filter(p->p.getPlayerResult().hasUser(u)).collect(Collectors.toList());
+            for (MatchPoints matchPoints : pointsList) {
+                totalPoints += matchPoints.getPoints();
+            }
+            stat.setPoints(totalPoints);
+        }
+        return stats;
+    }
+
+    @RequestMapping(value = "/matchpoints", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public Map<String,MatchPoints> matchPoints() {
+        LocalDateTime tenWeeksAgo = LocalDateTime.now().minusWeeks(10);
+        HashMap<String,MatchPoints> hashMap = new HashMap<>(50);
+        for(MatchPoints points: resultService.matchPoints()) {
+            hashMap.put(points.getPlayerResult().getId(),points);
+        }
+        return hashMap;
     }
 
      @RequestMapping(value = "/season/players/{id}",
@@ -78,7 +107,7 @@ public class StatResource {
             consumes = MediaType.ALL_VALUE)
     public List<Stat> getSeasonPlayerStats(@PathVariable String id) {
          Season season = leagueService.findOne(new Season(id));
-         List<Team> teams = leagueService.findTeamBySeason(season);
+         List<Team> teams = leagueService.findAll(Team.class).stream().parallel().filter(t->t.getSeason().equals(season)).collect(Collectors.toList());
          List<PlayerResult> results = leagueService.findPlayerResultBySeason(season).stream().
                  filter(r -> r.getLoser() != null && r.getWinner() != null).
                  collect(Collectors.toList());

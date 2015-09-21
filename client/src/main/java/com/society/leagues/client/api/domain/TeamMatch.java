@@ -144,11 +144,6 @@ public class TeamMatch extends LeagueObject {
     }
 
     public boolean isHasResults() {
-        if (homeRacks < 0)
-            homeRacks = 0;
-        if (awayRacks < 0)
-            awayRacks = 0;
-
         return homeRacks + awayRacks > 0;
     }
 

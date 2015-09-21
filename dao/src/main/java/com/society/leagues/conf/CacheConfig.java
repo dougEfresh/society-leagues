@@ -2,64 +2,84 @@ package com.society.leagues.conf;
 
 import com.society.leagues.CachedCollection;
 import com.society.leagues.Service.LeagueService;
-import com.society.leagues.client.api.domain.Challenge;
-import com.society.leagues.client.api.domain.PlayerResult;
-import com.society.leagues.client.api.domain.Season;
-import com.society.leagues.client.api.domain.Slot;
-import com.society.leagues.client.api.domain.Team;
-import com.society.leagues.client.api.domain.TeamMatch;
-import com.society.leagues.client.api.domain.User;
+import com.society.leagues.client.api.domain.*;
+import com.society.leagues.mongo.*;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
 
 @Configuration
-@SuppressWarnings("unused")
+@SuppressWarnings(value = {"unused","unchecked"})
 public class CacheConfig {
     private static Logger logger = Logger.getLogger(LeagueService.class);
+    @Autowired List<MongoRepository> repositories;
 
     @Bean
     public CachedCollection<List<Team>> teamCachedCollection() {
-        CachedCollection cachedCollection = new CachedCollection("team");
-        return cachedCollection;
+        return new CachedCollection<>(getRepo(TeamMatchRepository.class));
     }
 
     @Bean
     public CachedCollection<List<TeamMatch>> teamMatchCachedCollection() {
-        CachedCollection cachedCollection = new CachedCollection("teamMatch");
-        return cachedCollection;
+        return new CachedCollection<>(getRepo(TeamMatchRepository.class));
     }
 
     @Bean
     public CachedCollection<List<User>> userCachedCollection() {
-        CachedCollection cachedCollection = new CachedCollection("user");
-        return cachedCollection;
+        return new CachedCollection<>(getRepo(UserRepository.class));
     }
 
     @Bean
     public CachedCollection<List<Season>> seasonCachedCollection() {
-        CachedCollection cachedCollection = new CachedCollection("season");
-        return cachedCollection;
+        return new CachedCollection<>(getRepo(SeasonRepository.class));
     }
 
     @Bean(name = "challengeCachedCollection")
     public CachedCollection<List<Challenge>> challengeCachedCollection() {
-        CachedCollection cachedCollection = new CachedCollection("challenge");
-        return cachedCollection;
+        return new CachedCollection<>(getRepo(ChallengeRepository.class));
     }
 
     @Bean
     public CachedCollection<List<Slot>> slotCachedCollection() {
-        CachedCollection cachedCollection = new CachedCollection("slot");
-        return cachedCollection;
+        return new CachedCollection<>(getRepo(SlotRepository.class));
     }
 
     @Bean
     public CachedCollection<List<PlayerResult>> playerResultCachedCollection() {
-        CachedCollection cachedCollection = new CachedCollection("playerResult");
-        return cachedCollection;
+        return new CachedCollection<>(getRepo(PlayerResultRepository.class));
     }
+
+    private MongoRepository getRepo(Class clz) {
+        if (clz.getCanonicalName().endsWith("Challenge")) {
+            return null;
+        }
+        if (clz.getCanonicalName().endsWith("User")) {
+            return null;
+        }
+        if (clz.getCanonicalName().endsWith("Slot")) {
+            return null;
+        }
+        if (clz.getCanonicalName().endsWith("Team")) {
+            return null;
+        }
+        if (clz.getCanonicalName().endsWith("TeamMatch")) {
+            return null;
+        }
+
+        if (clz.getCanonicalName().endsWith("Season")) {
+            return null;
+        }
+
+        if (clz.getCanonicalName().endsWith("PlayerResult")) {
+            return null;
+        }
+
+        return null;
+    }
+
 }

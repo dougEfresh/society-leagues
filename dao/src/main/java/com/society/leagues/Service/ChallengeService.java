@@ -16,13 +16,10 @@ public class ChallengeService  {
         }
         leagueService.save(user);
 
-        Team t = leagueService.findAll(Team.class).stream().parallel().filter(team->team.getName().equals(user.getName())).findFirst().orElse(null);
-        if (t != null) {
-            t.addMember(user);
-            return leagueService.save(t);
-
-        }
-        t = new Team(challenge,user.getName());
+        Team t = leagueService.findAll(Team.class).stream().parallel()
+                .filter(team -> team.getMembers().contains(user))
+                .filter(team -> team.getSeason().isChallenge())
+                .findFirst().orElse(new Team(challenge,user.getName()));
         t.addMember(user);
         return leagueService.save(t);
     }
