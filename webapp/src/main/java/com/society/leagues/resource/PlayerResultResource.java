@@ -12,8 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -73,16 +71,18 @@ public class PlayerResultResource {
     @JsonView(PlayerResultView.class)
     public List<PlayerResult> getPlayerResultSeason(Principal principal, @PathVariable String id) {
         Season s = leagueService.findOne(new Season(id));
-        return leagueService.findPlayerResultBySeason(s);
+        return leagueService.findAll(PlayerResult.class).stream().parallel()
+                .filter(pr -> pr.getSeason().equals(s))
+                .collect(Collectors.toList());
     }
 
     @RequestMapping(value = "/get/team/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @JsonView(PlayerResultView.class)
     public List<PlayerResult> getPlayerResulTeam(Principal principal, @PathVariable String id) {
         Team t  = leagueService.findOne(new Team(id));
-        List<PlayerResult> results = leagueService.findPlayerResultBySeason(t.getSeason()).
-                parallelStream().
-                filter(pr -> pr.hasTeam(t)).collect(Collectors.toList());
+        List<PlayerResult> results =  leagueService.findAll(PlayerResult.class).stream().parallel()
+                .filter(pr -> pr.getSeason().equals(t.getSeason()))
+                .filter(pr -> pr.hasTeam(t)).collect(Collectors.toList());
         results.parallelStream().forEach(pr -> pr.setReferenceTeam(t));
         return results.stream().
                 sorted((playerResult, t1) -> playerResult.getTeamMember().getName().compareTo(t1.getTeamMember().getName())).
@@ -94,28 +94,17 @@ public class PlayerResultResource {
     @JsonView(PlayerResultView.class)
     public List<PlayerResult> getPlayerResultByUser(Principal principal, @PathVariable String id, @PathVariable String type) {
         User u = leagueService.findOne(new User(id));
+        List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().filter(pr -> pr.hasUser(u))
+                    .filter(r -> r.getTeamMatch() != null)
+                    .sorted((playerResult, t1) -> t1.getMatchDate().compareTo(playerResult.getMatchDate()))
+                    .collect(Collectors.toList());
+
         if (type.equals("all"))
-            return leagueService.findPlayerResultByUser(u)
-                    .stream().filter(r->r.getTeamMatch() != null)
-                    .sorted((playerResult, t1) -> t1.getMatchDate().compareTo(playerResult.getMatchDate()))
-                    .collect(Collectors.toList());
+            return results;
 
-        if (type.equals("current")) {
-            List<PlayerResult> results = leagueService.findPlayerResultByUser(u);
-            results.parallelStream().forEach(r -> r.setReferenceUser(u));
-
-            return results.parallelStream().filter(r -> r.getTeamMatch() != null)
-                    .filter(r -> r.getSeason().getSeasonStatus() == Status.ACTIVE)
-                    .sorted((playerResult, t1) -> t1.getMatchDate().compareTo(playerResult.getMatchDate()))
-                    .collect(Collectors.toList());
-
-        }
-
-        return leagueService.findPlayerResultByUser(u)
-                .stream()
-                .filter(r->r.getTeamMatch() != null)
-                .filter(r->r.getSeason().getSeasonStatus() != Status.ACTIVE)
-                .sorted((playerResult, t1) -> t1.getMatchDate().compareTo(playerResult.getMatchDate()))
+        results = results.stream().filter(pr->pr.getSeason().isActive()).collect(Collectors.toList());
+        results.parallelStream().forEach(r -> r.setReferenceUser(u));
+        return results.stream().sorted((playerResult, t1) -> t1.getMatchDate().compareTo(playerResult.getMatchDate()))
                 .collect(Collectors.toList());
     }
 }

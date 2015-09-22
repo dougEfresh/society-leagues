@@ -22,7 +22,9 @@ dependencies {
     compile 'org.springframework.security:spring-security-web:3.2.7.RELEASE'
     compile 'org.springframework.boot:spring-boot-starter-data-mongodb:1.2.5.RELEASE'
 
-    compile 'aspectj:aspectjrt:1.5.4'
+    compile 'org.aspectj:aspectjrt:1.8.6'
+    compile(group: 'org.aspectj', name: 'aspectjtools', version: '1.8.6')
+
     //DB
     compile 'mysql:mysql-connector-java:5.1.32'
     compile "com.h2database:h2:1.4.185"

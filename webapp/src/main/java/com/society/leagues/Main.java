@@ -21,7 +21,6 @@ import java.util.List;
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class Main implements CommandLineRunner {
     @Autowired ConvertUtil convertUtil;
-    @Autowired List<MongoRepository>  repositories;
 
     public static void main(String[] args) throws Exception {
         SpringApplication app = new SpringApplication(Main.class);

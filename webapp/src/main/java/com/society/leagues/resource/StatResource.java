@@ -1,6 +1,5 @@
 package com.society.leagues.resource;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.society.leagues.Service.LeagueService;
 import com.society.leagues.Service.ResultService;
 import com.society.leagues.Service.StatService;
@@ -45,10 +44,12 @@ public class StatResource {
         if (team == null) {
             return Collections.emptyList();
         }
-        return Stat.buildTeamMemberStats(team, leagueService.findPlayerResultBySeason(team.getSeason()))
-                .stream().parallel()
-                .filter(s->!s.getUser().isFake())
-                .collect(Collectors.toList());
+        return Stat.buildTeamMemberStats(team, leagueService.
+                findAll(PlayerResult.class).stream().parallel()
+                .filter(pr -> pr.getSeason().equals(team.getSeason()))
+                .filter(pr -> !pr.getLoser().isFake())
+                .filter(pr -> !pr.getWinner().isFake())
+                .collect(Collectors.toList()));
     }
 
     @RequestMapping(value = "/season/{id}",
@@ -106,9 +107,10 @@ public class StatResource {
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.ALL_VALUE)
     public List<Stat> getSeasonPlayerStats(@PathVariable String id) {
-         Season season = leagueService.findOne(new Season(id));
+         final Season season = leagueService.findOne(new Season(id));
          List<Team> teams = leagueService.findAll(Team.class).stream().parallel().filter(t->t.getSeason().equals(season)).collect(Collectors.toList());
-         List<PlayerResult> results = leagueService.findPlayerResultBySeason(season).stream().
+         List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().
+                 filter(pr -> pr.getSeason().equals(season)).
                  filter(r -> r.getLoser() != null && r.getWinner() != null).
                  collect(Collectors.toList());
          Map<User,List<PlayerResult>> losers = results.stream().collect(Collectors.groupingBy(r -> r.getLoser(), Collectors.toList()));
@@ -155,9 +157,11 @@ public class StatResource {
                 filter(t -> t.getSeason().isActive()).
                 collect(Collectors.toList());
 
-        List<PlayerResult> results = leagueService.findPlayerResultByUser(u).stream().
-                filter(r -> r.getSeason().isActive()).
-                collect(Collectors.toList());
+        List<PlayerResult> results = leagueService.findAll(PlayerResult.class)
+                .stream().parallel()
+                .filter(pr->pr.hasUser(u))
+                .filter(r -> r.getSeason().isActive())
+                .collect(Collectors.toList());
         for (Team team : teams) {
             stats.add(Stat.buildPlayerTeamStats(
                             u,

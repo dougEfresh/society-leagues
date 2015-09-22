@@ -2,6 +2,8 @@ package com.society.leagues;
 
 import com.mongodb.DBObject;
 import com.mongodb.DBRef;
+import com.society.leagues.cache.CacheUtil;
+import com.society.leagues.cache.CachedCollection;
 import com.society.leagues.client.api.domain.LeagueObject;
 import org.apache.log4j.Logger;
 import org.springframework.data.mongodb.MongoDbFactory;
@@ -10,42 +12,32 @@ import org.springframework.data.mongodb.core.convert.DbRefResolverCallback;
 import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentProperty;
 
-import java.util.List;
 
 public class CustomRefResolver extends DefaultDbRefResolver {
     private static Logger logger = Logger.getLogger(CustomRefResolver.class);
-    final List<CachedCollection> cachedCollections;
+    final CacheUtil cacheUtil;
     static long lookups = 1;
     static long cacheHits = 1;
 
-    public CustomRefResolver(MongoDbFactory mongoDbFactory, List<CachedCollection> cachedCollections) {
+    public CustomRefResolver(MongoDbFactory mongoDbFactory, CacheUtil cacheUtil) {
         super(mongoDbFactory);
-        this.cachedCollections = cachedCollections;
+        this.cacheUtil = cacheUtil;
     }
 
     @Override
     public Object resolveDbRef(MongoPersistentProperty property, DBRef dbref, DbRefResolverCallback callback, DbRefProxyHandler handler) {
 
-        if (dbref == null || dbref.getCollectionName() == null) {
+        if (dbref == null || dbref.getCollectionName() == null || dbref.getId() == null || dbref.getId().toString() == null) {
             return super.resolveDbRef(property, dbref, callback, handler);
         }
-        CachedCollection<List<LeagueObject>> cachedCollection =  getCache(dbref.getCollectionName());
-        if (cachedCollection != null && cachedCollection.get() != null) {
-            Object obj = cachedCollection.get().parallelStream().
-                    filter(c-> c != null && c.getId() != null ).
-                    filter(c -> c.getId().equals(dbref.getId().toString())).
-                    findFirst().orElse(null);
-            if (obj == null) {
-                obj = super.resolveDbRef(property, dbref, callback, handler);
-                cachedCollection.get().add((LeagueObject) obj);
-                return obj;
-            } else {
-                cacheHits++;
-                return obj;
-            }
+
+        Object obj = cacheUtil.findOne(dbref.getId().toString(), dbref.getCollectionName());
+        if (obj == null) {
+            return cacheUtil.addCache(super.resolveDbRef(property, dbref, callback, handler));
+        } else {
+            cacheHits++;
+            return obj;
         }
-        logger.info("No Cache for " + dbref.getCollectionName());
-        return super.resolveDbRef(property, dbref, callback, handler);
     }
 
     @Override
@@ -55,20 +47,9 @@ public class CustomRefResolver extends DefaultDbRefResolver {
 
         lookups++;
         logger.info(String.format("Cache Stats %s %s : Lookups: %d  CacheHits: %d Ratios: %f ",
-                dbRef.getCollectionName(),dbRef,lookups,cacheHits,
-                 ((double)lookups/ (double) cacheHits)));
+                dbRef.getCollectionName(), dbRef, lookups, cacheHits,
+                ((double) lookups / (double) cacheHits)));
         return super.fetch(dbRef);
     }
 
-    @SuppressWarnings("unchecked")
-    public CachedCollection<List<LeagueObject>> getCache(String collection) {
-        /*
-        for (CachedCollection cachedCollection : cachedCollections) {
-            if (cachedCollection.getType().equals(collection)) {
-                return cachedCollection;
-            }
-        }
-        */
-        return null;
-    }
 }

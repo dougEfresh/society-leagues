@@ -2,7 +2,8 @@ package com.society.leagues.conf;
 
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
-import com.society.leagues.CachedCollection;
+import com.society.leagues.cache.CacheUtil;
+import com.society.leagues.cache.CachedCollection;
 import com.society.leagues.CustomRefResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +17,6 @@ import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.convert.DbRefResolver;
 import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.List;
 
@@ -29,7 +29,8 @@ public class MongoConfig extends AbstractMongoConfiguration {
     boolean useCache;
 
     @Autowired MongoProperties properties;
-    @Autowired List<CachedCollection> cachedCollections;
+    //@Autowired List<CachedCollection> cachedCollections;
+    @Autowired CacheUtil cacheUtil;
 
     @Override
     protected String getDatabaseName() {
@@ -47,7 +48,7 @@ public class MongoConfig extends AbstractMongoConfiguration {
 	public MappingMongoConverter mappingMongoConverter() throws Exception {
         DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoDbFactory());
         if (useCache) {
-            dbRefResolver = new CustomRefResolver(mongoDbFactory(),cachedCollections);
+            dbRefResolver = new CustomRefResolver(mongoDbFactory(),cacheUtil);
         }
 
 		MappingMongoConverter converter = new MappingMongoConverter(dbRefResolver, mongoMappingContext());

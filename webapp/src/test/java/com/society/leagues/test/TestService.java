@@ -1,6 +1,6 @@
 package com.society.leagues.test;
 
-import com.society.leagues.CachedCollection;
+import com.society.leagues.cache.CachedCollection;
 import com.society.leagues.Main;
 import com.society.leagues.Service.LeagueService;
 import com.society.leagues.client.api.domain.Handicap;
@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;

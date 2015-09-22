@@ -2,7 +2,7 @@ package com.society.leagues.test;
 
 import com.mongodb.Mongo;
 import com.mongodb.MongoClientOptions;
-import com.society.leagues.CachedCollection;
+import com.society.leagues.cache.CachedCollection;
 import com.society.leagues.CustomRefResolver;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
@@ -18,8 +18,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
-import org.springframework.data.mongodb.core.convert.DbRefResolver;
-import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 
 import java.io.IOException;

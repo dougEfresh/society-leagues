@@ -161,6 +161,7 @@ public class ConvertUtil {
 
         System.out.println("Created " + leagueService.findAll(Team.class).size() + " teams");
     }
+
     public void convertTeamMembers() {
        List<Map<String,Object>> results  = jdbcTemplate.queryForList("select distinct player_id,team_id,season_id  " +
                "from result_ind r join match_schedule m on r.match_id = m.match_id  " +
@@ -442,7 +443,6 @@ public class ConvertUtil {
         */
     }
 
-
     public void convertChallengers() {
         List<PlayerResult> remove = leagueService.findAll(PlayerResult.class).stream().filter(r -> r.getSeason() != null).filter(r -> r.getSeason().isChallenge()).collect(Collectors.toList());
         for (PlayerResult result : remove) {
@@ -457,7 +457,7 @@ public class ConvertUtil {
         for (TeamMatch teamMatch : leagueService.findAll(TeamMatch.class).stream().parallel().filter(tm->tm.getSeason().getDivision().isChallenge()).collect(Collectors.toList())) {
             leagueService.delete(teamMatch);
         }
-        leagueService.refreshAllCache();
+
         Season challenge = leagueService.findAll(Season.class).stream().filter(s->s.getDivision() == Division.NINE_BALL_CHALLENGE).findFirst().orElse(null);
         if (challenge == null){
             challenge = new Season();
