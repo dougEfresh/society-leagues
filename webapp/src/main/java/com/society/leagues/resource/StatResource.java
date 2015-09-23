@@ -44,12 +44,9 @@ public class StatResource {
         if (team == null) {
             return Collections.emptyList();
         }
-        return Stat.buildTeamMemberStats(team, leagueService.
-                findAll(PlayerResult.class).stream().parallel()
-                .filter(pr -> pr.getSeason().equals(team.getSeason()))
-                .filter(pr -> !pr.getLoser().isFake())
-                .filter(pr -> !pr.getWinner().isFake())
-                .collect(Collectors.toList()));
+
+        return statService.getUserSeasonStats().get(team.getSeason()).stream().parallel().filter(s->team.hasUser(s.getUser()))
+                .collect(Collectors.toList());
     }
 
     @RequestMapping(value = "/season/{id}",

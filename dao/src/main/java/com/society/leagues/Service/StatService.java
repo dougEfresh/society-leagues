@@ -7,7 +7,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -16,7 +15,8 @@ import java.util.stream.Collectors;
 public class StatService {
     final static Logger logger = Logger.getLogger(StatService.class);
     final AtomicReference<List<Stat>> teamStats = new AtomicReference<>(new ArrayList<>(100));
-    final AtomicReference<List<Stat>> seasonStats = new AtomicReference<>(new ArrayList<>(1000));
+    final AtomicReference<List<Stat>> lifetimeStats = new AtomicReference<>(new ArrayList<>(1000));
+    final AtomicReference<Map<Season,List<Stat>>> userSeasonStat = new AtomicReference<>(new HashMap<>());
     final AtomicReference<List<Stat>> handicapStats = new AtomicReference<>(new ArrayList<>(2000));
 
     @Autowired LeagueService leagueService;
@@ -26,8 +26,12 @@ public class StatService {
         refresh();
     }
 
-    public List<Stat> getSeasonStats() {
-        return seasonStats.get();
+    public List<Stat> getLifetimeStats() {
+        return lifetimeStats.get();
+    }
+
+    public Map<Season,List<Stat>>  getUserSeasonStats() {
+        return this.userSeasonStat.get();
     }
 
     public List<Stat> getTeamStats() {
@@ -49,52 +53,61 @@ public class StatService {
             ));
         }
         this.teamStats.lazySet(teamStats);
-        /*
-        Map<User,List<PlayerResult>> homeResults = results.parallelStream().collect(Collectors.groupingBy(PlayerResult::getPlayerHome));
-        Map<User,List<PlayerResult>> awayResults = results.parallelStream().collect(Collectors.groupingBy(PlayerResult::getPlayerAway));
-        Map<User,List<PlayerResult>> allResults = new HashMap<User,List<PlayerResult>>(5000);
-        for (User user : homeResults.keySet()) {
-            if (!allResults.containsKey(user)) {
-                allResults.put(user,new ArrayList<>(100));
-            }
-            allResults.get(user).addAll(homeResults.get(user));
-        }
-
-        for (User user : awayResults.keySet()) {
-            if (!allResults.containsKey(user)) {
-                allResults.put(user,new ArrayList<>(100));
-            }
-            allResults.get(user).addAll(awayResults.get(user));
-        }
-
-        */
-        refreshUserStats();
+        refreshUserSeasonStats();
+        refreshUserLifetimeStats();
         logger.info("Done Refreshing stats  (" + (System.currentTimeMillis()-start) + "ms)");
+
     }
 
-    private void refreshUserStats() {
+    private void refreshUserSeasonStats() {
+        List<Season> seasons = leagueService.findAll(Season.class);
+        Map<Season,List<Stat>> userSeasonStats = new HashMap<>(1000);
+        for (Season season : seasons) {
+            List<Team> teams = leagueService.findAll(Team.class).stream().parallel().filter(t -> t.getSeason().equals(season)).collect(Collectors.toList());
+            List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().
+                    filter(pr -> pr.getSeason().equals(season)).
+                    collect(Collectors.toList());
+            Map<User, List<PlayerResult>> losers = results.stream().filter(r->r.getLoser() != null).collect(Collectors.groupingBy(r -> r.getLoser(), Collectors.toList()));
+            Map<User, List<PlayerResult>> winners = results.stream().filter(r->r.getWinner() != null).collect(Collectors.groupingBy(r -> r.getWinner(), Collectors.toList()));
+            Map<User, List<PlayerResult>> all = new HashMap<>();
+            for (User user : winners.keySet()) {
+                all.put(user, winners.get(user));
+            }
+            for (User user : losers.keySet()) {
+                if (all.containsKey(user)) {
+                    all.get(user).addAll(losers.get(user));
+                } else {
+                    all.put(user, losers.get(user));
+                }
+            }
+            List<Stat> stats = new ArrayList<>(100);
+            for (User user : all.keySet()) {
+                Team team = teams.stream().filter(t -> t.getMembers().contains(user)).findFirst().orElse(null);
+                if (team == null) {
+                    continue;
+                }
+                stats.add(Stat.buildPlayerSeasonStats(user,
+                                season,
+                                all.get(user))
+                );
+            }
+            stats.stream().sorted((stat, t1) -> t1.getWinPct().compareTo(stat.getWinPct())).collect(Collectors.toList());
+            userSeasonStats.put(season,stats);
+        }
+        this.userSeasonStat.lazySet(userSeasonStats);
+    }
+
+    private void refreshUserLifetimeStats() {
         logger.info("Refreshing User stats");
         List<User> users = leagueService.findAll(User.class);
-        List<PlayerResult> playerResults = leagueService.findAll(PlayerResult.class);
-        List<Stat> newStats = new ArrayList<>(1000);
+        List<Stat> lifeStats = new ArrayList<>(1000);
         for (User user : users) {
-            List<PlayerResult> userResults = playerResults.parallelStream().filter(r->r.hasUser(user)).collect(Collectors.toList());
-            List<Stat> userStats = new ArrayList<>();
-            for (HandicapSeason hs : user.getHandicapSeasons()) {
-                Season s = hs.getSeason();
-                Stat stat = Stat.buildPlayerSeasonStats(user, s,
-                        userResults.stream().parallel().
-                                filter(r -> r.getSeason().equals(s)).
-                                filter(r -> r.hasUser(user)).
-                                collect(Collectors.toList())
-                );
-                userStats.add(stat);
+            for (List<Stat> stats : this.userSeasonStat.get().values()) {
+                lifeStats.add(Stat.buildLifeTimeStats(user,stats.stream().filter(s->s.getUser().equals(user)).collect(Collectors.toList())));
             }
-            newStats.addAll(userStats);
-            newStats.add(Stat.buildLifeTimeStats(user, userStats));
         }
-        seasonStats.lazySet(newStats);
-        logger.info("Created " + seasonStats.get().size() + " stats for " + users.size() + " users with a total of " + playerResults.size() );
+        lifetimeStats.lazySet(lifeStats);
+        logger.info("Created " + lifetimeStats.get().size() + " stats for " + users.size() + " users with a total of " + lifeStats.size());
     }
 
 }

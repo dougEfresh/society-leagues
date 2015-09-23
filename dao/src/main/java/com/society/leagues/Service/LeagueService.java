@@ -110,16 +110,9 @@ public class LeagueService {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends LeagueObject> List<T> findCurrent(Class<T> clz) {
-
-        if (clz.equals(PlayerResult.class)) {
-
-        }
-
-        return null;
+    public <T extends LeagueObject> Set<T> findCurrent(Class<T> clz) {
+        return cacheUtil.getCache(clz).current();
     }
-
-
 
     @SuppressWarnings("unchecked")
     public  <T extends LeagueObject> void deleteAll(Class<T> clz){

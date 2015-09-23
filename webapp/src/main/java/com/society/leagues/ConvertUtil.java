@@ -287,23 +287,11 @@ public class ConvertUtil {
             userHashMap.put(user.getLegacyId(), user);
         }
         leagueService.deleteAll(PlayerResult.class);
-        for(Season s: leagueService.findAll(Season.class)) {
+        for(Season s: leagueService.findAll(Season.class)){
             int missed = 0;
             logger.info("Processing " + s.getDisplayName());
-            List<Map<String, Object>> homeResults = jdbcTemplate.queryForList( "select  m.season_id,\n" +
-                            "a.result_id,m.season_id,a.match_id,\n" +
-                            "a.team_id as a_team_id,a.player_id as a_player_id,a.player_handicap as a_player_handicap,a.games_won as a_games_won " +
-                            ",ahc.hcd_name, a.match_number as match_number\n" +
-                            "from result_ind a join match_schedule m on m.match_id = a.match_id\n" +
-                            "and m.home_team_id = a.team_id\n" +
-                            "left JOIN handicap_display ahc ON ahc.hcd_id=a.player_handicap\n" +
-                            "where a.player_id not in (218,224,905) " +
-                            " and  season_id = " + s.getLegacyId() + " " +
-                            "order by match_id \n" +
-                            ";\n"
-            );
-
-           List<PlayerResult> playerResults = new ArrayList<>(5000);
+            List<Map<String, Object>> homeResults = jdbcTemplate.queryForList(getQuery("home",s));
+            List<PlayerResult> playerResults = new ArrayList<>(5000);
             int members = 0;
             for (Map<String, Object> result : homeResults) {
                 PlayerResult playerResult = new PlayerResult();
@@ -335,20 +323,7 @@ public class ConvertUtil {
                 playerResults.add(playerResult);
             }
 
-              List<Map<String, Object>> awayResults = jdbcTemplate.queryForList(
-                      "select  m.season_id,\n" +
-                              "a.result_id,m.season_id,a.match_id,\n" +
-                              "a.team_id as a_team_id,a.player_id as a_player_id,a.player_handicap as a_player_handicap,a.games_won as a_games_won ," +
-                              "ahc.hcd_name, a.match_number as match_number\n" +
-                              "from result_ind a join match_schedule m on m.match_id = a.match_id\n" +
-                              "and m.visit_team_id = a.team_id\n" +
-                              "left JOIN handicap_display ahc ON ahc.hcd_id=a.player_handicap\n" +
-                              "join player p on a.player_id = p.player_id\n" +
-                              "where a.player_id not in (218,224,905) " +
-                              " and  season_id = " + s.getLegacyId() + " " +
-                              "order by match_id \n" +
-                              ";\n"
-            );
+            List<Map<String, Object>> awayResults = jdbcTemplate.queryForList( getQuery("visit",s));
             for (Map<String, Object> result : awayResults) {
                 Integer matchNum = (Integer) result.get("match_number");
                 Integer matchId = (Integer)  result.get("match_id");
@@ -376,7 +351,6 @@ public class ConvertUtil {
                 if (members != away.getMembers().size()) {
                     leagueService.save(away);
                 }
-                playerResults.add(playerResult);
             }
 
             User forfetUser = leagueService.findAll(User.class).stream().filter(u -> u.getLastName().equals("FORFEIT")).findFirst().get();
@@ -446,6 +420,20 @@ public class ConvertUtil {
         }
     }
 
+
+    private String getQuery(String type, Season s) {
+        return String.format("select  m.season_id,\n" +
+                "a.result_id,m.season_id,a.match_id,\n" +
+                "a.team_id as a_team_id,a.player_id as a_player_id,a.player_handicap as a_player_handicap,a.games_won as a_games_won " +
+                ",ahc.hcd_name, a.match_number as match_number\n" +
+                "from result_ind a join match_schedule m on m.match_id = a.match_id\n" +
+                "and m.%s_team_id = a.team_id\n" +
+                "left JOIN handicap_display ahc ON ahc.hcd_id=a.player_handicap\n" +
+                "where a.player_id not in (218,224,905) " +
+                " and  season_id = %s " +
+                "order by match_id \n" +
+                ";\n", type, s.getLegacyId() + "");
+    }
 
     public void convertChallengers() {
         List<PlayerResult> remove = leagueService.findAll(PlayerResult.class)

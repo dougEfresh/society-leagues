@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,7 +75,7 @@ public class TeamResource {
 
     @JsonView(TeamSummary.class)
     @RequestMapping(value = "/get/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public List<Team> getTeamSeason(Principal principal, @PathVariable String id) {
+    public Collection<Team> getTeamSeason(Principal principal, @PathVariable String id) {
          User u = leagueService.findOne(new User(id));
          return leagueService.findAll(Team.class)
                  .stream().parallel()
@@ -84,25 +85,20 @@ public class TeamResource {
     }
     @JsonView(TeamSummary.class)
     @RequestMapping(value = "/active", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public List<Team> getTeamSeason(Principal principal) {
-         return leagueService.findAll(Team.class)
-                 .stream().parallel()
-                 .filter(t->t.getSeason().isActive())
-                 .collect(Collectors.toList()
-                 );
+    public Collection<Team> getTeamSeason(Principal principal) {
+         return leagueService.findCurrent(Team.class);
     }
 
     @JsonView(TeamSummary.class)
     @RequestMapping(value = "/get/{id}/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public List<Team> getTeamSeason(Principal principal, @PathVariable String id, @PathVariable String type) {
+    public Collection<Team> getTeamSeason(Principal principal, @PathVariable String id, @PathVariable String type) {
         User u = leagueService.findOne(new User(id));
         if (u == null) {
             return  Collections.emptyList();
         }
 
-        return leagueService.findAll(Team.class).stream().
-                filter(t->t.getMembers().contains(u)).
-                filter(t->t.getSeason().isActive()).collect(Collectors.toList()
+        return leagueService.findCurrent(Team.class).stream().
+                filter(t->t.getMembers().contains(u)).collect(Collectors.toList()
         );
     }
 

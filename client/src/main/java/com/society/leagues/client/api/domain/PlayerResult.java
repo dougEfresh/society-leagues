@@ -72,7 +72,7 @@ public class PlayerResult  extends LeagueObject {
     }
 
     public Integer getHomeRacks() {
-        return homeRacks;
+        return homeRacks == null ? 0 :homeRacks;
     }
 
     public void setHomeRacks(Integer homeRacks) {
@@ -80,7 +80,7 @@ public class PlayerResult  extends LeagueObject {
     }
 
     public Integer getAwayRacks() {
-        return awayRacks;
+        return awayRacks == null ? 0 : awayRacks;
     }
 
     public void setAwayRacks(Integer awayRacks) {
@@ -118,7 +118,7 @@ public class PlayerResult  extends LeagueObject {
 
     public User getWinner() {
         if (homeRacks  == null || awayRacks == null)
-            return null;
+            return playerHome;
 
         return homeRacks > awayRacks ? playerHome : playerAway;
     }
@@ -132,15 +132,15 @@ public class PlayerResult  extends LeagueObject {
 
     public String  getWinnerHandicap() {
         if (getWinner() == null)
-            return null;
+            return Handicap.UNKNOWN.name();
         HandicapSeason hc =  getWinner().getHandicapSeasons().stream().filter(s->s.getSeason().equals(getSeason())).findFirst().orElse(null);
         if (hc == null) {return null;}
         return Handicap.format(hc.getHandicap());
     }
 
     public User getLoser() {
-         if (homeRacks  == null ||  awayRacks == null)
-            return null;
+         if (homeRacks  == null || awayRacks == null)
+            return playerAway;
 
         return homeRacks > awayRacks ? playerAway : playerHome;
     }
@@ -154,7 +154,8 @@ public class PlayerResult  extends LeagueObject {
 
     public String getLoserHandicap() {
         if (getLoser() == null)
-            return null;
+            return Handicap.UNKNOWN.name();
+
         HandicapSeason hc =  getLoser().getHandicapSeasons().stream().filter(s->s.getSeason().equals(getSeason())).findFirst().orElse(null);
         if (hc == null) {return null;}
         return Handicap.format(hc.getHandicap());

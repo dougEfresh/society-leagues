@@ -6,6 +6,7 @@ import com.society.leagues.Service.LeagueService;
 import com.society.leagues.Service.ResultService;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.views.PlayerResultView;
+import com.society.leagues.client.views.TeamSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,9 +48,16 @@ public class PlayerResultResource {
     }
     @RequestMapping(value = "/teammatch/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @JsonView(PlayerResultView.class)
-    public List<PlayerResult> getPlayerResultTeamMatch(Principal principal, @PathVariable String id) {
+    public Collection<PlayerResult> getPlayerResultTeamMatch(Principal principal, @PathVariable String id) {
         TeamMatch tm = leagueService.findOne(new TeamMatch(id));
-        List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().
+        Collection<PlayerResult> results;
+        if (tm.getSeason().isActive()) {
+            results = leagueService.findCurrent(PlayerResult.class);
+        }  else {
+            results = leagueService.findAll(PlayerResult.class);
+        }
+
+        results = results.stream().parallel().
                 filter(pr->pr.getTeamMatch().equals(tm))
                 .filter(pr->!pr.getLoser().isFake())
                 .filter(pr->!pr.getWinner().isFake())
@@ -59,6 +67,7 @@ public class PlayerResultResource {
                         return playerResult.getMatchNumber().compareTo(t1.getMatchNumber());
                     }
         }).collect(Collectors.toList());
+        //TOOD set the winner before save...
         results.stream().parallel().
                 forEach(pr->pr.setReferenceTeam(
                         pr.getTeamMatch().getHomeRacks() > pr.getTeamMatch().getAwayRacks() ?
@@ -71,6 +80,10 @@ public class PlayerResultResource {
     @JsonView(PlayerResultView.class)
     public List<PlayerResult> getPlayerResultSeason(Principal principal, @PathVariable String id) {
         Season s = leagueService.findOne(new Season(id));
+        if (s.isActive()) {
+            return leagueService.findCurrent(PlayerResult.class).stream().parallel().filter(pr -> pr.getSeason().equals(s))
+                .collect(Collectors.toList());
+        }
         return leagueService.findAll(PlayerResult.class).stream().parallel()
                 .filter(pr -> pr.getSeason().equals(s))
                 .collect(Collectors.toList());
@@ -80,9 +93,17 @@ public class PlayerResultResource {
     @JsonView(PlayerResultView.class)
     public List<PlayerResult> getPlayerResulTeam(Principal principal, @PathVariable String id) {
         Team t  = leagueService.findOne(new Team(id));
-        List<PlayerResult> results =  leagueService.findAll(PlayerResult.class).stream().parallel()
-                .filter(pr -> pr.getSeason().equals(t.getSeason()))
-                .filter(pr -> pr.hasTeam(t)).collect(Collectors.toList());
+        List<PlayerResult> results;
+        if (t.getSeason().isActive()) {
+            results = leagueService.findCurrent(PlayerResult.class).stream().parallel()
+                    .filter(pr -> pr.getSeason().equals(t.getSeason()))
+                    .filter(pr -> pr.hasTeam(t)).collect(Collectors.toList());
+        } else {
+            results = leagueService.findAll(PlayerResult.class).stream().parallel()
+                    .filter(pr -> pr.getSeason().equals(t.getSeason()))
+                    .filter(pr -> pr.hasTeam(t)).collect(Collectors.toList());
+        }
+        //TODO Very very bad, fix this
         results.parallelStream().forEach(pr -> pr.setReferenceTeam(t));
         return results.stream().
                 sorted((playerResult, t1) -> playerResult.getTeamMember().getName().compareTo(t1.getTeamMember().getName())).
@@ -91,18 +112,17 @@ public class PlayerResultResource {
     }
 
     @RequestMapping(value = "/get/user/{id}/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @JsonView(PlayerResultView.class)
+    @JsonView(value = {PlayerResultView.class})
     public List<PlayerResult> getPlayerResultByUser(Principal principal, @PathVariable String id, @PathVariable String type) {
         User u = leagueService.findOne(new User(id));
-        List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().filter(pr -> pr.hasUser(u))
-                    .filter(r -> r.getTeamMatch() != null)
+        if (type.equals("all"))
+         return leagueService.findAll(PlayerResult.class).stream().parallel().filter(pr -> pr.hasUser(u))
                     .sorted((playerResult, t1) -> t1.getMatchDate().compareTo(playerResult.getMatchDate()))
                     .collect(Collectors.toList());
 
-        if (type.equals("all"))
-            return results;
-
-        results = results.stream().filter(pr->pr.getSeason().isActive()).collect(Collectors.toList());
+        List<PlayerResult> results = leagueService.findCurrent(PlayerResult.class).stream().
+                parallel().filter(pr->pr.hasUser(u)).collect(Collectors.toList());
+        //TODO Very very bad, fix this
         results.parallelStream().forEach(r -> r.setReferenceUser(u));
         return results.stream().sorted((playerResult, t1) -> t1.getMatchDate().compareTo(playerResult.getMatchDate()))
                 .collect(Collectors.toList());

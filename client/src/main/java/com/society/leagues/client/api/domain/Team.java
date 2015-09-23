@@ -135,9 +135,11 @@ public class Team extends LeagueObject {
     }
 
     public User getChallengeUser() {
+        if (!isChallenge() || members == null || members.isEmpty()) {
+            return null;
+        }
         return members.iterator().next();
     }
-
 
     @Override
     public String toString() {
