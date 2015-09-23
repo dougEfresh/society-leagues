@@ -1,8 +1,6 @@
 package com.society.leagues.client.api.domain;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +17,7 @@ public class Stat {
     User user;
     Season season;
     Handicap handicap;
-    Double points = 0d;
+    Double points;
 
     public Stat() {
     }
@@ -45,32 +43,6 @@ public class Stat {
             }
         }
         return s;
-    }
-
-    public static List<Stat> buildTeamMemberStats(final Team team, final List<PlayerResult> matches) {
-        List<Stat> stats = new ArrayList<>();
-        for (User user : team.getMembers()) {
-            Stat s = new Stat();
-            s.setTeam(team);
-            s.setUser(user);
-            for (PlayerResult match : matches) {
-                if (!match.hasUser(user)) {
-                    continue;
-                }
-                s.matches++;
-                if (match.isWinner(user)) {
-                    s.wins++;
-                    s.racksWon += match.getWinnerRacks();
-                    s.racksLost += match.getLoserRacks();
-                } else {
-                    s.loses++;
-                    s.racksWon += match.getLoserRacks();
-                    s.racksLost += match.getWinnerRacks();
-                }
-            }
-            stats.add(s);
-        }
-        return stats;
     }
 
     public static Stat buildPlayerTeamStats(final User u, final Team team , final List<PlayerResult> matches) {
@@ -126,28 +98,6 @@ public class Stat {
         }
         HandicapSeason handicapSeason = user.getHandicapSeasons().stream().filter(hs->hs.getSeason().equals(team.getSeason())).findFirst().orElse(null);
         return handicapSeason == null ? "" : handicapSeason.getHandicapDisplay();
-    }
-
-    private static List<Stat> buildHandicapStats(final User u, final List<PlayerResult> matches) {
-        Stat s = new Stat();
-        s.setUser(u);
-        s.type = StatType.HANDICAP;
-        for (PlayerResult match : matches) {
-            if (!match.hasUser(u)) {
-                continue;
-            }
-            s.matches++;
-            if (match.isWinner(u)) {
-                s.wins++;
-                s.racksWon += match.getWinnerRacks();
-                s.racksLost += match.getLoserRacks();
-            } else {
-                s.loses++;
-                s.racksWon += match.getLoserRacks();
-                s.racksLost += match.getWinnerRacks();
-            }
-        }
-        return Collections.EMPTY_LIST;
     }
 
 

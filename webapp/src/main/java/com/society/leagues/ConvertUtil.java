@@ -495,7 +495,7 @@ public class ConvertUtil {
         List<TeamMatch> teamMatches = leagueService.findAll(TeamMatch.class);
         List<Team> teams = leagueService.findAll(Team.class).stream().parallel().filter(t->t.isChallenge()).collect(Collectors.toList());
         List<PlayerResult> challengePlayerResults = leagueService.findAll(PlayerResult.class).stream().parallel()
-                .filter(pr -> pr.getSeason().getDivision().isChallenge()).collect(Collectors.toList());
+                .filter(pr -> pr.getSeason().isChallenge()).collect(Collectors.toList());
 
         for (Map<String, Object> player_result : player_results) {
             Map<String, Object> home = players.stream().parallel().
@@ -530,6 +530,7 @@ public class ConvertUtil {
             tm.setLegacyId((Integer) player_result.get("team_match_id"));
             tm.setAwayRacks((Integer) player_result.get("away_racks"));
             tm.setHomeRacks((Integer) player_result.get("home_racks"));
+
             tm = leagueService.save(tm);
 
             PlayerResult pr = new PlayerResult();

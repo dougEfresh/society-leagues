@@ -10,6 +10,7 @@ public class MatchPoints {
     Double weightedAvg = 0d;
     Integer matchNum = 0;
     String calculation = "";
+    User user;
 
     public MatchPoints(PlayerResult playerResult) {
         this.playerResult = playerResult;
@@ -65,6 +66,15 @@ public class MatchPoints {
 
     public boolean equals(Object o) {
         return playerResult.equals(o);
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

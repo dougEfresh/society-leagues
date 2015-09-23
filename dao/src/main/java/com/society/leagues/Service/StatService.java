@@ -63,7 +63,6 @@ public class StatService {
         List<Season> seasons = leagueService.findAll(Season.class);
         Map<Season,List<Stat>> userSeasonStats = new HashMap<>(1000);
         for (Season season : seasons) {
-            List<Team> teams = leagueService.findAll(Team.class).stream().parallel().filter(t -> t.getSeason().equals(season)).collect(Collectors.toList());
             List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().
                     filter(pr -> pr.getSeason().equals(season)).
                     collect(Collectors.toList());
@@ -82,13 +81,10 @@ public class StatService {
             }
             List<Stat> stats = new ArrayList<>(100);
             for (User user : all.keySet()) {
-                Team team = teams.stream().filter(t -> t.getMembers().contains(user)).findFirst().orElse(null);
-                if (team == null) {
-                    continue;
-                }
                 stats.add(Stat.buildPlayerSeasonStats(user,
                                 season,
-                                all.get(user))
+                                all.get(user)
+                        )
                 );
             }
             stats.stream().sorted((stat, t1) -> t1.getWinPct().compareTo(stat.getWinPct())).collect(Collectors.toList());

@@ -1,6 +1,7 @@
 package com.society.leagues.cache;
 
 import com.society.leagues.client.api.domain.LeagueObject;
+import com.society.leagues.listener.DaoListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -16,6 +17,7 @@ import java.util.List;
 public class CacheUtil {
 
     List<CachedCollection> cachedCollections = new ArrayList<>();
+    @Autowired(required = false) List<DaoListener> listeners = new ArrayList<>();
 
     public void initialize(List<MongoRepository> mongoRepositories) {
         for (MongoRepository mongoRepository : mongoRepositories) {

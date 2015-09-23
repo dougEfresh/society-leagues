@@ -21,6 +21,7 @@ import java.util.List;
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class Main implements CommandLineRunner {
     @Autowired ConvertUtil convertUtil;
+    @Autowired List<MongoRepository> mongoRepositories;
 
     public static void main(String[] args) throws Exception {
         SpringApplication app = new SpringApplication(Main.class);
@@ -32,14 +33,17 @@ public class Main implements CommandLineRunner {
     public void run(String... args) throws Exception {
         for (String arg : args) {
             if (arg.toLowerCase().contains("convert")) {
+                for (MongoRepository mongoRepository : mongoRepositories) {
+                    mongoRepository.deleteAll();
+                }
                 convertUtil.convertUser();
                 convertUtil.convertSeason();
                 convertUtil.convertTeam();
                 convertUtil.convertTeamMembers();
                 convertUtil.converTeamMatch();
                 convertUtil.converTeamMatchResult();
-                convertUtil.convertChallengers();
                 convertUtil.convertPlayerResults();
+                convertUtil.convertChallengers();
                 convertUtil.userHandicap();
                 convertUtil.stats();
                 //convertUtil.updateSetWinsLoses();

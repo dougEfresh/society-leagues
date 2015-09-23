@@ -79,10 +79,10 @@ public class StatResource {
 
         for (Stat stat : stats) {
             double totalPoints = 0d;
-            User u = stat.getTeam().getMembers().iterator().next();
-            List<MatchPoints> pointsList = points.stream().parallel().filter(p->p.getPlayerResult().hasUser(u)).collect(Collectors.toList());
+            User u = stat.getTeam().getChallengeUser();
+            List<MatchPoints> pointsList = points.stream().parallel().filter(p->p.getUser().equals(u)).collect(Collectors.toList());
             for (MatchPoints matchPoints : pointsList) {
-                totalPoints += matchPoints.getPoints();
+                totalPoints += matchPoints.getWeightedAvg();
             }
             stat.setPoints(totalPoints);
         }
