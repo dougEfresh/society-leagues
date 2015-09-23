@@ -3,8 +3,7 @@ package com.society.leagues.conf;
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import com.society.leagues.cache.CacheUtil;
-import com.society.leagues.cache.CachedCollection;
-import com.society.leagues.CustomRefResolver;
+import com.society.leagues.mongo.CustomRefResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
@@ -18,8 +17,6 @@ import org.springframework.data.mongodb.core.convert.DbRefResolver;
 import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 
-import java.util.List;
-
 @Configuration
 @EnableConfigurationProperties(MongoProperties.class)
 @SuppressWarnings("unused")
@@ -29,7 +26,6 @@ public class MongoConfig extends AbstractMongoConfiguration {
     boolean useCache;
 
     @Autowired MongoProperties properties;
-    //@Autowired List<CachedCollection> cachedCollections;
     @Autowired CacheUtil cacheUtil;
 
     @Override

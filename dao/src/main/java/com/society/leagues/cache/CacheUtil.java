@@ -3,22 +3,32 @@ package com.society.leagues.cache;
 import com.society.leagues.client.api.domain.LeagueObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Component
 @SuppressWarnings("unused")
 public class CacheUtil {
 
-    @Autowired List<CachedCollection> cachedCollections;
-    @Value("${convert:false}") boolean convert = false;
+    List<CachedCollection> cachedCollections = new ArrayList<>();
 
-    public <T extends LeagueObject> T findOne(String id,String collection) {
+    public void initialize(List<MongoRepository> mongoRepositories) {
+        for (MongoRepository mongoRepository : mongoRepositories) {
+            cachedCollections.add(new CachedCollection(mongoRepository));
+        }
+        Collections.sort(cachedCollections);
+        refreshAllCache();
+    }
+
+    public LeagueObject findOne(String id,String collection) {
         for (CachedCollection cachedCollection : cachedCollections) {
             if (cachedCollection.getCollection().equals(collection)) {
-                return (T) cachedCollection.get().parallelStream().filter(c->((LeagueObject) c).getId().equals(id)).findFirst().orElse(null);
+                return (LeagueObject) cachedCollection.get().parallelStream().filter(c->((LeagueObject) c).getId().equals(id)).findFirst().orElse(null);
             }
         }
         return null;
@@ -26,7 +36,8 @@ public class CacheUtil {
 
     public Object addCache(Object entity) {
         if (entity instanceof LeagueObject) {
-            return getCache((LeagueObject) entity);
+            getCache((LeagueObject) entity).add((LeagueObject) entity);
+            return entity;
         }
         return null;
     }
@@ -39,7 +50,7 @@ public class CacheUtil {
         }
     }
 
-    public CachedCollection getCache(LeagueObject entity) {
+    public CachedCollection<List<LeagueObject>> getCache(LeagueObject entity) {
         Class clz = entity.getClass();
         for (CachedCollection cachedCollection : cachedCollections) {
             if (cachedCollection.getRepo().getClass().getInterfaces()[0].getSimpleName().contains(clz.getSimpleName() + "Repository")) {
@@ -49,7 +60,7 @@ public class CacheUtil {
         throw new RuntimeException("Cannot find cache repo for " + clz.getCanonicalName());
     }
 
-    @Scheduled(fixedRate = 1000*60*5, initialDelay = 1000*60*10)
+    @Scheduled(fixedRate = 1000*60*5, initialDelay = 1000*60*15)
     public void refreshAllCache() {
         cachedCollections.forEach(CachedCollection::refresh);
     }

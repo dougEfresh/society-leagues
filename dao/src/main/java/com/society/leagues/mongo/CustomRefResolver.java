@@ -1,10 +1,8 @@
-package com.society.leagues;
+package com.society.leagues.mongo;
 
 import com.mongodb.DBObject;
 import com.mongodb.DBRef;
 import com.society.leagues.cache.CacheUtil;
-import com.society.leagues.cache.CachedCollection;
-import com.society.leagues.client.api.domain.LeagueObject;
 import org.apache.log4j.Logger;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.convert.DbRefProxyHandler;
@@ -19,7 +17,7 @@ public class CustomRefResolver extends DefaultDbRefResolver {
     static long lookups = 1;
     static long cacheHits = 1;
 
-    public CustomRefResolver(MongoDbFactory mongoDbFactory, CacheUtil cacheUtil) {
+    public CustomRefResolver(MongoDbFactory mongoDbFactory, final CacheUtil cacheUtil) {
         super(mongoDbFactory);
         this.cacheUtil = cacheUtil;
     }
@@ -46,9 +44,11 @@ public class CustomRefResolver extends DefaultDbRefResolver {
         if (dbRef.getCollectionName() == null) return super.fetch(dbRef);
 
         lookups++;
-        logger.info(String.format("Cache Stats %s %s : Lookups: %d  CacheHits: %d Ratios: %f ",
-                dbRef.getCollectionName(), dbRef, lookups, cacheHits,
-                ((double) lookups / (double) cacheHits)));
+        if (lookups % 100 == 0) {
+            logger.info(String.format("Cache Stats %s %s : Lookups: %d  CacheHits: %d Ratios: %f ",
+                    dbRef.getCollectionName(), dbRef, lookups, cacheHits,
+                    ((double) lookups / (double) cacheHits)));
+        }
         return super.fetch(dbRef);
     }
 

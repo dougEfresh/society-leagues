@@ -32,6 +32,10 @@ public enum Handicap {
     UNKNOWN;
 
     public static String format(Handicap hc) {
+        if (hc == null) {
+            return "N/A";
+        }
+
         String h =  hc.name().replace("PLUS","+").replace("PRO","P").replace("OPEN","O").replace("OPEN+","O+");
         if (h.contains("+") || h.length() == 1) {
             return h;

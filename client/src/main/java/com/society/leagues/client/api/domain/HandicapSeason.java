@@ -46,8 +46,7 @@ public class HandicapSeason {
         HandicapSeason that = (HandicapSeason) o;
 
         if (!season.equals(that.season)) return false;
-        return handicap == that.handicap;
-
+        return true;
     }
 
 
@@ -55,7 +54,6 @@ public class HandicapSeason {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + season.hashCode();
-        result = 31 * result + handicap.hashCode();
         return result;
     }
 

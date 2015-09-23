@@ -23,7 +23,7 @@ public class StatService {
 
     @PostConstruct
     public void init() {
-        //refresh();
+        refresh();
     }
 
     public List<Stat> getSeasonStats() {

@@ -68,7 +68,7 @@ public class Season extends LeagueObject {
         if (division == Division.NINE_BALL_CHALLENGE) {
             return "Top Gun";
         }
-        String name = "'" + year.substring(2,2) + " ";
+        String name = "'" + year.substring(2,4) + " ";
         name += type;
         name += " " + division.displayName;
         return name;
@@ -143,10 +143,10 @@ public class Season extends LeagueObject {
         return "Season{" +
                 "name='" + name + '\'' +
                 ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", rounds=" + rounds +
                 ", seasonStatus=" + seasonStatus +
                 ", division=" + division +
+                ", year='" + year + '\'' +
+                ", type='" + type + '\'' +
                 '}';
     }
 }

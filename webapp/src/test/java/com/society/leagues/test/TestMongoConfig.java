@@ -3,7 +3,7 @@ package com.society.leagues.test;
 import com.mongodb.Mongo;
 import com.mongodb.MongoClientOptions;
 import com.society.leagues.cache.CachedCollection;
-import com.society.leagues.CustomRefResolver;
+import com.society.leagues.mongo.CustomRefResolver;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;

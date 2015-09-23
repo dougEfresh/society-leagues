@@ -24,16 +24,17 @@ import javax.validation.Validator;
 public class LeagueService {
 
     final static Logger logger = Logger.getLogger(LeagueService.class);
-    @Value("${use-cache:true}") boolean useCache;
     @Autowired(required = false) List<DaoListener> daoListeners = new ArrayList<>();
     @Autowired CacheUtil cacheUtil;
     Validator validator;
+    @Autowired List<MongoRepository> mongoRepositories;
 
     @PostConstruct
     @SuppressWarnings("unused")
     public void init() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
+        cacheUtil.initialize(mongoRepositories);
     }
 
     @SuppressWarnings("unchecked")
@@ -67,7 +68,7 @@ public class LeagueService {
     @SuppressWarnings("unchecked")
     public <T extends LeagueObject> Boolean delete(T entity) {
         cacheUtil.getCache(entity).getRepo().delete(entity);
-        cacheUtil.refreshAllCache();
+        //cacheUtil.refreshAllCache();
         for (DaoListener daoListener : daoListeners) {
             daoListener.onChange(entity);
         }
@@ -76,11 +77,11 @@ public class LeagueService {
 
     @SuppressWarnings("unchecked")
     public <T extends LeagueObject> T findOne(T entity) {
-        CachedCollection<List<T>> repo = cacheUtil.getCache(entity);
+        CachedCollection<List<LeagueObject>> repo = cacheUtil.getCache(entity);
         if (repo == null) {
             return null;
         }
-        return  repo.get().stream().filter(e -> e.getId().equals(entity.getId())).findFirst().orElse(null);
+        return (T) repo.get().stream().filter(e -> e.getId().equals(entity.getId())).findFirst().orElse(null);
     }
 
     @SuppressWarnings("unchecked")
@@ -94,11 +95,11 @@ public class LeagueService {
     @SuppressWarnings("unchecked")
     public <T extends LeagueObject> List<T> findAll(Class<T> clz) {
         try {
-            CachedCollection<List<T>> cache = cacheUtil.getCache(clz.newInstance());
+            CachedCollection<List<LeagueObject>> cache = cacheUtil.getCache(clz.newInstance());
             if (cache == null) {
                 return null;
             }
-            return cache.get();
+            return (List<T>) cache.get();
         } catch (InstantiationException e) {
             logger.error(e.getMessage(),e);
             return Collections.emptyList();
@@ -109,15 +110,28 @@ public class LeagueService {
     }
 
     @SuppressWarnings("unchecked")
+    public <T extends LeagueObject> List<T> findCurrent(Class<T> clz) {
+
+        if (clz.equals(PlayerResult.class)) {
+
+        }
+
+        return null;
+    }
+
+
+
+    @SuppressWarnings("unchecked")
     public  <T extends LeagueObject> void deleteAll(Class<T> clz){
         try {
-            CachedCollection<List<T>> cache = cacheUtil.getCache(clz.newInstance());
+            CachedCollection<List<LeagueObject>> cache = cacheUtil.getCache(clz.newInstance());
             if (cache == null) {
                 return ;
             }
-            cache.set(new ArrayList<T>());
+            //TODO cascade delete;
+            cache.set(new ArrayList<>());
             cache.getRepo().deleteAll();
-            cacheUtil.refreshAllCache();
+            //cacheUtil.refreshAllCache();
         } catch (InstantiationException | IllegalAccessException ignore) {
 
         }

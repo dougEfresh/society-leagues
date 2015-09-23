@@ -185,9 +185,9 @@ public class PlayerResult  extends LeagueObject {
             return playerAwayHandicap ;
         }
         if (u.equals(playerHome)) {
-            return playerAwayHandicap ;
+            return playerHomeHandicap;
         }
-        return null;
+        return Handicap.UNKNOWN;
     }
 
     public boolean isNine() {

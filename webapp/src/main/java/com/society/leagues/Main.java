@@ -35,13 +35,13 @@ public class Main implements CommandLineRunner {
                 convertUtil.convertUser();
                 convertUtil.convertSeason();
                 convertUtil.convertTeam();
-                //convertUtil.convertTeamMembers();
-                //convertUtil.converTeamMatch();
-                //convertUtil.converTeamMatchResult();
-//                convertUtil.convertChallengers();
-
-                //convertUtil.convertPlayerResults();
-                //convertUtil.userHandicap();
+                convertUtil.convertTeamMembers();
+                convertUtil.converTeamMatch();
+                convertUtil.converTeamMatchResult();
+                convertUtil.convertChallengers();
+                convertUtil.convertPlayerResults();
+                convertUtil.userHandicap();
+                convertUtil.stats();
                 //convertUtil.updateSetWinsLoses();
                 System.exit(0);
             }
