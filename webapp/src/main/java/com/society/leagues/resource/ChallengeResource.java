@@ -64,7 +64,7 @@ public class ChallengeResource {
         return null;
     }
 
-    @RequestMapping(value = "/decline", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = {"/decline", "/cancel"}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
      public Challenge decline(@RequestBody Challenge challenge, Principal principal, HttpServletRequest request) {
          if (principal == null) {
             return null;
