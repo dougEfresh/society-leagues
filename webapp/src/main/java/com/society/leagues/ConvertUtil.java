@@ -7,7 +7,6 @@ import com.society.leagues.Service.ResultService;
 import com.society.leagues.cache.CacheUtil;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.mongo.PlayerResultRepository;
-import com.society.leagues.resource.PlayerResultResource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,7 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 
-import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
@@ -613,7 +611,7 @@ public class ConvertUtil {
                     s.setLegacyId((Integer) ch.get("slot_id"));
                     s.setAllocated(0);
                     Timestamp ts = (Timestamp) ch.get("slot_time");
-                    s.setTime(ts.toLocalDateTime());
+                    s.setTimeStamp(ts.toLocalDateTime());
                     s = leagueService.save(s);
                     slots.put(s.getLegacyId(), s);
                 }

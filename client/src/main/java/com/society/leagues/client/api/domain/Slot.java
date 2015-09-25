@@ -17,14 +17,14 @@ public class Slot extends LeagueObject {
 
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
-    @NotNull LocalDateTime time;
+    @NotNull LocalDateTime timeStamp;
     Integer allocated = 0;
 
     public Slot() {
     }
 
     public Slot(LocalDateTime time) {
-        this.time = time;
+        this.timeStamp = time;
         this.allocated = 0;
     }
 
@@ -43,12 +43,17 @@ public class Slot extends LeagueObject {
         return slots;
     }
 
-    public LocalDateTime getLocalDateTime() {
-        return time;
+    public LocalDateTime getTimeStamp(){
+        return timeStamp;
     }
 
-    public void setTime(LocalDateTime time) {
-        this.time = time;
+    @JsonIgnore
+    public LocalDateTime getLocalDateTime() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(LocalDateTime timeStamp) {
+        this.timeStamp = timeStamp;
     }
 
     public Integer getAllocated() {
@@ -59,19 +64,11 @@ public class Slot extends LeagueObject {
         this.allocated = allocated;
     }
 
-    @JsonIgnore
-    public String getTime() {
-        return this.time.format(new DateTimeFormatterBuilder()
-                .appendValue(ChronoField.HOUR_OF_DAY, 2)
-                .appendLiteral(":00").toFormatter()
-				);
-    }
-
     @Override
     public String toString() {
         return "Slot{" +
                 "id=" + getId() +
-                "time=" + time +
+                "timeStamp=" + timeStamp +
                 '}';
     }
 }

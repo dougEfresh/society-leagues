@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,6 +74,18 @@ public class ChallengeResource {
          c.setStatus(Status.CANCELLED);
          c.setAcceptedSlot(null);
          return leagueService.save(c);
+    }
+
+    @RequestMapping(value = {"/slots"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public Collection<Slot> slots(Principal principal, HttpServletRequest request) {
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
+        return leagueService.findAll(Slot.class).stream().filter(s->s.getLocalDateTime().isAfter(yesterday)).filter(s->s.getAllocated() <4).collect(Collectors.toList());
+    }
+
+    @RequestMapping(value = {"/users"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public Collection<User> challengeUsers(String id, Principal principal, HttpServletRequest request) {
+        User user = leagueService.findByLogin(principal.getName());
+        return leagueService.findAll(User.class).parallelStream().filter(u->u.isChallenge() && !u.equals(user)).collect(Collectors.toList());
     }
 
     @RequestMapping(value = {"/", "","get"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
