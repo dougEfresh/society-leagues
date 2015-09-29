@@ -82,10 +82,15 @@ public class Challenge extends LeagueObject {
     }
 
     public User getUserChallenger() {
+        if (challenger == null || challenger.getMembers() == null || challenger.getMembers().isEmpty())
+            return null;
         return challenger.getMembers().iterator().next();
     }
 
     public User getUserOpponent() {
+        if (opponent == null || opponent.getMembers() == null || opponent.getMembers().isEmpty())
+            return null;
+
         return opponent.getMembers().iterator().next();
     }
 
@@ -101,6 +106,17 @@ public class Challenge extends LeagueObject {
     }
 
     public boolean hasUser(User u) {
-        return challenger.hasUser(u) || opponent.hasUser(u);
+        if (u == null || challenger == null || opponent == null)
+            return false;
+
+        return challenger.hasUser(u) ||  opponent.hasUser(u);
+    }
+
+
+    public boolean hasTeam(Team t) {
+        if (t == null)
+            return false;
+
+        return t.equals(challenger) || t.equals(opponent);
     }
 }

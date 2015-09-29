@@ -6,7 +6,6 @@ import com.society.leagues.client.api.domain.*;
 import com.society.leagues.listener.DaoListener;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Component;
 
@@ -52,12 +51,7 @@ public class LeagueService {
         T newEntity = (T) repo.findOne(entity.getId());
         CachedCollection c = cacheUtil.getCache(entity);
         if (c != null) {
-            T cached = (T) c.get().stream().filter(u -> ((LeagueObject) u).getId().equals(newEntity.getId())).findFirst().orElse(null);
-            if (cached == null) {
-                c.get().add(newEntity);
-            } else {
-                cached.merge(newEntity);
-            }
+            c.add(newEntity);
         }
         for (DaoListener daoListener : daoListeners) {
             daoListener.onChange(newEntity);
@@ -67,8 +61,7 @@ public class LeagueService {
 
     @SuppressWarnings("unchecked")
     public <T extends LeagueObject> Boolean delete(T entity) {
-        cacheUtil.getCache(entity).getRepo().delete(entity);
-        //cacheUtil.refreshAllCache();
+        cacheUtil.getCache(entity).remove(entity);
         for (DaoListener daoListener : daoListeners) {
             daoListener.onChange(entity);
         }

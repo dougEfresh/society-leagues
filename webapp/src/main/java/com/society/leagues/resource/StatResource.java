@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @RestController
@@ -148,27 +149,16 @@ public class StatResource {
             consumes = MediaType.ALL_VALUE)
     public List<Stat> getUserStats(@PathVariable String id) {
         User u = leagueService.findOne(new User(id));
-        List<Stat> stats = new ArrayList<>(100);
-        List<Team> teams = leagueService.findAll(Team.class).stream().
-                filter(t -> t.getMembers().contains(u)).
-                filter(t -> t.getSeason().isActive()).
-                collect(Collectors.toList());
+        List<Stat> userStats = new ArrayList<>();
 
-        List<PlayerResult> results = leagueService.findAll(PlayerResult.class)
-                .stream().parallel()
-                .filter(pr->pr.hasUser(u))
-                .filter(r -> r.getSeason().isActive())
-                .collect(Collectors.toList());
-        for (Team team : teams) {
-            stats.add(Stat.buildPlayerTeamStats(
-                            u,
-                            team,
-                            results.stream().filter(r -> r.hasTeam(team)).collect(Collectors.toList())
-                    )
-            );
-        }
-        stats.add(Stat.buildLifeTimeStats(u, stats));
-        return stats;
+        statService.getUserSeasonStats().values().stream().parallel().forEach(new Consumer<List<Stat>>() {
+            @Override
+            public void accept(List<Stat> stats) {
+                stats.parallelStream().filter(st->st.getUser().equals(u)).forEach(userStats::add);
+            }
+        });
+        userStats.add(Stat.buildLifeTimeStats(u, userStats));
+        return userStats;
     }
 
 

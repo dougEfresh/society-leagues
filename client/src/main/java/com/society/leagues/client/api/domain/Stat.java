@@ -1,6 +1,5 @@
 package com.society.leagues.client.api.domain;
 
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,11 +92,16 @@ public class Stat {
         if (handicap != null) {
             return Handicap.format(handicap);
         }
-        if (user == null || team == null) {
-            return "";
+        if (team  != null && user != null) {
+            HandicapSeason handicapSeason = user.getHandicapSeasons().stream().filter(hs -> hs.getSeason().equals(team.getSeason())).findFirst().orElse(null);
+            return handicapSeason == null ? "" : handicapSeason.getHandicapDisplay();
         }
-        HandicapSeason handicapSeason = user.getHandicapSeasons().stream().filter(hs->hs.getSeason().equals(team.getSeason())).findFirst().orElse(null);
-        return handicapSeason == null ? "" : handicapSeason.getHandicapDisplay();
+
+        if (season  != null && user != null) {
+            HandicapSeason handicapSeason = user.getHandicapSeasons().stream().filter(hs -> hs.getSeason().equals(season)).findFirst().orElse(null);
+            return handicapSeason == null ? "" : handicapSeason.getHandicapDisplay();
+        }
+        return "";
     }
 
 
@@ -240,4 +244,5 @@ public class Stat {
 
         return (double)wins/((double) wins+loses);
     }
+
 }

@@ -4,10 +4,7 @@ import com.society.leagues.client.api.domain.*;
 import org.apache.log4j.Logger;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -59,21 +56,31 @@ public class CachedCollection<T extends List<LeagueObject>> implements Comparabl
         return entity.get();
     }
 
-
     public Set<LeagueObject> current() {
         return current.get();
     }
 
     public void add(LeagueObject obj) {
-        if (isCurrent(obj)) {
-            current.get().add(obj);
+        LeagueObject cached =  this.get().stream().filter(u -> ((LeagueObject) u).getId().equals(obj.getId())).findFirst().orElse(null);
+        if (cached == null) {
+            if (isCurrent(obj)) {
+                current.get().add(obj);
+            }
+            entity.get().add(obj);
+        } else {
+            cached.merge(obj);
         }
-        entity.get().add(obj);
     }
 
     public void set(T collection) {
         this.current.lazySet(collection.stream().parallel().filter(this::isCurrent).collect(Collectors.toSet()));
         this.entity.lazySet(collection);
+    }
+
+    public void remove(LeagueObject obj) {
+        this.repo.delete(entity);
+        this.get().remove(obj);
+        this.current().remove(obj);
     }
 
     public MongoRepository getRepo() {

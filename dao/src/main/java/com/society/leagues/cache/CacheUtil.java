@@ -30,7 +30,11 @@ public class CacheUtil {
     public LeagueObject findOne(String id,String collection) {
         for (CachedCollection cachedCollection : cachedCollections) {
             if (cachedCollection.getCollection().equals(collection)) {
-                return (LeagueObject) cachedCollection.get().parallelStream().filter(c->((LeagueObject) c).getId().equals(id)).findFirst().orElse(null);
+                 LeagueObject found = (LeagueObject) cachedCollection.current().parallelStream().filter(c->((LeagueObject) c).getId().equals(id)).findFirst().orElse(null);
+                if (found == null)
+                    return (LeagueObject) cachedCollection.get().parallelStream().filter(c->((LeagueObject) c).getId().equals(id)).findFirst().orElse(null);
+
+                return found;
             }
         }
         return null;
@@ -62,7 +66,8 @@ public class CacheUtil {
         throw new RuntimeException("Cannot find cache repo for " + clz.getCanonicalName());
     }
 
-    @Scheduled(fixedRate = 1000*60*5, initialDelay = 1000*60*15)
+
+    @Scheduled(fixedRate = 1000*60*60, initialDelay = 1000*60*60)
     public void refreshAllCache() {
         cachedCollections.forEach(CachedCollection::refresh);
     }

@@ -3,6 +3,7 @@ package com.society.leagues.conf;
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import com.society.leagues.cache.CacheUtil;
+import com.society.leagues.mongo.CustomMappingMongoConverter;
 import com.society.leagues.mongo.CustomRefResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,8 +48,9 @@ public class MongoConfig extends AbstractMongoConfiguration {
             dbRefResolver = new CustomRefResolver(mongoDbFactory(),cacheUtil);
         }
 
-		MappingMongoConverter converter = new MappingMongoConverter(dbRefResolver, mongoMappingContext());
-		converter.setCustomConversions(customConversions());
+		CustomMappingMongoConverter converter = new CustomMappingMongoConverter(dbRefResolver, mongoMappingContext());
+        converter.setCacheUtil(cacheUtil);
+        converter.setCustomConversions(customConversions());
 
 		return converter;
 	}
