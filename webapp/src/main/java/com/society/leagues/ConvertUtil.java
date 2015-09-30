@@ -1,9 +1,9 @@
 package com.society.leagues;
 
 
-import com.society.leagues.Service.ChallengeService;
-import com.society.leagues.Service.LeagueService;
-import com.society.leagues.Service.ResultService;
+import com.society.leagues.service.ChallengeService;
+import com.society.leagues.service.LeagueService;
+import com.society.leagues.service.ResultService;
 import com.society.leagues.cache.CacheUtil;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.mongo.PlayerResultRepository;

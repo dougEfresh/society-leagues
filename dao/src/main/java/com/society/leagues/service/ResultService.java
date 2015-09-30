@@ -1,4 +1,4 @@
-package com.society.leagues.Service;
+package com.society.leagues.service;
 
 import com.society.leagues.client.api.domain.MatchPoints;
 import com.society.leagues.client.api.domain.PlayerResult;
@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,21 +26,22 @@ public class ResultService {
 
     @Scheduled(fixedRate = 1000*60*6, initialDelay = 1000*60*11)
     public void refresh() {
+        matchPoints().clear();
         List<PlayerResult> challengeResults = leagueService.findCurrent(PlayerResult.class).stream().parallel()
                 .filter(r -> r.getSeason().isChallenge())
                 .collect(Collectors.toList());
 
-        for(User challengeUser: leagueService.findAll(User.class).stream().filter(u->u.isChallenge()).collect(Collectors.toList())) {
+        for(User challengeUser: leagueService.findAll(User.class).stream()
+                .filter(u -> u.isChallenge())
+                //.filter(u->u.getLastName().equals("Chimento"))
+                .collect(Collectors.toList())
+                ) {
             List<PlayerResult> results = challengeResults.stream().parallel().filter(pr->pr.hasUser(challengeUser)).
-                    sorted(new Comparator<PlayerResult>() {
-                @Override
-                public int compare(PlayerResult playerResult, PlayerResult t1) {
-                    return t1.getTeamMatch().getMatchDate().compareTo(playerResult.getTeamMatch().getMatchDate());
-                }
-            }).limit(7).collect(Collectors.toList());
+                    sorted((playerResult, t1) -> t1.getTeamMatch().getMatchDate().compareTo(playerResult.getTeamMatch().getMatchDate())).limit(7)
+                    .collect(Collectors.toList());
+
             double matchNum = 0;
             for (PlayerResult challengeResult : results) {
-                matchNum++;
                 MatchPoints mp = new MatchPoints();
                 int points = 1;
                 if (challengeResult.isWinner(challengeUser)) {
@@ -49,13 +49,15 @@ public class ResultService {
                 } else {
                     points += challengeResult.getWinnerRacks()-challengeResult.getLoserRacks() == 1 ? 1 : 0;
                 }
-                mp.setCalculation(String.format("%s/(%s/%s)", points,period,period-matchNum));
                 mp.setPoints(points);
-                mp.setMatchNum(new Double(matchNum).intValue());
                 mp.setWeightedAvg((double) points / (period / (period - matchNum)));
+                mp.setMatchNum(new Double(matchNum).intValue());
                 mp.setPlayerResult(challengeResult);
                 mp.setUser(challengeUser);
+                mp.setCalculation(String.format("(%s * (10-%s))/10", points, new Double(matchNum).intValue()));
+                matchNum++;
                 matchPointsCache.add(mp);
+
             }
         }
 

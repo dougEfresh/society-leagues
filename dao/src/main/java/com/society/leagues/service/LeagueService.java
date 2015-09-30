@@ -1,4 +1,4 @@
-package com.society.leagues.Service;
+package com.society.leagues.service;
 
 import com.society.leagues.cache.CachedCollection;
 import com.society.leagues.cache.CacheUtil;

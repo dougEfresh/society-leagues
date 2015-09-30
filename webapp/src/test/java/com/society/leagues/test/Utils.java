@@ -1,7 +1,7 @@
 package com.society.leagues.test;
 
 
-import com.society.leagues.Service.LeagueService;
+import com.society.leagues.service.LeagueService;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.mongo.*;
 import org.springframework.beans.factory.annotation.Autowired;

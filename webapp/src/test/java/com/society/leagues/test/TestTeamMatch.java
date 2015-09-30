@@ -1,8 +1,7 @@
 package com.society.leagues.test;
 
 import com.society.leagues.Main;
-import com.society.leagues.Service.LeagueService;
-import com.society.leagues.client.api.domain.Season;
+import com.society.leagues.service.LeagueService;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.client.api.domain.User;
@@ -23,7 +22,6 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.Assert.*;
 

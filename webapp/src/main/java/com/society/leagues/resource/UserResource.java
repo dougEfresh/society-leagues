@@ -1,8 +1,8 @@
 package com.society.leagues.resource;
 
-import com.society.leagues.Service.ChallengeService;
-import com.society.leagues.Service.LeagueService;
-import com.society.leagues.Service.UserService;
+import com.society.leagues.service.ChallengeService;
+import com.society.leagues.service.LeagueService;
+import com.society.leagues.service.UserService;
 import com.society.leagues.client.api.domain.TokenReset;
 import com.society.leagues.client.api.domain.User;
 import com.wordnik.swagger.annotations.Api;

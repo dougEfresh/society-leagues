@@ -1,9 +1,9 @@
 package com.society.leagues.test;
 
 import com.society.leagues.Main;
-import com.society.leagues.Service.ChallengeService;
-import com.society.leagues.Service.LeagueService;
-import com.society.leagues.Service.UserService;
+import com.society.leagues.service.ChallengeService;
+import com.society.leagues.service.LeagueService;
+import com.society.leagues.service.UserService;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.mongo.*;
 import org.apache.log4j.Logger;

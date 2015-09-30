@@ -1,7 +1,7 @@
 package com.society.leagues.test;
 
 import com.society.leagues.Main;
-import com.society.leagues.Service.LeagueService;
+import com.society.leagues.service.LeagueService;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.User;

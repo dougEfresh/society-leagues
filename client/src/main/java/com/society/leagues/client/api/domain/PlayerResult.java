@@ -24,6 +24,7 @@ public class PlayerResult  extends LeagueObject {
     @NotNull Integer matchNumber = 0;
     @NotNull Handicap playerHomeHandicap;
     @NotNull Handicap playerAwayHandicap;
+    MatchPoints matchPoints;
 
     Team referenceTeam = null;
     User referenceUser = null;
@@ -164,6 +165,7 @@ public class PlayerResult  extends LeagueObject {
     public boolean isWinner(User u) {
         return u != null && u.equals(getWinner());
     }
+
 
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     @JsonIgnore
@@ -318,6 +320,14 @@ public class PlayerResult  extends LeagueObject {
     public void clearReference() {
         referenceTeam = null;
         referenceUser = null;
+    }
+
+    public MatchPoints getMatchPoints() {
+        return matchPoints;
+    }
+
+    public void setMatchPoints(MatchPoints matchPoints) {
+        this.matchPoints = matchPoints;
     }
 
     @Override

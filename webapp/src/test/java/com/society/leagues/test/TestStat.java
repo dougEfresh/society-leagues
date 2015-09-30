@@ -1,7 +1,7 @@
 package com.society.leagues.test;
 
 import com.society.leagues.Main;
-import com.society.leagues.Service.LeagueService;
+import com.society.leagues.service.LeagueService;
 import com.society.leagues.client.api.domain.*;
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -21,7 +21,6 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 

@@ -60,6 +60,7 @@ public class MatchPoints {
         this.matchNum = matchNum;
     }
 
+
     public void setCalculation(String calculation) {
         this.calculation = calculation;
     }
@@ -71,7 +72,6 @@ public class MatchPoints {
     public User getUser() {
         return user;
     }
-
 
     public void setUser(User user) {
         this.user = user;

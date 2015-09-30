@@ -1,4 +1,4 @@
-package com.society.leagues.Service;
+package com.society.leagues.service;
 
 import com.society.leagues.client.api.domain.*;
 import org.apache.log4j.Logger;

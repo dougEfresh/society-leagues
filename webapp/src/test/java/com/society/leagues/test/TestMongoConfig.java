@@ -2,6 +2,7 @@ package com.society.leagues.test;
 
 import com.mongodb.Mongo;
 import com.mongodb.MongoClientOptions;
+import com.society.leagues.cache.CacheUtil;
 import com.society.leagues.cache.CachedCollection;
 import com.society.leagues.mongo.CustomRefResolver;
 import de.flapdoodle.embed.mongo.MongodExecutable;
@@ -30,7 +31,7 @@ public class TestMongoConfig  extends AbstractMongoConfiguration {
     @Autowired(required = false)
     MongoClientOptions options;
     static final MongodStarter starter = MongodStarter.getDefaultInstance();
-    @Autowired List<CachedCollection> cachedCollections;
+    @Autowired CacheUtil cacheUtil;
 
     @Override
     protected String getDatabaseName() {
@@ -59,7 +60,7 @@ public class TestMongoConfig  extends AbstractMongoConfiguration {
     @Primary
     @Override
     public MappingMongoConverter mappingMongoConverter() throws Exception {
-        CustomRefResolver dbRefResolver = new CustomRefResolver(mongoDbFactory(),cachedCollections);
+        CustomRefResolver dbRefResolver = new CustomRefResolver(mongoDbFactory(),cacheUtil);
         MappingMongoConverter converter = new MappingMongoConverter(dbRefResolver, mongoMappingContext());
         converter.setCustomConversions(customConversions());
         return converter;

@@ -1,4 +1,4 @@
-package com.society.leagues.Service;
+package com.society.leagues.service;
 
 import com.society.leagues.client.api.domain.Email;
 import feign.*;
@@ -11,7 +11,7 @@ import javax.annotation.PostConstruct;
 
 @Component
 public class EmailService {
-    private static org.slf4j.Logger logger = LoggerFactory.getLogger(com.society.leagues.Service.EmailService.class);
+    private static org.slf4j.Logger logger = LoggerFactory.getLogger(com.society.leagues.service.EmailService.class);
 
     @Value("${email-host:localhost}")
     String emailHost = "localhost";

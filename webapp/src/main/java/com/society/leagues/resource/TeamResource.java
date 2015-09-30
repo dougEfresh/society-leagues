@@ -2,7 +2,7 @@ package com.society.leagues.resource;
 
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.society.leagues.Service.LeagueService;
+import com.society.leagues.service.LeagueService;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.client.views.TeamSummary;

@@ -2,14 +2,14 @@ package com.society.leagues.resource;
 
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.society.leagues.Service.LeagueService;
-import com.society.leagues.Service.ResultService;
+import com.society.leagues.service.LeagueService;
+import com.society.leagues.service.ResultService;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.views.PlayerResultView;
-import com.society.leagues.client.views.TeamSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -113,18 +113,52 @@ public class PlayerResultResource {
 
     @RequestMapping(value = "/get/user/{id}/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @JsonView(value = {PlayerResultView.class})
-    public List<PlayerResult> getPlayerResultByUser(Principal principal, @PathVariable String id, @PathVariable String type) {
+    public Map<String,List<PlayerResult>> getPlayerResultByUser(Principal principal, @PathVariable String id, @PathVariable String type) {
         User u = leagueService.findOne(new User(id));
+        List<PlayerResult> results = new ArrayList<>(500);
         if (type.equals("all"))
-         return leagueService.findAll(PlayerResult.class).stream().parallel().filter(pr -> pr.hasUser(u))
+         results = leagueService.findAll(PlayerResult.class).stream().parallel().filter(pr -> pr.hasUser(u))
                     .sorted((playerResult, t1) -> t1.getMatchDate().compareTo(playerResult.getMatchDate()))
                     .collect(Collectors.toList());
+        else
+            results = leagueService.findCurrent(PlayerResult.class).stream().
+                    parallel().filter(pr->pr.hasUser(u)).collect(Collectors.toList());
 
-        List<PlayerResult> results = leagueService.findCurrent(PlayerResult.class).stream().
-                parallel().filter(pr->pr.hasUser(u)).collect(Collectors.toList());
-        //TODO Very very bad, fix this
-        results.parallelStream().forEach(r -> r.setReferenceUser(u));
-        return results.stream().sorted((playerResult, t1) -> t1.getMatchDate().compareTo(playerResult.getMatchDate()))
-                .collect(Collectors.toList());
+
+        List<PlayerResult> copyResults = new ArrayList<>(results.size());
+        for (PlayerResult result : results) {
+            PlayerResult r = new PlayerResult();
+            ReflectionUtils.shallowCopyFieldState(result,r);
+
+            copyResults.add(r);
+        }
+
+        copyResults.parallelStream().forEach(r -> r.setReferenceUser(u));
+
+        Map<String,List<PlayerResult>> resultsBySeason = copyResults.stream().collect(Collectors.groupingBy(pr -> pr.getSeason().getId()));
+
+        for (String season : resultsBySeason.keySet()) {
+            resultsBySeason.put(season, resultsBySeason.get(season).stream()
+                    .sorted((playerResult, t1)
+                                    -> t1.getMatchDate().compareTo(playerResult.getMatchDate())
+                    )
+                .collect(Collectors.toList()));
+        }
+
+
+        if (u.isChallenge()) {
+            List<MatchPoints> matchPointsList = resultService.matchPoints();
+            List<PlayerResult> challengeResults = resultsBySeason.get(u.getHandicapSeasons().stream().filter(s->s.getSeason().isChallenge()).findFirst().get().getSeason().getId());
+            for (PlayerResult challengeResult : challengeResults) {
+                challengeResult.setMatchPoints(
+                        matchPointsList.parallelStream()
+                                .filter(
+                                        mp -> mp.getPlayerResult().getId().equals(challengeResult.getId()) &&
+                                                mp.getUser().equals(u)
+                                )
+                                .findFirst().orElse(null));
+            }
+        }
+        return resultsBySeason;
     }
 }

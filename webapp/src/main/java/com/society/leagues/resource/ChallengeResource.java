@@ -1,8 +1,8 @@
 package com.society.leagues.resource;
 
-import com.society.leagues.Service.LeagueService;
+import com.society.leagues.service.LeagueService;
 import com.society.leagues.client.api.domain.*;
-import com.society.leagues.Service.EmailService;
+import com.society.leagues.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;

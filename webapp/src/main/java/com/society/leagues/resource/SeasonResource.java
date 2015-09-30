@@ -1,6 +1,6 @@
 package com.society.leagues.resource;
 
-import com.society.leagues.Service.LeagueService;
+import com.society.leagues.service.LeagueService;
 import com.society.leagues.client.api.domain.Division;
 import com.society.leagues.client.api.domain.Handicap;
 import com.society.leagues.client.api.domain.Season;

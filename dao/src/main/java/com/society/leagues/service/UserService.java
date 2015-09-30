@@ -1,6 +1,5 @@
-package com.society.leagues.Service;
+package com.society.leagues.service;
 
-import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.TokenReset;
 import com.society.leagues.client.api.domain.User;
 import org.slf4j.Logger;

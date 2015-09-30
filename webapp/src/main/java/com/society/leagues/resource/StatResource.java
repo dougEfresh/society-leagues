@@ -1,8 +1,8 @@
 package com.society.leagues.resource;
 
-import com.society.leagues.Service.LeagueService;
-import com.society.leagues.Service.ResultService;
-import com.society.leagues.Service.StatService;
+import com.society.leagues.service.LeagueService;
+import com.society.leagues.service.ResultService;
+import com.society.leagues.service.StatService;
 import com.society.leagues.client.api.domain.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -154,7 +154,7 @@ public class StatResource {
         statService.getUserSeasonStats().values().stream().parallel().forEach(new Consumer<List<Stat>>() {
             @Override
             public void accept(List<Stat> stats) {
-                stats.parallelStream().filter(st->st.getUser().equals(u)).forEach(userStats::add);
+                stats.parallelStream().filter(st -> st.getUser().equals(u)).forEach(userStats::add);
             }
         });
         userStats.add(Stat.buildLifeTimeStats(u, userStats));

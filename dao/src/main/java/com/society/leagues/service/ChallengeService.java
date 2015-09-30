@@ -1,4 +1,4 @@
-package com.society.leagues.Service;
+package com.society.leagues.service;
 
 import com.society.leagues.client.api.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,6 @@ import javax.annotation.PostConstruct;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
