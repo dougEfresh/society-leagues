@@ -38,7 +38,7 @@ public class StatService {
         return teamStats.get();
     }
 
-    @Scheduled(fixedRate = 1000*60*6, initialDelay = 1000*60*11)
+    @Scheduled(fixedRate = 1000*60*60, initialDelay = 1000*60*11)
     public void refresh() {
         logger.info("Refreshing stats");
         long start = System.currentTimeMillis();

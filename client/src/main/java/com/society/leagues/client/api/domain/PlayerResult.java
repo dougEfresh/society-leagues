@@ -25,7 +25,7 @@ public class PlayerResult  extends LeagueObject {
     @NotNull Handicap playerHomeHandicap;
     @NotNull Handicap playerAwayHandicap;
     MatchPoints matchPoints;
-
+//2120087560
     Team referenceTeam = null;
     User referenceUser = null;
 
@@ -166,6 +166,27 @@ public class PlayerResult  extends LeagueObject {
         return u != null && u.equals(getWinner());
     }
 
+    /**
+     * Is the loser home or away?
+     * @return
+     */
+    public String getLoserType() {
+        if (teamMatch.getLoser().equals(teamMatch.getHome())) {
+            return "home";
+        }
+        return "away";
+    }
+
+    /**
+     * Is the winner home or away?
+     * @return
+     */
+    public String getWinnerType() {
+        if (teamMatch.getWinner().equals(teamMatch.getHome())) {
+            return "home";
+        }221
+        return "away";
+    }
 
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     @JsonIgnore

@@ -7,5 +7,6 @@ public enum Status {
     CANCELLED,
     ACCEPTED,
     NOTIFY,
-    SENT
+    SENT,
+    COMPLETE
 }

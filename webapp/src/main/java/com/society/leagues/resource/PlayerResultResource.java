@@ -161,4 +161,54 @@ public class PlayerResultResource {
         }
         return resultsBySeason;
     }
+
+
+    @RequestMapping(value = "/user/{id}/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @JsonView(value = {PlayerResultView.class})
+    public List<PlayerResult> getPlayerResultByUserSeason(Principal principal, @PathVariable String id, @PathVariable String seasonId) {
+        User u = leagueService.findOne(new User(id));
+        Season s = leagueService.findOne(new Season(seasonId));
+        List<PlayerResult> results = new ArrayList<>(500);
+        if (s == null) {
+            return results;
+        }
+
+        if (s.isActive()) {
+            results = leagueService.findCurrent(PlayerResult.class).stream().
+                    parallel().filter(pr -> pr.hasUser(u)).filter(pr->pr.getSeason().equals(s)).collect(Collectors.toList());
+        } else {
+            results = leagueService.findAll(PlayerResult.class)
+                    .stream().parallel().filter(pr -> pr.hasUser(u)).filter(pr->pr.getSeason().equals(s)).collect(Collectors.toList());
+        }
+
+
+        List<PlayerResult> copyResults = new ArrayList<>(results.size());
+        for (PlayerResult result : results) {
+            PlayerResult r = new PlayerResult();
+            ReflectionUtils.shallowCopyFieldState(result,r);
+
+            copyResults.add(r);
+        }
+
+        copyResults.parallelStream().forEach(r -> r.setReferenceUser(u));
+        copyResults.sort(
+                (playerResult, t1) -> t1.getMatchDate().compareTo(playerResult.getMatchDate())
+        );
+
+        if (s.isChallenge()) {
+            List<MatchPoints> matchPointsList = resultService.matchPoints();
+            for (PlayerResult challengeResult : copyResults) {
+                challengeResult.setMatchPoints(
+                        matchPointsList.parallelStream()
+                                .filter(
+                                        mp -> mp.getPlayerResult().getId().equals(challengeResult.getId()) &&
+                                                mp.getUser().equals(u)
+                                )
+                                .findFirst().orElse(null));
+            }
+        }
+
+        return copyResults;
+    }
+
 }

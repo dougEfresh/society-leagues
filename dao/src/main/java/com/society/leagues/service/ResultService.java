@@ -68,7 +68,6 @@ public class ResultService {
     }
 
     public PlayerResult createOrModify(PlayerResult playerResult) {
-
         if (playerResult.getSeason().isChallenge()) {
             TeamMatch tm = playerResult.getTeamMatch();
             tm.setAwayRacks(playerResult.getAwayRacks());
@@ -79,17 +78,6 @@ public class ResultService {
         }
 
         return leagueService.save(playerResult);
-
-    }
-
-     public TeamMatch createOrModify(TeamMatch teamMatch) {
-
-        if (teamMatch.getSeason().isChallenge()) {
-            // don't modify team matches for challenges
-            return  teamMatch;
-        }
-
-        return leagueService.save(teamMatch);
 
     }
 }

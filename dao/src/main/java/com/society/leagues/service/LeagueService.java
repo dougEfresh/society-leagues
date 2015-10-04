@@ -122,4 +122,8 @@ public class LeagueService {
 
         }
     }
+
+    public <T extends LeagueObject> void purge(T entity) {
+
+    }
 }

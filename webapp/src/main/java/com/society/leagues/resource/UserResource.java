@@ -55,6 +55,18 @@ public class UserResource {
         return listByUser(u.getId());
     }
 
+
+    @RequestMapping(value = "/active", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<User> active(Principal principal) {
+        User u = get(principal.getName());
+        if (u.isAdmin()) {
+            return leagueService.findAll(User.class).stream().filter(user->user.isActive())
+                    .sorted((user, t1) -> user.getName().compareTo(t1.getName())).collect(Collectors.toList());
+        }
+
+        return listByUser(u.getId());
+    }
+
     @RequestMapping(value = "/login/{login}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_USER')")
     public User get(@PathVariable String login) {

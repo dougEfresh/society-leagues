@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class User extends LeagueObject {
 
@@ -151,6 +152,12 @@ public class User extends LeagueObject {
         return handicapSeasons.stream().filter(s->s.getSeason().getDivision().isChallenge()).count() > 0;
     }
 
+    public List<Season> getSeasons() {
+        List<Season> list =handicapSeasons.stream().map(HandicapSeason::getSeason).collect(Collectors.toList());
+        list.sort(Season.sort);
+        return list;
+    }
+
     public boolean hasSameSeason(User u) {
         for (HandicapSeason u1 : handicapSeasons) {
             for (HandicapSeason u2: u.getHandicapSeasons()) {
@@ -180,6 +187,10 @@ public class User extends LeagueObject {
     @Override
     public void merge(LeagueObject object) {
         super.merge(object);
+    }
+
+    public boolean isActive() {
+        return getSeasons().stream().filter(Season::isActive).findFirst().isPresent();
     }
 
     @Override

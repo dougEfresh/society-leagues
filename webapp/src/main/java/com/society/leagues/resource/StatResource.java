@@ -46,7 +46,7 @@ public class StatResource {
             return Collections.emptyList();
         }
 
-        return statService.getUserSeasonStats().get(team.getSeason()).stream().parallel().filter(s->team.hasUser(s.getUser()))
+        return statService.getUserSeasonStats().get(team.getSeason()).stream().parallel().filter(s -> team.hasUser(s.getUser()))
                 .collect(Collectors.toList());
     }
 
@@ -95,7 +95,7 @@ public class StatResource {
         LocalDateTime tenWeeksAgo = LocalDateTime.now().minusWeeks(10);
         HashMap<String,MatchPoints> hashMap = new HashMap<>(50);
         for(MatchPoints points: resultService.matchPoints()) {
-            hashMap.put(points.getPlayerResult().getId(),points);
+            hashMap.put(points.getPlayerResult().getId(), points);
         }
         return hashMap;
     }
@@ -161,5 +161,13 @@ public class StatResource {
         return userStats;
     }
 
-
+    @RequestMapping(value = "/user/{id}/{seasonId}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.ALL_VALUE)
+    public List<Stat> getUserStatsSeason(@PathVariable String id, @PathVariable String seasonId) {
+        User u = leagueService.findOne(new User(id));
+        return statService.getUserSeasonStats()
+                .get(new Season(seasonId)).stream().parallel().filter(s->s.getUser().equals(u)).collect(Collectors.toList());
+    }
 }

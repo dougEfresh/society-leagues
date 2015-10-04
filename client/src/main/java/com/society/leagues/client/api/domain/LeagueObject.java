@@ -10,6 +10,7 @@ public class LeagueObject implements Comparable<LeagueObject>{
 
     @Id String id;
     Integer legacyId;
+    Boolean deleted = false;
 
     @JsonView(IdView.class)
     public String getId() {
@@ -41,6 +42,14 @@ public class LeagueObject implements Comparable<LeagueObject>{
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
 
         return true;
+    }
+
+    public boolean isDeleted() {
+        return deleted == null || !deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     public void merge(LeagueObject object) {

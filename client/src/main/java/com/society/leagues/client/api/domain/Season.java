@@ -7,8 +7,9 @@ import com.society.leagues.converters.DateTimeSerializer;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 
-public class Season extends LeagueObject {
+public class Season extends LeagueObject  {
 
     String name;
     @NotNull
@@ -137,6 +138,20 @@ public class Season extends LeagueObject {
     public void setType(String type) {
         this.type = type;
     }
+
+    public static Comparator<Season> sort = new Comparator<Season>() {
+        @Override
+        public int compare(Season o1, Season o2) {
+            if (o1.isChallenge())
+                return 1;
+            if (o2.isChallenge())
+                return 1;
+            if (o1.getLegacyId() != null && o2.getLegacyId() != null)
+                return o1.getLegacyId().compareTo(o2.getLegacyId());
+
+            return o1.getStartDate().compareTo(o2.getStartDate());
+        }
+    };
 
     @Override
     public String toString() {
