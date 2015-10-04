@@ -168,7 +168,7 @@ public class PlayerResult  extends LeagueObject {
 
     /**
      * Is the loser home or away?
-     * @return
+     * @return String
      */
     public String getLoserType() {
         if (teamMatch.getLoser().equals(teamMatch.getHome())) {
@@ -179,12 +179,12 @@ public class PlayerResult  extends LeagueObject {
 
     /**
      * Is the winner home or away?
-     * @return
+     * @return String
      */
     public String getWinnerType() {
         if (teamMatch.getWinner().equals(teamMatch.getHome())) {
             return "home";
-        }221
+        }
         return "away";
     }
 
