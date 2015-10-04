@@ -57,6 +57,7 @@ public class TeamMatchResource {
 
         return leagueService.save(teamMatch);
     }
+
     @RequestMapping(value = "/wins/{teamMatchId}/{teamId}/{wins}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public TeamMatch updateWins(Principal principal, @PathVariable String teamMatchId, @PathVariable String teamId, @PathVariable Integer wins) {
         TeamMatch  teamMatch = leagueService.findOne(new TeamMatch(teamMatchId));
@@ -82,7 +83,6 @@ public class TeamMatchResource {
         members.put("losers",l.getMembers());
         return members;
     }
-
 
     @RequestMapping(value = {"/season/{id}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Map<String,List<TeamMatch>> getTeamMatchSeason(Principal principal, @PathVariable String id) {

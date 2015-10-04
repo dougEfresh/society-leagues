@@ -9,7 +9,6 @@ import com.society.leagues.client.views.PlayerResultView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -89,7 +88,7 @@ public class PlayerResultResource {
                 .collect(Collectors.toList());
     }
 
-    @RequestMapping(value = "/get/team/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @RequestMapping(value = {"/team/{id}","/get/team/{id}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @JsonView(PlayerResultView.class)
     public List<PlayerResult> getPlayerResulTeam(Principal principal, @PathVariable String id) {
         Team t  = leagueService.findOne(new Team(id));
@@ -103,8 +102,9 @@ public class PlayerResultResource {
                     .filter(pr -> pr.getSeason().equals(t.getSeason()))
                     .filter(pr -> pr.hasTeam(t)).collect(Collectors.toList());
         }
-        //TODO Very very bad, fix this
-        results.parallelStream().forEach(pr -> pr.setReferenceTeam(t));
+        final List<PlayerResult> copyResults = new ArrayList<>(results.size());
+        results.stream().forEach(r-> copyResults.add(PlayerResult.copy(r)));
+        copyResults.parallelStream().forEach(pr -> pr.setReferenceTeam(t));
         return results.stream().
                 sorted((playerResult, t1) -> playerResult.getTeamMember().getName().compareTo(t1.getTeamMember().getName())).
                 collect(Collectors.toList());
@@ -126,15 +126,8 @@ public class PlayerResultResource {
 
 
         List<PlayerResult> copyResults = new ArrayList<>(results.size());
-        for (PlayerResult result : results) {
-            PlayerResult r = new PlayerResult();
-            ReflectionUtils.shallowCopyFieldState(result,r);
-
-            copyResults.add(r);
-        }
-
-        copyResults.parallelStream().forEach(r -> r.setReferenceUser(u));
-
+        results.stream().forEach(r-> copyResults.add(PlayerResult.copy(r)));
+        copyResults.parallelStream().forEach(pr -> pr.setReferenceUser(u));
         Map<String,List<PlayerResult>> resultsBySeason = copyResults.stream().collect(Collectors.groupingBy(pr -> pr.getSeason().getId()));
 
         for (String season : resultsBySeason.keySet()) {
@@ -181,16 +174,9 @@ public class PlayerResultResource {
                     .stream().parallel().filter(pr -> pr.hasUser(u)).filter(pr->pr.getSeason().equals(s)).collect(Collectors.toList());
         }
 
-
         List<PlayerResult> copyResults = new ArrayList<>(results.size());
-        for (PlayerResult result : results) {
-            PlayerResult r = new PlayerResult();
-            ReflectionUtils.shallowCopyFieldState(result,r);
-
-            copyResults.add(r);
-        }
-
-        copyResults.parallelStream().forEach(r -> r.setReferenceUser(u));
+        results.stream().forEach(r-> copyResults.add(PlayerResult.copy(r)));
+        copyResults.parallelStream().forEach(pr -> pr.setReferenceUser(u));
         copyResults.sort(
                 (playerResult, t1) -> t1.getMatchDate().compareTo(playerResult.getMatchDate())
         );
@@ -210,5 +196,19 @@ public class PlayerResultResource {
 
         return copyResults;
     }
+
+    @RequestMapping(value = "/racks/{matchId}/{type}/{racks}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public PlayerResult updateRacks(Principal principal, @PathVariable String matchId, @PathVariable String type, @PathVariable Integer racks) {
+        PlayerResult result = leagueService.findOne(new PlayerResult(matchId));
+        if (type.equals("home")) {
+            result.setHomeRacks(racks);
+        } else {
+            result.setAwayRacks(racks);
+        }
+
+        return leagueService.save(result);
+    }
+
+
 
 }

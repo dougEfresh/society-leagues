@@ -8,6 +8,7 @@ import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.client.views.PlayerResultView;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -349,6 +350,12 @@ public class PlayerResult  extends LeagueObject {
 
     public void setMatchPoints(MatchPoints matchPoints) {
         this.matchPoints = matchPoints;
+    }
+
+    public static PlayerResult copy(PlayerResult result) {
+        PlayerResult copy = new PlayerResult();
+        ReflectionUtils.shallowCopyFieldState(result,copy);
+        return copy;
     }
 
     @Override
