@@ -74,7 +74,7 @@ public class LeagueService {
         if (repo == null) {
             return null;
         }
-        return (T) repo.get().stream().filter(e -> e.getId().equals(entity.getId())).findFirst().orElse(null);
+        return (T) repo.get().parallelStream().filter(e -> e.getId().equals(entity.getId())).findFirst().orElse(null);
     }
 
     @SuppressWarnings("unchecked")
@@ -123,7 +123,12 @@ public class LeagueService {
         }
     }
 
-    public <T extends LeagueObject> void purge(T entity) {
-
+    public <T extends LeagueObject> T purge(T entity) {
+        cacheUtil.getCache(entity).getRepo().delete(entity);
+        cacheUtil.getCache(entity).get().remove(entity);
+        for (DaoListener daoListener : daoListeners) {
+            daoListener.onDelete(entity);
+        }
+        return entity;
     }
 }

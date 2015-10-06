@@ -80,4 +80,11 @@ public class ResultService {
         return leagueService.save(playerResult);
 
     }
+
+    public Boolean removeTeamMatchResult(TeamMatch teamMatch) {
+        //Remove player results;
+        leagueService.findAll(PlayerResult.class).parallelStream().filter(r->r.getTeamMatch().equals(teamMatch)).forEach(leagueService::purge);
+        leagueService.purge(teamMatch);
+        return true;
+    }
 }

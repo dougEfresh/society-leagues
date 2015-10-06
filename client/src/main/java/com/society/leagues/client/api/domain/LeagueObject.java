@@ -56,6 +56,17 @@ public class LeagueObject implements Comparable<LeagueObject>{
         ReflectionUtils.shallowCopyFieldState(object,this);
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T extends LeagueObject> T copy(T src) {
+        try {
+            T dest = (T) src.getClass().newInstance();
+            ReflectionUtils.shallowCopyFieldState(src,dest);
+            return dest;
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;

@@ -221,11 +221,17 @@ public class TeamMatch extends LeagueObject {
     }
 
     public Team getWinner() {
-        return  homeRacks.equals(awayRacks) || homeRacks > awayRacks ? home : away;
+        if (homeRacks.equals(awayRacks))
+            return home;
+
+        return  homeRacks > awayRacks ? home : away;
     }
 
     public Team getLoser() {
-        return homeRacks.equals(awayRacks) || homeRacks > awayRacks ? away : home;
+        if (awayRacks.equals(homeRacks)) {
+            return away;
+        }
+        return awayRacks > homeRacks ? home : away;
     }
 
     @Override
@@ -244,4 +250,6 @@ public class TeamMatch extends LeagueObject {
     public void setReferenceUser(User referenceUser) {
         this.referenceUser = referenceUser;
     }
+
+
 }

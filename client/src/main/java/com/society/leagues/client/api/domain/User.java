@@ -184,11 +184,6 @@ public class User extends LeagueObject {
         this.tokens = tokens;
     }
 
-    @Override
-    public void merge(LeagueObject object) {
-        super.merge(object);
-    }
-
     public boolean isActive() {
         return getSeasons().stream().filter(Season::isActive).findFirst().isPresent();
     }

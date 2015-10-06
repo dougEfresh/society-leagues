@@ -28,29 +28,12 @@ public class ListenerConfig {
     };
 
     @Bean
+    public DaoListener statListener() {
+        return empty;
+    }
+
+    @Bean
     public DaoListener userListener() {
-        return new DaoListener(){
-            @Override
-            public void onAdd(LeagueObject object) {
-                if (!(object instanceof User)) {
-                    return ;
-                }
-
-            }
-
-            @Override
-            public void onChange(LeagueObject object) {
-                if (!(object instanceof User)) {
-                    return ;
-                }
-            }
-
-            @Override
-            public void onDelete(LeagueObject object) {
-                if (!(object instanceof User)) {
-                    return ;
-                }
-            }
-        };
+        return empty;
     }
 }

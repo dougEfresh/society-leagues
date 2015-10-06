@@ -45,6 +45,7 @@ public class PlayerResultResource {
         return leagueService.findOne(new PlayerResult(id));
 
     }
+
     @RequestMapping(value = "/teammatch/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @JsonView(PlayerResultView.class)
     public Collection<PlayerResult> getPlayerResultTeamMatch(Principal principal, @PathVariable String id) {
@@ -66,7 +67,7 @@ public class PlayerResultResource {
                         return playerResult.getMatchNumber().compareTo(t1.getMatchNumber());
                     }
         }).collect(Collectors.toList());
-        //TOOD set the winner before save...
+        //TODO  Use Shadow Copy
         results.stream().parallel().
                 forEach(pr->pr.setReferenceTeam(
                         pr.getTeamMatch().getHomeRacks() > pr.getTeamMatch().getAwayRacks() ?
@@ -198,6 +199,7 @@ public class PlayerResultResource {
     }
 
     @RequestMapping(value = "/racks/{matchId}/{type}/{racks}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public PlayerResult updateRacks(Principal principal, @PathVariable String matchId, @PathVariable String type, @PathVariable Integer racks) {
         PlayerResult result = leagueService.findOne(new PlayerResult(matchId));
         if (type.equals("home")) {
@@ -210,5 +212,21 @@ public class PlayerResultResource {
     }
 
 
+    @RequestMapping(value = "/player/{matchId}/{type}/{playerId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public PlayerResult updatePlayer(Principal principal, @PathVariable String matchId, @PathVariable String type, @PathVariable String playerId) {
+        PlayerResult result = leagueService.findOne(new PlayerResult(matchId));
+        User player = leagueService.findOne(new User(playerId));
+        if (result == null || player == null)
+            return null;
+
+        if (type.equals("home")) {
+            result.setPlayerHome(player);
+        } else {
+            result.setPlayerAway(player);
+        }
+
+        return leagueService.save(result);
+    }
 
 }

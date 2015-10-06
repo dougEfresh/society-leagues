@@ -2,6 +2,7 @@ package com.society.leagues.resource;
 
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.User;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -83,6 +85,19 @@ public class TeamResource {
                  .collect(Collectors.toList()
                  );
     }
+    @JsonView(TeamSummary.class)
+    @RequestMapping(value = "/season/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public Collection<Team> getTeamBySeason(Principal principal, @PathVariable String id) {
+         Season s = leagueService.findOne(new Season(id));
+         return leagueService.findAll(Team.class)
+                 .stream().parallel()
+                 .filter(t->t.getSeason().equals(s))
+                 .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
+                 .collect(Collectors.toList()
+                 );
+    }
+
+
     @JsonView(TeamSummary.class)
     @RequestMapping(value = "/active", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Collection<Team> getTeamSeason(Principal principal) {
