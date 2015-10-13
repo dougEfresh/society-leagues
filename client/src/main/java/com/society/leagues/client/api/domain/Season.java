@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 
-public class Season extends LeagueObject  {
+public class Season extends LeagueObject   {
 
     String name;
     @NotNull

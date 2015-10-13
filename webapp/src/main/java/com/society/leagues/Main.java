@@ -45,6 +45,7 @@ public class Main implements CommandLineRunner {
                 convertUtil.convertPlayerResults();
                 convertUtil.convertChallengers();
                 convertUtil.userHandicap();
+                convertUtil.teamMembers();
                 convertUtil.stats();
                 //convertUtil.updateSetWinsLoses();
                 System.exit(0);

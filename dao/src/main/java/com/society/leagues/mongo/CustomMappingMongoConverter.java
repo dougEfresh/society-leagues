@@ -18,26 +18,8 @@ public class CustomMappingMongoConverter extends MappingMongoConverter {
     }
 
     public <S extends Object> S read(Class<S> clazz, final DBObject dbo) {
-        /*
-        if (cacheUtil == null || dbo.get("_id") == null)
-            return super.read(clazz,dbo);
-
-        try {
-            Object obj = clazz.newInstance();
-            if (obj instanceof LeagueObject) {
-                ((LeagueObject) obj).setId(dbo.get("_id").toString());
-                LeagueObject leagueObject = cacheUtil.get((LeagueObject) obj);
-                if (leagueObject != null)
-                    return (S) leagueObject;
-            }
-        } catch (InstantiationException | IllegalAccessException e) {
-
-        }
-        */
         return super.read(clazz,dbo);
     }
-
-
 
     public void setCacheUtil(CacheUtil cacheUtil ) {
         this.cacheUtil = cacheUtil;

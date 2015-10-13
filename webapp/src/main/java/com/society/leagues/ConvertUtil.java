@@ -7,6 +7,7 @@ import com.society.leagues.service.ResultService;
 import com.society.leagues.cache.CacheUtil;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.mongo.PlayerResultRepository;
+import com.society.leagues.service.TeamService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,6 +19,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -32,8 +34,9 @@ public class ConvertUtil {
     @Autowired ResultService resultService;
     @Autowired PlayerResultRepository playerResultRepository;
     @Autowired CacheUtil cacheUtil;
-
+    @Autowired TeamService teamService;
     @Autowired JdbcTemplate jdbcTemplate;
+
     String defaultPassword = new BCryptPasswordEncoder().encode("abc123");
     public void convertUser() {
         logger.info("Convert users");
@@ -94,18 +97,25 @@ public class ConvertUtil {
                         " join season s on s.season_id=m.season_id\n" +
                         " join season_name sn on s.season_number=sn.sn_id\n" +
                         " join league l on m.league_id=l.league_id\n" +
-                        " where match_start_date > '0000-00-00 00:00:00' and m.season_id > 1" +
+                        " where match_start_date > '0000-00-00 00:00:00' and m.season_id > 1 and l.league_id != 4 " +
                         " group by m.season_id,m.league_id;");
 
         for (Map<String, Object> result : results) {
             Season s = new Season();
             String name = (String) result.get("name");
             s.setLegacyId((Integer) result.get("season_id"));
-            s.setStartDate(LocalDateTime.now().minusDays(100));
-            if (name.contains("2015,Summer")) {
-                s.setEndDate(LocalDateTime.now().minusDays(60));
+            String ts = (String) result.get("start_date");
+            if (ts != null)
+                s.setStartDate(LocalDateTime.parse(ts.replace(" ","T")));
+            else
+                s.setStartDate(LocalDateTime.now().minusDays(100));
+
+
+            if (name.contains("2015,Fall")) {
+                s.setEndDate(LocalDateTime.now().plusDays(60));
                 s.setSeasonStatus(Status.ACTIVE);
             } else {
+                s.setEndDate(LocalDateTime.now().minusDays(60));
                 s.setSeasonStatus(Status.INACTIVE);
             }
             s.setYear(name.split(",")[0]);
@@ -126,33 +136,53 @@ public class ConvertUtil {
             if (name.contains("Straight")) {
                 s.setDivision(Division.STRAIGHT);
             }
-
+            if (name.toLowerCase().contains("fall")) {
+                s.setType("Fall");
+            }
+            if (name.toLowerCase().contains("summer")) {
+                s.setType("Summer");
+            }
+            if (name.toLowerCase().contains("winter")) {
+                s.setType("Winter");
+            }
+            if (name.toLowerCase().contains("spring")) {
+                s.setType("Spring");
+            }
             s = leagueService.save(s);
-
-            System.out.println(s.toString());
         }
+        if (leagueService.findAll(Season.class).size() > (results.size()+1)) {
+            throw new RuntimeException("season");
+        }
+        leagueService.findAll(Season.class).stream().sorted(new Comparator<Season>() {
+            @Override
+            public int compare(Season o1, Season o2) {
+                return o1.getStartDate().compareTo(o2.getStartDate());
+            }
+        }).forEach(s -> System.out.println(s.toString()));
         return true;
     }
 
     public void convertTeam() {
         logger.info("Teams ");
         leagueService.deleteAll(Team.class);
-        logger.info("Delated Teams");
+        logger.info("Deleted Teams");
         List<Map<String,Object>> results = jdbcTemplate.queryForList("select distinct season_id,name,team_id " +
-                "from ( select distinct season_id,t.name,team_id  from match_schedule s join team t  on s.home_team_id=t.team_id union " +
-                "select distinct season_id,t.name,team_id from match_schedule s join team t  on s.visit_team_id=t.team_id) as teams " +
-                "where season_id > 1  order by season_id");
+                "from ( select distinct season_id,t.name,team_id  " +
+                "from match_schedule s join team t  on s.home_team_id=t.team_id where s.league_id != 4  " +
+                "union " +
+                "select distinct season_id,t.name,team_id from match_schedule s join" +
+                " team t on s.visit_team_id=t.team_id where s.league_id != 4) " +
+                "as teams " +
+                "where season_id > 1  order by season_id,team_id");
         List<Season> seasons = leagueService.findAll(Season.class);
         for (Map<String, Object> result : results) {
-            Team t = new Team();
-            t.setLegacyId((Integer) result.get("team_id"));
-            t.setName(result.get("name").toString());
             Integer id = (Integer) result.get("season_id");
             Season s = seasons.stream().filter(sn->sn.getLegacyId().equals(id)).findFirst().orElse(null);
             if (s == null) {
                 throw new RuntimeException("Could not find season " + id);
             }
-            t.setSeason(s);
+            Team t = teamService.createTeam(result.get("name").toString(), s);
+            t.setLegacyId((Integer) result.get("team_id"));
             leagueService.save(t);
         }
 
@@ -160,38 +190,34 @@ public class ConvertUtil {
     }
 
     public void convertTeamMembers() {
-       List<Map<String,Object>> results  = jdbcTemplate.queryForList("select distinct player_id,team_id,season_id  " +
-               "from result_ind r join match_schedule m on r.match_id = m.match_id  " +
-               "where player_id is not null and team_id is not null and team_id > 0 and player_id > 0");
+       List<Map<String,Object>> results  = jdbcTemplate.queryForList(
+               "select distinct player_id,team_id,season_id  " +
+                       "from result_ind r join match_schedule m on r.match_id = m.match_id  " +
+                       "where player_id is not null and team_id is not null and team_id > 0 and player_id > 0 and  m.league_id != 4" +
+                       " order by team_id,season_id"
+       );
         List<User> users = leagueService.findAll(User.class);
         List<Team> teams = leagueService.findAll(Team.class);
         Map<Integer,User> userMap = new HashMap<>();
-        Map<Integer,Team> teamMap = new HashMap<>();
         for (User user : users) {
             userMap.put(user.getLegacyId(),user);
-        }
-        for (Team team : teams) {
-            teamMap.put(team.getLegacyId(),team);
         }
         for (Map<String, Object> result : results) {
             Integer id = (Integer) result.get("player_id");
             User u = userMap.get(id);
-            HandicapSeason handicapSeason = u.getHandicapSeasons().stream().
-                    filter(hs->hs.getSeason().getLegacyId().equals(result.get("season_id"))).
-                    findFirst().orElse(null);
+            Team team = teams.parallelStream()
+                    .filter(t -> t.getLegacyId().equals(result.get("team_id")))
+                    .filter(t -> t.getSeason().getLegacyId().equals(result.get("season_id"))).findFirst().orElse(null);
 
-            if (handicapSeason == null) {
+            if (team == null) {
+                logger.error("Could not find team " + result.get("team_id"));
                 continue;
             }
-            Team t = teamMap.get((Integer) result.get("team_id"));
-            if (t == null) {
-                System.err.println("Could not find team " + result.get("team_id"));
-                continue;
-            }
-            t.addMember(u);
-            teamMap.put(t.getLegacyId(), leagueService.save(t));
+            team.getTeamMembers().addMember(u);
+        //    leagueService.save(team.getTeamMembers());
         }
-        System.out.print("Found  " + results.size() + " teams with memebers ");
+        teams.forEach(t->leagueService.save(t.getTeamMembers()));
+        System.out.print("Found  " + results.size() + " teams with members ");
     }
 
     public Boolean converTeamMatch() {
@@ -200,7 +226,8 @@ public class ConvertUtil {
         List<Map<String,Object>> matches = jdbcTemplate.
                 queryForList("select match_id,m.season_id,home_team_id,visit_team_id,match_start_date " +
                         "from match_schedule m " +
-                        "where match_start_date is not null and match_start_date > 2000-01-01 and m.season_id > 0 " +
+                        "where match_start_date is not null " +
+                        " and match_start_date > 2000-01-01 and m.season_id > 0  and m.league_id != 4" +
                         " and  (home_team_id is not null and visit_team_id is not null) order by match_id");
 
         List<Team> teams  = leagueService.findAll(Team.class);
@@ -306,18 +333,19 @@ public class ConvertUtil {
                 playerResult.setPlayerHome(aUser);
                 playerResult.setHomeRacks((Integer) result.get("a_games_won"));
                 playerResult.setMatchNumber((Integer) result.get("match_number"));
-                Handicap aHandicap = Handicap.get(result.get("hcd_name") == null ? "UNKNONE" : result.get("hcd_name").toString());
+                Handicap aHandicap = Handicap.get(result.get("hcd_name") == null ? "UNKNOWN" : result.get("hcd_name").toString());
                 playerResult.setPlayerHomeHandicap(aHandicap);
 
-                members =  home.getMembers().size();
-                if (members > 15) {
-                    throw new RuntimeException("Too many people");
-                }
-                home.addMember(aUser);
+                //members =  home.getMembers().size();
+                //if (members > 15) {
+//                    throw new RuntimeException("Too many people");
+  //              }
+    //            home.addMember(aUser);
 
-                if (members != home.getMembers().size()) {
-                    leagueService.save(home);
-                }
+      //          if (members != home.getMembers().size()) {
+                    //leagueService.save(home.getTeamMembers());
+          //          leagueService.save(home);
+        //        }
                 playerResults.add(playerResult);
             }
 
@@ -338,17 +366,19 @@ public class ConvertUtil {
                 Team away = playerResult.getTeamMatch().getAway();
                 playerResult.setPlayerAway(aUser);
                 playerResult.setAwayRacks((Integer) result.get("a_games_won"));
-                Handicap aHandicap = Handicap.get(result.get("hcd_name") == null ? "UNKNONE" : result.get("hcd_name").toString());
+                Handicap aHandicap = Handicap.get(result.get("hcd_name") == null ? "UNKNOWN" : result.get("hcd_name").toString());
                 playerResult.setPlayerAwayHandicap(aHandicap);
 
-                members =  away.getMembers().size();
+              /*  members =  away.getMembers().size();
                 if (members > 15) {
                     throw new RuntimeException("Too many people");
                 }
                 away.addMember(aUser);
                 if (members != away.getMembers().size()) {
+                    leagueService.save(away.getTeamMembers());
                     leagueService.save(away);
                 }
+                */
             }
 
             User forfetUser = leagueService.findAll(User.class).stream().filter(u -> u.getLastName().equals("FORFEIT")).findFirst().get();
@@ -385,11 +415,9 @@ public class ConvertUtil {
                 }
                 */
         }
-        logger.warn("Errors : " + errors);
         cacheUtil.refreshAllCache();
+        logger.warn("Errors : " + errors);
         }
-        //
-
 
     public void userHandicap() {
         logger.info("User Handicaps");
@@ -397,38 +425,98 @@ public class ConvertUtil {
         logger.info("Got player results");
         List<User> users =  leagueService.findAll(User.class);
         List<Season> seasons = leagueService.findAll(Season.class);
-        for (User user : users) {
-            user.getHandicapSeasons().clear();
+        for (final User user : users) {
+            //user.getHandicapSeasons().clear();
             List<PlayerResult> userResults = playerResults.stream().filter(r->r.hasUser(user)).collect(Collectors.toList());
             for (Season season : seasons) {
-                PlayerResult result = userResults.stream().filter(r->r.getSeason().equals(season)).max(new Comparator<PlayerResult>() {
+                PlayerResult result = userResults.stream()
+                        .filter(r->r.getSeason().equals(season))
+                        .filter(r->r.getHandicap(user) != Handicap.UNKNOWN)
+                        .max(new Comparator<PlayerResult>() {
                     @Override
                     public int compare(PlayerResult playerResult, PlayerResult t1) {
-                        return t1.getMatchDate().compareTo(playerResult.getMatchDate());
+                        return playerResult.getMatchDate().compareTo(t1.getMatchDate());
                     }
                 }).orElse(null);
 
                 if (result == null) {
                     continue;
                 }
-                HandicapSeason hs = new HandicapSeason(result.getHandicap(user),season);
+                HandicapSeason hs = user.getHandicapSeasons().stream()
+                        .filter(h->h.getSeason().equals(season)).findFirst()
+                        .orElse(new HandicapSeason(result.getHandicap(user),season));
+                hs.setHandicap(result.getHandicap(user));
+                if (season.isNine() && !Handicap.isNine(hs.getHandicap())) {
+                    logger.info("Wrong handicap " + season.getDisplayName());
+                }
                 user.addHandicap(hs);
             }
             leagueService.save(user);
         }
     }
 
+    public void teamMembers() {
+        List<Map<String,Object>> players =
+                jdbcTemplate.queryForList("select t.*,d.*,tp_player " +
+                        " from team_player tp join division d on tp_division=d.division_id  " +
+                        " join team t on tp_team=t.team_id where tp_division " +
+                        " in (select distinct ad_division from active_divisions) " +
+                        " and tp_team is not null and d.league_id != 4 ");
+        Map<Integer, Set<Team>> teamMap = leagueService.findAll(Team.class).stream()
+                .filter(t -> t.getSeason().isActive()).filter(t -> t.getLegacyId() != null)
+                .collect(Collectors.groupingBy(LeagueObject::getLegacyId, Collectors.toSet()));
+
+        Map<Integer, Set<User>>
+                userHashMap = leagueService.findAll(User.class)
+                .stream().collect(Collectors.groupingBy(LeagueObject::getLegacyId, Collectors.toSet()));
+
+        for (Map<String, Object> player : players) {
+            if (player.get("team_id") == null || teamMap.get((Integer) player.get("team_id")) == null || teamMap.get((Integer) player.get("team_id")).isEmpty()) {
+                logger.error("no team  found for " + player.get("team_id"));
+                continue;
+            }
+            Team t = teamMap.get((Integer) player.get("team_id")).iterator().next();
+            User u = userHashMap.get((Integer) player.get("tp_player")).iterator().next();
+            Season s = leagueService.findAll(Season.class).stream().parallel().filter(se -> se.getLegacyId().equals(
+                    (Integer) player.get("season_id")
+            )).findFirst().get();
+            HandicapSeason hs = new HandicapSeason();
+            hs.setSeason(s);
+            if (u.getHandicapSeasons().stream().filter(h->h.getSeason().equals(s)).count() >0) {
+                hs = u.getHandicapSeasons().stream().filter(h->h.getSeason().equals(s)).findFirst().get();
+            }
+            if (hs.getHandicap() == null) {
+                for (HandicapSeason handicapSeason : u.getHandicapSeasons()) {
+                    if (handicapSeason.getSeason().getYear().equals("2015")
+                            && handicapSeason.getSeason().getType().equals("Summer")
+                            && s.getDivision() == handicapSeason.getSeason().getDivision()
+                            ) {
+                        hs.setHandicap(handicapSeason.getHandicap());
+                    }
+                }
+                if (hs.getHandicap() == null) {
+                    hs.setHandicap(hs.getSeason().isNine() ? Handicap.DPLUS : Handicap.FOUR);
+                }
+            }
+            u.addHandicap(hs);
+            leagueService.save(u);
+            t.getTeamMembers().addMember(u);
+            leagueService.save(t.getTeamMembers());
+        }
+    }
 
     private String getQuery(String type, Season s) {
         return String.format("select  m.season_id,\n" +
                 "a.result_id,m.season_id,a.match_id,\n" +
-                "a.team_id as a_team_id,a.player_id as a_player_id,a.player_handicap as a_player_handicap,a.games_won as a_games_won " +
+                "a.team_id as a_team_id,a.player_id as a_player_id," +
+                "a.player_handicap as a_player_handicap,a.games_won as a_games_won " +
                 ",ahc.hcd_name, a.match_number as match_number\n" +
-                "from result_ind a join match_schedule m on m.match_id = a.match_id\n" +
+                "from result_ind a " +
+                "join match_schedule m on m.match_id = a.match_id\n" +
                 "and m.%s_team_id = a.team_id\n" +
-                "left JOIN handicap_display ahc ON ahc.hcd_id=a.player_handicap\n" +
+                "left JOIN handicap_display ahc ON ahc.hcd_id=a.player_handicap and ahc.hcd_league=m.league_id \n" +
                 "where a.player_id not in (218,224,905) " +
-                " and  season_id = %s " +
+                " and  season_id = %s  and m.league_id != 4 " +
                 "order by match_id \n" +
                 ";\n", type, s.getLegacyId() + "");
     }
@@ -456,7 +544,7 @@ public class ConvertUtil {
             challenge.setType("Challenge");
             challenge.setSeasonStatus(Status.ACTIVE);
             challenge.setDivision(Division.NINE_BALL_CHALLENGE);
-            challenge.setStartDate(LocalDateTime.now().minusDays(90));
+            challenge.setStartDate(LocalDateTime.now().minusDays(100));
             challenge.setLegacyId(4003);
             challenge = leagueService.save(challenge);
         }
@@ -546,9 +634,12 @@ public class ConvertUtil {
             resultService.createOrModify(pr);
         }
 
-        List<PlayerResult> challengeResults = leagueService.findAll(PlayerResult.class).stream().parallel().filter(pr->pr.getSeason().getDivision().isChallenge()).collect(Collectors.toList());
-        users = users.stream().filter(u->u.isChallenge()).collect(Collectors.toList());
-        for (User user : users) {
+        List<PlayerResult> challengeResults = leagueService.findAll(PlayerResult.class).stream().parallel()
+                .filter(pr -> pr.getSeason().getDivision().isChallenge())
+                .collect(Collectors.toList());
+        users = users.stream().filter(u->u.isChallenge()).collect(Collectors.toList());//.stream().filter(u->u.getLastName().equals("Chimento")).collect(Collectors.toList());
+
+        /*for (User user : users) {
             PlayerResult result = challengeResults.stream().filter(c->c.hasUser(user)).max(new Comparator<PlayerResult>() {
                 @Override
                 public int compare(PlayerResult playerResult, PlayerResult t1) {
@@ -556,17 +647,21 @@ public class ConvertUtil {
                     return playerResult.getMatchDate().compareTo(t1.getMatchDate());
                 }
             }).orElse(null);
+
             if (result == null){
                 continue;
             }
-            HandicapSeason hs = user.getHandicapSeasons().stream().filter(h->h.getSeason().equals(result.getSeason())).findFirst().orElse(null);
+            HandicapSeason hs = user.getHandicapSeasons().stream()
+                    .filter(h->h.getSeason().equals(result.getSeason()))
+                    .findFirst().orElse(null);
             if (hs == null){
                 throw  new RuntimeException("asdsad");
             }
 
-            hs.setHandicap(result.getHandicap(user));
+           hs.setHandicap(result.getHandicap(user));
             leagueService.save(user);
         }
+        */
         List<Map<String,Object>> oldChallenges = jdbcTemplate.queryForList("select * from leagues_dev.challenge " +
                 "c join leagues_dev.slot s on c.slot_id=s.slot_id " +
                 "where s.slot_time > now() and status = 'ACCEPTED' or status = 'PENDING' order by player_challenger_id,player_opponent_id,slot_time; ");

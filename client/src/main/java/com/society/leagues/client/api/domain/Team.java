@@ -23,8 +23,7 @@ public class Team extends LeagueObject {
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime created;
-    @DBRef Set<User> members = new HashSet<>();
-    @DBRef User captain;
+    @NotNull @DBRef TeamMembers members;
 
     public Team(Season season, String name) {
         this.season = season;
@@ -51,20 +50,16 @@ public class Team extends LeagueObject {
     //@JsonView(value = {TeamSummary.class, PlayerResultView.class})
     @JsonIgnore
     public Set<User> getMembers() {
-        return members;
-    }
-
-    public void setMembers(Set<User> members) {
-        this.members = members;
+        return members.getMembers();
     }
 
     public void addMember(User user) {
-        this.members.add(user);
+        this.members.addMember(user);
     }
 
     public void addMembers(List<User> users) {
         for (User user : users) {
-            this.members.add(user);
+            this.members.addMember(user);
         }
     }
 
@@ -72,7 +67,7 @@ public class Team extends LeagueObject {
         if (this.members == null) {
             return;
         }
-        this.members.remove(user);
+        this.members.removeMember(user);
     }
 
     public void removeMembers(List<User> users) {
@@ -80,7 +75,7 @@ public class Team extends LeagueObject {
             return;
         }
         for (User user : users) {
-            this.members.remove(user);
+            this.members.removeMember(user);
         }
     }
 
@@ -102,11 +97,11 @@ public class Team extends LeagueObject {
     }
 
     public User getCaptain() {
-        return captain;
+        return this.members.getCaptain();
     }
 
     public void setCaptain(User captain) {
-        this.captain = captain;
+        this.members.setCaptain(captain);
     }
 
     public boolean isNine() {
@@ -118,7 +113,7 @@ public class Team extends LeagueObject {
         if (u == null)
             return false;
 
-        return members.contains(u);
+        return members.getMembers().contains(u);
     }
 
     public boolean inSameSeason(User u) {
@@ -135,10 +130,20 @@ public class Team extends LeagueObject {
     }
 
     public User getChallengeUser() {
-        if (!isChallenge() || members == null || members.isEmpty()) {
+        if (!isChallenge() || members == null || members.getMembers().isEmpty()) {
             return null;
         }
-        return members.iterator().next();
+
+        return members.getMembers().iterator().next();
+    }
+
+    public void setMembers(TeamMembers members) {
+        this.members = members;
+    }
+
+    @JsonIgnore
+    public TeamMembers getTeamMembers() {
+        return this.members;
     }
 
     @Override
@@ -147,7 +152,6 @@ public class Team extends LeagueObject {
                 "season=" + season +
                 ", name='" + name + '\'' +
                 ", created=" + created +
-                ", captain=" + captain +
                 '}';
     }
 }

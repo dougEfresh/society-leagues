@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class ChallengeService  {
 
     @Autowired LeagueService leagueService;
+    @Autowired TeamService teamService;
 
     @PostConstruct
     public void init() {
@@ -28,13 +30,7 @@ public class ChallengeService  {
             user.addHandicap(new HandicapSeason(Handicap.DPLUS,challenge));
         }
         leagueService.save(user);
-
-        Team t = leagueService.findAll(Team.class).stream().parallel()
-                .filter(team -> team.getMembers().contains(user))
-                .filter(team -> team.getSeason().isChallenge())
-                .findFirst().orElse(new Team(challenge,user.getName()));
-        t.addMember(user);
-        return leagueService.save(t);
+        return teamService.createTeam(user.getName(),challenge, Arrays.asList(user));
     }
 
     @Scheduled(fixedRate = 1000*60*60, initialDelay = 1000*60*60)

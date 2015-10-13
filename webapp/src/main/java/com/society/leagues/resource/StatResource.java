@@ -138,6 +138,16 @@ public class StatResource {
          return stats.stream().sorted(new Comparator<Stat>() {
              @Override
              public int compare(Stat stat, Stat t1) {
+                 if (!t1.getWins().equals(stat.getWins())) {
+                     return t1.getWins().compareTo(stat.getWins());
+                 }
+                 if (!t1.getLoses().equals(stat.getLoses())) {
+                     return stat.getLoses().compareTo(t1.getLoses());
+                 }
+
+                 if (!t1.getRacksLost().equals(stat.getRacksLost())) {
+                     return stat.getRacksLost().compareTo(t1.getRacksLost());
+                 }
                  return t1.getWinPct().compareTo(stat.getWinPct());
              }
          }).collect(Collectors.toList());
@@ -149,12 +159,24 @@ public class StatResource {
             consumes = MediaType.ALL_VALUE)
     public List<Stat> getUserStats(@PathVariable String id) {
         User u = leagueService.findOne(new User(id));
-        List<Stat> userStats = new ArrayList<>();
+        final List<Stat> userStats = new ArrayList<>();
 
         statService.getUserSeasonStats().values().stream().parallel().forEach(new Consumer<List<Stat>>() {
             @Override
             public void accept(List<Stat> stats) {
                 stats.parallelStream().filter(st -> st.getUser().equals(u)).forEach(userStats::add);
+            }
+        });
+        userStats.sort(new Comparator<Stat>() {
+            @Override
+            public int compare(Stat o1, Stat o2) {
+                if (o1.getSeason().isChallenge()) {
+                    return -1;
+                }
+                if (o2.getSeason().isChallenge()) {
+                    return 1;
+                }
+                return o2.getSeason().getStartDate().compareTo(o1.getSeason().getStartDate());
             }
         });
         userStats.add(Stat.buildLifeTimeStats(u, userStats));

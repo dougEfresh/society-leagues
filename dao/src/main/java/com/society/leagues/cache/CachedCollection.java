@@ -25,31 +25,37 @@ public class CachedCollection<T extends List<LeagueObject>> implements Comparabl
     }
 
     private void setOrder() {
+        int i = 0;
         if (collectionName.equals("season")) {
-            order = 0;
+            order = i+0;
             return;
         }
 
         if (collectionName.equals("user")) {
-            order = 1;
+            order = i+1;
+            return;
+        }
+
+        if (collectionName.equals("teamMembers")) {
+            order = i+2;
             return;
         }
 
         if (collectionName.equals("team")) {
-            order = 2;
+            order = i+3;
             return;
         }
 
         if (collectionName.equals("teamMatch")) {
-            order = 3;
+            order = i+4;
             return;
         }
 
         if (collectionName.equals("playerResult")) {
-            order = 4;
+            order = i+5;
             return;
         }
-
+        order = 6;
     }
 
     public T get() {

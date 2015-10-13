@@ -33,7 +33,9 @@ public class ChallengeResource {
             return new Challenge();
         }
         User u = leagueService.findByLogin(principal.getName());
-        if (challenge.getChallenger().getMembers().contains(u) || challenge.getOpponent().getMembers().contains(u) || u.isAdmin()) {
+        Team challenger = leagueService.findOne(challenge.getChallenger());
+        Team opponent = leagueService.findOne(challenge.getOpponent());
+        if (challenger.getChallengeUser().equals(u) || opponent.getChallengeUser().equals(u) || u.isAdmin()) {
             return leagueService.save(challenge);
         }
         //TODO throw exception

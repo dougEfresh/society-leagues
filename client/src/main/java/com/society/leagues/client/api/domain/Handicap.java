@@ -31,6 +31,10 @@ public enum Handicap {
     PRO,
     UNKNOWN;
 
+    public static boolean isNine(Handicap hc) {
+        return hc.ordinal() >= 10;
+    }
+
     public static String format(Handicap hc) {
         if (hc == null) {
             return "N/A";

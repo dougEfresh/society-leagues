@@ -133,6 +133,12 @@ public class User extends LeagueObject {
     }
 
     public void addHandicap(HandicapSeason hc) {
+        if (hc.getSeason().isNine() && !Handicap.isNine(hc.getHandicap())) {
+            throw new RuntimeException("Adding " + hc.getHandicap() + " to "+ hc.getSeason().getDisplayName());
+        }
+        if (!hc.getSeason().isNine() && Handicap.isNine(hc.getHandicap())) {
+            throw new RuntimeException("Adding " + hc.getHandicap() + " to " + hc.getSeason().getDisplayName());
+        }
         this.handicapSeasons.add(hc);
     }
 
