@@ -25,8 +25,9 @@ public class PlayerResult  extends LeagueObject {
     @NotNull Integer matchNumber = 0;
     @NotNull Handicap playerHomeHandicap;
     @NotNull Handicap playerAwayHandicap;
+    User playerHomePartner;
+    User playerAwayPartner;
     MatchPoints matchPoints;
-//2120087560
     Team referenceTeam = null;
     User referenceUser = null;
 
@@ -47,6 +48,10 @@ public class PlayerResult  extends LeagueObject {
 
     public PlayerResult(String id) {
         this.id = id;
+    }
+
+    public boolean isScotch() {
+        return playerHomePartner != null || playerAwayPartner != null;
     }
 
     public TeamMatch getTeamMatch() {
@@ -356,6 +361,22 @@ public class PlayerResult  extends LeagueObject {
         PlayerResult copy = new PlayerResult();
         ReflectionUtils.shallowCopyFieldState(result,copy);
         return copy;
+    }
+
+    public User getPlayerHomePartner() {
+        return playerHomePartner;
+    }
+
+    public void setPlayerHomePartner(User playerHomePartner) {
+        this.playerHomePartner = playerHomePartner;
+    }
+
+    public User getPlayerAwayPartner() {
+        return playerAwayPartner;
+    }
+
+    public void setPlayerAwayPartner(User playerAwayPartner) {
+        this.playerAwayPartner = playerAwayPartner;
     }
 
     @Override

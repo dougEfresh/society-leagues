@@ -9,7 +9,7 @@ buildscript {
       mavenLocal()
   }
   dependencies {
-    classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE'
+    classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.7.RELEASE'
   }
 }
 
@@ -44,6 +44,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-security'
     compile 'org.springframework.boot:spring-boot-starter-tomcat'
     compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    compile 'org.springframework.boot:spring-boot-starter-social-facebook'
 
     compile(group: 'com.mangofactory', name: 'swagger-springmvc', version: '1.0.2')
 
@@ -65,9 +66,5 @@ dependencies {
 
 task integrationTest(type: Test) {
         jvmArgs = ['-Dembedded=false']
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.1'
 }
 

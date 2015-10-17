@@ -75,6 +75,10 @@ public class Season extends LeagueObject   {
         return name;
     }
 
+    public boolean isScramble() {
+        return getDivision() == Division.MIXED_MONDAYS_MIXED;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

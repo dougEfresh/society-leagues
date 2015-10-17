@@ -127,9 +127,6 @@ public class ConvertUtil {
             if (name.contains("Wed")) {
                 s.setDivision(Division.EIGHT_BALL_WEDNESDAYS);
             }
-            if (name.contains("Mixed")) {
-                s.setDivision(Division.MIXED_MONDAYS);
-            }
             if (name.contains("9-ball")) {
                 s.setDivision(Division.NINE_BALL_TUESDAYS);
             }
@@ -349,7 +346,7 @@ public class ConvertUtil {
                 playerResults.add(playerResult);
             }
 
-            List<Map<String, Object>> awayResults = jdbcTemplate.queryForList( getQuery("visit",s));
+            List<Map<String, Object>> awayResults = jdbcTemplate.queryForList(getQuery("visit", s));
             for (Map<String, Object> result : awayResults) {
                 Integer matchNum = (Integer) result.get("match_number");
                 Integer matchId = (Integer)  result.get("match_id");
@@ -389,31 +386,6 @@ public class ConvertUtil {
                     return playerResults.iterator();
                 }
             });
-
-
-            /*
-                if (r.getPlayerAway() == null) {
-                    r.setPlayerAway(forfetUser);
-                    r.setPlayerAwayHandicap(Handicap.UNKNOWN);
-                }
-                if (r.getPlayerHome() == null) {
-                    r.setPlayerHome(forfetUser);
-                    r.setPlayerHomeHandicap(Handicap.UNKNOWN);
-                }
-                Set<ConstraintViolation<PlayerResult>> constraintViolations = validator.validate(r);
-                if (!constraintViolations.isEmpty()) {
-                    StringBuilder sb = new StringBuilder();
-                    for (ConstraintViolation<PlayerResult> constraintViolation : constraintViolations) {
-                        sb.append(constraintViolation.toString());
-                    }
-                    logger.error("Could not validate " + sb.toString());
-                    errors++;
-                    //if (errors  > 50) {
-                    throw new RuntimeException("Too many errors");
-                    //}
-                    //continue;
-                }
-                */
         }
         cacheUtil.refreshAllCache();
         logger.warn("Errors : " + errors);
@@ -517,6 +489,23 @@ public class ConvertUtil {
                 "left JOIN handicap_display ahc ON ahc.hcd_id=a.player_handicap and ahc.hcd_league=m.league_id \n" +
                 "where a.player_id not in (218,224,905) " +
                 " and  season_id = %s  and m.league_id != 4 " +
+                "order by match_id \n" +
+                ";\n", type, s.getLegacyId() + "");
+    }
+
+
+     private String getScrambleQuery(String type, Season s) {
+        return String.format("select  m.season_id,\n" +
+                "a.result_id,m.season_id,a.match_id,\n" +
+                "a.team_id as a_team_id,a.player_id as a_player_id," +
+                "a.player_handicap as a_player_handicap,a.games_won as a_games_won " +
+                ",ahc.hcd_name, a.match_number as match_number\n" +
+                "from result_ind a " +
+                "join match_schedule m on m.match_id = a.match_id\n" +
+                "and m.%s_team_id = a.team_id\n" +
+                "left JOIN handicap_display ahc ON ahc.hcd_id=a.player_handicap and ahc.hcd_league=m.league_id \n" +
+                "where a.player_id not in (218,224,905) " +
+                " and  season_id = %s  " +
                 "order by match_id \n" +
                 ";\n", type, s.getLegacyId() + "");
     }
@@ -729,4 +718,230 @@ public class ConvertUtil {
         logger.info("Teams: " + leagueService.findAll(Team.class).stream().parallel().filter(t->t.hasUser(u)).count());
         logger.info("Results: " + leagueService.findAll(PlayerResult.class).stream().parallel().filter(t -> t.hasUser(u)).count());
     }
+
+    public void convertScramble() {
+        Season eight = new Season();
+        eight.setLegacyId(74);
+        eight.setStartDate(LocalDate.now().withYear(2015).withDayOfMonth(15).withMonth(8).atStartOfDay());
+        eight.setDivision(Division.MIXED_MONDAYS_MIXED);
+        eight.setYear("2015");
+        eight.setType("Fall");
+        eight.setSeasonStatus(Status.ACTIVE);
+        eight = leagueService.save(eight);
+
+        List<Map<String, Object>> results = jdbcTemplate.queryForList(
+                "select distinct season_id,name,team_id " +
+                        "from ( select distinct season_id,t.name,team_id " +
+                        "from match_schedule s join team t " +
+                        " on s.home_team_id=t.team_id" +
+                        " where s.season_id = 74  " +
+                        "union " +
+                        "select distinct season_id,t.name,team_id " +
+                        "from match_schedule s join" +
+                        " team t on s.visit_team_id=t.team_id" +
+                        " where s.season_id = 74) " +
+                        "as teams " +
+                        "where season_id = 74 order by season_id,team_id");
+
+
+        for (Map<String, Object> result : results) {
+            Integer id = (Integer) result.get("season_id");
+            Team t = teamService.createTeam(result.get("name").toString(), eight);
+            t.setLegacyId((Integer) result.get("team_id"));
+            leagueService.save(t);
+        }
+
+         Map<Integer, Set<User>>
+                userHashMap = leagueService.findAll(User.class)
+                .stream().collect(Collectors.groupingBy(LeagueObject::getLegacyId, Collectors.toSet()));
+        results = jdbcTemplate.queryForList("select player_id,hcd_handicap from player p join handicap_display  hc on hc_m8=hc.hcd_id;");
+        for (Map<String, Object> result : results) {
+            User u = userHashMap.get((Integer) result.get("player_id")).stream().findFirst().get();
+            HandicapSeason hs = new HandicapSeason();
+            hs.setSeason(eight);
+            hs.setHandicap(Handicap.get(result.get("hcd_handicap").toString()));
+            u.addHandicap(hs);
+            leagueService.save(u);
+        }
+
+        logger.info("Convert team match");
+        leagueService.deleteAll(TeamMatch.class);
+        List<Map<String, Object>> matches = jdbcTemplate.
+                queryForList("select match_id,m.season_id,home_team_id,visit_team_id,match_start_date " +
+                        "from match_schedule m " +
+                        "where match_start_date is not null " +
+                        " and match_start_date > 2000-01-01   and m.season_id = 74" +
+                        " and  (home_team_id is not null and visit_team_id is not null) order by match_id");
+
+        List<Team> teams = leagueService.findAll(Team.class).stream().filter(team -> team.getSeason().isScramble()).collect(Collectors.toList());
+        int unmatched = 0;
+        for (Map<String, Object> match : matches) {
+            Integer mid = (Integer) match.get("match_id");
+            TeamMatch tm = new TeamMatch();
+            tm.setLegacyId(mid);
+            Team home = teams.stream().filter(t ->
+                    t.getLegacyId().equals(match.get("home_team_id"))).
+                    findFirst().orElse(null);
+
+            if (home == null) {
+                unmatched++;
+                continue;
+            }
+
+            Team away = teams.stream().filter(t ->
+                    t.getLegacyId().equals(match.get("visit_team_id"))).
+                    findFirst().orElse(null);
+
+            if (away == null) {
+                unmatched++;
+                continue;
+            }
+
+            tm.setHome(home);
+            tm.setAway(away);
+            Timestamp ts = (Timestamp) match.get("match_start_date");
+            tm.setMatchDate(ts.toLocalDateTime());
+            leagueService.save(tm);
+        }
+        System.err.println("Unmatched teamMatch " + unmatched);
+
+        /************************/
+
+        logger.info("TeamMatch Results");
+        results = jdbcTemplate.queryForList(" select * from result_team");
+        List<TeamMatch> teamMatchList = leagueService.findAll(TeamMatch.class)
+                .stream()
+                .filter(tm -> tm.getSeason().isScramble())
+                .collect(Collectors.toList());
+
+        Map<Integer, TeamMatch> teamMatchMap = new HashMap<>();
+        for (TeamMatch teamMatch : teamMatchList) {
+            teamMatchMap.put(teamMatch.getLegacyId(), teamMatch);
+        }
+        int unmatch = 0;
+        for (Map<String, Object> result : results) {
+            Integer id = (Integer) result.get("match_id");
+            Integer tid = (Integer) result.get("team_id");
+            Integer win = (Integer) result.get("is_win");
+            TeamMatch tm = teamMatchMap.get(id);
+            if (tm == null) {
+                unmatch++;
+                continue;
+            }
+            if (tm.getHome().getLegacyId().equals(tid) && win != null && win > 0) {
+                tm.setHomeRacks(1);
+                tm.setSetHomeWins(1);
+            }
+            if (tm.getAway().getLegacyId().equals(tid) && win != null && win > 0) {
+                tm.setAwayRacks(1);
+                tm.setSetAwayWins(1);
+            }
+            teamMatchMap.put(tm.getLegacyId(), leagueService.save(tm));
+        }
+        System.out.println("Matches " + results.size() + " unmatched " + unmatch);
+
+
+
+        }
+
+    public void scrambleResults() {
+
+        logger.info("Scrmable Results");
+
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        int errors = 0;
+        HashMap<Integer,TeamMatch> teamMatchMap = new HashMap<>(1000);
+        for (TeamMatch teamMatch : leagueService.findAll(TeamMatch.class)) {
+            teamMatchMap.put(teamMatch.getLegacyId(), teamMatch);
+        }
+
+        Season s = leagueService.findAll(Season.class).stream().filter(Season::isScramble).findFirst().get();
+        int missed = 0;
+        logger.info("Processing " + s.getDisplayName());
+        List<Map<String, Object>> homeResults = jdbcTemplate.queryForList(getScrambleQuery("home", s));
+        Map<Integer, Set<User>>
+                userHashMap = leagueService.findAll(User.class)
+                .stream().collect(Collectors.groupingBy(LeagueObject::getLegacyId, Collectors.toSet()));
+
+        List<PlayerResult> playerResults = new ArrayList<>(5000);
+
+        for (Map<String, Object> result : homeResults) {
+            Integer id = (Integer) result.get("result_id");
+            Integer matchId = (Integer) result.get("match_id");
+            Integer matchNumber = (Integer) result.get("match_number");
+            PlayerResult playerResult = new PlayerResult();
+            PlayerResult partnerMatch =leagueService.findAll(PlayerResult.class).stream().filter(
+                    pr->pr.getTeamMatch().getLegacyId().equals(matchId)
+            ).filter(pr->pr.getMatchNumber().equals(matchNumber)).findFirst().orElse(null);
+
+            playerResult.setLegacyId(id);
+            playerResult.setTeamMatch(teamMatchMap.get(matchId));
+            playerResult.setMatchNumber(matchNumber);
+            Team home = playerResult.getTeamMatch().getHome();
+            User aUser = userHashMap.get((Integer) result.get("a_player_id")).stream().findFirst().get();
+            assert aUser != null;
+            playerResult.setPlayerHome(aUser);
+            playerResult.setHomeRacks((Integer) result.get("a_games_won"));
+            playerResult.setMatchNumber(matchNumber);
+            Handicap aHandicap = Handicap.get(result.get("hcd_name") == null ? "UNKNOWN" : result.get("hcd_name").toString());
+            playerResult.setPlayerHomeHandicap(aHandicap);
+
+            if (playerResult.getTeamMatch() == null) {
+                //logger.error("Unknown match for " + result.get("match_id"));
+                errors++;
+                continue;
+            }
+
+            if (partnerMatch != null) {
+                playerResult.setPlayerHomePartner(partnerMatch.getPlayerHome());
+                partnerMatch.setPlayerHomePartner(playerResult.getPlayerHome());
+            }
+
+            playerResults.add(playerResult);
+        }
+
+        List<Map<String, Object>> awayResults = jdbcTemplate.queryForList(getScrambleQuery("visit", s));
+        for (Map<String, Object> result : awayResults) {
+            Integer id = (Integer) result.get("result_id");
+            Integer matchId = (Integer) result.get("match_id");
+            Integer matchNumber = (Integer) result.get("match_number");
+            List<PlayerResult> matches = leagueService.findAll(PlayerResult.class).stream().filter(
+                    pr -> pr.getTeamMatch().getLegacyId().equals(matchId)
+            ).filter(pr -> pr.getMatchNumber().equals(matchNumber)).sorted(new Comparator<PlayerResult>() {
+                @Override
+                public int compare(PlayerResult o1, PlayerResult o2) {
+                    return o1.getMatchNumber().compareTo(o2.getMatchNumber());
+                }
+            }).collect(Collectors.toList());
+
+            User aUser = userHashMap.get((Integer) result.get("a_player_id")).stream().findFirst().get();
+            assert aUser != null;
+            PlayerResult away = matches.get(0);
+            if (matches.size() > 1) {
+                if (matches.get(0).getPlayerAway() == null)
+                    away = matches.get(0);
+                else {
+                    away = matches.get(1);
+                    matches.get(0).setPlayerAwayPartner(away.getPlayerAway());
+                    away.setPlayerAwayPartner(matches.get(0).getPlayerAway());
+                }
+            }
+            away.setPlayerAway(aUser);
+            away.setAwayRacks((Integer) result.get("a_games_won"));
+            Handicap aHandicap = Handicap.get(result.get("hcd_name") == null ? "UNKNOWN" : result.get("hcd_name").toString());
+            away.setPlayerHomeHandicap(aHandicap);
+        }
+
+        System.out.println("Processing PlayerResults: " + playerResults.size());
+        playerResultRepository.save(new Iterable<PlayerResult>() {
+            @Override
+            public Iterator<PlayerResult> iterator() {
+                return playerResults.iterator();
+            }
+        });
+
+        cacheUtil.refreshAllCache();
+    }
+
 }
