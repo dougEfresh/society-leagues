@@ -91,7 +91,7 @@ public class PlayerResultResource {
 
     @RequestMapping(value = {"/team/{id}","/get/team/{id}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @JsonView(PlayerResultView.class)
-    public List<PlayerResult> getPlayerResulTeam(Principal principal, @PathVariable String id) {
+    public List<PlayerResult> getPlayerResultTeam(Principal principal, @PathVariable String id) {
         Team t  = leagueService.findOne(new Team(id));
         List<PlayerResult> results;
         if (t.getSeason().isActive()) {
@@ -106,7 +106,7 @@ public class PlayerResultResource {
         final List<PlayerResult> copyResults = new ArrayList<>(results.size());
         results.stream().forEach(r-> copyResults.add(PlayerResult.copy(r)));
         copyResults.parallelStream().forEach(pr -> pr.setReferenceTeam(t));
-        return results.stream().
+        return copyResults.stream().
                 sorted((playerResult, t1) -> playerResult.getTeamMember().getName().compareTo(t1.getTeamMember().getName())).
                 collect(Collectors.toList());
 

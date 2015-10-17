@@ -23,9 +23,6 @@ import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 @SuppressWarnings("unused")
 @Profile("!test")
 public class MongoConfig extends AbstractMongoConfiguration {
-    @Value("${use-cache}")
-    boolean useCache;
-
     @Autowired MongoProperties properties;
     @Autowired CacheUtil cacheUtil;
 
@@ -43,15 +40,10 @@ public class MongoConfig extends AbstractMongoConfiguration {
     @Primary
     @Override
 	public MappingMongoConverter mappingMongoConverter() throws Exception {
-        DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoDbFactory());
-        if (useCache) {
-            dbRefResolver = new CustomRefResolver(mongoDbFactory(),cacheUtil);
-        }
-
+        DbRefResolver dbRefResolver = new CustomRefResolver(mongoDbFactory(),cacheUtil);
 		CustomMappingMongoConverter converter = new CustomMappingMongoConverter(dbRefResolver, mongoMappingContext());
         converter.setCacheUtil(cacheUtil);
         converter.setCustomConversions(customConversions());
-
 		return converter;
 	}
 

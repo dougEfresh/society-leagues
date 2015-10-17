@@ -17,8 +17,8 @@ public class HandicapSeason {
         this.season = season;
     }
 
-    public String getHandicapDisplay() {
-        return Handicap.format(handicap);
+    public Handicap getHandicapDisplay() {
+        return handicap;
     }
 
     public Handicap getHandicap() {

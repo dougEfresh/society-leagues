@@ -35,18 +35,6 @@ public enum Handicap {
         return hc.ordinal() >= 10;
     }
 
-    public static String format(Handicap hc) {
-        if (hc == null) {
-            return "N/A";
-        }
-
-        String h =  hc.name().replace("PLUS","+").replace("PRO","P").replace("OPEN","O").replace("OPEN+","O+");
-        if (h.contains("+") || h.length() == 1) {
-            return h;
-        }
-        return h.substring(0,1) + h.substring(1).toLowerCase();
-    }
-
     public static Handicap get(String hc) {
         if (hc == null) {
             return Handicap.UNKNOWN;

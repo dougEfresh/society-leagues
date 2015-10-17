@@ -55,7 +55,7 @@ public class StatService {
         this.teamStats.lazySet(teamStats);
         refreshUserSeasonStats();
         refreshUserLifetimeStats();
-        logger.info("Done Refreshing stats  (" + (System.currentTimeMillis()-start) + "ms)");
+        logger.info("Done Refreshing stats  (" + (System.currentTimeMillis() - start) + "ms)");
 
     }
 
@@ -80,15 +80,35 @@ public class StatService {
                 }
             }
             List<Stat> stats = new ArrayList<>(100);
+            List<Team> teams = leagueService.findAll(Team.class).stream().filter(t->t.getSeason().equals(season)).collect(Collectors.toList());
             for (User user : all.keySet()) {
-                stats.add(Stat.buildPlayerSeasonStats(user,
-                                season,
-                                all.get(user)
-                        )
+                Stat s = Stat.buildPlayerSeasonStats(user,
+                        season,
+                        all.get(user)
                 );
+                s.setTeam(teams.stream().filter(t->t.hasUser(user)).findFirst().orElse(null));
+                stats.add(s);
             }
-            stats.stream().sorted((stat, t1) -> t1.getWinPct().compareTo(stat.getWinPct())).collect(Collectors.toList());
             userSeasonStats.put(season,stats);
+        }
+        for (Season season : userSeasonStats.keySet()) {
+            List<Stat> stats = userSeasonStats.get(season);
+             userSeasonStats.put(season, stats.stream().sorted(new Comparator<Stat>() {
+                 @Override
+                 public int compare(Stat stat, Stat t1) {
+                     if (!t1.getWins().equals(stat.getWins())) {
+                         return t1.getWins().compareTo(stat.getWins());
+                     }
+                     if (!t1.getLoses().equals(stat.getLoses())) {
+                         return stat.getLoses().compareTo(t1.getLoses());
+                     }
+
+                     if (!t1.getRacksLost().equals(stat.getRacksLost())) {
+                         return stat.getRacksLost().compareTo(t1.getRacksLost());
+                     }
+                     return t1.getWinPct().compareTo(stat.getWinPct());
+                 }
+             }).collect(Collectors.toList()));
         }
         this.userSeasonStat.lazySet(userSeasonStats);
     }

@@ -124,17 +124,23 @@ public class UserResource {
         return user;
     }
 
+    static final Comparator<User> sortUsers = new Comparator<User>() {
+            @Override
+            public int compare(User o1, User o2) {
+                return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
+            }
+        };
+
     @RequestMapping(value = "/season/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<User> listByUser(@PathVariable String id) {
         User u = leagueService.findOne(new User(id));
-        return leagueService.findAll(User.class).stream().filter(user -> user.hasSameSeason(u)).
-                filter(user->!user.isFake()).
-                sorted(new Comparator<User>() {
-                    @Override
-                    public int compare(User user, User t1) {
-                return user.getName().compareTo(t1.getName());
-            }
-                })
+        if (u.isAdmin())
+            return leagueService.findAll(User.class).stream().sorted(sortUsers).collect(Collectors.toList());
+
+        return leagueService.findAll(User.class).stream()
+                .filter(user -> user.hasSameSeason(u)).
+                filter(user->!user.isFake()).filter(user->user.isActive()).
+                sorted(sortUsers)
                 .collect(Collectors.toList());
     }
 

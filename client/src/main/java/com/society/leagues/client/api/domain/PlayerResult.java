@@ -27,6 +27,8 @@ public class PlayerResult  extends LeagueObject {
     @NotNull Handicap playerAwayHandicap;
     User playerHomePartner;
     User playerAwayPartner;
+    Handicap playerHomeHandicapPartner;
+    Handicap playerAwayHandicapPartner;
     MatchPoints matchPoints;
     Team referenceTeam = null;
     User referenceUser = null;
@@ -137,12 +139,12 @@ public class PlayerResult  extends LeagueObject {
         return homeRacks > awayRacks ? homeRacks : awayRacks;
     }
 
-    public String  getWinnerHandicap() {
+    public Handicap  getWinnerHandicap() {
         if (getWinner() == null)
-            return Handicap.UNKNOWN.name();
+            return Handicap.UNKNOWN;
         HandicapSeason hc =  getWinner().getHandicapSeasons().stream().filter(s->s.getSeason().equals(getSeason())).findFirst().orElse(null);
-        if (hc == null) {return null;}
-        return Handicap.format(hc.getHandicap());
+        if (hc == null) {return Handicap.UNKNOWN;}
+        return hc.getHandicap();
     }
 
     public User getLoser() {
@@ -159,13 +161,13 @@ public class PlayerResult  extends LeagueObject {
         return homeRacks > awayRacks ? awayRacks : homeRacks;
     }
 
-    public String getLoserHandicap() {
+    public Handicap getLoserHandicap() {
         if (getLoser() == null)
-            return Handicap.UNKNOWN.name();
+            return Handicap.UNKNOWN;
 
         HandicapSeason hc =  getLoser().getHandicapSeasons().stream().filter(s->s.getSeason().equals(getSeason())).findFirst().orElse(null);
-        if (hc == null) {return null;}
-        return Handicap.format(hc.getHandicap());
+        if (hc == null) {return Handicap.UNKNOWN;}
+        return hc.getHandicap();
     }
 
     public boolean isWinner(User u) {
@@ -239,13 +241,43 @@ public class PlayerResult  extends LeagueObject {
 
     }
 
+    public Handicap getOpponentHandicap() {
+        if (referenceTeam != null)
+            return referenceTeam.equals(teamMatch.getHome()) ?  playerAwayHandicap : playerHomeHandicap;
+
+        if (referenceUser != null)
+            return referenceUser.equals(playerHome) ? playerAwayHandicap : playerHomeHandicap;
+
+        return Handicap.UNKNOWN;
+    }
+
+    public User getOpponentPartner() {
+        if (referenceTeam != null)
+            return referenceTeam.equals(teamMatch.getHome()) ? playerAwayPartner : playerHomePartner;
+
+        if (referenceUser != null)
+            return referenceUser.equals(playerHome) ? playerAwayPartner : playerHomePartner;
+
+        return null;
+
+    }
+
+    public Handicap getOpponentPartnerHandicap() {
+         if (referenceTeam != null)
+            return referenceTeam.equals(teamMatch.getHome()) ? playerAwayHandicapPartner : playerHomeHandicapPartner;
+
+        if (referenceUser != null)
+            return referenceUser.equals(playerHome) ? playerAwayHandicapPartner : playerHomeHandicapPartner;
+
+        return Handicap.UNKNOWN;
+    }
+
     public User getTeamMember() {
         if (referenceTeam != null)
             return referenceTeam.equals(teamMatch.getHome()) ? playerHome : playerAway;
 
         return referenceUser;
     }
-
 
     public boolean isWin() {
         if (referenceTeam != null)
@@ -255,24 +287,14 @@ public class PlayerResult  extends LeagueObject {
 
     }
 
-    public String getOpponentHandicap() {
+    public Handicap getTeamMemberHandicap() {
         if (referenceTeam != null)
-            return referenceTeam.equals(teamMatch.getHome()) ?  Handicap.format(playerAwayHandicap) : Handicap.format(playerHomeHandicap);
+            return referenceTeam.equals(teamMatch.getHome()) ? playerHomeHandicap : playerAwayHandicap;
 
         if (referenceUser != null)
-            return referenceUser.equals(playerHome) ? Handicap.format(playerAwayHandicap) : Handicap.format(playerHomeHandicap);
+            return referenceUser.equals(playerHome) ? playerHomeHandicap : playerAwayHandicap;
 
-        return null;
-    }
-
-    public String getTeamMemberHandicap() {
-        if (referenceTeam != null)
-            return referenceTeam.equals(teamMatch.getHome()) ?  Handicap.format(playerHomeHandicap) : Handicap.format(playerAwayHandicap);
-
-        if (referenceUser != null)
-            return referenceUser.equals(playerHome) ? Handicap.format(playerHomeHandicap) : Handicap.format(playerAwayHandicap);
-
-        return null;
+        return Handicap.UNKNOWN;
     }
 
     public Team getOpponentTeam() {
@@ -286,7 +308,7 @@ public class PlayerResult  extends LeagueObject {
         return null;
     }
 
-        public Team getTeam() {
+    public Team getTeam() {
         if (referenceUser != null) {
             return teamMatch.getHome().getMembers().contains(referenceUser) ? teamMatch.getHome() : teamMatch.getAway();
         }
@@ -311,7 +333,6 @@ public class PlayerResult  extends LeagueObject {
     public Handicap getLoserTeamHandicap() {
         return teamMatch.getWinner().hasUser(playerHome) ? playerAwayHandicap : playerHomeHandicap;
     }
-
 
     public Integer getWinnerTeamRacks() {
         return teamMatch.getWinner().hasUser(playerHome) ? homeRacks : awayRacks;
@@ -378,6 +399,23 @@ public class PlayerResult  extends LeagueObject {
     public void setPlayerAwayPartner(User playerAwayPartner) {
         this.playerAwayPartner = playerAwayPartner;
     }
+
+    public Handicap getPlayerHomeHandicapPartner() {
+        return playerHomeHandicapPartner;
+    }
+
+    public void setPlayerHomeHandicapPartner(Handicap playerHomeHandicapPartner) {
+        this.playerHomeHandicapPartner = playerHomeHandicapPartner;
+    }
+
+    public Handicap getPlayerAwayHandicapPartner() {
+        return playerAwayHandicapPartner;
+    }
+
+    public void setPlayerAwayHandicapPartner(Handicap playerAwayHandicapPartner) {
+        this.playerAwayHandicapPartner = playerAwayHandicapPartner;
+    }
+
 
     @Override
     public String toString() {

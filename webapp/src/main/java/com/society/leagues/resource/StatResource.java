@@ -106,51 +106,7 @@ public class StatResource {
             consumes = MediaType.ALL_VALUE)
     public List<Stat> getSeasonPlayerStats(@PathVariable String id) {
          final Season season = leagueService.findOne(new Season(id));
-         List<Team> teams = leagueService.findAll(Team.class).stream().parallel().filter(t->t.getSeason().equals(season)).collect(Collectors.toList());
-         List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().
-                 filter(pr -> pr.getSeason().equals(season)).
-                 filter(r -> r.getLoser() != null && r.getWinner() != null).
-                 collect(Collectors.toList());
-         Map<User,List<PlayerResult>> losers = results.stream().collect(Collectors.groupingBy(r -> r.getLoser(), Collectors.toList()));
-         Map<User,List<PlayerResult>> winners = results.stream().collect(Collectors.groupingBy(r -> r.getWinner(),Collectors.toList()));
-         Map<User,List<PlayerResult>> all = new HashMap<>();
-         for (User user : winners.keySet()) {
-             all.put(user,winners.get(user));
-         }
-         for (User user : losers.keySet()) {
-             if (all.containsKey(user)) {
-                 all.get(user).addAll(losers.get(user));
-             } else {
-                 all.put(user, losers.get(user));
-             }
-         }
-         List<Stat> stats = new ArrayList<>(100);
-         for (User user : all.keySet()) {
-             Team team = teams.stream().filter(t -> t.getMembers().contains(user)).findFirst().orElse(null);
-             if (team == null) {
-                 continue;
-             }
-             stats.add(Stat.buildPlayerTeamStats(user,
-                             team,
-                             all.get(user))
-             );
-         }
-         return stats.stream().sorted(new Comparator<Stat>() {
-             @Override
-             public int compare(Stat stat, Stat t1) {
-                 if (!t1.getWins().equals(stat.getWins())) {
-                     return t1.getWins().compareTo(stat.getWins());
-                 }
-                 if (!t1.getLoses().equals(stat.getLoses())) {
-                     return stat.getLoses().compareTo(t1.getLoses());
-                 }
-
-                 if (!t1.getRacksLost().equals(stat.getRacksLost())) {
-                     return stat.getRacksLost().compareTo(t1.getRacksLost());
-                 }
-                 return t1.getWinPct().compareTo(stat.getWinPct());
-             }
-         }).collect(Collectors.toList());
+         return statService.getUserSeasonStats().get(season);
     }
 
     @RequestMapping(value = "/user/{id}",

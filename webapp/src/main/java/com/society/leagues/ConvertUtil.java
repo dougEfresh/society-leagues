@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 
+import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
@@ -40,8 +41,7 @@ public class ConvertUtil {
     String defaultPassword = new BCryptPasswordEncoder().encode("abc123");
     public void convertUser() {
         logger.info("Convert users");
-        leagueService.deleteAll(User.class);
-        logger.info("Deleted users");
+                logger.info("Deleted users");
         List<Map<String,Object>> results = jdbcTemplate.queryForList("select\n" +
                 " player_id,player_login,first_name,last_name, player_login , player_group,password,\n" +
                 "  case when player_login like '%no_login%' then 'INACTIVE' else 'ACTIVE' end  status\n" +
@@ -78,8 +78,7 @@ public class ConvertUtil {
 
     public Boolean convertSeason() {
         logger.info("Convert season");
-        leagueService.deleteAll(Season.class);
-        logger.info("Deleted seasons ");
+                logger.info("Deleted seasons ");
         Season challenge = new Season();
         challenge.setType("Challenge");
         challenge.setSeasonStatus(Status.ACTIVE);
@@ -161,8 +160,7 @@ public class ConvertUtil {
 
     public void convertTeam() {
         logger.info("Teams ");
-        leagueService.deleteAll(Team.class);
-        logger.info("Deleted Teams");
+                logger.info("Deleted Teams");
         List<Map<String,Object>> results = jdbcTemplate.queryForList("select distinct season_id,name,team_id " +
                 "from ( select distinct season_id,t.name,team_id  " +
                 "from match_schedule s join team t  on s.home_team_id=t.team_id where s.league_id != 4  " +
@@ -219,8 +217,7 @@ public class ConvertUtil {
 
     public Boolean converTeamMatch() {
         logger.info("Convert team match");
-        leagueService.deleteAll(TeamMatch.class);
-        List<Map<String,Object>> matches = jdbcTemplate.
+                List<Map<String,Object>> matches = jdbcTemplate.
                 queryForList("select match_id,m.season_id,home_team_id,visit_team_id,match_start_date " +
                         "from match_schedule m " +
                         "where match_start_date is not null " +
@@ -308,7 +305,6 @@ public class ConvertUtil {
         for (User user : leagueService.findAll(User.class)) {
             userHashMap.put(user.getLegacyId(), user);
         }
-        leagueService.deleteAll(PlayerResult.class);
         for(Season s: leagueService.findAll(Season.class)){
             int missed = 0;
             logger.info("Processing " + s.getDisplayName());
@@ -628,29 +624,6 @@ public class ConvertUtil {
                 .collect(Collectors.toList());
         users = users.stream().filter(u->u.isChallenge()).collect(Collectors.toList());//.stream().filter(u->u.getLastName().equals("Chimento")).collect(Collectors.toList());
 
-        /*for (User user : users) {
-            PlayerResult result = challengeResults.stream().filter(c->c.hasUser(user)).max(new Comparator<PlayerResult>() {
-                @Override
-                public int compare(PlayerResult playerResult, PlayerResult t1) {
-                    //return t1.getMatchDate().compareTo(playerResult.getMatchDate());
-                    return playerResult.getMatchDate().compareTo(t1.getMatchDate());
-                }
-            }).orElse(null);
-
-            if (result == null){
-                continue;
-            }
-            HandicapSeason hs = user.getHandicapSeasons().stream()
-                    .filter(h->h.getSeason().equals(result.getSeason()))
-                    .findFirst().orElse(null);
-            if (hs == null){
-                throw  new RuntimeException("asdsad");
-            }
-
-           hs.setHandicap(result.getHandicap(user));
-            leagueService.save(user);
-        }
-        */
         List<Map<String,Object>> oldChallenges = jdbcTemplate.queryForList("select * from leagues_dev.challenge " +
                 "c join leagues_dev.slot s on c.slot_id=s.slot_id " +
                 "where s.slot_time > now() and status = 'ACCEPTED' or status = 'PENDING' order by player_challenger_id,player_opponent_id,slot_time; ");
@@ -765,7 +738,6 @@ public class ConvertUtil {
         }
 
         logger.info("Convert team match");
-        leagueService.deleteAll(TeamMatch.class);
         List<Map<String, Object>> matches = jdbcTemplate.
                 queryForList("select match_id,m.season_id,home_team_id,visit_team_id,match_start_date " +
                         "from match_schedule m " +
@@ -840,16 +812,13 @@ public class ConvertUtil {
         }
         System.out.println("Matches " + results.size() + " unmatched " + unmatch);
 
-
-
         }
 
     public void scrambleResults() {
 
         logger.info("Scrmable Results");
 
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
+
         int errors = 0;
         HashMap<Integer,TeamMatch> teamMatchMap = new HashMap<>(1000);
         for (TeamMatch teamMatch : leagueService.findAll(TeamMatch.class)) {
@@ -888,7 +857,7 @@ public class ConvertUtil {
             playerResult.setPlayerHomeHandicap(aHandicap);
 
             if (playerResult.getTeamMatch() == null) {
-                //logger.error("Unknown match for " + result.get("match_id"));
+                logger.error("Unknown match for " + result.get("match_id"));
                 errors++;
                 continue;
             }
@@ -896,6 +865,9 @@ public class ConvertUtil {
             if (partnerMatch != null) {
                 playerResult.setPlayerHomePartner(partnerMatch.getPlayerHome());
                 partnerMatch.setPlayerHomePartner(playerResult.getPlayerHome());
+
+                playerResult.setPlayerHomeHandicapPartner(partnerMatch.getPlayerHomeHandicap());
+                partnerMatch.setPlayerHomeHandicapPartner(playerResult.getPlayerHomeHandicapPartner());
             }
 
             playerResults.add(playerResult);
@@ -906,7 +878,7 @@ public class ConvertUtil {
             Integer id = (Integer) result.get("result_id");
             Integer matchId = (Integer) result.get("match_id");
             Integer matchNumber = (Integer) result.get("match_number");
-            List<PlayerResult> matches = leagueService.findAll(PlayerResult.class).stream().filter(
+            List<PlayerResult> matches = playerResults.stream().filter(
                     pr -> pr.getTeamMatch().getLegacyId().equals(matchId)
             ).filter(pr -> pr.getMatchNumber().equals(matchNumber)).sorted(new Comparator<PlayerResult>() {
                 @Override
@@ -919,21 +891,39 @@ public class ConvertUtil {
             assert aUser != null;
             PlayerResult away = matches.get(0);
             if (matches.size() > 1) {
-                if (matches.get(0).getPlayerAway() == null)
+                if (matches.get(0).getPlayerAway() == null) {
                     away = matches.get(0);
-                else {
+                } else {
                     away = matches.get(1);
                     matches.get(0).setPlayerAwayPartner(away.getPlayerAway());
                     away.setPlayerAwayPartner(matches.get(0).getPlayerAway());
+
+                    matches.get(0).setPlayerAwayHandicapPartner(away.getPlayerAwayHandicap());
+                    away.setPlayerAwayHandicapPartner(matches.get(0).getPlayerAwayHandicapPartner());
                 }
             }
             away.setPlayerAway(aUser);
             away.setAwayRacks((Integer) result.get("a_games_won"));
             Handicap aHandicap = Handicap.get(result.get("hcd_name") == null ? "UNKNOWN" : result.get("hcd_name").toString());
-            away.setPlayerHomeHandicap(aHandicap);
+            away.setPlayerAwayHandicap(aHandicap);
+            if (away.getPlayerAwayHandicap() == null) {
+                throw  new RuntimeException("blahd");
+            }
         }
 
         System.out.println("Processing PlayerResults: " + playerResults.size());
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        for (PlayerResult playerResult : playerResults) {
+            Set<ConstraintViolation<PlayerResult>> constraintViolations = validator.validate(playerResult);
+             if (!constraintViolations.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (ConstraintViolation<PlayerResult> constraintViolation : constraintViolations) {
+                sb.append(constraintViolation.toString());
+            }
+                 throw new RuntimeException("Could not validate " +playerResult + "\n" + sb.toString());
+             }
+        }
         playerResultRepository.save(new Iterable<PlayerResult>() {
             @Override
             public Iterator<PlayerResult> iterator() {
@@ -942,6 +932,33 @@ public class ConvertUtil {
         });
 
         cacheUtil.refreshAllCache();
+    }
+
+    public void scrambleMembers() {
+          List<Map<String,Object>> players =
+                jdbcTemplate.queryForList("select t.*,d.*,tp_player " +
+                        " from team_player tp join division d on tp_division=d.division_id  " +
+                        " join team t on tp_team=t.team_id where tp_division " +
+                        " in (select distinct ad_division from active_divisions) " +
+                        " and tp_team is not null and d.season_id = 74 ");
+        Map<Integer, Set<Team>> teamMap = leagueService.findAll(Team.class).stream()
+                .filter(t -> t.getSeason().isActive()).filter(t -> t.getLegacyId() != null)
+                .collect(Collectors.groupingBy(LeagueObject::getLegacyId, Collectors.toSet()));
+
+        Map<Integer, Set<User>>
+                userHashMap = leagueService.findAll(User.class)
+                .stream().collect(Collectors.groupingBy(LeagueObject::getLegacyId, Collectors.toSet()));
+
+        for (Map<String, Object> player : players) {
+            if (player.get("team_id") == null || teamMap.get((Integer) player.get("team_id")) == null || teamMap.get((Integer) player.get("team_id")).isEmpty()) {
+                logger.error("no team  found for " + player.get("team_id"));
+                continue;
+            }
+            Team t = teamMap.get((Integer) player.get("team_id")).iterator().next();
+            User u = userHashMap.get((Integer) player.get("tp_player")).iterator().next();
+            t.getTeamMembers().addMember(u);
+            leagueService.save(t.getTeamMembers());
+        }
     }
 
 }

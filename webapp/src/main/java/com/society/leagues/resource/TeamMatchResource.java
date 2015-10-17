@@ -1,10 +1,7 @@
 package com.society.leagues.resource;
 
+import com.society.leagues.client.api.domain.*;
 import com.society.leagues.service.LeagueService;
-import com.society.leagues.client.api.domain.Season;
-import com.society.leagues.client.api.domain.Team;
-import com.society.leagues.client.api.domain.TeamMatch;
-import com.society.leagues.client.api.domain.User;
 import com.society.leagues.service.ResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -180,7 +177,9 @@ public class TeamMatchResource {
         for (Team userTeam : userTeams) {
             teamMatches.addAll(leagueService.findAll(TeamMatch.class).stream().filter(tm->tm.hasTeam(userTeam)).collect(Collectors.toList()));
         }
-        teamMatches.parallelStream().forEach(tm->tm.setReferenceUser(u));
-        return teamMatches;
+        List<TeamMatch> copy = new ArrayList<>(teamMatches.size());
+        teamMatches.stream().forEach(tm->copy.add(LeagueObject.copy(tm)));
+        copy.parallelStream().forEach(c->c.setReferenceUser(u));
+        return copy;
     }
 }
