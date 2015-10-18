@@ -236,29 +236,12 @@ public class PlayerResultResource {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<PlayerResult> addMatch(Principal principal, @PathVariable String matchId) {
         TeamMatch teamMatch = leagueService.findOne(new TeamMatch(matchId));
-        List<PlayerResult> results = leagueService.findCurrent(PlayerResult.class)
+         List<PlayerResult> results = leagueService.findCurrent(PlayerResult.class)
                 .parallelStream()
                 .filter(pr -> pr.getTeamMatch().equals(teamMatch))
                 .collect(Collectors.toList());
-        if (results.isEmpty()) {
-            PlayerResult result = new PlayerResult();
-            result.setMatchNumber(1);
-            result.setPlayerHome(teamMatch.getHome().getTeamMembers().getMembers().iterator().next());
-            result.setPlayerAway(teamMatch.getAway().getTeamMembers().getMembers().iterator().next());
-            result.setPlayerHomeHandicap(result.getPlayerHome().getHandicap(teamMatch.getSeason()));
-            result.setPlayerAwayHandicap(result.getPlayerHome().getHandicap(teamMatch.getSeason()));
-            result.setTeamMatch(teamMatch);
-            return Arrays.asList(result);
-        }
-        for(int i=0;i<results.size();i++) {
-            if (results.size() == i+1) {
-                results.add(PlayerResult.copy(results.get(0)));
-            }
-            if (results.get(i+1).getMatchNumber() != i+i) {
-
-            }
-        }
-        return leagueService.save(result);
+        results.add(resultService.add(teamMatch));
+        return results;
     }
 
 

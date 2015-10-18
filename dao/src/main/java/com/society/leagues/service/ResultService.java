@@ -82,7 +82,32 @@ public class ResultService {
     }
 
     public PlayerResult add(TeamMatch teamMatch) {
-
+        List<PlayerResult> results = leagueService.findCurrent(PlayerResult.class)
+                .parallelStream()
+                .filter(pr -> pr.getTeamMatch().equals(teamMatch))
+                .collect(Collectors.toList());
+        Iterator<PlayerResult> iterator = results.iterator();
+        int matchNumber = 1;
+        while(iterator.hasNext()) {
+            PlayerResult a = iterator.next();
+            PlayerResult b = iterator.next();
+            if (b == null) {
+                matchNumber = a.getMatchNumber()+1;
+                break;
+            }
+            if (a.getMatchNumber()-b.getMatchNumber() > 1) {
+                matchNumber = a.getMatchNumber()+1;
+                break;
+            }
+        }
+        PlayerResult result = new PlayerResult();
+        result.setMatchNumber(matchNumber);
+        result.setPlayerHome(teamMatch.getHome().getTeamMembers().getMembers().iterator().next());
+        result.setPlayerAway(teamMatch.getAway().getTeamMembers().getMembers().iterator().next());
+        result.setPlayerHomeHandicap(result.getPlayerHome().getHandicap(teamMatch.getSeason()));
+        result.setPlayerAwayHandicap(result.getPlayerHome().getHandicap(teamMatch.getSeason()));
+        result.setTeamMatch(teamMatch);
+        return result;
     }
 
     public Boolean removeTeamMatchResult(TeamMatch teamMatch) {
