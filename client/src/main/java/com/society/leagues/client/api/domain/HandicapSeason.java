@@ -1,5 +1,6 @@
 package com.society.leagues.client.api.domain;
 
+import org.omg.CORBA.UNKNOWN;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;
@@ -11,6 +12,8 @@ public class HandicapSeason {
 
     public HandicapSeason() {
     }
+
+    public static HandicapSeason UNKNOWN = new HandicapSeason(Handicap.UNKNOWN,null);
 
     public HandicapSeason(Handicap handicap, Season season) {
         this.handicap = handicap;

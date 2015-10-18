@@ -194,6 +194,10 @@ public class User extends LeagueObject {
         return getSeasons().stream().filter(Season::isActive).findFirst().isPresent();
     }
 
+    public Handicap getHandicap(Season s) {
+        getHandicapSeasons().stream().filter(hs->hs.getSeason().equals(s)).findFirst().orElse(HandicapSeason.UNKNOWN).getHandicap();
+    }
+
     @Override
     public String toString() {
         return "User{" +

@@ -23,8 +23,8 @@ public class PlayerResult  extends LeagueObject {
     @NotNull Integer homeRacks = 0;
     @NotNull Integer awayRacks = 0;
     @NotNull Integer matchNumber = 0;
-    @NotNull Handicap playerHomeHandicap;
-    @NotNull Handicap playerAwayHandicap;
+    @NotNull Handicap playerHomeHandicap = Handicap.UNKNOWN;
+    @NotNull Handicap playerAwayHandicap = Handicap.UNKNOWN;
     User playerHomePartner;
     User playerAwayPartner;
     Handicap playerHomeHandicapPartner;
