@@ -195,7 +195,7 @@ public class User extends LeagueObject {
     }
 
     public Handicap getHandicap(Season s) {
-        getHandicapSeasons().stream().filter(hs->hs.getSeason().equals(s)).findFirst().orElse(HandicapSeason.UNKNOWN).getHandicap();
+        return getHandicapSeasons().stream().filter(hs->hs.getSeason().equals(s)).findFirst().orElse(HandicapSeason.UNKNOWN).getHandicap();
     }
 
     @Override

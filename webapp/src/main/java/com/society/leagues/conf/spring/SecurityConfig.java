@@ -22,6 +22,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
@@ -30,6 +31,7 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@CrossOrigin
 @SuppressWarnings("unused")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired LoginHandler loginHandler;
@@ -47,6 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         response.getWriter().flush();
     };
 
+
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/health",
@@ -54,7 +57,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/js/**", "/login**",
                 "/login.html",
                  "/api-docs**",
-                "/api-docs/**");
+                "/api-docs/**",
+                "/signin/**", "/signup/**", "/disconnect/facebook",
+                "/mappings",
+                "/connect/**",
+                "/api/facebook",
+                "/resources/**", "/auth/**"
+        );
     }
 
     @Override

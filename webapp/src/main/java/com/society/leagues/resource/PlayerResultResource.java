@@ -245,4 +245,42 @@ public class PlayerResultResource {
     }
 
 
+    @RequestMapping(value = "/{resultId}/winner/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public PlayerResult setWinner(Principal principal, @PathVariable String resultId, @PathVariable String userId) {
+        PlayerResult result = leagueService.findOne(new PlayerResult(resultId));
+        User user = leagueService.findOne(new User(userId));
+        if (result == null || user == null)
+            throw new RuntimeException("No user or reulst for " + userId + " "+ resultId);
+
+        if (result.getPlayerHome().equals(user)) {
+            result.setHomeRacks(1);
+            result.setAwayRacks(0);
+        } else {
+            result.setHomeRacks(0);
+            result.setAwayRacks(1);
+        }
+        return leagueService.save(result);
+    }
+
+    @RequestMapping(value = "/{resultId}/loser/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public PlayerResult setLoser(Principal principal, @PathVariable String resultId, @PathVariable String userId) {
+        PlayerResult result = leagueService.findOne(new PlayerResult(resultId));
+        User user = leagueService.findOne(new User(userId));
+        if (result == null || user == null)
+            throw new RuntimeException("No user or result for " + userId + " "+ resultId);
+
+        if (result.getPlayerHome().equals(user)) {
+            result.setHomeRacks(0);
+            result.setAwayRacks(1);
+        } else {
+            result.setHomeRacks(1);
+            result.setAwayRacks(0);
+        }
+        return leagueService.save(result);
+    }
+
+
+
 }

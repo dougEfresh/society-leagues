@@ -4,7 +4,10 @@ import com.society.leagues.client.api.domain.LeagueObject;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.listener.DaoListener;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Component
 @SuppressWarnings("unused")
@@ -28,10 +31,11 @@ public class ListenerConfig {
     };
 
     @Bean
-    public DaoListener statListener() {
-        return empty;
+    ThreadPoolTaskExecutor threadPoolExecutor() {
+        ThreadPoolTaskExecutor threadPoolExecutor = new ThreadPoolTaskExecutor();
+        threadPoolExecutor.setCorePoolSize(1);
+        return threadPoolExecutor;
     }
-
     @Bean
     public DaoListener userListener() {
         return empty;

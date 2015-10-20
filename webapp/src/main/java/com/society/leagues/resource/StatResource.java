@@ -46,8 +46,18 @@ public class StatResource {
             return Collections.emptyList();
         }
 
-        return statService.getUserSeasonStats().get(team.getSeason()).stream().parallel().filter(s -> team.hasUser(s.getUser()))
+        List<Stat> stats = statService.getUserSeasonStats().get(team.getSeason()).stream().parallel().filter(s -> team.hasUser(s.getUser()))
                 .collect(Collectors.toList());
+        for (User user : team.getMembers()) {
+            if (stats.stream().filter(s->s.getUser().equals(user)).count() == 0) {
+                Stat stat = new Stat();
+                stat.setTeam(team);
+                stat.setUser(user);
+                stat.setSeason(team.getSeason());
+                stats.add(stat);
+            }
+        }
+        return stats;
     }
 
     @RequestMapping(value = "/season/{id}",

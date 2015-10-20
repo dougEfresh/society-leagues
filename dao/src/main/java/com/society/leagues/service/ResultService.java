@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,17 +28,19 @@ public class ResultService {
     @Scheduled(fixedRate = 1000*60*6, initialDelay = 1000*60*11)
     public void refresh() {
         matchPoints().clear();
+        LocalDateTime tenWeeks = LocalDateTime.now().plusDays(1).minusWeeks(10);
         List<PlayerResult> challengeResults = leagueService.findCurrent(PlayerResult.class).stream().parallel()
                 .filter(r -> r.getSeason().isChallenge())
+                .filter(pr -> pr.getMatchDate().isAfter(tenWeeks))
                 .collect(Collectors.toList());
 
         for(User challengeUser: leagueService.findAll(User.class).stream()
                 .filter(u -> u.isChallenge())
-                //.filter(u->u.getLastName().equals("Chimento"))
                 .collect(Collectors.toList())
                 ) {
-            List<PlayerResult> results = challengeResults.stream().parallel().filter(pr->pr.hasUser(challengeUser)).
-                    sorted((playerResult, t1) -> t1.getTeamMatch().getMatchDate().compareTo(playerResult.getTeamMatch().getMatchDate())).limit(7)
+            List<PlayerResult> results = challengeResults.stream().parallel()
+                    .filter(pr -> pr.hasUser(challengeUser))
+                    .sorted((playerResult, t1) -> t1.getTeamMatch().getMatchDate().compareTo(playerResult.getTeamMatch().getMatchDate())).limit(7)
                     .collect(Collectors.toList());
 
             double matchNum = 0;

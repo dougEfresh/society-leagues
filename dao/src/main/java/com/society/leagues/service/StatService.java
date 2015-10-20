@@ -1,9 +1,11 @@
 package com.society.leagues.service;
 
 import com.society.leagues.client.api.domain.*;
+import com.society.leagues.listener.StatListener;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -18,11 +20,14 @@ public class StatService {
     final AtomicReference<List<Stat>> lifetimeStats = new AtomicReference<>(new ArrayList<>(1000));
     final AtomicReference<Map<Season,List<Stat>>> userSeasonStat = new AtomicReference<>(new HashMap<>());
     final AtomicReference<List<Stat>> handicapStats = new AtomicReference<>(new ArrayList<>(2000));
-
+    @Autowired ThreadPoolTaskExecutor threadPoolTaskExecutor;
     @Autowired LeagueService leagueService;
+    @Autowired StatListener statListener;
 
     @PostConstruct
     public void init() {
+        threadPoolTaskExecutor.setCorePoolSize(1);
+        statListener.setStatService(this);
         refresh();
     }
 
@@ -40,22 +45,27 @@ public class StatService {
 
     @Scheduled(fixedRate = 1000*60*60, initialDelay = 1000*60*11)
     public void refresh() {
-        logger.info("Refreshing stats");
-        long start = System.currentTimeMillis();
-        List<Team> teams = leagueService.findAll(Team.class);
-        List<Stat> teamStats = new ArrayList<>();
-        for (Team team : teams) {
-            teamStats.add(Stat.buildTeamStats(team,
-                    leagueService.findAll(TeamMatch.class).parallelStream()
-                            .filter(tm -> tm.hasTeam(team))
-                            .filter(TeamMatch::isHasResults)
-                            .collect(Collectors.toList())
-            ));
-        }
-        this.teamStats.lazySet(teamStats);
-        refreshUserSeasonStats();
-        refreshUserLifetimeStats();
-        logger.info("Done Refreshing stats  (" + (System.currentTimeMillis() - start) + "ms)");
+        threadPoolTaskExecutor.submit(new Runnable() {
+            @Override
+            public void run() {
+                logger.info("Refreshing stats");
+                long start = System.currentTimeMillis();
+                final List<Team> teams = leagueService.findAll(Team.class);
+                final List<Stat> ts = new ArrayList<>();
+                for (Team team : teams) {
+                    ts.add(Stat.buildTeamStats(team,
+                            leagueService.findAll(TeamMatch.class).parallelStream()
+                                    .filter(tm -> tm.hasTeam(team))
+                                    .filter(TeamMatch::isHasResults)
+                                    .collect(Collectors.toList())
+                    ));
+                }
+                teamStats.lazySet(ts);
+                refreshUserSeasonStats();
+                refreshUserLifetimeStats();
+                logger.info("Done Refreshing stats  (" + (System.currentTimeMillis() - start) + "ms)");
+            }
+        });
 
     }
 
