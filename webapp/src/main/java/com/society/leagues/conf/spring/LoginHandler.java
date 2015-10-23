@@ -16,15 +16,13 @@ import java.io.IOException;
 
 @Component
 public class LoginHandler implements AuthenticationSuccessHandler {
-    @Autowired
-    UserRepository userRepository;
-
+    @Autowired UserRepository userRepository;
+    @Autowired ObjectMapper mapper;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
         org.springframework.security.core.userdetails.User springUser = (org.springframework.security.core.userdetails.User)authentication.getPrincipal();
-        ObjectMapper mapper = new ObjectMapper();
         response.setContentType("application/json;charset=UTF-8");
         //response.getWriter().flush();
         User u = userRepository.findByLogin(springUser.getUsername());

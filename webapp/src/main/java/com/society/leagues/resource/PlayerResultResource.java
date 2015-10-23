@@ -167,13 +167,8 @@ public class PlayerResultResource {
             return results;
         }
 
-        if (s.isActive()) {
-            results = leagueService.findCurrent(PlayerResult.class).stream().
-                    parallel().filter(pr -> pr.hasUser(u)).filter(pr->pr.getSeason().equals(s)).collect(Collectors.toList());
-        } else {
-            results = leagueService.findAll(PlayerResult.class)
-                    .stream().parallel().filter(pr -> pr.hasUser(u)).filter(pr->pr.getSeason().equals(s)).collect(Collectors.toList());
-        }
+        results = leagueService.findAll(PlayerResult.class)
+                .stream().parallel().filter(pr -> pr.hasUser(u)).filter(pr->pr.getSeason().equals(s)).collect(Collectors.toList());
 
         List<PlayerResult> copyResults = new ArrayList<>(results.size());
         results.stream().forEach(r-> copyResults.add(PlayerResult.copy(r)));

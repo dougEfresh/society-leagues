@@ -155,7 +155,11 @@ public class StatResource {
             consumes = MediaType.ALL_VALUE)
     public List<Stat> getUserStatsSeason(@PathVariable String id, @PathVariable String seasonId) {
         User u = leagueService.findOne(new User(id));
-        return statService.getUserSeasonStats()
-                .get(new Season(seasonId)).stream().parallel().filter(s->s.getUser().equals(u)).collect(Collectors.toList());
+        Season s = leagueService.findOne(new Season(seasonId));
+        List<Stat> stats = statService.getUserSeasonStats().get(s);
+        if (stats == null)
+            return Collections.emptyList();
+
+        return stats.stream().parallel().filter(st->st.getUser().equals(u)).collect(Collectors.toList());
     }
 }

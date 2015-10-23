@@ -48,8 +48,9 @@ public enum Handicap {
             return PRO;
         }
         try {
-            Integer h = new Integer(hc);
-            return Handicap.values()[h-1];
+            Integer h = new Integer(hc)-1;
+            if (h>0 && h < Handicap.values().length)
+                return Handicap.values()[h];
         } catch (NumberFormatException e) {
 
         }

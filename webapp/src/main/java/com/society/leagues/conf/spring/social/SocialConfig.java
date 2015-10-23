@@ -1,57 +1,77 @@
 package com.society.leagues.conf.spring.social;
 
+import com.society.leagues.conf.spring.PrincipleDetailsService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.env.Environment;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.security.crypto.encrypt.Encryptors;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
-import org.springframework.social.config.annotation.ConnectionFactoryConfigurer;
-import org.springframework.social.config.annotation.EnableSocial;
-import org.springframework.social.config.annotation.SocialConfigurerAdapter;
-import org.springframework.social.connect.Connection;
-import org.springframework.social.connect.ConnectionFactoryLocator;
-import org.springframework.social.connect.ConnectionSignUp;
-import org.springframework.social.connect.UsersConnectionRepository;
-import org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository;
-import org.springframework.social.connect.mem.InMemoryUsersConnectionRepository;
-import org.springframework.social.connect.web.SignInAdapter;
+import org.springframework.social.connect.*;
+import org.springframework.social.connect.support.ConnectionFactoryRegistry;
+import org.springframework.social.connect.web.*;
 import org.springframework.social.facebook.connect.FacebookConnectionFactory;
+import org.springframework.social.security.SocialUserDetailsService;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.context.request.WebRequest;
 
 import javax.sql.DataSource;
 
 @Configuration
-public class SocialConfig extends SocialConfigurerAdapter {
-
+public class SocialConfig  {
+    final static Logger logger = Logger.getLogger(SocialConfig.class);
     @Autowired MongoOperations mongoOperations;
+    @Autowired Environment environment;
+    @Autowired DataSource dataSource;
+    @Autowired PrincipleDetailsService principleDetailsService;
+    @Autowired ImplicitSignInAdapter signup;
+    @Autowired UsersConnectionRepository usersConnectionRepository;
+    @Value("${app.url}")
+    String appUrl;
 
-    @Override
-    public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator) {
-        MongoConnectionTransformers transformers = new MongoConnectionTransformers(connectionFactoryLocator, Encryptors.noOpText());
-        MongoUsersConnectionRepository repo = new MongoUsersConnectionRepository(mongoOperations, connectionFactoryLocator, transformers);
-        repo.setConnectionSignUp(new ImplicitConnectionSignup());
-        return repo;
+    @Bean
+    public SocialUserDetailsService socialUsersDetailService() {
+        return new MongoSocialUsersDetailService(principleDetailsService);
     }
 
-    /*
-    @Override
-    public void addConnectionFactories(ConnectionFactoryConfigurer cfConfig, Environment env) {
-        cfConfig.addConnectionFactory(new FacebookConnectionFactory(
-                env.getProperty("spring.social.facebook.app-id"),
-                env.getProperty("spring.social.facebook.app-secret")));
-    }
-*/
+    @Bean
+    @Scope(value="singleton", proxyMode= ScopedProxyMode.INTERFACES)
+    public ConnectionFactoryLocator connectionFactoryLocator() {
+        ConnectionFactoryRegistry registry = new ConnectionFactoryRegistry();
+        registry.addConnectionFactory(new FacebookConnectionFactory(
+                environment.getProperty("spring.social.facebook.app-id"),
+                environment.getProperty("spring.social.facebook.app-secret")));
 
-    private static class ImplicitConnectionSignup implements ConnectionSignUp {
-        @Override
-        public String execute(Connection<?> connection) {
-            return connection.getKey().getProviderUserId();
-        }
+        return registry;
     }
+
+    @Bean
+    public ProviderSignInController providerSignInController() {
+        ProviderSignInController controller = new ProviderSignInController(connectionFactoryLocator(), usersConnectionRepository,signup);
+        controller.setApplicationUrl(appUrl);
+        controller.setSignInUrl(appUrl +  "/#/fb/signin");
+        controller.setSignUpUrl(appUrl + "/#/fb/signup");
+        controller.setPostSignInUrl(appUrl + "/#/app/home");
+        controller.addSignInInterceptor(new ProviderSignInInterceptor<Object>() {
+            @Override
+            public void preSignIn(ConnectionFactory<Object> connectionFactory, MultiValueMap<String, String> parameters, WebRequest request) {
+                logger.info("Got PreSignIn ");
+            }
+
+            @Override
+            public void postSignIn(Connection<Object> connection, WebRequest request) {
+                logger.info("Got postSignIn ");
+            }
+        });
+        return controller;
+    }
+
+    @Bean
+    public ProviderSignInUtils providerSignInUtils() {
+        return new ProviderSignInUtils(connectionFactoryLocator(),usersConnectionRepository);
+    }
+
 }
-
-    //@Bean
-    //public SignInAdapter signInAdapter() {
-      //  return new ImplicitSignInAdapter(new HttpSessionRequestCache());
-    //}

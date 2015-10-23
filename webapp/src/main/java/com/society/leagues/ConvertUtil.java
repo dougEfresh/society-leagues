@@ -70,10 +70,10 @@ public class ConvertUtil {
                 leagueService.save(u);
             }
         }
+    }
 
-        if (cnt != results.size()) {
-            throw new RuntimeException("Unable to verify users");
-        }
+    public List<Map<String,Object>> handicaps() {
+        return jdbcTemplate.queryForList("select * from handicap_display");
     }
 
     public Boolean convertSeason() {
@@ -305,6 +305,8 @@ public class ConvertUtil {
         for (User user : leagueService.findAll(User.class)) {
             userHashMap.put(user.getLegacyId(), user);
         }
+        List<Map<String,Object>> objects = new ArrayList<>();
+        List<Map<String,Object>> handicaps = handicaps();
         for(Season s: leagueService.findAll(Season.class)){
             int missed = 0;
             logger.info("Processing " + s.getDisplayName());
@@ -315,7 +317,7 @@ public class ConvertUtil {
                 PlayerResult playerResult = new PlayerResult();
                 playerResult.setLegacyId((Integer) result.get("result_id"));
                 playerResult.setTeamMatch(teamMatchMap.get((Integer) result.get("match_id")));
-                User aUser = userHashMap.get((Integer) result.get("a_player_id"));
+                User aUser = userHashMap.get((Integer) result.get("player_id"));
                 assert aUser != null;
                 if (playerResult.getTeamMatch() == null) {
                     //logger.error("Unknown match for " + result.get("match_id"));
@@ -324,9 +326,14 @@ public class ConvertUtil {
                 }
                 Team home = playerResult.getTeamMatch().getHome();
                 playerResult.setPlayerHome(aUser);
-                playerResult.setHomeRacks((Integer) result.get("a_games_won"));
+                playerResult.setHomeRacks((Integer) result.get("games_won"));
                 playerResult.setMatchNumber((Integer) result.get("match_number"));
                 Handicap aHandicap = Handicap.get(result.get("hcd_name") == null ? "UNKNOWN" : result.get("hcd_name").toString());
+                Integer leagueId = (Integer) result.get("league_id");
+                Integer handicapId = (Integer) result.get("player_handicap");
+                if (!leagueId.equals(1) && aHandicap == Handicap.UNKNOWN) {
+                    aHandicap = Handicap.get(handicapId.toString());
+                }
                 playerResult.setPlayerHomeHandicap(aHandicap);
 
                 //members =  home.getMembers().size();
@@ -354,12 +361,30 @@ public class ConvertUtil {
                     errors++;
                     continue;
                 }
-                User aUser = userHashMap.get((Integer) result.get("a_player_id"));
+                User aUser = userHashMap.get((Integer) result.get("player_id"));
                 assert aUser != null;
                 Team away = playerResult.getTeamMatch().getAway();
                 playerResult.setPlayerAway(aUser);
-                playerResult.setAwayRacks((Integer) result.get("a_games_won"));
+                playerResult.setAwayRacks((Integer) result.get("games_won"));
                 Handicap aHandicap = Handicap.get(result.get("hcd_name") == null ? "UNKNOWN" : result.get("hcd_name").toString());
+                 Integer leagueId = (Integer) result.get("league_id");
+                Integer handicapId = (Integer) result.get("player_handicap");
+                if (!leagueId.equals(1) && aHandicap == Handicap.UNKNOWN) {
+                    aHandicap = Handicap.get(handicapId.toString());
+                }
+                if (aHandicap == Handicap.UNKNOWN) {
+                    //logger.info("Looking up handicap for " + playerResult.getLegacyId());
+                  //   aHandicap = Handicap.get(handicapId.toString());
+                    /*
+                    Map<String, Object> possibleResult = handicaps.stream().filter(h -> h.get("hcd_handicap").equals(handicapId)).findFirst().orElse(null);
+                    if (possibleResult != null) {
+                        aHandicap = Handicap.get(possibleResult.get("hcd_name") == null ? "UNKNOWN" : possibleResult.get("hcd_name").toString());
+                        if (aHandicap == Handicap.UNKNOWN)
+                            logger.info("Still no handicap");
+                    }
+                    */
+                }
+
                 playerResult.setPlayerAwayHandicap(aHandicap);
 
               /*  members =  away.getMembers().size();
@@ -399,7 +424,6 @@ public class ConvertUtil {
             for (Season season : seasons) {
                 PlayerResult result = userResults.stream()
                         .filter(r->r.getSeason().equals(season))
-                        .filter(r->r.getHandicap(user) != Handicap.UNKNOWN)
                         .max(new Comparator<PlayerResult>() {
                     @Override
                     public int compare(PlayerResult playerResult, PlayerResult t1) {
@@ -465,25 +489,26 @@ public class ConvertUtil {
                 if (hs.getHandicap() == null) {
                     hs.setHandicap(hs.getSeason().isNine() ? Handicap.DPLUS : Handicap.FOUR);
                 }
+                u.addHandicap(hs);
+                leagueService.save(u);
             }
-            u.addHandicap(hs);
-            leagueService.save(u);
             t.getTeamMembers().addMember(u);
             leagueService.save(t.getTeamMembers());
         }
     }
 
     private String getQuery(String type, Season s) {
-        return String.format("select  m.season_id,\n" +
+        return String.format("select  m.league_id, m.season_id,\n" +
                 "a.result_id,m.season_id,a.match_id,\n" +
-                "a.team_id as a_team_id,a.player_id as a_player_id," +
-                "a.player_handicap as a_player_handicap,a.games_won as a_games_won " +
-                ",ahc.hcd_name, a.match_number as match_number\n" +
+                "a.team_id as team_id,a.player_id as player_id," +
+                "a.player_handicap as player_handicap," +
+                "a.games_won as games_won " +
+                ",ahc.*, a.match_number as match_number\n" +
                 "from result_ind a " +
                 "join match_schedule m on m.match_id = a.match_id\n" +
                 "and m.%s_team_id = a.team_id\n" +
                 "left JOIN handicap_display ahc ON ahc.hcd_id=a.player_handicap and ahc.hcd_league=m.league_id \n" +
-                "where a.player_id not in (218,224,905) " +
+                "where a.player_id not in (218,224,905) and player_id > 0 " +
                 " and  season_id = %s  and m.league_id != 4 " +
                 "order by match_id \n" +
                 ";\n", type, s.getLegacyId() + "");
@@ -493,14 +518,14 @@ public class ConvertUtil {
      private String getScrambleQuery(String type, Season s) {
         return String.format("select  m.season_id,\n" +
                 "a.result_id,m.season_id,a.match_id,\n" +
-                "a.team_id as a_team_id,a.player_id as a_player_id," +
-                "a.player_handicap as a_player_handicap,a.games_won as a_games_won " +
-                ",ahc.hcd_name, a.match_number as match_number\n" +
+                "a.team_id as team_id,a.player_id as player_id," +
+                "a.player_handicap as player_handicap,a.games_won as games_won " +
+                ",ahc.hcd_name, m.league_id,a.match_number as match_number\n" +
                 "from result_ind a " +
                 "join match_schedule m on m.match_id = a.match_id\n" +
                 "and m.%s_team_id = a.team_id\n" +
                 "left JOIN handicap_display ahc ON ahc.hcd_id=a.player_handicap and ahc.hcd_league=m.league_id \n" +
-                "where a.player_id not in (218,224,905) " +
+                "where a.player_id not in (218,224,905) and player_id > 0  " +
                 " and  season_id = %s  " +
                 "order by match_id \n" +
                 ";\n", type, s.getLegacyId() + "");
@@ -686,10 +711,24 @@ public class ConvertUtil {
     }
 
     public void stats() {
-        User u = leagueService.findByLogin("doug.rhee@societybilliards.com");
+        User u = leagueService.findByLogin("dchimento@gmail.com");
+        List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().filter(t -> t.hasUser(u)).collect(Collectors.toList());
+        List<Team> teams = leagueService.findAll(Team.class).stream().parallel().filter(t->t.hasUser(u)).collect(Collectors.toList());
         logger.info("\n\n" + u.getHandicapSeasons());
-        logger.info("Teams: " + leagueService.findAll(Team.class).stream().parallel().filter(t->t.hasUser(u)).count());
-        logger.info("Results: " + leagueService.findAll(PlayerResult.class).stream().parallel().filter(t -> t.hasUser(u)).count());
+        logger.info("Teams: " + teams.size());
+        logger.info("Results: " + results.size());
+        List<Season> teamSeason = new ArrayList<>();
+        List<Season> userSeason = u.getSeasons();
+        teams.stream().forEach(t -> teamSeason.add(t.getSeason()));
+        for (Season season : u.getSeasons()) {
+            if (!teamSeason.contains(season)) {
+                logger.info(season + " is not in the team list");
+            }
+        }
+        for (Season season : teamSeason) {
+            if (!userSeason.contains(season))
+                logger.info(season + " is not in the user season list");
+        }
     }
 
     public void convertScramble() {
@@ -848,10 +887,10 @@ public class ConvertUtil {
             playerResult.setTeamMatch(teamMatchMap.get(matchId));
             playerResult.setMatchNumber(matchNumber);
             Team home = playerResult.getTeamMatch().getHome();
-            User aUser = userHashMap.get((Integer) result.get("a_player_id")).stream().findFirst().get();
+            User aUser = userHashMap.get((Integer) result.get("player_id")).stream().findFirst().get();
             assert aUser != null;
             playerResult.setPlayerHome(aUser);
-            playerResult.setHomeRacks((Integer) result.get("a_games_won"));
+            playerResult.setHomeRacks((Integer) result.get("games_won"));
             playerResult.setMatchNumber(matchNumber);
             Handicap aHandicap = Handicap.get(result.get("hcd_name") == null ? "UNKNOWN" : result.get("hcd_name").toString());
             playerResult.setPlayerHomeHandicap(aHandicap);
@@ -887,7 +926,7 @@ public class ConvertUtil {
                 }
             }).collect(Collectors.toList());
 
-            User aUser = userHashMap.get((Integer) result.get("a_player_id")).stream().findFirst().get();
+            User aUser = userHashMap.get((Integer) result.get("player_id")).stream().findFirst().get();
             assert aUser != null;
             PlayerResult away = matches.get(0);
             if (matches.size() > 1) {
@@ -903,7 +942,7 @@ public class ConvertUtil {
                 }
             }
             away.setPlayerAway(aUser);
-            away.setAwayRacks((Integer) result.get("a_games_won"));
+            away.setAwayRacks((Integer) result.get("games_won"));
             Handicap aHandicap = Handicap.get(result.get("hcd_name") == null ? "UNKNOWN" : result.get("hcd_name").toString());
             away.setPlayerAwayHandicap(aHandicap);
             if (away.getPlayerAwayHandicap() == null) {
@@ -958,6 +997,46 @@ public class ConvertUtil {
             User u = userHashMap.get((Integer) player.get("tp_player")).iterator().next();
             t.getTeamMembers().addMember(u);
             leagueService.save(t.getTeamMembers());
+        }
+    }
+
+    public void clean() {
+        List<User> users = leagueService.findAll(User.class);
+        for (User user : users) {
+            List<PlayerResult> results = leagueService.findAll(PlayerResult.class).parallelStream()
+                    .filter(pr -> !pr.getSeason().isActive())
+                    .filter(pr -> pr.hasUser(user))
+                    .collect(Collectors.toList());
+
+            HashSet<Season> seasons = new HashSet<>();
+            results.forEach(pr -> seasons.add(pr.getSeason()));
+            for (Season season : seasons) {
+                if (!user.getSeasons().contains(season)) {
+                    HandicapSeason hs = new HandicapSeason(Handicap.UNKNOWN, season);
+                    user.addHandicap(hs);
+                }
+            }
+
+            for (Season season : user.getSeasons()) {
+                if (!seasons.contains(season)) {
+                    user.removeHandicap(new HandicapSeason(Handicap.UNKNOWN, season));
+                }
+            }
+            leagueService.save(user);
+        }
+        int cnt = 0;
+        for (PlayerResult result : leagueService.findAll(PlayerResult.class)) {
+            if (result.getPlayerAwayHandicap() == null || result.getPlayerAwayHandicap() == Handicap.UNKNOWN) {
+                cnt++;
+                if (cnt % 100 == 0)
+                    logger.info("Unknown handicap for " + result);
+            }
+            if (result.getPlayerHomeHandicap() == null || result.getPlayerHomeHandicap() == Handicap.UNKNOWN) {
+                cnt++;
+                if (cnt % 100 == 0)
+                    logger.info("Unknown handicap for " + result);
+
+            }
         }
     }
 

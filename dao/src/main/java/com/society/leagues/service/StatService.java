@@ -23,6 +23,7 @@ public class StatService {
     @Autowired ThreadPoolTaskExecutor threadPoolTaskExecutor;
     @Autowired LeagueService leagueService;
     @Autowired StatListener statListener;
+    boolean enableRefresh = true;
 
     @PostConstruct
     public void init() {
@@ -45,6 +46,9 @@ public class StatService {
 
     @Scheduled(fixedRate = 1000*60*60, initialDelay = 1000*60*11)
     public void refresh() {
+        if (!enableRefresh)
+            return;
+
         threadPoolTaskExecutor.submit(new Runnable() {
             @Override
             public void run() {
@@ -136,4 +140,7 @@ public class StatService {
         logger.info("Created " + lifetimeStats.get().size() + " stats for " + users.size() + " users with a total of " + lifeStats.size());
     }
 
+    public void setEnableRefresh(boolean enableRefresh) {
+        this.enableRefresh = enableRefresh;
+    }
 }

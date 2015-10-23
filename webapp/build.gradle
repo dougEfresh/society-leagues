@@ -24,7 +24,7 @@ jar {
 }
 
 bootRun {
-    jvmArgs = [ '-Dserver.port=8081', '-Dspring.data.mongodb.host=127.0.0.1', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005' ]
+    jvmArgs = [ '-Dapp.url=http://leaguesdev.societybilliards.com:8080', '-Dserver.port=8081', '-Dspring.data.mongodb.host=127.0.0.1', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005' ]
 }
 
 dependencies {
@@ -44,9 +44,11 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-security'
     compile 'org.springframework.boot:spring-boot-starter-tomcat'
     compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
-    compile 'org.springframework.boot:spring-boot-starter-social-facebook'
 
-    // Override Spring Boot's choice of Spring Social Facebook version
+    compile 'org.springframework.social:spring-social-core:1.1.2.RELEASE'
+    compile "org.springframework.social:spring-social-web:1.1.2.RELEASE"
+    compile "org.springframework.social:spring-social-security:1.1.2.RELEASE"
+
     compile("org.springframework.social:spring-social-facebook:2.0.2.RELEASE")
     compile("org.springframework.social:spring-social-facebook-web:2.0.1.RELEASE")
     compile(group: 'com.mangofactory', name: 'swagger-springmvc', version: '1.0.2')

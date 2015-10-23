@@ -31,14 +31,10 @@ appender("CONSOLE", ch.qos.logback.core.ConsoleAppender) {
 }
 
 logger("com.society", DEBUG)
-logger("org.glassfish",INFO)
-logger("log4jdbc.log4j2",DEBUG)
-logger("com.wordnik",INFO)
-logger("feign",DEBUG)
-logger("org.apache.http",DEBUG)
-logger("org.apache.http.wire",ERROR)
 logger("org.springframework.web",INFO)
+logger("org.springframework.security",INFO)
 logger("org.springframework.web.authentication",DEBUG)
+logger("org.springframework.web.social",DEBUG)
 logger("org.springframework.data.mongodb",INFO)
 
 root(INFO, ["FILE", "CONSOLE"])

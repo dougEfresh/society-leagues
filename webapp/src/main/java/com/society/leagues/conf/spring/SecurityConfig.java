@@ -1,14 +1,15 @@
 package com.society.leagues.conf.spring;
 
 import com.allanditzel.springframework.security.web.csrf.CsrfTokenResponseHeaderBindingFilter;
+import com.society.leagues.conf.spring.social.MongoSocialUsersDetailService;
 import com.society.leagues.persistence.MongoTokenRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.RememberMeAuthenticationProvider;
-import org.springframework.security.authentication.RememberMeAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,16 +17,22 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.encrypt.Encryptors;
+import org.springframework.security.crypto.encrypt.TextEncryptor;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.social.UserIdSource;
+import org.springframework.social.security.AuthenticationNameUserIdSource;
+import org.springframework.social.security.SocialUserDetailsService;
+import org.springframework.social.security.SpringSocialConfigurer;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 
 
 @Configuration
@@ -36,10 +43,11 @@ import javax.sql.DataSource;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired LoginHandler loginHandler;
     @Autowired PrincipleDetailsService principleDetailsService;
-    @Autowired DataSource datasource;
     @Value("${security-disable:false}")
     boolean securityDisabled = false;
     @Autowired MongoOperations mongo;
+    @Autowired AuthenticationManager authenticationManager;
+    @Autowired UserIdSource userIdSource;
 
     AuthenticationFailureHandler fHandler = (request, response, exception) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authentication Failed");
 
@@ -49,20 +57,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         response.getWriter().flush();
     };
 
-
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/health",
-                "/css/**", "/img/**", "/*.js", "/index.html", "/lang/**","/fonts/**","/lib/**", "/images/**",
-                "/js/**", "/login**",
-                "/login.html",
+                "/css/**", "/img/**",
+                "/*.js", "/index.html", "/lang/**","/fonts/**","/lib/**", "/images/**",
+                "/js/**",
                  "/api-docs**",
                 "/api-docs/**",
-                "/signin/**", "/signup/**", "/disconnect/facebook",
-                "/mappings",
-                "/connect/**",
-                "/api/facebook",
-                "/resources/**", "/auth/**"
+                "/mappings"
         );
     }
 
@@ -77,39 +80,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         CsrfTokenResponseHeaderBindingFilter csrfTokenFilter = new CsrfTokenResponseHeaderBindingFilter();
         http.addFilterAfter(csrfTokenFilter, CsrfFilter.class);
-        if (securityDisabled) {
-            http.csrf().disable()
-                    .authorizeRequests()
-                    .antMatchers("/**").permitAll()
-                    .anyRequest().authenticated().and()
+        http.csrf().disable()
+                    .formLogin().loginPage("/signin")
+                    //.loginProcessingUrl("/signup/authenticate")
+                    .failureUrl("/")
+                    .usernameParameter("username").passwordParameter("password").successHandler(loginHandler).failureHandler(fHandler)
+                    .and().logout().logoutUrl("/api/logout").logoutSuccessHandler(logoutHandler).and()
+                    .authorizeRequests().antMatchers("/signin/**","/api/signup","/api/logout").permitAll()
+                    .antMatchers("/**").authenticated().and()
                     .exceptionHandling().authenticationEntryPoint(new AuthenticationEntry("/index.html")).and()
-                    .formLogin().permitAll().loginProcessingUrl("/api/authenticate")
-                    .usernameParameter("username").passwordParameter("password")
-                    .successHandler(loginHandler).failureHandler(fHandler).and()
-                    .logout().logoutUrl("/api/logout").logoutSuccessHandler(logoutHandler).and()
-                    .rememberMe().key("remember-me").tokenValiditySeconds(86400 * 50)
-                    .tokenRepository(tokenRepository());
-        } else {
-            http.csrf().disable()
-                    .authorizeRequests()
-                    .antMatchers("/api/authenticate**").permitAll()
-                    .antMatchers("/api/reset**").permitAll()
-                    .antMatchers("/api/reset/**").permitAll()
-                    .antMatchers("/api/logout**").permitAll()
-                    .anyRequest().authenticated().and()
-                    .exceptionHandling().authenticationEntryPoint(new AuthenticationEntry("/index.html")).and()
-                    .formLogin().permitAll().loginProcessingUrl("/api/authenticate")
-                    .usernameParameter("username").passwordParameter("password")
-                    .successHandler(loginHandler).failureHandler(fHandler).and()
+                    //.formLogin().permitAll().loginProcessingUrl("/api/authenticate").usernameParameter("username").passwordParameter("password").successHandler(loginHandler).failureHandler(fHandler).and()
                     .logout().logoutUrl("/api/logout").logoutSuccessHandler(logoutHandler).and().rememberMe()
-                    .rememberMeServices(rememberMeServices());
-        }
+                    .rememberMeServices(rememberMeServices()).and()
+                    .apply(new SpringSocialConfigurer())
+                    .postLoginUrl("/app/home").alwaysUsePostLoginUrl(false)
+                    //.signupUrl("/signup").defaultFailureUrl("/failure")
+                    .userIdSource(userIdSource);
     }
 
     @Bean
     RememberMeAuthenticationProvider rememberMeAuthenticationProvider() {
-        RememberMeAuthenticationProvider p = new RememberMeAuthenticationProvider("springRememberMe");
-        return p;
+        return new CustomAuthenticationProvider("springRememberMe");
     }
 
     @Bean
@@ -122,6 +113,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 new PersistentTokenBasedRememberMeServices("springRememberMe",principleDetailsService,tokenRepository());
         rememberMeServices.setTokenValiditySeconds(86400 * 90);
         rememberMeServices.setAlwaysRemember(true);
+
         return rememberMeServices;
     }
-}
+
+    @Bean
+    public TextEncryptor textEncryptor() {
+        return Encryptors.noOpText();
+    }
+
+  }

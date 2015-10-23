@@ -205,7 +205,7 @@ public class PlayerResult  extends LeagueObject {
     }
 
     public boolean hasUser(User u) {
-        return u!= null && (u.equals(playerHome) || u.equals(playerAway));
+        return u!= null && (u.equals(playerHome) || u.equals(playerAway) );
     }
 
     public boolean hasTeam(Team t) {
@@ -428,6 +428,8 @@ public class PlayerResult  extends LeagueObject {
                 ", matchNumber=" + matchNumber +
                 ", playerHomeHandicap=" + playerHomeHandicap +
                 ", playerAwayHandicap=" + playerAwayHandicap +
+                ", legacyId =" + getLegacyId() +
+                ", id =" + getId() +
                 '}';
     }
 }

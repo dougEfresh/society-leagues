@@ -10,10 +10,7 @@ import com.society.leagues.client.views.PlayerResultView;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class User extends LeagueObject {
@@ -133,13 +130,29 @@ public class User extends LeagueObject {
     }
 
     public void addHandicap(HandicapSeason hc) {
-        if (hc.getSeason().isNine() && !Handicap.isNine(hc.getHandicap())) {
-            throw new RuntimeException("Adding " + hc.getHandicap() + " to "+ hc.getSeason().getDisplayName());
+        if (hc.getHandicap() != Handicap.UNKNOWN) {
+            if (hc.getSeason().isNine() && !Handicap.isNine(hc.getHandicap())) {
+                throw new RuntimeException("Adding " + hc.getHandicap() + " to " + hc.getSeason().getDisplayName());
+            }
+            if (!hc.getSeason().isNine() && Handicap.isNine(hc.getHandicap())) {
+                throw new RuntimeException("Adding " + hc.getHandicap() + " to " + hc.getSeason().getDisplayName());
+            }
         }
-        if (!hc.getSeason().isNine() && Handicap.isNine(hc.getHandicap())) {
-            throw new RuntimeException("Adding " + hc.getHandicap() + " to " + hc.getSeason().getDisplayName());
+        if (!this.handicapSeasons.add(hc)) {
+            HandicapSeason hs = this.handicapSeasons.stream().filter(h->h.getSeason().equals(hc.getSeason())).findFirst().orElse(null);
+            if (hs != null)
+                hs.setHandicap(hc.getHandicap());
         }
-        this.handicapSeasons.add(hc);
+    }
+
+     public void removeHandicap(HandicapSeason season) {
+         Iterator<HandicapSeason> it = this.handicapSeasons.iterator();
+         while(it.hasNext()) {
+             Season s = it.next().getSeason();
+             if (s.equals(season.getSeason())) {
+                 it.remove();
+             }
+         }
     }
 
     public LocalDateTime getCreated() {

@@ -1,10 +1,12 @@
 package com.society.leagues;
 
 import com.mangofactory.swagger.plugin.EnableSwagger;
+import com.society.leagues.service.StatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.social.SocialWebAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -22,6 +24,7 @@ import java.util.List;
 public class Main implements CommandLineRunner {
     @Autowired ConvertUtil convertUtil;
     @Autowired List<MongoRepository> mongoRepositories;
+    @Autowired StatService statService;
 
     public static void main(String[] args) throws Exception {
         SpringApplication app = new SpringApplication(Main.class);
@@ -33,6 +36,7 @@ public class Main implements CommandLineRunner {
     public void run(String... args) throws Exception {
         for (String arg : args) {
             if (arg.toLowerCase().contains("convert")) {
+                statService.setEnableRefresh(false);
                 for (MongoRepository mongoRepository : mongoRepositories) {
                     mongoRepository.deleteAll();
                 }
@@ -49,6 +53,7 @@ public class Main implements CommandLineRunner {
                 convertUtil.convertScramble();
                 convertUtil.scrambleResults();
                 convertUtil.scrambleMembers();
+                convertUtil.clean();
                 convertUtil.stats();
 
                 //convertUtil.updateSetWinsLoses();
