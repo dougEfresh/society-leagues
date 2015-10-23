@@ -31,6 +31,9 @@ public class LeagueService {
     @PostConstruct
     @SuppressWarnings("unused")
     public void init() {
+        if (daoListeners == null)
+            daoListeners = new ArrayList<>();
+
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
         cacheUtil.initialize(mongoRepositories);
@@ -130,5 +133,9 @@ public class LeagueService {
             daoListener.onDelete(entity);
         }
         return entity;
+    }
+
+    public void addListener(DaoListener listener) {
+        daoListeners.add(listener);
     }
 }

@@ -29,6 +29,8 @@ public class User extends LeagueObject {
     Set<HandicapSeason> handicapSeasons = new HashSet<>();
     List<TokenReset>  tokens = new ArrayList<>();
 
+    UserProfile userProfile;
+
     public User() {
         this.created = LocalDateTime.now();
     }
@@ -171,6 +173,7 @@ public class User extends LeagueObject {
         return handicapSeasons.stream().filter(s->s.getSeason().getDivision().isChallenge()).count() > 0;
     }
 
+    @JsonIgnore
     public List<Season> getSeasons() {
         List<Season> list =handicapSeasons.stream().map(HandicapSeason::getSeason).collect(Collectors.toList());
         list.sort(Season.sort);
@@ -208,7 +211,19 @@ public class User extends LeagueObject {
     }
 
     public Handicap getHandicap(Season s) {
-        return getHandicapSeasons().stream().filter(hs->hs.getSeason().equals(s)).findFirst().orElse(HandicapSeason.UNKNOWN).getHandicap();
+        return getHandicapSeasons().stream().filter(hs -> hs.getSeason().equals(s)).findFirst().orElse(HandicapSeason.UNKNOWN).getHandicap();
+    }
+
+    public UserProfile getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
+
+    public boolean isProfile() {
+        return userProfile != null && userProfile.getImageUrl() != null && userProfile.getProfileUrl() != null;
     }
 
     @Override

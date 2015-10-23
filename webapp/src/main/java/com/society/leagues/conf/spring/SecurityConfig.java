@@ -25,7 +25,6 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.social.UserIdSource;
 import org.springframework.social.security.SpringSocialConfigurer;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,7 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-@CrossOrigin
 @SuppressWarnings("unused")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired LoginHandler loginHandler;

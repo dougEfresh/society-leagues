@@ -1005,6 +1005,7 @@ public class ConvertUtil {
         for (User user : users) {
             List<PlayerResult> results = leagueService.findAll(PlayerResult.class).parallelStream()
                     .filter(pr -> !pr.getSeason().isActive())
+                    .filter(pr -> !pr.getSeason().isChallenge())
                     .filter(pr -> pr.hasUser(user))
                     .collect(Collectors.toList());
 
@@ -1017,7 +1018,11 @@ public class ConvertUtil {
                 }
             }
 
-            for (Season season : user.getSeasons()) {
+            for (Season season : user.getSeasons().stream()
+                    .filter(s -> !s.isChallenge())
+                    .filter(s->!s.isActive())
+                    .collect(Collectors.toList())
+                    ) {
                 if (!seasons.contains(season)) {
                     user.removeHandicap(new HandicapSeason(Handicap.UNKNOWN, season));
                 }

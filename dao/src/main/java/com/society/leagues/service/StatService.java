@@ -1,7 +1,7 @@
 package com.society.leagues.service;
 
 import com.society.leagues.client.api.domain.*;
-import com.society.leagues.listener.StatListener;
+import com.society.leagues.listener.DaoListener;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,13 +22,21 @@ public class StatService {
     final AtomicReference<List<Stat>> handicapStats = new AtomicReference<>(new ArrayList<>(2000));
     @Autowired ThreadPoolTaskExecutor threadPoolTaskExecutor;
     @Autowired LeagueService leagueService;
-    @Autowired StatListener statListener;
     boolean enableRefresh = true;
 
     @PostConstruct
     public void init() {
         threadPoolTaskExecutor.setCorePoolSize(1);
-        statListener.setStatService(this);
+        leagueService.addListener(new DaoListener() {
+            @Override
+            public void onAdd(LeagueObject object) {refresh(); }
+
+            @Override
+            public void onChange(LeagueObject object) {refresh(); }
+
+            @Override
+            public void onDelete(LeagueObject object) {refresh();}
+        });
         refresh();
     }
 
