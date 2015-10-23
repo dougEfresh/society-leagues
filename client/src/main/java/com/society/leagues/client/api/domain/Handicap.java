@@ -31,6 +31,17 @@ public enum Handicap {
     PRO,
     UNKNOWN;
 
+    public static String format(Handicap hc) {
+        if (hc == null || hc == UNKNOWN) {
+            return "N/A";
+        }
+
+        if (hc.ordinal() > 15) {
+            return hc.name().replaceAll("PLUS","+").replaceAll("PRO","P");
+        }
+        return hc.ordinal() + 1 + "";
+    }
+
     public static boolean isNine(Handicap hc) {
         return hc.ordinal() >= 10;
     }
