@@ -32,7 +32,7 @@ public class PrincipleDetailsService implements UserDetailsService {
         }
         return new org.springframework.security.core.userdetails.User(
                 username,
-                u.getPassword(),
+                u.getPassword() == null ? "nullpassword" : u.getPassword(),
                 authorities
         );
     }
