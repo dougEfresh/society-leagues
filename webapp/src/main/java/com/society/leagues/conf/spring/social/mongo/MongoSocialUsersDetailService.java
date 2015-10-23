@@ -1,4 +1,4 @@
-package com.society.leagues.conf.spring.social;
+package com.society.leagues.conf.spring.social.mongo;
 
 import com.society.leagues.service.LeagueService;
 import org.springframework.beans.factory.annotation.Autowired;

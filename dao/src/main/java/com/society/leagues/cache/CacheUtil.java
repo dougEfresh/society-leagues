@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @SuppressWarnings("unused")
@@ -21,7 +22,9 @@ public class CacheUtil {
 
     public void initialize(List<MongoRepository> mongoRepositories) {
 
-        for (MongoRepository mongoRepository : mongoRepositories) {
+        for (MongoRepository mongoRepository : mongoRepositories.stream()
+                .filter(r->!r.getClass().getName().contains("UserSocial"))
+                .collect(Collectors.toList())) {
             cachedCollections.add(new CachedCollection(mongoRepository));
         }
         Collections.sort(cachedCollections);

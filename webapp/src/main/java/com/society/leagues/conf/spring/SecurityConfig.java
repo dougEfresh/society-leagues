@@ -1,7 +1,6 @@
 package com.society.leagues.conf.spring;
 
 import com.allanditzel.springframework.security.web.csrf.CsrfTokenResponseHeaderBindingFilter;
-import com.society.leagues.conf.spring.social.MongoSocialUsersDetailService;
 import com.society.leagues.persistence.MongoTokenRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,16 +18,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.social.UserIdSource;
-import org.springframework.social.security.AuthenticationNameUserIdSource;
-import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.social.security.SpringSocialConfigurer;
 import org.springframework.web.bind.annotation.CrossOrigin;
 

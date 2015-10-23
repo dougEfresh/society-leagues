@@ -1,6 +1,7 @@
 package com.society.leagues.conf.spring.social;
 
 import com.society.leagues.conf.spring.PrincipleDetailsService;
+import com.society.leagues.conf.spring.social.mongo.MongoSocialUsersDetailService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +32,7 @@ public class SocialConfig  {
     @Autowired UsersConnectionRepository usersConnectionRepository;
     @Value("${app.url}")
     String appUrl;
+    @Autowired ConnectionFactoryLocator connectionFactoryLocator;
 
     @Bean
     public SocialUserDetailsService socialUsersDetailService() {
@@ -38,21 +40,25 @@ public class SocialConfig  {
     }
 
     @Bean
+    public FacebookConnectionFactory facebookConnectionFactory() {
+        return new FacebookConnectionFactory(
+                environment.getProperty("spring.social.facebook.app-id"),
+                environment.getProperty("spring.social.facebook.app-secret"));
+    }
+
+    @Bean
     @Scope(value="singleton", proxyMode= ScopedProxyMode.INTERFACES)
     public ConnectionFactoryLocator connectionFactoryLocator() {
         ConnectionFactoryRegistry registry = new ConnectionFactoryRegistry();
-        registry.addConnectionFactory(new FacebookConnectionFactory(
-                environment.getProperty("spring.social.facebook.app-id"),
-                environment.getProperty("spring.social.facebook.app-secret")));
-
+        registry.addConnectionFactory(facebookConnectionFactory());
         return registry;
     }
 
     @Bean
     public ProviderSignInController providerSignInController() {
-        ProviderSignInController controller = new ProviderSignInController(connectionFactoryLocator(), usersConnectionRepository,signup);
+        ProviderSignInController controller = new ProviderSignInController(connectionFactoryLocator, usersConnectionRepository,signup);
         controller.setApplicationUrl(appUrl);
-        controller.setSignInUrl(appUrl +  "/#/fb/signin");
+        controller.setSignInUrl(appUrl + "/#/fb/signin");
         controller.setSignUpUrl(appUrl + "/#/fb/signup");
         controller.setPostSignInUrl(appUrl + "/#/app/home");
         controller.addSignInInterceptor(new ProviderSignInInterceptor<Object>() {
@@ -71,7 +77,7 @@ public class SocialConfig  {
 
     @Bean
     public ProviderSignInUtils providerSignInUtils() {
-        return new ProviderSignInUtils(connectionFactoryLocator(),usersConnectionRepository);
+        return new ProviderSignInUtils(connectionFactoryLocator,usersConnectionRepository);
     }
 
 }
