@@ -74,12 +74,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         CsrfTokenResponseHeaderBindingFilter csrfTokenFilter = new CsrfTokenResponseHeaderBindingFilter();
         http.addFilterAfter(csrfTokenFilter, CsrfFilter.class);
         http.csrf().disable()
-                    .formLogin().loginPage("/signin")
+                    .formLogin().loginPage("/api/authenticate")
                     //.loginProcessingUrl("/signup/authenticate")
                     .failureUrl("/")
                     .usernameParameter("username").passwordParameter("password").successHandler(loginHandler).failureHandler(fHandler)
                     .and().logout().logoutUrl("/api/logout").logoutSuccessHandler(logoutHandler).and()
-                    .authorizeRequests().antMatchers("/signin/**","/api/signup","/api/logout").permitAll()
+                    .authorizeRequests().antMatchers("/signin/**","/api/signup","/api/authenticate","/api/logout").permitAll()
                     .antMatchers("/**").authenticated().and()
                     .exceptionHandling().authenticationEntryPoint(new AuthenticationEntry("/index.html")).and()
                     //.formLogin().permitAll().loginProcessingUrl("/api/authenticate").usernameParameter("username").passwordParameter("password").successHandler(loginHandler).failureHandler(fHandler).and()
