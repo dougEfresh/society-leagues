@@ -106,6 +106,8 @@ public class UserService {
                             profile.setProfileUrl(result.get("profileUrl").toString());
                             profile.setImageUrl(result.get("imageUrl").toString());
                             User u = leagueService.findByLogin(result.get("userId").toString());
+                            if (u == null)
+                                continue;
                             logger.info("Updating user profile " + u.getName()  + "  " + profile);
                             u.setUserProfile(profile);
                             userRepository.save(u);
