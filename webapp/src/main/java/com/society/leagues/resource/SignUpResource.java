@@ -1,6 +1,8 @@
 package com.society.leagues.resource;
 
 import com.society.leagues.conf.spring.PrincipleDetailsService;
+import com.society.leagues.service.LeagueService;
+import com.society.leagues.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +26,8 @@ public class SignUpResource {
     @Autowired ProviderSignInUtils providerSignInUtils;
     @Autowired PrincipleDetailsService principleDetailsService;
     @Autowired PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices;
+    @Autowired UserService userService;
+    @Autowired LeagueService leagueService;
     @Value("${app.url}")
     String appUrl;
     @RequestMapping(value="/api/signup", method= RequestMethod.POST)
@@ -35,7 +39,7 @@ public class SignUpResource {
         );
         providerSignInUtils.doPostSignUp(email, webRequest);
         persistentTokenBasedRememberMeServices.loginSuccess(request, response,SecurityContextHolder.getContext().getAuthentication());
-
+        userService.populateProfile(leagueService.findByLogin(email));
         return new RedirectView(appUrl +"/#/app/home",true);
     }
 }

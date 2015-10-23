@@ -99,21 +99,41 @@ public class UserService {
                 new Runnable() {
                     @Override
                     public void run() {
-                        List < Map < String, Object >> results = jdbcTemplate.queryForList("select * from UserConnection where userId is not null");
-                        logger.info("Got back " + results.size());
-                        for (Map<String, Object> result : results) {
-                            UserProfile profile = new UserProfile();
-                            profile.setProfileUrl(result.get("profileUrl").toString());
-                            profile.setImageUrl(result.get("imageUrl").toString());
-                            User u = leagueService.findByLogin(result.get("userId").toString());
-                            if (u == null)
-                                continue;
-                            logger.info("Updating user profile " + u.getName()  + "  " + profile);
-                            u.setUserProfile(profile);
-                            userRepository.save(u);
-                        }
+                        populateProfile();
                     }
                 }
         );
+    }
+
+    public void populateProfile() {
+        List < Map < String, Object >> results = jdbcTemplate.queryForList("select * from UserConnection where userId is not null");
+        logger.info("Got back " + results.size());
+        for (Map<String, Object> result : results) {
+            UserProfile profile = new UserProfile();
+            profile.setProfileUrl(result.get("profileUrl").toString());
+            profile.setImageUrl(result.get("imageUrl").toString());
+            User u = leagueService.findByLogin(result.get("userId").toString());
+            if (u == null)
+                continue;
+            logger.info("Updating user profile " + u.getName()  + "  " + profile);
+            u.setUserProfile(profile);
+            userRepository.save(u);
+        }
+    }
+
+     public void populateProfile(User user) {
+        List < Map < String, Object >> results = jdbcTemplate.queryForList("select * from UserConnection where userId is not null and userId = '" + user.getEmail() + "'");
+        logger.info("Got back " + results.size());
+        for (Map<String, Object> result : results) {
+            UserProfile profile = new UserProfile();
+            profile.setProfileUrl(result.get("profileUrl").toString());
+            profile.setImageUrl(result.get("imageUrl").toString());
+            User u = leagueService.findByLogin(result.get("userId").toString());
+            if (u == null)
+                continue;
+            logger.info("Updating user profile " + u.getName()  + "  " + profile);
+            u.setUserProfile(profile);
+            userRepository.save(u);
+        }
     }
 }
