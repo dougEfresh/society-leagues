@@ -75,6 +75,8 @@ public class TeamResource {
         return existingTeam;
     }
 
+
+
     @JsonView(TeamSummary.class)
     @RequestMapping(value = "/get/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Collection<Team> getTeamSeason(Principal principal, @PathVariable String id) {
@@ -82,6 +84,21 @@ public class TeamResource {
          return leagueService.findAll(Team.class)
                  .stream().parallel()
                  .filter(t->t.hasUser(u) || t.inSameSeason(u))
+                 .collect(Collectors.toList()
+                 );
+    }
+
+    @JsonView(TeamSummary.class)
+    @RequestMapping(value = "/get/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public Collection<Team> getUsersTeams(Principal principal) {
+         User u = leagueService.findByLogin(principal.getName());
+        if (u == null) {
+            return Collections.emptyList();
+        }
+         return leagueService.findAll(Team.class)
+                 .stream().parallel()
+                 .filter(t->t.hasUser(u))
+                 .filter(t->t.getSeason().isActive())
                  .collect(Collectors.toList()
                  );
     }
