@@ -75,7 +75,13 @@ public class TeamResource {
         return existingTeam;
     }
 
-
+    @JsonView(TeamSummary.class)
+    @RequestMapping(value = "/user/{id}/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public Team getTeamForUserSeason(Principal principal, @PathVariable String id, @PathVariable String seasonId) {
+        User u = leagueService.findOne(new User(id));
+        Season s = leagueService.findOne(new Season(seasonId));
+        return leagueService.findAll(Team.class).parallelStream().filter(t->t.getSeason().equals(s) && t.hasUser(u)).findFirst().get();
+    }
 
     @JsonView(TeamSummary.class)
     @RequestMapping(value = "/get/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)

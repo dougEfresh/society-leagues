@@ -68,22 +68,11 @@ public class StatResource {
         Season season = leagueService.findOne(new Season(id));
         List<Stat> stats = statService.getTeamStats().parallelStream().filter(s->s.getSeason().equals(season)).sorted(new Comparator<Stat>() {
             @Override
-            public int compare(Stat stat, Stat t1) {
-                if (!Objects.equals(t1.getWins(), stat.getWins())) {
-                    return t1.getWins().compareTo(stat.getWins());
-                }
-                if (!Objects.equals(t1.getLoses(), stat.getLoses())) {
-                    return stat.getLoses().compareTo(t1.getLoses());
-                }
-                if (stat.getSeason().isNine()) {
-
-                }
-                if (!Objects.equals(t1.getRacksWon(), stat.getRacksWon())) {
-                    return t1.getRacksWon().compareTo(stat.getRacksWon());
-                }
-                return stat.getRacksLost().compareTo(t1.getRacksLost());
+            public int compare(Stat o1, Stat o2) {
+                return o1.getTeam().getRank().compareTo(o2.getTeam().getRank());
             }
         }).collect(Collectors.toList());
+
         List<MatchPoints> points = resultService.matchPoints();
         if (!season.isChallenge())
             return stats;
@@ -153,13 +142,17 @@ public class StatResource {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.ALL_VALUE)
-    public List<Stat> getUserStatsSeason(@PathVariable String id, @PathVariable String seasonId) {
+    public Stat getUserStatsSeason(@PathVariable String id, @PathVariable String seasonId) {
         User u = leagueService.findOne(new User(id));
         Season s = leagueService.findOne(new Season(seasonId));
         List<Stat> stats = statService.getUserSeasonStats().get(s);
-        if (stats == null)
-            return Collections.emptyList();
-
-        return stats.stream().parallel().filter(st->st.getUser().equals(u)).collect(Collectors.toList());
+        for (Stat stat : stats) {
+            if (stat.getUser().equals(u) && stat.getSeason().equals(s))
+                return stat;
+        }
+        Stat stat =  new Stat();
+        stat.setUser(u);
+        stat.setSeason(s);
+        return stat;
     }
 }

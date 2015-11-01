@@ -17,6 +17,7 @@ public class Stat {
     Season season;
     Handicap handicap;
     Double points;
+    Integer rank = 0;
 
     public Stat() {
     }
@@ -244,4 +245,11 @@ public class Stat {
         return (double)wins/((double) wins+loses);
     }
 
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
+    }
 }

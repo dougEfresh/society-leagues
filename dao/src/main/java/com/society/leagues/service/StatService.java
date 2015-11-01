@@ -72,6 +72,28 @@ public class StatService {
                                     .collect(Collectors.toList())
                     ));
                 }
+                ts.sort(new Comparator<Stat>() {
+            @Override
+            public int compare(Stat stat, Stat t1) {
+                if (!Objects.equals(t1.getWins(), stat.getWins())) {
+                    return t1.getWins().compareTo(stat.getWins());
+                }
+                if (!Objects.equals(t1.getLoses(), stat.getLoses())) {
+                    return stat.getLoses().compareTo(t1.getLoses());
+                }
+                if (stat.getSeason().isNine()) {
+
+                }
+                if (!Objects.equals(t1.getRacksWon(), stat.getRacksWon())) {
+                    return t1.getRacksWon().compareTo(stat.getRacksWon());
+                }
+                return stat.getRacksLost().compareTo(t1.getRacksLost());
+            }
+                });
+                int rank = 0;
+                for (Stat t : ts) {
+                    t.getTeam().setRank(++rank);
+                }
                 teamStats.lazySet(ts);
                 refreshUserSeasonStats();
                 refreshUserLifetimeStats();
@@ -131,7 +153,12 @@ public class StatService {
                      return t1.getWinPct().compareTo(stat.getWinPct());
                  }
              }).collect(Collectors.toList()));
+            int rank = 0;
+            for (Stat stat : userSeasonStats.get(season)) {
+                stat.setRank(++rank);
+            }
         }
+
         this.userSeasonStat.lazySet(userSeasonStats);
     }
 

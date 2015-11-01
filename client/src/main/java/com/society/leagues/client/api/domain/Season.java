@@ -143,6 +143,23 @@ public class Season extends LeagueObject   {
         this.type = type;
     }
 
+
+    public String getShortName(){
+        if (this.isChallenge())
+            return "Top Gun";
+        if (this.isNine())
+            return "Tues 9ball";
+
+        if (this.isScramble())
+            return "Scramble";
+
+        if (this.getDisplayName().toLowerCase().contains("wed"))
+            return "Weds 8ball";
+
+        return "Thurs 8ball";
+
+    }
+
     public static Comparator<Season> sort = new Comparator<Season>() {
         @Override
         public int compare(Season o1, Season o2) {
