@@ -72,27 +72,31 @@ public class StatService {
                                     .collect(Collectors.toList())
                     ));
                 }
-                ts.sort(new Comparator<Stat>() {
-            @Override
-            public int compare(Stat stat, Stat t1) {
-                if (!Objects.equals(t1.getWins(), stat.getWins())) {
-                    return t1.getWins().compareTo(stat.getWins());
-                }
-                if (!Objects.equals(t1.getLoses(), stat.getLoses())) {
-                    return stat.getLoses().compareTo(t1.getLoses());
-                }
-                if (stat.getSeason().isNine()) {
+                Map<Season,List<Stat>> active = ts.parallelStream().filter(s->s.getSeason().isActive()).collect(Collectors.groupingBy(s->s.getSeason(),Collectors.toList()));
+                for (Season season : active.keySet()) {
+                    List<Stat> ranks = active.get(season);
+                    List<Stat> rankings = ranks.stream().sorted(new Comparator<Stat>() {
+                        @Override
+                        public int compare(Stat stat, Stat t1) {
+                            if (!Objects.equals(t1.getWins(), stat.getWins())) {
+                                return t1.getWins().compareTo(stat.getWins());
+                            }
+                            if (!Objects.equals(t1.getLoses(), stat.getLoses())) {
+                                return stat.getLoses().compareTo(t1.getLoses());
+                            }
+                            if (stat.getSeason().isNine()) {
 
-                }
-                if (!Objects.equals(t1.getRacksWon(), stat.getRacksWon())) {
-                    return t1.getRacksWon().compareTo(stat.getRacksWon());
-                }
-                return stat.getRacksLost().compareTo(t1.getRacksLost());
-            }
-                });
-                int rank = 0;
-                for (Stat t : ts) {
-                    t.getTeam().setRank(++rank);
+                            }
+                            if (!Objects.equals(t1.getRacksWon(), stat.getRacksWon())) {
+                                return t1.getRacksWon().compareTo(stat.getRacksWon());
+                            }
+                            return stat.getRacksLost().compareTo(t1.getRacksLost());
+                        }
+                    }).collect(Collectors.toList());
+                    int rank = 0;
+                    for (Stat t : rankings) {
+                        t.getTeam().setRank(++rank);
+                    }
                 }
                 teamStats.lazySet(ts);
                 refreshUserSeasonStats();
@@ -100,7 +104,6 @@ public class StatService {
                 logger.info("Done Refreshing stats  (" + (System.currentTimeMillis() - start) + "ms)");
             }
         });
-
     }
 
     private void refreshUserSeasonStats() {
