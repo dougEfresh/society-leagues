@@ -53,6 +53,8 @@ public class Main implements CommandLineRunner {
                 convertUtil.convertScramble();
                 convertUtil.scrambleResults();
                 convertUtil.scrambleMembers();
+                convertUtil.scrambleClean();
+                convertUtil.captains();
                 convertUtil.clean();
                 convertUtil.stats();
 

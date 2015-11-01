@@ -37,6 +37,7 @@ public class UserService {
 
     @PostConstruct
     public void init() {
+        /*
         threadPoolTaskExecutor.setCorePoolSize(1);
         leagueService.addListener(
         new DaoListener(){
@@ -53,6 +54,7 @@ public class UserService {
             public void onDelete(LeagueObject object) {}
         });
         refresh();
+        */
     }
 
     public TokenReset resetRequest(User u) {

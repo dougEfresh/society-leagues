@@ -151,14 +151,14 @@ public class ChallengeResource {
         return Collections.emptyList();
     }
 
-  @RequestMapping(value = {"/user/{id}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-  public List<Challenge> getByUser(Principal principal, @PathVariable String id) {
-      User u = leagueService.findOne(new User(id));
-      LocalDate now = LocalDate.now().minusDays(1);
-      return get(principal).stream().parallel()
-              .filter(c -> c.hasUser(u))
-              .filter(c->c.getLocalDate().isEqual(now) || c.getLocalDate().isAfter(now))
-              .collect(Collectors.toList());
+    @RequestMapping(value = {"/user/{id}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public List<Challenge> getByUser(Principal principal, @PathVariable String id) {
+        User u = leagueService.findOne(new User(id));
+        LocalDate now = LocalDate.now().minusDays(1);
+        return get(principal).stream().parallel()
+                .filter(c -> c.hasUser(u))
+                .filter(c->c.getLocalDate().isEqual(now) || c.getLocalDate().isAfter(now))
+                .collect(Collectors.toList());
     }
 
     private void sendEmail(User to, User from, Status status, Challenge challenge, String message) {

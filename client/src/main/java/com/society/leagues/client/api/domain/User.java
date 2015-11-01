@@ -226,6 +226,14 @@ public class User extends LeagueObject {
         return userProfile != null && userProfile.getImageUrl() != null && userProfile.getProfileUrl() != null;
     }
 
+    public boolean hasSeason(Season s) {
+        for (HandicapSeason handicapSeason : handicapSeasons) {
+            if (handicapSeason.getSeason().equals(s))
+                return true;
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         return "User{" +

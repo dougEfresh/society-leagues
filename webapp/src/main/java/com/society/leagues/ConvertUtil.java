@@ -1045,4 +1045,41 @@ public class ConvertUtil {
         }
     }
 
+    public void captains(){
+        List<Map<String,Object>> results = jdbcTemplate.queryForList("select captain_id,team_id from team where captain_id is not null and captain_id > 0;");
+        List<Team> teams = leagueService.findAll(Team.class).stream().filter(t->t.getSeason().isActive()).collect(Collectors.toList());
+        List<User>  users = leagueService.findAll(User.class);
+        for (Map<String, Object> result : results) {
+            Team team = teams.parallelStream().filter(t -> t.getSeason().isActive())
+                    .filter(t->t.getLegacyId() != null)
+                    .filter(t -> t.getLegacyId().equals(result.get("team_id"))).findFirst().orElse(null);
+            if (team == null)
+                continue;
+            User u = users.parallelStream().filter(user->user.getLegacyId().equals(result.get("captain_id"))).findFirst().orElse(null);
+            if (u == null)
+                continue;
+            team.getTeamMembers().setCaptain(u);
+            leagueService.save(team.getTeamMembers());
+        }
+    }
+
+    public void scrambleClean() {
+        List<Map<String,Object>> results = jdbcTemplate.queryForList("select distinct player_id   from result_ind where match_id in (select match_id from match_schedule where season_id = 74)");
+        Season season = leagueService.findAll(Season.class).parallelStream().filter(s -> s.getLegacyId().equals(new Integer(74))).findFirst().get();
+        List<User> scramble = leagueService.findAll(User.class).parallelStream().filter(u -> u.hasSeason(season)).collect(Collectors.toList());
+        for (User user : scramble) {
+            boolean found = false;
+            for (Map<String, Object> result : results) {
+                if (user.getLegacyId().equals(result.get("player_id"))) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                user.removeHandicap(new HandicapSeason(Handicap.UNKNOWN,season));
+                leagueService.save(user);
+            }
+        }
+    }
+
 }

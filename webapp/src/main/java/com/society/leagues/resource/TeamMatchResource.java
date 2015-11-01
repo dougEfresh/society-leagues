@@ -12,6 +12,7 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @RestController
@@ -34,7 +35,7 @@ public class TeamMatchResource {
     public Map<String,List<TeamMatch>> delete(Principal principal, @PathVariable String teamMatchId) {
         TeamMatch tm = leagueService.findOne(new TeamMatch(teamMatchId));
         resultService.removeTeamMatchResult(tm);
-        return getTeamMatchSeason(principal,tm.getSeason().getId());
+        return getTeamMatchSeason(principal,tm.getSeason().getId(),"upcoming");
     }
 
     @RequestMapping(value = "/admin/create/{seasonId}/{date}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
@@ -55,7 +56,7 @@ public class TeamMatchResource {
         copy.setSetHomeWins(0);
         copy.setMatchDate(dt);
         leagueService.save(copy);
-        return getTeamMatchSeason(principal, s.getId());
+        return getTeamMatchSeason(principal, s.getId(),"upcoming");
     }
 
     @RequestMapping(value = "/admin/modify/{teamMatchId}/team/{type}/{teamId}",
@@ -143,26 +144,28 @@ public class TeamMatchResource {
         return members;
     }
 
-    @RequestMapping(value = {"/season/{id}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public Map<String,List<TeamMatch>> getTeamMatchSeason(Principal principal, @PathVariable String id) {
+    @RequestMapping(value = {"/season/{id}/{type}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public Map<String,List<TeamMatch>> getTeamMatchSeason(Principal principal, @PathVariable String id, @PathVariable String type) {
         Season s = leagueService.findOne(new Season(id));
-         List<TeamMatch> results;
-        if (s.isActive()) {
-            results = leagueService.findCurrent(TeamMatch.class).stream().parallel()
-                    .filter(tm -> tm.getSeason().equals(s)).sorted(new Comparator<TeamMatch>() {
-                @Override
-                public int compare(TeamMatch teamMatch, TeamMatch t1) {
-                    return t1.getMatchDate().compareTo(teamMatch.getMatchDate());
-                }
-            }).collect(Collectors.toList());
+        List<TeamMatch> results;
+        Predicate<TeamMatch> filter;
+        LocalDateTime  yesterday = LocalDateTime.now().minusDays(1);
+        if (type.equals("upcoming")) {
+            filter = teamMatch -> teamMatch.getMatchDate().isAfter(yesterday);
+        } else if (type.equals("pending")) {
+            filter = teamMatch -> teamMatch.getMatchDate().isBefore(yesterday) && !teamMatch.isHasResults();
         } else {
-            results = leagueService.findAll(TeamMatch.class).stream().parallel().filter(tm -> tm.getSeason().equals(s)).sorted(new Comparator<TeamMatch>() {
-                @Override
-                public int compare(TeamMatch teamMatch, TeamMatch t1) {
-                    return t1.getMatchDate().compareTo(teamMatch.getMatchDate());
-                }
-            }).collect(Collectors.toList());
+            filter = teamMatch -> teamMatch.getMatchDate().isBefore(yesterday) && teamMatch.isHasResults();
         }
+        results = leagueService.findCurrent(TeamMatch.class).stream().parallel()
+                .filter(tm -> tm.getSeason().equals(s))
+                .filter(filter)
+                .sorted(new Comparator<TeamMatch>() {
+                    @Override
+                    public int compare(TeamMatch teamMatch, TeamMatch t1) {
+                        return t1.getMatchDate().compareTo(teamMatch.getMatchDate());
+                    }
+                }).collect(Collectors.toList());
         Map<String,List<TeamMatch>> group = results.stream().collect(Collectors.groupingBy(tm -> tm.getMatchDate().toLocalDate().toString()));
         return (Map<String,List<TeamMatch>>) new TreeMap<>(group);
     }
