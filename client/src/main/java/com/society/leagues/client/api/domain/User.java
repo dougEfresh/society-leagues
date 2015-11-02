@@ -156,6 +156,9 @@ public class User extends LeagueObject {
              }
          }
     }
+    public boolean isReal(){
+        return !(lastName.toLowerCase().contains("handicap") || lastName.toLowerCase().contains("forfeit"));
+    }
 
     public LocalDateTime getCreated() {
         return created;
