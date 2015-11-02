@@ -65,7 +65,7 @@ public class StatService {
                 final List<Team> teams = leagueService.findAll(Team.class);
                 final List<Stat> ts = new ArrayList<>();
                 for (Team team : teams) {
-                    ts.add(Stat.buildTeamStats(team,
+                    ts.add(Stat.buildTeamStats(team,Dis
                             leagueService.findAll(TeamMatch.class).parallelStream()
                                     .filter(tm -> tm.hasTeam(team))
                                     .filter(TeamMatch::isHasResults)

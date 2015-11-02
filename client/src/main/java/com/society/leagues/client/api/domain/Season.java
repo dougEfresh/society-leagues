@@ -148,15 +148,15 @@ public class Season extends LeagueObject   {
         if (this.isChallenge())
             return "Top Gun";
         if (this.isNine())
-            return "Tues 9ball";
+            return "Tues 9 Ball";
 
         if (this.isScramble())
             return "Scramble";
 
         if (this.getDisplayName().toLowerCase().contains("wed"))
-            return "Weds 8ball";
+            return "Weds 8 Ball";
 
-        return "Thurs 8ball";
+        return "Thurs 8 Ball";
 
     }
 
