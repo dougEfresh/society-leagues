@@ -65,12 +65,12 @@ public class StatService {
                 final List<Team> teams = leagueService.findAll(Team.class);
                 final List<Stat> ts = new ArrayList<>();
                 for (Team team : teams) {
-                    ts.add(Stat.buildTeamStats(team,Dis
+                    ts.add(Stat.buildTeamStats(team,
                             leagueService.findAll(TeamMatch.class).parallelStream()
                                     .filter(tm -> tm.hasTeam(team))
                                     .filter(TeamMatch::isHasResults)
                                     .collect(Collectors.toList())
-                    ));
+					       ));
                 }
                 Map<Season,List<Stat>> active = ts.parallelStream().filter(s->s.getSeason().isActive()).collect(Collectors.groupingBy(s->s.getSeason(),Collectors.toList()));
                 for (Season season : active.keySet()) {
