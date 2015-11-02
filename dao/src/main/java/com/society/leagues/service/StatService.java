@@ -95,7 +95,10 @@ public class StatService {
                     }).collect(Collectors.toList());
                     int rank = 0;
                     for (Stat t : rankings) {
+                        Integer old = t.getTeam().getRank();
                         t.getTeam().setRank(++rank);
+                        if (!old.equals(t.getTeam().getRank()))
+                            leagueService.save(t.getTeam());
                     }
                 }
                 teamStats.lazySet(ts);
