@@ -74,6 +74,9 @@ public class Challenge extends LeagueObject {
 
     @JsonIgnore
     public LocalDate getLocalDate() {
+        if (slots == null || slots.isEmpty())
+            return LocalDate.MIN;
+
         return slots.get(0).getLocalDateTime().toLocalDate();
     }
 
