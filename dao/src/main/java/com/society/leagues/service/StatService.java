@@ -23,6 +23,7 @@ public class StatService {
     @Autowired ThreadPoolTaskExecutor threadPoolTaskExecutor;
     @Autowired LeagueService leagueService;
     boolean enableRefresh = true;
+    @Autowired ResultService resultService;
 
     @PostConstruct
     public void init() {
@@ -177,6 +178,8 @@ public class StatService {
         }
 
         this.userSeasonStat.lazySet(userSeasonStats);
+
+        resultService.refresh();
     }
 
     private void refreshUserLifetimeStats() {
