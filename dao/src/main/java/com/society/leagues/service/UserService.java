@@ -34,12 +34,13 @@ public class UserService {
     @Value("${service-url:http://leaguesdev.societybilliards.com}") String serviceUrl;
     @Autowired ThreadPoolTaskExecutor threadPoolTaskExecutor;
     final static Logger logger = LoggerFactory.getLogger(UserService.class);
+    @Value("${convert:false}") boolean convert;
 
     @PostConstruct
     public void init() {
 
         threadPoolTaskExecutor.setCorePoolSize(1);
-
+        if (!convert)
         leagueService.addListener(
         new DaoListener(){
             @Override

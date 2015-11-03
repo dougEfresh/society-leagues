@@ -27,15 +27,26 @@ public class StatService {
     @PostConstruct
     public void init() {
         threadPoolTaskExecutor.setCorePoolSize(1);
+        threadPoolTaskExecutor.setMaxPoolSize(2);
+        threadPoolTaskExecutor.setQueueCapacity(2);
         leagueService.addListener(new DaoListener() {
             @Override
-            public void onAdd(LeagueObject object) {refresh(); }
+            public void onAdd(LeagueObject object) {
+                if (object instanceof TeamMatch || object instanceof PlayerResult)
+                    refresh();
+            }
 
             @Override
-            public void onChange(LeagueObject object) {refresh(); }
+            public void onChange(LeagueObject object) {
+                if (object instanceof TeamMatch || object instanceof PlayerResult)
+                    refresh();
+            }
 
             @Override
-            public void onDelete(LeagueObject object) {refresh();}
+            public void onDelete(LeagueObject object) {
+                if (object instanceof TeamMatch || object instanceof PlayerResult)
+                    refresh();
+            }
         });
         refresh();
     }

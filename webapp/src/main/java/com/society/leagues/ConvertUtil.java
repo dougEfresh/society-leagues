@@ -19,6 +19,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -1079,6 +1080,24 @@ public class ConvertUtil {
                 user.removeHandicap(new HandicapSeason(Handicap.UNKNOWN,season));
                 leagueService.save(user);
             }
+        }
+    }
+
+    public void teamMatchRacks() {
+        List<Map<String,Object>> results = jdbcTemplate.queryForList("select team_id,r.match_id,sum(games_won) as rw  , sum(games_lost) as rl  from  result_ind r join match_schedule m on r.match_id=m.match_id where m.division_id in (select ad_division from active_divisions) group by team_id,r.match_id");
+        List<TeamMatch> matches = leagueService.findAll(TeamMatch.class).parallelStream().filter(tm->tm.getSeason().isActive()).filter(tm->!tm.getSeason().isChallenge()).collect(Collectors.toList());
+
+        for (Map<String, Object> result : results) {
+            Integer tid = (Integer) result.get("team_id");
+            Integer mid = (Integer) result.get("match_id");
+            TeamMatch teamMatch = matches.parallelStream().filter(tm->tm.getLegacyId().equals(mid)).findFirst().get();
+            BigDecimal rw = (BigDecimal) result.get("rw");
+            if (teamMatch.getHome().getLegacyId().equals(tid)) {
+                teamMatch.setHomeRacks(rw.intValue());
+            } else {
+                teamMatch.setAwayRacks(rw.intValue());
+            }
+	    leagueService.save(teamMatch);
         }
     }
 

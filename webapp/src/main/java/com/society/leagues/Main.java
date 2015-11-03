@@ -55,6 +55,7 @@ public class Main implements CommandLineRunner {
                 convertUtil.scrambleMembers();
                 convertUtil.scrambleClean();
                 convertUtil.captains();
+                convertUtil.teamMatchRacks();
                 convertUtil.clean();
                 convertUtil.stats();
 
