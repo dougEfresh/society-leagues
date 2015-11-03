@@ -105,7 +105,27 @@ public class StatResource {
             consumes = MediaType.ALL_VALUE)
     public List<Stat> getSeasonPlayerStats(@PathVariable String id) {
          final Season season = leagueService.findOne(new Season(id));
-         return statService.getUserSeasonStats().get(season);
+         List<Stat> playerStats = statService.getUserSeasonStats().get(season);
+         if (!season.isChallenge())
+             return playerStats;
+
+         List<MatchPoints> points = resultService.matchPoints();
+         for (Stat stat : playerStats) {
+            double totalPoints = 0d;
+            User u = stat.getTeam().getChallengeUser();
+            List<MatchPoints> pointsList = points.stream().parallel().filter(p->p.getUser().equals(u)).collect(Collectors.toList());
+            for (MatchPoints matchPoints : pointsList) {
+                totalPoints += matchPoints.getWeightedAvg();
+            }
+            stat.setPoints(totalPoints);
+         }
+         playerStats.sort(new Comparator<Stat>() {
+             @Override
+             public int compare(Stat o1, Stat o2) {
+                 return o2.getPoints().compareTo(o1.getPoints());
+             }
+         });
+         return playerStats;
     }
 
     @RequestMapping(value = "/user/{id}",

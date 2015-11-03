@@ -161,6 +161,21 @@ public class ChallengeResource {
                 .collect(Collectors.toList());
     }
 
+    @RequestMapping(value = {"/results"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public Map<String,List<PlayerResult>> results(Principal principal) {
+        List<PlayerResult> results;
+        results = leagueService.findCurrent(PlayerResult.class).stream().parallel()
+                .sorted(new Comparator<PlayerResult>() {
+                    @Override
+                    public int compare(PlayerResult teamMatch, PlayerResult t1) {
+                        return t1.getMatchDate().compareTo(teamMatch.getMatchDate());
+                    }
+                }).collect(Collectors.toList());
+        Map<String,List<PlayerResult>> group = results.stream().collect(Collectors.groupingBy(tm -> tm.getTeamMatch().getMatchDate().toLocalDate().toString()));
+        return (Map<String,List<PlayerResult>>) new TreeMap<>(group);
+    }
+
+
     private void sendEmail(User to, User from, Status status, Challenge challenge, String message) {
         String subject;
         String body;
