@@ -37,7 +37,7 @@ public enum Handicap {
         }
 
         if (hc.ordinal() > 15) {
-            return hc.name().replaceAll("PLUS","+").replaceAll("PRO","P");
+            return hc.name().replaceAll("PLUS","+").replaceAll("PRO","P").replaceAll("OPEN","O");
         }
         return hc.ordinal() + 1 + "";
     }
@@ -71,5 +71,10 @@ public enum Handicap {
 
         }
         return Handicap.UNKNOWN;
+    }
+
+    @Override
+    public String toString() {
+        return Handicap.format(this);
     }
 }

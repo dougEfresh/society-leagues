@@ -67,13 +67,17 @@ public class PlayerResultResource {
                         return playerResult.getMatchNumber().compareTo(t1.getMatchNumber());
                     }
         }).collect(Collectors.toList());
-        //TODO  Use Shadow Copy
-        results.stream().parallel().
+
+        List<PlayerResult> copy = new ArrayList<>(results.size());
+        for (PlayerResult result : results) {
+            copy.add(PlayerResult.copy(result));
+        }
+        copy.stream().parallel().
                 forEach(pr->pr.setReferenceTeam(
                         pr.getTeamMatch().getHomeRacks() > pr.getTeamMatch().getAwayRacks() ?
                                 pr.getTeamMatch().getHome() : pr.getTeamMatch().getAway())
                 );
-        return results;
+        return copy;
     }
 
     @RequestMapping(value = "/get/season/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
