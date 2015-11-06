@@ -83,7 +83,8 @@ public enum Handicap {
         return Handicap.format(this);
     }
 
-    static String[][] raceChart;
+    static String[][] raceChart = new String[Handicap.values().length+1][Handicap.values().length+1];
+
     static String race(Handicap hc1, Handicap hc2) {
         if (hc1 == null || hc1 == UNKNOWN || hc2 == null || hc2 == UNKNOWN)
             return "";
@@ -99,8 +100,8 @@ public enum Handicap {
         }
         return "";
     }
-    static {
 
+    static {
         for (int i = 0; i <= Handicap.values().length; i++) {
             for (int j = 0; j <= Handicap.values().length; j++) {
                 raceChart[i][j] = "0";
