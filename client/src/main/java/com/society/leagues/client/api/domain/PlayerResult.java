@@ -325,7 +325,7 @@ public class PlayerResult  extends LeagueObject {
     }
 
     public String getRace() {
-        return "7";
+        return Handicap.race(playerAwayHandicap,playerHomeHandicap);
     }
 
     public String getTeamMemberHandicap() {
