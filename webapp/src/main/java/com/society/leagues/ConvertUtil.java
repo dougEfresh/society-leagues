@@ -517,7 +517,7 @@ public class ConvertUtil {
 
 
      private String getScrambleQuery(String type, Season s) {
-        return String.format("select  m.season_id,\n" +
+        return String.format("select  a.scotch , m.season_id,\n" +
                 "a.result_id,m.season_id,a.match_id,\n" +
                 "a.team_id as team_id,a.player_id as player_id," +
                 "a.player_handicap as player_handicap,a.games_won as games_won " +
@@ -879,98 +879,67 @@ public class ConvertUtil {
             Integer id = (Integer) result.get("result_id");
             Integer matchId = (Integer) result.get("match_id");
             Integer matchNumber = (Integer) result.get("match_number");
-            PlayerResult playerResult = new PlayerResult();
-            PlayerResult partnerMatch =leagueService.findAll(PlayerResult.class).stream().filter(
-                    pr->pr.getTeamMatch().getLegacyId().equals(matchId)
-            ).filter(pr->pr.getMatchNumber().equals(matchNumber)).findFirst().orElse(null);
+            Boolean scotch = ((Integer) result.get("scotch")) > 0;
+            TeamMatch teamMatch = leagueService.findAll(TeamMatch.class).parallelStream().filter(tm->tm.getLegacyId().equals(matchId)).findFirst().get();
+            PlayerResult playerResult = null;
+            PlayerResult partnerMatch = null;
+            playerResult = leagueService.findAll(PlayerResult.class).stream().filter(
+                    pr -> pr.getTeamMatch().getLegacyId().equals(matchId)
+            ).filter(
+                    pr->pr.getMatchNumber().equals(matchNumber)
+            )
+                    .findFirst().orElse(null);
 
-            playerResult.setLegacyId(id);
-            playerResult.setTeamMatch(teamMatchMap.get(matchId));
-            playerResult.setMatchNumber(matchNumber);
-            Team home = playerResult.getTeamMatch().getHome();
-            User aUser = userHashMap.get((Integer) result.get("player_id")).stream().findFirst().get();
-            assert aUser != null;
-            playerResult.setPlayerHome(aUser);
-            playerResult.setHomeRacks((Integer) result.get("games_won"));
-            playerResult.setMatchNumber(matchNumber);
-            Handicap aHandicap = Handicap.get(result.get("hcd_name") == null ? "UNKNOWN" : result.get("hcd_name").toString());
-            playerResult.setPlayerHomeHandicap(aHandicap);
-
-            if (playerResult.getTeamMatch() == null) {
-                logger.error("Unknown match for " + result.get("match_id"));
-                errors++;
-                continue;
+            if (playerResult == null) {
+                playerResult = new PlayerResult();
+                playerResult.setLegacyId(id);
+                playerResult.setTeamMatch(teamMatch);
+                playerResult.setMatchNumber(matchNumber);
+                playerResult.setPlayerHome(userHashMap.get((Integer) result.get("player_id")).stream().findFirst().get());
+                playerResult.setScotch(scotch);
+                playerResult.setHomeRacks((Integer) result.get("games_won"));
+                Handicap aHandicap = Handicap.get(result.get("hcd_name") == null ? "UNKNOWN" : result.get("hcd_name").toString());
+                playerResult.setPlayerHomeHandicap(aHandicap);
+                leagueService.save(playerResult);
+            } else {
+                //Partner
+                Handicap aHandicap = Handicap.get(result.get("hcd_name") == null ? "UNKNOWN" : result.get("hcd_name").toString());
+                playerResult.setPlayerHomeHandicapPartner(aHandicap);
+                playerResult.setPlayerHomePartner(userHashMap.get((Integer) result.get("player_id")).stream().findFirst().get());
+                leagueService.save(playerResult);
             }
-
-            if (partnerMatch != null) {
-                playerResult.setPlayerHomePartner(partnerMatch.getPlayerHome());
-                partnerMatch.setPlayerHomePartner(playerResult.getPlayerHome());
-
-                playerResult.setPlayerHomeHandicapPartner(partnerMatch.getPlayerHomeHandicap());
-                partnerMatch.setPlayerHomeHandicapPartner(playerResult.getPlayerHomeHandicapPartner());
-            }
-
-            playerResults.add(playerResult);
         }
 
         List<Map<String, Object>> awayResults = jdbcTemplate.queryForList(getScrambleQuery("visit", s));
         for (Map<String, Object> result : awayResults) {
-            Integer id = (Integer) result.get("result_id");
+              Integer id = (Integer) result.get("result_id");
             Integer matchId = (Integer) result.get("match_id");
             Integer matchNumber = (Integer) result.get("match_number");
-            List<PlayerResult> matches = playerResults.stream().filter(
-                    pr -> pr.getTeamMatch().getLegacyId().equals(matchId)
-            ).filter(pr -> pr.getMatchNumber().equals(matchNumber)).sorted(new Comparator<PlayerResult>() {
-                @Override
-                public int compare(PlayerResult o1, PlayerResult o2) {
-                    return o1.getMatchNumber().compareTo(o2.getMatchNumber());
-                }
-            }).collect(Collectors.toList());
-
-            User aUser = userHashMap.get((Integer) result.get("player_id")).stream().findFirst().get();
-            assert aUser != null;
-            PlayerResult away = matches.get(0);
-            if (matches.size() > 1) {
-                if (matches.get(0).getPlayerAway() == null) {
-                    away = matches.get(0);
-                } else {
-                    away = matches.get(1);
-                    matches.get(0).setPlayerAwayPartner(away.getPlayerAway());
-                    away.setPlayerAwayPartner(matches.get(0).getPlayerAway());
-
-                    matches.get(0).setPlayerAwayHandicapPartner(away.getPlayerAwayHandicap());
-                    away.setPlayerAwayHandicapPartner(matches.get(0).getPlayerAwayHandicapPartner());
-                }
+            Boolean scotch = ((Integer) result.get("scotch")) > 0;
+            TeamMatch teamMatch = leagueService.findAll(TeamMatch.class).parallelStream().filter(
+                    tm->tm.getLegacyId().equals(matchId))
+                    .findFirst().get();
+            PlayerResult playerResult = null;
+            PlayerResult partnerMatch = null;
+            playerResult = leagueService.findAll(PlayerResult.class).stream().filter(
+                    pr -> pr.getTeamMatch().getLegacyId().equals(matchId)).filter(
+                    pr->pr.getMatchNumber().equals(matchNumber)
+            ).findFirst().orElse(null);
+            if (playerResult == null) {
+                throw new RuntimeException("No match");
             }
-            away.setPlayerAway(aUser);
-            away.setAwayRacks((Integer) result.get("games_won"));
-            Handicap aHandicap = Handicap.get(result.get("hcd_name") == null ? "UNKNOWN" : result.get("hcd_name").toString());
-            away.setPlayerAwayHandicap(aHandicap);
-            if (away.getPlayerAwayHandicap() == null) {
-                throw  new RuntimeException("blahd");
+            playerResult.setAwayRacks((Integer) result.get("games_won"));
+            if (playerResult.getPlayerAway() == null) {
+                playerResult.setPlayerAway(userHashMap.get((Integer) result.get("player_id")).stream().findFirst().get());
+                Handicap aHandicap = Handicap.get(result.get("hcd_name") == null ? "UNKNOWN" : result.get("hcd_name").toString());
+                playerResult.setPlayerAwayHandicap(aHandicap);
+            } else {
+                playerResult.setPlayerAwayPartner(userHashMap.get((Integer) result.get("player_id")).stream().findFirst().get());
+                Handicap aHandicap = Handicap.get(result.get("hcd_name") == null ? "UNKNOWN" : result.get("hcd_name").toString());
+                playerResult.setPlayerAwayHandicapPartner(aHandicap);
             }
+            leagueService.save(playerResult);
         }
-
-        System.out.println("Processing PlayerResults: " + playerResults.size());
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-        for (PlayerResult playerResult : playerResults) {
-            Set<ConstraintViolation<PlayerResult>> constraintViolations = validator.validate(playerResult);
-             if (!constraintViolations.isEmpty()) {
-            StringBuilder sb = new StringBuilder();
-            for (ConstraintViolation<PlayerResult> constraintViolation : constraintViolations) {
-                sb.append(constraintViolation.toString());
-            }
-                 throw new RuntimeException("Could not validate " +playerResult + "\n" + sb.toString());
-             }
-        }
-        playerResultRepository.save(new Iterable<PlayerResult>() {
-            @Override
-            public Iterator<PlayerResult> iterator() {
-                return playerResults.iterator();
-            }
-        });
-
         cacheUtil.refreshAllCache();
     }
 

@@ -20,7 +20,7 @@ public class PlayerResult  extends LeagueObject {
 
     @NotNull @DBRef TeamMatch teamMatch;
     @NotNull @DBRef User playerHome;
-    @NotNull @DBRef User playerAway;
+    @DBRef User playerAway;
     @NotNull Integer homeRacks = 0;
     @NotNull Integer awayRacks = 0;
     @NotNull Integer matchNumber = 0;
@@ -33,6 +33,7 @@ public class PlayerResult  extends LeagueObject {
     MatchPoints matchPoints;
     Team referenceTeam = null;
     User referenceUser = null;
+    Boolean scotch = false;
 
     public PlayerResult() {
     }
@@ -53,8 +54,12 @@ public class PlayerResult  extends LeagueObject {
         this.id = id;
     }
 
-    public boolean isScotch() {
-        return playerHomePartner != null || playerAwayPartner != null;
+    public Boolean isScotch() {
+        return scotch;
+    }
+
+    public void setScotch(Boolean scotch) {
+        this.scotch = scotch;
     }
 
     public TeamMatch getTeamMatch() {
@@ -249,6 +254,7 @@ public class PlayerResult  extends LeagueObject {
 
     }
 
+
     public String getOpponentHandicap() {
         if (referenceTeam != null)
             return referenceTeam.equals(teamMatch.getHome()) ?  Handicap.format(playerAwayHandicap):  Handicap.format(playerHomeHandicap);
@@ -267,7 +273,6 @@ public class PlayerResult  extends LeagueObject {
             return referenceUser.equals(playerHome) ? playerAwayPartner : playerHomePartner;
 
         return null;
-
     }
 
     public Handicap getOpponentPartnerHandicap() {
@@ -278,6 +283,16 @@ public class PlayerResult  extends LeagueObject {
             return referenceUser.equals(playerHome) ? playerAwayHandicapPartner : playerHomeHandicapPartner;
 
         return Handicap.UNKNOWN;
+    }
+
+    public User getPartner() {
+        if (referenceTeam != null)
+            return referenceTeam.equals(teamMatch.getHome()) ? playerHomePartner : playerAwayPartner;
+
+        if (referenceUser != null)
+            return referenceUser.equals(playerHome) ? playerHomePartner : playerAwayPartner;
+
+        return null;
     }
 
     public User getTeamMember() {

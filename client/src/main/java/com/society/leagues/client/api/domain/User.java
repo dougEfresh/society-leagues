@@ -69,6 +69,7 @@ public class User extends LeagueObject {
         this.lastName = lastName;
     }
 
+    @JsonIgnore
     public String getEmail() {
         return email;
     }

@@ -105,6 +105,9 @@ public class StatResource {
             consumes = MediaType.ALL_VALUE)
     public List<Stat> getSeasonPlayerStats(@PathVariable String id) {
          final Season season = leagueService.findOne(new Season(id));
+         if (season == null)
+             return Collections.emptyList();
+         
          List<Stat> playerStats = statService.getUserSeasonStats().get(season);
          if (!season.isChallenge())
              return playerStats;

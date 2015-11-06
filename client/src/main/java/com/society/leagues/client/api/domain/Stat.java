@@ -89,20 +89,20 @@ public class Stat {
         return s;
     }
 
-    public Handicap getHandicap() {
+    public String getHandicap() {
         if (handicap != null) {
-            return handicap;
+            return Handicap.format(handicap);
         }
         if (team  != null && user != null) {
             HandicapSeason handicapSeason = user.getHandicapSeasons().stream().filter(hs -> hs.getSeason().equals(team.getSeason()))                    .findFirst().orElse(null);
-            return handicapSeason == null ? Handicap.UNKNOWN : handicapSeason.getHandicapDisplay();
+            return handicapSeason == null ?  Handicap.format(Handicap.UNKNOWN) : Handicap.format(handicapSeason.getHandicapDisplay());
         }
 
         if (season  != null && user != null) {
             HandicapSeason handicapSeason = user.getHandicapSeasons().stream().filter(hs -> hs.getSeason().equals(season)).findFirst().orElse(null);
-            return handicapSeason == null ? Handicap.UNKNOWN : handicapSeason.getHandicapDisplay();
+            return handicapSeason == null ? Handicap.format(Handicap.UNKNOWN) : Handicap.format(handicapSeason.getHandicapDisplay());
         }
-        return Handicap.UNKNOWN;
+        return Handicap.format(Handicap.UNKNOWN);
     }
 
     public static Stat buildLifeTimeStats(final User u, final List<Stat> stats) {

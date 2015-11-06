@@ -80,7 +80,7 @@ public class TeamResource {
     public Team getTeamForUserSeason(Principal principal, @PathVariable String id, @PathVariable String seasonId) {
         User u = leagueService.findOne(new User(id));
         Season s = leagueService.findOne(new Season(seasonId));
-        return leagueService.findAll(Team.class).parallelStream().filter(t->t.getSeason().equals(s) && t.hasUser(u)).findFirst().get();
+        return leagueService.findAll(Team.class).parallelStream().filter(t->t.getSeason().equals(s) && t.hasUser(u)).findFirst().orElse(null);
     }
 
     @JsonView(TeamSummary.class)
