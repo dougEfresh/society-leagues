@@ -281,11 +281,11 @@ public class ConvertUtil {
             }
             if (tm.getHome().getLegacyId().equals(tid) && win != null && win > 0) {
                 tm.setHomeRacks(1);
-                tm.setSetHomeWins(1);
+                //tm.setSetHomeWins(1);
             }
             if (tm.getAway().getLegacyId().equals(tid) && win != null && win > 0 ) {
                 tm.setAwayRacks(1);
-                tm.setSetAwayWins(1);
+                //tm.setSetAwayWins(1);
             }
             teamMatchMap.put(tm.getLegacyId(), leagueService.save(tm));
         }
@@ -842,11 +842,11 @@ public class ConvertUtil {
             }
             if (tm.getHome().getLegacyId().equals(tid) && win != null && win > 0) {
                 tm.setHomeRacks(1);
-                tm.setSetHomeWins(1);
+                ///tm.setSetHomeWins(1);
             }
             if (tm.getAway().getLegacyId().equals(tid) && win != null && win > 0) {
                 tm.setAwayRacks(1);
-                tm.setSetAwayWins(1);
+                //tm.setSetAwayWins(1);
             }
             teamMatchMap.put(tm.getLegacyId(), leagueService.save(tm));
         }
@@ -1060,13 +1060,28 @@ public class ConvertUtil {
             Integer tid = (Integer) result.get("team_id");
             Integer mid = (Integer) result.get("match_id");
             TeamMatch teamMatch = matches.parallelStream().filter(tm->tm.getLegacyId().equals(mid)).findFirst().get();
+            if (teamMatch.getSeason().getDivision() == Division.NINE_BALL_TUESDAYS) {
+                continue;
+            }
             BigDecimal rw = (BigDecimal) result.get("rw");
             if (teamMatch.getHome().getLegacyId().equals(tid)) {
                 teamMatch.setHomeRacks(rw.intValue());
             } else {
                 teamMatch.setAwayRacks(rw.intValue());
             }
-	    leagueService.save(teamMatch);
+            leagueService.save(teamMatch);
+        }
+
+        List<PlayerResult> nine = leagueService.findCurrent(PlayerResult.class).stream().filter(p->p.getSeason().getDivision() == Division.NINE_BALL_TUESDAYS).collect(Collectors.toList());
+        for (PlayerResult result : nine) {
+            TeamMatch tm = result.getTeamMatch();
+            User winner = result.getWinner();
+            if (tm.getHome().getMembers().contains(winner)) {
+                tm.setSetHomeWins(tm.getSetHomeWins()+1);
+            } else {
+                tm.setSetAwayWins(tm.getSetAwayWins()+1);
+            }
+            leagueService.save(tm);
         }
     }
 

@@ -22,6 +22,33 @@ public class Stat {
     public Stat() {
     }
 
+    public static Stat buildHandicapStats(final List<PlayerResult> results, StatType statType, User user,Handicap handicap) {
+        Stat s= new Stat();
+        if (results == null || results.isEmpty())
+            return null;
+
+        s.setSeason(results.get(0).getSeason());
+        s.setUser(user);
+        s.setHandicap(handicap);
+
+        for (PlayerResult match : results) {
+            if (!match.hasUser(user)) {
+                continue;
+            }
+            s.matches++;
+            if (match.isWinner(user)) {
+                s.wins++;
+                s.racksWon += match.getWinnerRacks();
+                s.racksLost += match.getLoserRacks();
+            } else {
+                s.loses++;
+                s.racksWon += match.getLoserRacks();
+                s.racksLost += match.getWinnerRacks();
+            }
+        }
+        return s;
+    }
+
     public static Stat buildTeamStats(final Team team, final List<TeamMatch> matches) {
         Stat s = new Stat();
         s.setTeam(team);
@@ -87,6 +114,10 @@ public class Stat {
             }
         }
         return s;
+    }
+
+    public void setHandicap(Handicap handicap) {
+        this.handicap = handicap;
     }
 
     public String getHandicap() {

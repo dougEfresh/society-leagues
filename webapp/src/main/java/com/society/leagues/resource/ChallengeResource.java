@@ -171,7 +171,9 @@ public class ChallengeResource {
                         return t1.getMatchDate().compareTo(teamMatch.getMatchDate());
                     }
                 }).collect(Collectors.toList());
-        Map<String,List<PlayerResult>> group = results.stream().collect(Collectors.groupingBy(tm -> tm.getTeamMatch().getMatchDate().toLocalDate().toString()));
+        Map<String,List<PlayerResult>> group = results.stream().collect(Collectors.
+                groupingBy(tm -> tm.getTeamMatch().getMatchDate().toLocalDate().toString())
+        );
         return (Map<String,List<PlayerResult>>) new TreeMap<>(group);
     }
 

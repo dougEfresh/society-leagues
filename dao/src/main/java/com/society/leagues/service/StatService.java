@@ -82,9 +82,9 @@ public class StatService {
                                     .filter(tm -> tm.hasTeam(team))
                                     .filter(TeamMatch::isHasResults)
                                     .collect(Collectors.toList())
-					       ));
+                    ));
                 }
-                Map<Season,List<Stat>> active = ts.parallelStream().filter(s->s.getSeason().isActive()).collect(Collectors.groupingBy(s->s.getSeason(),Collectors.toList()));
+                Map<Season, List<Stat>> active = ts.parallelStream().filter(s -> s.getSeason().isActive()).collect(Collectors.groupingBy(s -> s.getSeason(), Collectors.toList()));
                 for (Season season : active.keySet()) {
                     List<Stat> ranks = active.get(season);
                     List<Stat> rankings = ranks.stream().sorted(new Comparator<Stat>() {
@@ -116,6 +116,7 @@ public class StatService {
                 teamStats.lazySet(ts);
                 refreshUserSeasonStats();
                 refreshUserLifetimeStats();
+                rereshUserHandicapStats();
                 logger.info("Done Refreshing stats  (" + (System.currentTimeMillis() - start) + "ms)");
             }
         });
@@ -188,11 +189,41 @@ public class StatService {
         List<Stat> lifeStats = new ArrayList<>(1000);
         for (User user : users) {
             for (List<Stat> stats : this.userSeasonStat.get().values()) {
-                lifeStats.add(Stat.buildLifeTimeStats(user,stats.stream().filter(s->s.getUser().equals(user)).collect(Collectors.toList())));
+                lifeStats.add(Stat.buildLifeTimeStats(user, stats.stream().filter(s -> s.getUser().equals(user)).collect(Collectors.toList())));
             }
         }
         lifetimeStats.lazySet(lifeStats);
         logger.info("Created " + lifetimeStats.get().size() + " stats for " + users.size() + " users with a total of " + lifeStats.size());
+    }
+
+    private void rereshUserHandicapStats() {
+        Map<User,List<PlayerResult>> winners = leagueService.findCurrent(PlayerResult.class).stream().
+                collect(Collectors.groupingBy(PlayerResult::getWinner));
+        Map<User,List<PlayerResult>> loser = leagueService.findCurrent(PlayerResult.class).stream().
+                collect(Collectors.groupingBy(PlayerResult::getLoser));
+
+        List<Stat> stats = new ArrayList<>(1000);
+        for (User user : winners.keySet()) {
+            for (Handicap handicap : Handicap.values()) {
+                List<PlayerResult> w = winners.get(user).stream().filter(p->p.getLoserHandicap() == handicap).collect(Collectors.toList());
+                if (w.isEmpty()) {
+                    continue;
+                }
+                stats.add(Stat.buildHandicapStats(w,StatType.HANDICAP_WINS,user,handicap));
+            }
+        }
+        for (User user : loser.keySet()) {
+            for (Handicap handicap : Handicap.values()) {
+                List<PlayerResult> w = loser.get(user).stream()
+                        .filter(p -> p.getWinnerHandicap() == handicap)
+                        .collect(Collectors.toList());
+                if (w.isEmpty()) {
+                    continue;
+                }
+                stats.add(Stat.buildHandicapStats(w,StatType.HANDICAP_WINS,user,handicap));
+            }
+        }
+        handicapStats.lazySet(stats);
     }
 
     public void setEnableRefresh(boolean enableRefresh) {
