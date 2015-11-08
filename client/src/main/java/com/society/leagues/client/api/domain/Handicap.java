@@ -67,12 +67,12 @@ public enum Handicap {
             Integer h = new Integer(hc) - 1;
             if (h > 0 && h < Handicap.values().length)
                 return Handicap.values()[h];
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignore) {
 
         }
         try {
             return Handicap.valueOf(hc);
-        } catch (Throwable r) {
+        } catch (Throwable ignore) {
 
         }
         return Handicap.UNKNOWN;
