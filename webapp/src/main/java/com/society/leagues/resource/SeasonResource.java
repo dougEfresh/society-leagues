@@ -46,7 +46,13 @@ public class SeasonResource {
 
     @RequestMapping(value = {"/get","/",""}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public List<Season> getSeasons(Principal principal) {
-        return leagueService.findAll(Season.class);
+        return leagueService.findAll(Season.class).stream().filter(s->s.getDivision() != Division.STRAIGHT)
+                .sorted(new Comparator<Season>() {
+            @Override
+            public int compare(Season o1, Season o2) {
+                return o2.getStartDate().compareTo(o1.getStartDate());
+            }
+        }).collect(Collectors.toList());
     }
 
     @RequestMapping(value = {"/divisions"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
