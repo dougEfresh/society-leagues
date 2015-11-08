@@ -6,6 +6,7 @@ import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.ResultService;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.views.PlayerResultView;
+import com.society.leagues.service.StatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 public class PlayerResultResource {
     @Autowired LeagueService leagueService;
     @Autowired ResultService resultService;
+    @Autowired StatService statService;
 
     @RequestMapping(value = "/admin/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -163,12 +165,12 @@ public class PlayerResultResource {
 
     @RequestMapping(value = "/user/{id}/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @JsonView(value = {PlayerResultView.class})
-    public List<PlayerResult> getPlayerResultByUserSeason(Principal principal, @PathVariable String id, @PathVariable String seasonId) {
+    public Map<String,Object> getPlayerResultByUserSeason(Principal principal, @PathVariable String id, @PathVariable String seasonId) {
         User u = leagueService.findOne(new User(id));
         Season s = leagueService.findOne(new Season(seasonId));
         List<PlayerResult> results = new ArrayList<>(500);
         if (s == null) {
-            return results;
+            return Collections.EMPTY_MAP;
         }
 
         results = leagueService.findAll(PlayerResult.class)
@@ -193,8 +195,10 @@ public class PlayerResultResource {
                                 .findFirst().orElse(null));
             }
         }
-
-        return copyResults;
+        Map<String,Object> r = new HashMap<>();
+        r.put("stats",statService.getUserSeasonStats().get(s).parallelStream().filter(st->st.getUser().equals(u)).findFirst().orElse(null));
+        r.put("results",copyResults);
+        return r;
     }
 
     @RequestMapping(value = "/racks/{matchId}/{type}/{racks}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)

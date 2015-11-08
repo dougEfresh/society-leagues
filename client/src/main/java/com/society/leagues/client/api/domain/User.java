@@ -51,6 +51,10 @@ public class User extends LeagueObject {
         this.role = role;
     }
 
+    public String getShortName() {
+        return firstName + " " + lastName.substring(0,1) + ".";
+    }
+
     @JsonView(PlayerResultView.class)
     public String getFirstName() {
         return firstName;
