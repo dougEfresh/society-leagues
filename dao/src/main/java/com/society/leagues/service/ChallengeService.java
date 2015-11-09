@@ -90,7 +90,7 @@ public class ChallengeService  {
             sunday = sunday.plusDays(7);
         }
         List<Challenge> accepted = leagueService.findAll(Challenge.class).stream()
-                .filter(ch -> ch.getTeamMatch() != null)
+                .filter(ch -> ch.getAcceptedSlot() != null)
                 .filter(ch -> ch.getTeamMatch() == null)
                 .collect(Collectors.toList());
 
