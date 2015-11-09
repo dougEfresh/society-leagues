@@ -95,6 +95,25 @@ public class PlayerResultResource {
                 .collect(Collectors.toList());
     }
 
+
+    @RequestMapping(value = "/season/{id}/date", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @JsonView(PlayerResultView.class)
+    public Map<String,List<PlayerResult>> getPlayerResultSeasonByDate(Principal principal, @PathVariable String id) {
+        Season s = leagueService.findOne(new Season(id));
+        List<PlayerResult> results = new ArrayList<>();
+        if (s.isActive()) {
+            results = leagueService.findCurrent(PlayerResult.class).stream().parallel().filter(pr -> pr.getSeason().equals(s))
+                .collect(Collectors.toList());
+        }
+        results = leagueService.findAll(PlayerResult.class).stream().parallel()
+                .filter(pr -> pr.getSeason().equals(s))
+                .collect(Collectors.toList());
+
+        return results.stream().collect(Collectors.groupingBy(pr->pr.getMatchDate().toLocalDate().toString()));
+    }
+
+
+
     @RequestMapping(value = {"/team/{id}","/get/team/{id}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @JsonView(PlayerResultView.class)
     public List<PlayerResult> getPlayerResultTeam(Principal principal, @PathVariable String id) {
