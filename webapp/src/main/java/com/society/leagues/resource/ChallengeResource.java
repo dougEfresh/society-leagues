@@ -70,19 +70,9 @@ public class ChallengeResource {
          if (principal == null) {
             return null;
          }
-         Challenge c = leagueService.findOne(challenge);
-        if (c.getAcceptedSlot() != null) {
-            TeamMatch teamMatch = leagueService.findAll(TeamMatch.class).stream().parallel()
-                    .filter(tm -> tm.getMatchDate().toLocalDate().isEqual(c.getAcceptedSlot().getLocalDateTime().toLocalDate()))
-                    .filter(tm -> tm.getHome().equals(c.getChallenger()) && tm.getAway().equals(c.getOpponent())).findFirst().orElse(null);
-
-            if (teamMatch != null)
-                leagueService.delete(teamMatch);
-        }
-
-         c.setStatus(Status.CANCELLED);
-         c.setAcceptedSlot(null);
-         return leagueService.save(c);
+        Challenge c = leagueService.findOne(challenge);
+        challengeService.cancel(c);
+        return c;
     }
 
     @RequestMapping(value = {"/slots"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)

@@ -33,6 +33,25 @@ public class ChallengeService  {
         return teamService.createTeam(user.getName(),challenge, Arrays.asList(user));
     }
 
+    public void cancel(Challenge c) {
+        if (c.getAcceptedSlot() != null) {
+            TeamMatch teamMatch = leagueService.findAll(TeamMatch.class).stream().parallel()
+                    .filter(tm -> tm.getMatchDate().toLocalDate().isEqual(c.getAcceptedSlot().getLocalDateTime().toLocalDate()))
+                    .filter(tm -> tm.getHome().equals(c.getChallenger()) && tm.getAway().equals(c.getOpponent())).findFirst().orElse(null);
+
+            if (teamMatch != null) {
+                PlayerResult result = leagueService.findAll(PlayerResult.class).parallelStream().filter(p->p.getTeamMatch().equals(teamMatch)).findFirst().orElse(null);
+                leagueService.delete(result);
+                leagueService.delete(teamMatch);
+            }
+        }
+
+        c.setStatus(Status.CANCELLED);
+        c.setAcceptedSlot(null);
+
+        leagueService.save(c);
+    }
+
     public TeamMatch accept(Challenge challenge) {
         Team challengerTeam = challenge.getChallenger();
         Team opponentTeam = challenge.getOpponent();
@@ -70,8 +89,8 @@ public class ChallengeService  {
             sunday = sunday.plusDays(7);
         }
         List<Challenge> accepted = leagueService.findAll(Challenge.class).stream()
-                .filter(ch->ch.getTeamMatch() != null)
-                .filter(ch->ch.getTeamMatch() == null)
+                .filter(ch -> ch.getTeamMatch() != null)
+                .filter(ch -> ch.getTeamMatch() == null)
                 .collect(Collectors.toList());
 
         accepted.forEach(this::accept);
