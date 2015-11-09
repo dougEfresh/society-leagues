@@ -39,7 +39,8 @@ public class PlayerResultResource {
     @RequestMapping(value = "/admin/delete", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Boolean delete(@RequestBody PlayerResult playerResult) {
-        return leagueService.delete(playerResult);
+        leagueService.purge(playerResult);
+        return true;
     }
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)

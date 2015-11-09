@@ -537,16 +537,16 @@ public class ConvertUtil {
                 .stream().filter(r -> r.getSeason() != null).filter(r -> r.getSeason().isChallenge()).collect(Collectors.toList()
                 );
         for (PlayerResult result : remove) {
-            leagueService.delete(result);
+            leagueService.purge(result);
         }
         leagueService.deleteAll(Challenge.class);
         leagueService.deleteAll(Slot.class);
 
         for(Team team: leagueService.findAll(Team.class).stream().parallel().filter(t->t.getSeason().isChallenge()).collect(Collectors.toList())) {
-            leagueService.delete(team);
+            leagueService.purge(team);
         }
         for (TeamMatch teamMatch : leagueService.findAll(TeamMatch.class).stream().parallel().filter(tm->tm.getSeason().getDivision().isChallenge()).collect(Collectors.toList())) {
-            leagueService.delete(teamMatch);
+            leagueService.purge(teamMatch);
         }
 
         Season challenge = leagueService.findAll(Season.class).stream().filter(s->s.getDivision() == Division.NINE_BALL_CHALLENGE).findFirst().orElse(null);

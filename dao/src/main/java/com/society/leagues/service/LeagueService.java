@@ -127,6 +127,9 @@ public class LeagueService {
     }
 
     public <T extends LeagueObject> T purge(T entity) {
+        if (entity == null) {
+            return null;
+        }
         cacheUtil.getCache(entity).getRepo().delete(entity);
         cacheUtil.getCache(entity).get().remove(entity);
         for (DaoListener daoListener : daoListeners) {
