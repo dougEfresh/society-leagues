@@ -168,16 +168,9 @@ public class TeamMatchResource {
         Predicate<TeamMatch> filter;
         LocalDateTime  yesterday = LocalDateTime.now().minusDays(1);
         if (type.equals("upcoming")) {
-            if (s.isChallenge())
-                filter = teamMatch -> (!teamMatch.isHasResults());
-            else
-                filter = teamMatch -> teamMatch.getMatchDate().isAfter(yesterday);
+            filter = teamMatch -> teamMatch.getMatchDate().isAfter(yesterday);
         } else if (type.equals("pending")) {
-            if (s.isChallenge())
-                filter = teamMatch -> (!teamMatch.isHasResults());
-            else
-                filter = teamMatch -> teamMatch.getMatchDate().isBefore(yesterday) && !teamMatch.isHasResults();
-
+            filter = teamMatch -> teamMatch.getMatchDate().isBefore(yesterday) && !teamMatch.isHasResults();
         } else {
             filter = teamMatch -> teamMatch.getMatchDate().isBefore(yesterday) && teamMatch.isHasResults();
         }
