@@ -1,5 +1,6 @@
 package com.society.leagues.resource;
 
+import com.society.leagues.service.ChallengeService;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.service.EmailService;
@@ -26,6 +27,7 @@ public class ChallengeResource {
     @Autowired EmailService emailService;
     @Value("${service-url:http://leaguesdev.societybilliards.com}") String serviceUrl;
     static final Logger logger = LoggerFactory.getLogger(ChallengeResource.class);
+    @Autowired ChallengeService challengeService;
 
     @RequestMapping(value = "/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public Challenge create(@RequestBody Challenge challenge, Principal principal, HttpServletRequest request) {
@@ -57,10 +59,7 @@ public class ChallengeResource {
             challenge.setStatus(Status.ACCEPTED);
             challenge.setAcceptedSlot(accepted);
             leagueService.save(challenge);
-            Team challengerTeam = challenge.getChallenger();
-            Team opponentTeam = challenge.getOpponent();
-            TeamMatch tm = new TeamMatch(challengerTeam,opponentTeam,challenge.getAcceptedSlot().getLocalDateTime());
-            return leagueService.save(tm);
+            return challengeService.accept(challenge);
         }
         //TODO throw exception
         return null;

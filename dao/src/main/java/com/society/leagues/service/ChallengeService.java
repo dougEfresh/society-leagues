@@ -33,6 +33,22 @@ public class ChallengeService  {
         return teamService.createTeam(user.getName(),challenge, Arrays.asList(user));
     }
 
+    public TeamMatch accept(Challenge challenge) {
+        Team challengerTeam = challenge.getChallenger();
+        Team opponentTeam = challenge.getOpponent();
+        TeamMatch tm = new TeamMatch(challengerTeam,opponentTeam,challenge.getAcceptedSlot().getLocalDateTime());
+        TeamMatch existing = leagueService.findCurrent(TeamMatch.class).parallelStream().filter(
+                t->t.getHome().equals(challengerTeam) && t.getAway().equals(opponentTeam) && t.getMatchDate().equals(challenge.getAcceptedSlot().getLocalDateTime())
+        ).findFirst().orElse(null);
+        if (existing != null)
+            return existing;
+
+        existing = leagueService.save(tm);
+        challenge.setTeamMatch(existing);
+        leagueService.save(challenge);
+        return existing;
+    }
+
     @Scheduled(fixedRate = 1000*60*60, initialDelay = 1000*60*60)
     public void refresh() {
         LocalDate sunday = LocalDate.now().with(DayOfWeek.SUNDAY);
@@ -53,5 +69,11 @@ public class ChallengeService  {
             }
             sunday = sunday.plusDays(7);
         }
+        List<Challenge> accepted = leagueService.findAll(Challenge.class).stream()
+                .filter(ch->ch.getTeamMatch() != null)
+                .filter(ch->ch.getTeamMatch() == null)
+                .collect(Collectors.toList());
+
+        accepted.forEach(this::accept);
     }
 }

@@ -13,6 +13,7 @@ public class Challenge extends LeagueObject {
     @NotNull @DBRef Team opponent;
     @NotNull @DBRef List<Slot> slots;
     @DBRef Slot acceptedSlot;
+    @DBRef TeamMatch teamMatch;
 
     public Challenge() {
     }
@@ -22,6 +23,15 @@ public class Challenge extends LeagueObject {
         this.challenger = challenger;
         this.opponent = opponent;
         this.slots = slots;
+    }
+
+    @JsonIgnore
+    public TeamMatch getTeamMatch() {
+        return teamMatch;
+    }
+
+    public void setTeamMatch(TeamMatch teamMatch) {
+        this.teamMatch = teamMatch;
     }
 
     public Slot getAcceptedSlot() {

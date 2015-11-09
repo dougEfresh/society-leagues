@@ -234,6 +234,31 @@ public class TeamMatch extends LeagueObject {
         return awayRacks > homeRacks ? home : away;
     }
 
+    public String getRace() {
+        if (getSeason().isChallenge()) {
+            Handicap h  = getHome().getChallengeUser().getHandicap(getSeason());
+            Handicap a = getAway().getMembers().iterator().next().getHandicap(getSeason());
+            return Handicap.race(h,a);
+        } else {
+            return "";
+        }
+    }
+
+    public User getChallenger() {
+        if (getSeason().isChallenge()) {
+            return getHome().getChallengeUser();
+        }
+        return null;
+    }
+
+
+    public User getOpponent() {
+        if (getSeason().isChallenge()) {
+            return getAway().getChallengeUser();
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         return "TeamMatch{" +
