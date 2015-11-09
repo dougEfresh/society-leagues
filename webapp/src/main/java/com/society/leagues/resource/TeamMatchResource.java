@@ -108,11 +108,27 @@ public class TeamMatchResource {
     public TeamMatch updateRacks(Principal principal, @PathVariable String teamMatchId, @PathVariable String teamId, @PathVariable Integer racks) {
         TeamMatch  teamMatch = leagueService.findOne(new TeamMatch(teamMatchId));
         Team team = leagueService.findOne(new Team(teamId));
+        PlayerResult result = leagueService.findAll(PlayerResult.class).stream().parallel().filter(p -> p.getTeamMatch().equals(teamMatch)).findFirst().orElse(null);
+
+        if (teamMatch.getSeason().isChallenge()) {
+            if (result == null) {
+                result = new PlayerResult();
+                result.setTeamMatch(teamMatch);
+                result.setPlayerHome(team.getChallengeUser());
+                result.setPlayerHomeHandicap(team.getChallengeUser().getHandicap(team.getSeason()));
+                result.setPlayerAway(teamMatch.getAway().getChallengeUser());
+                result.setPlayerAwayHandicap(teamMatch.getAway().getChallengeUser().getHandicap(team.getSeason()));
+            }
+        }
         if (teamMatch.getHome().equals(team)) {
             teamMatch.setHomeRacks(racks);
+            result.setHomeRacks(racks);
         } else {
             teamMatch.setAwayRacks(racks);
+            result.setAwayRacks(racks);
         }
+        if (teamMatch.isChallenge())
+            leagueService.save(result);
 
         return leagueService.save(teamMatch);
     }
@@ -151,10 +167,13 @@ public class TeamMatchResource {
         Predicate<TeamMatch> filter;
         LocalDateTime  yesterday = LocalDateTime.now().minusDays(1);
         if (type.equals("upcoming")) {
-            filter = teamMatch -> teamMatch.getMatchDate().isAfter(yesterday);
+            if (s.isChallenge())
+                filter = teamMatch -> (!teamMatch.isHasResults());
+            else
+                filter = teamMatch -> teamMatch.getMatchDate().isAfter(yesterday);
         } else if (type.equals("pending")) {
             if (s.isChallenge())
-                filter = teamMatch -> !teamMatch.isHasResults();
+                filter = teamMatch -> (!teamMatch.isHasResults());
             else
                 filter = teamMatch -> teamMatch.getMatchDate().isBefore(yesterday) && !teamMatch.isHasResults();
 

@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class ChallengeService  {
 
     @Autowired LeagueService leagueService;
+    @Autowired ResultService resultService;
     @Autowired TeamService teamService;
 
     @PostConstruct
@@ -41,8 +42,8 @@ public class ChallengeService  {
 
             if (teamMatch != null) {
                 PlayerResult result = leagueService.findAll(PlayerResult.class).parallelStream().filter(p->p.getTeamMatch().equals(teamMatch)).findFirst().orElse(null);
-                leagueService.delete(result);
-                leagueService.delete(teamMatch);
+                leagueService.purge(result);
+                leagueService.purge(teamMatch);
             }
         }
 
