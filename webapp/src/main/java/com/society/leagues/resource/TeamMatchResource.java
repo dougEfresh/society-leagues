@@ -153,7 +153,11 @@ public class TeamMatchResource {
         if (type.equals("upcoming")) {
             filter = teamMatch -> teamMatch.getMatchDate().isAfter(yesterday);
         } else if (type.equals("pending")) {
-            filter = teamMatch -> teamMatch.getMatchDate().isBefore(yesterday) && !teamMatch.isHasResults();
+            if (s.isChallenge())
+                filter = teamMatch -> !teamMatch.isHasResults();
+            else
+                filter = teamMatch -> teamMatch.getMatchDate().isBefore(yesterday) && !teamMatch.isHasResults();
+
         } else {
             filter = teamMatch -> teamMatch.getMatchDate().isBefore(yesterday) && teamMatch.isHasResults();
         }
