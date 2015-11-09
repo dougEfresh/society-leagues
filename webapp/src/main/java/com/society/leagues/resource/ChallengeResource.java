@@ -55,7 +55,7 @@ public class ChallengeResource {
         User u = leagueService.findByLogin(principal.getName());
         Slot accepted = leagueService.findOne(challenge.getAcceptedSlot());
         challenge = leagueService.findOne(challenge);
-        if (u.getId().equals(challenge.getChallenger().getId()) || u.getId().equals(challenge.getOpponent().getId()) || u.isAdmin()) {
+        if (u.equals(challenge.getChallenger().getChallengeUser()) || u.equals(challenge.getOpponent().getChallengeUser()) || u.isAdmin()) {
             challenge.setStatus(Status.ACCEPTED);
             challenge.setAcceptedSlot(accepted);
             leagueService.save(challenge);
