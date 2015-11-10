@@ -102,10 +102,14 @@ public class UserService {
                 new Runnable() {
                     @Override
                     public void run() {
-                        populateProfile();
+                        populateProfile(); populateTeams();
                     }
                 }
         );
+    }
+
+    private void populateTeams() {
+
     }
 
     public void populateProfile() {

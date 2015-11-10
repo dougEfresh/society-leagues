@@ -1073,7 +1073,7 @@ public class ConvertUtil {
             leagueService.save(teamMatch);
         }
 
-        List<PlayerResult> nine = leagueService.findCurrent(PlayerResult.class).stream().filter(p->p.getSeason().getDivision() == Division.NINE_BALL_TUESDAYS).collect(Collectors.toList());
+        List<PlayerResult> nine = leagueService.findCurrent(PlayerResult.class).stream().filter(p -> p.getSeason().getDivision() == Division.NINE_BALL_TUESDAYS).collect(Collectors.toList());
         for (PlayerResult result : nine) {
             TeamMatch tm = result.getTeamMatch();
             User winner = result.getWinner();
@@ -1083,6 +1083,19 @@ public class ConvertUtil {
                 tm.setSetAwayWins(tm.getSetAwayWins()+1);
             }
             leagueService.save(tm);
+        }
+
+        Map<TeamMatch,List<PlayerResult>> teamMatchListMap = leagueService.findCurrent(PlayerResult.class).parallelStream().filter(p->p.getSeason().getDivision() == Division.NINE_BALL_TUESDAYS).collect(Collectors.groupingBy(PlayerResult::getTeamMatch));
+        for (TeamMatch teamMatch : teamMatchListMap.keySet()) {
+            teamMatch.setAwayRacks(0);
+            teamMatch.setHomeRacks(0);
+            for (PlayerResult match  : teamMatchListMap.get(teamMatch)) {
+                Integer  h = match.getHomeRacks();
+                Integer  a = match.getAwayRacks();
+                teamMatch.setHomeRacks(teamMatch.getHomeRacks()+h);
+                teamMatch.setAwayRacks(teamMatch.getAwayRacks()+a);
+            }
+            leagueService.save(teamMatch);
         }
     }
 

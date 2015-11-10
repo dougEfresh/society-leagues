@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.converters.DateTimeSerializer;
 import com.society.leagues.client.views.PlayerResultView;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -28,6 +29,8 @@ public class User extends LeagueObject {
     LocalDateTime created;
     Set<HandicapSeason> handicapSeasons = new HashSet<>();
     List<TokenReset>  tokens = new ArrayList<>();
+
+    Set<Team> currentTeams = new HashSet<>();
 
     UserProfile userProfile;
 
@@ -240,6 +243,15 @@ public class User extends LeagueObject {
                 return true;
         }
         return false;
+    }
+
+
+    public Set<Team> getCurrentTeams() {
+        return currentTeams;
+    }
+
+    public void setCurrentTeams(Set<Team> currentTeams) {
+        this.currentTeams = currentTeams;
     }
 
     @Override
