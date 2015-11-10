@@ -68,7 +68,8 @@ public class StatService {
     public void refresh() {
         if (!enableRefresh)
             return;
-        if (threadPoolTaskExecutor.getActiveCount() >0) {
+        if (threadPoolTaskExecutor.getActiveCount() > 0) {
+            logger.info("Skipping refresh");
             return;
         }
         threadPoolTaskExecutor.submit(new Runnable() {
