@@ -219,7 +219,7 @@ public class ConvertUtil {
     public Boolean converTeamMatch() {
         logger.info("Convert team match");
                 List<Map<String,Object>> matches = jdbcTemplate.
-                queryForList("select match_id,m.season_id,home_team_id,visit_team_id,match_start_date " +
+                queryForList("select match_number,match_id,m.season_id,home_team_id,visit_team_id,match_start_date " +
                         "from match_schedule m " +
                         "where match_start_date is not null " +
                         " and match_start_date > 2000-01-01 and m.season_id > 0  and m.league_id != 4" +
@@ -230,6 +230,7 @@ public class ConvertUtil {
         for (Map<String, Object> match : matches) {
             Integer mid = (Integer) match.get("match_id");
             TeamMatch tm = new TeamMatch();
+            tm.setMatchNumber((Integer) match.get("match_number"));
             tm.setLegacyId(mid);
             Team home = teams.stream().filter(t ->
                     t.getLegacyId().equals(match.get("home_team_id"))).
@@ -1017,7 +1018,7 @@ public class ConvertUtil {
 
     public void captains(){
         List<Map<String,Object>> results = jdbcTemplate.queryForList("select captain_id,team_id from team where captain_id is not null and captain_id > 0;");
-        List<Team> teams = leagueService.findAll(Team.class).stream().filter(t->t.getSeason().isActive()).collect(Collectors.toList());
+        List<Team> teams = leagueService.findAll(Team.class).stream().filter(t -> t.getSeason().isActive()).collect(Collectors.toList());
         List<User>  users = leagueService.findAll(User.class);
         for (Map<String, Object> result : results) {
             Team team = teams.parallelStream().filter(t -> t.getSeason().isActive())

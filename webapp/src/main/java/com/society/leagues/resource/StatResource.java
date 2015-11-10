@@ -113,6 +113,9 @@ public class StatResource {
              return playerStats;
 
          List<MatchPoints> points = resultService.matchPoints();
+         if (points == null) {
+             return playerStats;
+         }
          for (Stat stat : playerStats) {
             double totalPoints = 0d;
             User u = stat.getTeam().getChallengeUser();

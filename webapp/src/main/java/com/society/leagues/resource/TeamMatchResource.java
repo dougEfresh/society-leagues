@@ -217,13 +217,13 @@ public class TeamMatchResource {
         Season s = leagueService.findOne(new Season(id));
         List<TeamMatch> results;
         Predicate<TeamMatch> filter;
-        LocalDateTime  yesterday = LocalDateTime.now().minusDays(1);
+        LocalDateTime  now  = LocalDateTime.now().plusDays(1);
         if (type.equals("upcoming")) {
-            filter = teamMatch -> teamMatch.getMatchDate().isAfter(yesterday);
+            filter = teamMatch -> teamMatch.getMatchDate().isAfter(now);
         } else if (type.equals("pending")) {
-            filter = teamMatch -> teamMatch.getMatchDate().isBefore(yesterday) && !teamMatch.isHasResults();
+            filter = teamMatch -> teamMatch.getMatchDate().isBefore(now) && !teamMatch.isHasResults();
         } else {
-            filter = teamMatch -> teamMatch.getMatchDate().isBefore(yesterday) && teamMatch.isHasResults();
+            filter = teamMatch -> teamMatch.isHasResults();
         }
         results = leagueService.findCurrent(TeamMatch.class).stream().parallel()
                 .filter(tm -> tm.getSeason().equals(s))

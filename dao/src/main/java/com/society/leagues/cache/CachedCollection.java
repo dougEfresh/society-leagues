@@ -84,8 +84,8 @@ public class CachedCollection<T extends List<LeagueObject>> implements Comparabl
     }
 
     public void remove(LeagueObject obj) {
-        obj.setDeleted(true);
-        this.repo.save(obj);
+        this.entity.get().remove(obj);
+        this.current.get().remove(obj);
     }
 
     public MongoRepository getRepo() {

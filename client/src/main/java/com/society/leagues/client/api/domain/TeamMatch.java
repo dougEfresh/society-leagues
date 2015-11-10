@@ -23,7 +23,7 @@ public class TeamMatch extends LeagueObject {
     Integer awayRacks = 0;
     Integer setHomeWins = 0;
     Integer setAwayWins = 0;
-
+    Integer matchNumber = 0;
     User referenceUser = null;
 
     public TeamMatch(Team home, Team away, LocalDateTime matchDate) {
@@ -270,6 +270,14 @@ public class TeamMatch extends LeagueObject {
                 ", setHomeWins=" + setHomeWins +
                 ", setAwayWins=" + setAwayWins +
                 '}';
+    }
+
+    public Integer getMatchNumber() {
+        return matchNumber;
+    }
+
+    public void setMatchNumber(Integer matchNumber) {
+        this.matchNumber = matchNumber;
     }
 
     public void setReferenceUser(User referenceUser) {
