@@ -68,17 +68,25 @@ public class StatService {
     public void refresh() {
         if (!enableRefresh)
             return;
-
+        if (threadPoolTaskExecutor.getActiveCount() >0) {
+            return;
+        }
         threadPoolTaskExecutor.submit(new Runnable() {
             @Override
             public void run() {
+                try {
+                    Thread.sleep(30000);
+                } catch (InterruptedException e) {
+                    return;
+                }
                 logger.info("Refreshing stats");
                 long start = System.currentTimeMillis();
                 final List<Team> teams = leagueService.findAll(Team.class);
+                final List<TeamMatch>  teamMatches = leagueService.findAll(TeamMatch.class);
                 final List<Stat> ts = new ArrayList<>();
                 for (Team team : teams) {
                     ts.add(Stat.buildTeamStats(team,
-                            leagueService.findAll(TeamMatch.class).parallelStream()
+                            teamMatches.parallelStream()
                                     .filter(tm -> tm.hasTeam(team))
                                     .filter(TeamMatch::isHasResults)
                                     .collect(Collectors.toList())

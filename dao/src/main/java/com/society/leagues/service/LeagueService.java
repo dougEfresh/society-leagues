@@ -135,6 +135,7 @@ public class LeagueService {
         for (DaoListener daoListener : daoListeners) {
             daoListener.onDelete(entity);
         }
+        entity.setDeleted(true);
         return entity;
     }
 
