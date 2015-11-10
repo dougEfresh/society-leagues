@@ -154,8 +154,8 @@ public class UserResource {
             logger.error("ERROR ERROR ERROR");
             return null;
         }
-        user = leagueService.findOne(user);
-        TokenReset reset = userService.resetRequest(user);
+        //user = leagueService.findOne(user);
+        TokenReset reset = userService.resetRequest(u);
         return u.isAdmin() ? reset : new TokenReset("");
     }
 
