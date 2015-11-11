@@ -3,6 +3,8 @@ package com.society.leagues.resource;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.ResultService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +21,7 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/api/teammatch")
 @SuppressWarnings("unused")
 public class TeamMatchResource {
-
+    static Logger logger = LoggerFactory.getLogger(TeamMatchResource.class);
     @Autowired LeagueService leagueService;
     @Autowired ResultService resultService;
 
@@ -29,13 +31,14 @@ public class TeamMatchResource {
         return leagueService.save(teamMatch);
     }
 
-
     @RequestMapping(value = "/admin/delete/{teamMatchId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Map<String,List<TeamMatch>> delete(Principal principal, @PathVariable String teamMatchId) {
         TeamMatch tm = leagueService.findOne(new TeamMatch(teamMatchId));
-        if (tm == null)
+        if (tm == null) {
+            logger.error("Could not find team match for " + teamMatchId);
             return Collections.emptyMap();
+        }
         resultService.removeTeamMatchResult(tm);
         return Collections.emptyMap();
     }
