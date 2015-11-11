@@ -5,13 +5,15 @@ import org.apache.log4j.Logger;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 
 public class CachedCollection<T extends List<LeagueObject>> implements Comparable<CachedCollection> {
-    final AtomicReference<T> entity = new AtomicReference(java.util.Collections.synchronizedList(new ArrayList<>()));
-    final AtomicReference<Set<LeagueObject>> current =  new AtomicReference<>(Collections.synchronizedSet(new HashSet<>());
+    final AtomicReference<T> entity = new AtomicReference(new CopyOnWriteArrayList<>());
+    final AtomicReference<Set<LeagueObject>> current =  new AtomicReference<>(new CopyOnWriteArraySet<>(new HashSet<>()));
     private static Logger logger = Logger.getLogger(CachedCollection.class);
     final MongoRepository repo;
     final String collectionName;
@@ -66,7 +68,7 @@ public class CachedCollection<T extends List<LeagueObject>> implements Comparabl
         return current.get();
     }
 
-    public void add(LeagueObject obj) {
+    public synchronized void add(LeagueObject obj) {
         LeagueObject cached =  this.get().stream().filter(u -> ((LeagueObject) u).getId().equals(obj.getId())).findFirst().orElse(null);
         if (cached == null) {
             if (isCurrent(obj)) {
@@ -83,7 +85,7 @@ public class CachedCollection<T extends List<LeagueObject>> implements Comparabl
         this.entity.lazySet(collection);
     }
 
-    public void remove(LeagueObject obj) {
+    public synchronized void remove(LeagueObject obj) {
         this.entity.get().remove(obj);
         this.current.get().remove(obj);
     }
