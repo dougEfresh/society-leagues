@@ -72,6 +72,7 @@ public class StatService {
             logger.info("Skipping refresh");
             return;
         }
+        logger.info("Submitting to task for refresh");
         threadPoolTaskExecutor.submit(new Runnable() {
             @Override
             public void run() {
