@@ -4,6 +4,7 @@ import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.ResultService;
 import com.society.leagues.service.StatService;
 import com.society.leagues.cache.CacheUtil;
+import com.society.leagues.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,7 @@ public class CacheResource {
     @Autowired StatService statService;
     @Autowired CacheUtil cacheUtil;
     @Autowired ResultService resultService;
+    @Autowired UserService userService;
 
     @RequestMapping(value = "/refresh", method = RequestMethod.GET, consumes = MediaType.ALL_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -26,6 +28,7 @@ public class CacheResource {
         cacheUtil.refreshAllCache();
         statService.refresh();
         resultService.refresh();
+        userService.refresh();
         return Boolean.TRUE;
     }
 }
