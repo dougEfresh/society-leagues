@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 
 
 public class CachedCollection<T extends List<LeagueObject>> implements Comparable<CachedCollection> {
-    final AtomicReference<T> entity = new AtomicReference(new ArrayList<>());
-    final AtomicReference<Set<LeagueObject>> current =  new AtomicReference<>(new HashSet<>());
+    final AtomicReference<T> entity = new AtomicReference(java.util.Collections.synchronizedList(new ArrayList<>()));
+    final AtomicReference<Set<LeagueObject>> current =  new AtomicReference<>(Collections.synchronizedSet(new HashSet<>());
     private static Logger logger = Logger.getLogger(CachedCollection.class);
     final MongoRepository repo;
     final String collectionName;
