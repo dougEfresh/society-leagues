@@ -118,9 +118,12 @@ public class ResultService {
         if (teamMatch == null)
             return false;
 
-        leagueService.findAll(PlayerResult.class).parallelStream().filter(
-                r-> r.getTeamMatch() != null && r.getTeamMatch().equals(teamMatch))
-                .forEach(leagueService::purge);
+        List<PlayerResult> toDelete = leagueService.findAll(PlayerResult.class).parallelStream().filter(
+                r -> r.getTeamMatch() != null && r.getTeamMatch().equals(teamMatch)).collect(Collectors.toList());
+
+        for (PlayerResult result : toDelete) {
+            leagueService.purge(result);
+        }
         leagueService.purge(teamMatch);
         return true;
     }
