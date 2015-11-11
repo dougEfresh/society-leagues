@@ -115,6 +115,9 @@ public class ResultService {
 
     public Boolean removeTeamMatchResult(TeamMatch teamMatch) {
         //Remove player results;
+        if (teamMatch == null)
+            return false;
+
         leagueService.findAll(PlayerResult.class).parallelStream().filter(
                 r-> r.getTeamMatch() != null && r.getTeamMatch().equals(teamMatch))
                 .forEach(leagueService::purge);
