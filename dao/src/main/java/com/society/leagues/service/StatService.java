@@ -77,7 +77,7 @@ public class StatService {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(30000);
+                    Thread.sleep(1000*60);
                 } catch (InterruptedException e) {
                     return;
                 }
@@ -127,6 +127,7 @@ public class StatService {
                 refreshUserSeasonStats();
                 refreshUserLifetimeStats();
                 rereshUserHandicapStats();
+                resultService.refresh();
                 logger.info("Done Refreshing stats  (" + (System.currentTimeMillis() - start) + "ms)");
             }
         });

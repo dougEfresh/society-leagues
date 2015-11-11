@@ -25,7 +25,7 @@ public class ResultService {
         refresh();
     }
 
-    @Scheduled(fixedRate = 1000*60*6, initialDelay = 1000*60*11)
+//    @Scheduled(fixedRate = 1000*60*6, initialDelay = 1000*60*11)
     public void refresh() {
         matchPoints().clear();
         LocalDateTime tenWeeks = LocalDateTime.now().plusDays(1).minusWeeks(10);
@@ -127,4 +127,5 @@ public class ResultService {
         leagueService.purge(teamMatch);
         return true;
     }
+
 }
