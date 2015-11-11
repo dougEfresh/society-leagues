@@ -130,8 +130,7 @@ public class LeagueService {
         if (entity == null) {
             return null;
         }
-        cacheUtil.getCache(entity).getRepo().delete(entity);
-        cacheUtil.getCache(entity).get().remove(entity);
+        cacheUtil.getCache(entity).remove(entity);
         for (DaoListener daoListener : daoListeners) {
             daoListener.onDelete(entity);
         }
