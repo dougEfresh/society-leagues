@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 @Component
 public class UserService {
     @Autowired JdbcTemplate jdbcTemplate;
-    @Autowired UserRepository userRepository;
     @Autowired EmailService emailService;
     @Autowired LeagueService leagueService;
     @Value("${service-url:http://leaguesdev.societybilliards.com}") String serviceUrl;
@@ -125,7 +124,7 @@ public class UserService {
                 continue;
             logger.info("Updating user profile " + u.getName() + "  " + profile);
             if (!profile.getProfileUrl().equals(u.getUserProfile().getProfileUrl())
-                    && !profile.getImageUrl().equals(u.getUserProfile().getImageUrl())) {
+                    || !profile.getImageUrl().equals(u.getUserProfile().getImageUrl())) {
                 u.setUserProfile(profile);
                 leagueService.save(u);
             }
@@ -144,7 +143,7 @@ public class UserService {
                 continue;
             logger.info("Updating user profile " + u.getName()  + "  " + profile);
             u.setUserProfile(profile);
-            userRepository.save(u);
+            leagueService.save(u);
         }
     }
 }

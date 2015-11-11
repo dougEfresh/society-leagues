@@ -58,7 +58,7 @@ public class SocialConfig  {
     public ProviderSignInController providerSignInController() {
         ProviderSignInController controller = new ProviderSignInController(connectionFactoryLocator, usersConnectionRepository,signup);
         controller.setApplicationUrl(appUrl);
-        controller.setSignInUrl(appUrl + "/#/fb/signin");
+        controller.setSignInUrl(appUrl + "/#/fb/signup");
         controller.setSignUpUrl(appUrl + "/#/fb/signup");
         controller.setPostSignInUrl(appUrl + "/#/app/home");
         controller.addSignInInterceptor(new ProviderSignInInterceptor<Object>() {
