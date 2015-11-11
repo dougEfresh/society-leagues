@@ -32,7 +32,7 @@ public class User extends LeagueObject {
 
     Set<Team> currentTeams = new HashSet<>();
 
-    UserProfile userProfile;
+    UserProfile userProfile = new UserProfile();
 
     public User() {
         this.created = LocalDateTime.now();
