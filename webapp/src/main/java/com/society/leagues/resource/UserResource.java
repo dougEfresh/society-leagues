@@ -167,13 +167,18 @@ public class UserResource {
             return User.defaultUser();
         }
         logger.info("Got reset password request for " + token + " " + existingUser.getEmail());
-        if (!existingUser.getTokens().contains(new TokenReset(token))) {
-            logger.info("No tokens found");
+        if (existingUser.getTokens() == null)  {
+            logger.error("No tokens with user " + existingUser.getEmail());
             return User.defaultUser();
         }
-        existingUser.getTokens().clear();
-        existingUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-        return leagueService.save(existingUser);
+        for (TokenReset reset : existingUser.getTokens()) {
+             if (token.equals(reset.getToken())) {
+                 existingUser.getTokens().clear();
+                 existingUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+                 return leagueService.save(existingUser);
+             }
+        }
+        return User.defaultUser();
     }
 
 
