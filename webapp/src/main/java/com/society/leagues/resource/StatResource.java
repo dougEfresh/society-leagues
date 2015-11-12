@@ -109,13 +109,14 @@ public class StatResource {
              return Collections.emptyList();
 
          List<Stat> playerStats = statService.getUserSeasonStats().get(season);
-         if (!season.isChallenge())
+         if (!season.isChallenge() || playerStats == null)
              return playerStats;
 
          List<MatchPoints> points = resultService.matchPoints();
          if (points == null) {
              return playerStats;
          }
+
          for (Stat stat : playerStats) {
             double totalPoints = 0d;
             User u = stat.getTeam().getChallengeUser();

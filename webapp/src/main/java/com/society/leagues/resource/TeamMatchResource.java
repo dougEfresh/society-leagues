@@ -97,6 +97,7 @@ public class TeamMatchResource {
         TeamMatch existing = leagueService.findOne(teamMatch);
         if  (existing == null)
             existing = new TeamMatch();
+
         existing.setHome(leagueService.findOne(teamMatch.getHome()));
         existing.setAway(leagueService.findOne(teamMatch.getAway()));
         existing.setAwayRacks(teamMatch.getAwayRacks());
@@ -104,15 +105,26 @@ public class TeamMatchResource {
         existing.setSetAwayWins(teamMatch.getSetAwayWins());
         existing.setSetHomeWins(teamMatch.getSetHomeWins());
         existing.setMatchDate(teamMatch.getMatchDate());
+        PlayerResult result = leagueService.findAll(PlayerResult.class).stream().parallel().filter(p -> p.getTeamMatch().equals(teamMatch)).findFirst().orElse(null);
+
+          if (teamMatch.getSeason().isChallenge()) {
+            if (result == null) {
+                result = new PlayerResult();
+                result.setTeamMatch(teamMatch);
+                result.setPlayerHome(teamMatch.getHome().getChallengeUser());
+                result.setPlayerHomeHandicap(teamMatch.getAway().getChallengeUser().getHandicap(teamMatch.getSeason()));
+                result.setPlayerAway(teamMatch.getAway().getChallengeUser());
+                result.setPlayerAwayHandicap(teamMatch.getAway().getChallengeUser().getHandicap(teamMatch.getSeason()));
+            }
+        }
+
+        result.setHomeRacks(teamMatch.getHomeRacks());
+        result.setAwayRacks(teamMatch.getAwayRacks());
+        leagueService.save(result);
+
         return leagueService.save(existing);
     }
 
-    @RequestMapping(value = "/admin/delete", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Boolean delete(@RequestBody TeamMatch teamMatch) {
-        leagueService.purge(teamMatch);
-        return true;
-    }
 
     @RequestMapping(value = "/admin/add/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
