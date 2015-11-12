@@ -145,8 +145,8 @@ public class UserResource {
     }
 
     @RequestMapping(value = "/reset/request", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public TokenReset reset(@RequestBody User user) {
-        User u = leagueService.findByLogin(user.getLogin());
+    public TokenReset reset(@RequestBody Map<String,String> user) {
+        User u = leagueService.findByLogin(user.get("login"));
         if (u == null) {
             return null;
         }
