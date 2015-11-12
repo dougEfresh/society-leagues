@@ -60,7 +60,7 @@ public class TeamMatchResource {
         copy.setSetAwayWins(0);
         copy.setSetHomeWins(0);
         copy.setMatchDate(dt);
-        leagueService.save(copy);
+        //leagueService.save(copy);
         return getTeamMatchSeason(principal, s.getId(),"upcoming");
     }
 
