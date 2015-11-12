@@ -107,20 +107,20 @@ public class TeamMatchResource {
         existing.setMatchDate(teamMatch.getMatchDate());
         PlayerResult result = leagueService.findAll(PlayerResult.class).stream().parallel().filter(p -> p.getTeamMatch().equals(teamMatch)).findFirst().orElse(null);
         existing = leagueService.save(existing);
-        
-          if (teamMatch.getSeason().isChallenge()) {
+
+          if (existing.getSeason().isChallenge()) {
             if (result == null) {
                 result = new PlayerResult();
-                result.setTeamMatch(teamMatch);
-                result.setPlayerHome(teamMatch.getHome().getChallengeUser());
-                result.setPlayerHomeHandicap(teamMatch.getAway().getChallengeUser().getHandicap(teamMatch.getSeason()));
-                result.setPlayerAway(teamMatch.getAway().getChallengeUser());
-                result.setPlayerAwayHandicap(teamMatch.getAway().getChallengeUser().getHandicap(teamMatch.getSeason()));
+                result.setTeamMatch(existing);
+                result.setPlayerHome(existing.getHome().getChallengeUser());
+                result.setPlayerHomeHandicap(existing.getAway().getChallengeUser().getHandicap(existing.getSeason()));
+                result.setPlayerAway(existing.getAway().getChallengeUser());
+                result.setPlayerAwayHandicap(existing.getAway().getChallengeUser().getHandicap(existing.getSeason()));
             }
         }
 
-        result.setHomeRacks(teamMatch.getHomeRacks());
-        result.setAwayRacks(teamMatch.getAwayRacks());
+        result.setHomeRacks(existing.getHomeRacks());
+        result.setAwayRacks(existing.getAwayRacks());
         leagueService.save(result);
 
         return existing;
