@@ -4,6 +4,9 @@ import ch.qos.logback.core.rolling.RollingFileAppender
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 
 import static ch.qos.logback.classic.Level.*
+import ch.qos.logback.classic.net.SyslogAppender
+
+import static ch.qos.logback.classic.Level.DEBUG
 
 appender("FILE", RollingFileAppender) {
  def rootDir = new File("/tmp/logs");
@@ -30,6 +33,12 @@ appender("CONSOLE", ch.qos.logback.core.ConsoleAppender) {
   	level = TRACE  }
 }
 
+appender("SYSLOG", SyslogAppender) {
+  syslogHost = "localhost"
+  facility = "DAEMON"
+  suffixPattern = "[%thread] %logger %msg"
+}
+
 logger("com.society", DEBUG)
 logger("org.springframework.web",INFO)
 logger("org.springframework.security",INFO)
@@ -37,4 +46,4 @@ logger("org.springframework.web.authentication",DEBUG)
 logger("org.springframework.web.social",DEBUG)
 logger("org.springframework.data.mongodb",INFO)
 
-root(INFO, ["FILE", "CONSOLE"])
+root(INFO, ["FILE", "CONSOLE","SYSLOG"])
