@@ -94,7 +94,15 @@ public class TeamMatchResource {
     @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public TeamMatch modify(@RequestBody TeamMatch teamMatch) {
-        return leagueService.save(teamMatch);
+        TeamMatch existing = leagueService.findOne(teamMatch);
+        existing.setHome(leagueService.findOne(teamMatch.getHome()));
+        existing.setAway(leagueService.findOne(teamMatch.getAway()));
+        existing.setAwayRacks(teamMatch.getAwayRacks());
+        existing.setHomeRacks(teamMatch.getHomeRacks());
+        existing.setSetAwayWins(teamMatch.getSetAwayWins());
+        existing.setSetHomeWins(teamMatch.getSetHomeWins());
+        existing.setMatchDate(teamMatch.getMatchDate());
+        return leagueService.save(existing);
     }
 
     @RequestMapping(value = "/admin/delete", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
