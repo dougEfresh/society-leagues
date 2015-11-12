@@ -61,7 +61,7 @@ public class TeamMatchResource {
         copy.setSetHomeWins(0);
         copy.setMatchDate(dt);
         //leagueService.save(copy);
-        return getTeamMatchSeason(principal, s.getId(),"upcoming");
+        return getTeamMatchSeason(principal, s.getId(), "upcoming");
     }
 
     @RequestMapping(value = "/admin/modify/{teamMatchId}/team/{type}/{teamId}",
@@ -106,7 +106,8 @@ public class TeamMatchResource {
         existing.setSetHomeWins(teamMatch.getSetHomeWins());
         existing.setMatchDate(teamMatch.getMatchDate());
         PlayerResult result = leagueService.findAll(PlayerResult.class).stream().parallel().filter(p -> p.getTeamMatch().equals(teamMatch)).findFirst().orElse(null);
-
+        existing = leagueService.save(existing);
+        
           if (teamMatch.getSeason().isChallenge()) {
             if (result == null) {
                 result = new PlayerResult();
@@ -122,7 +123,7 @@ public class TeamMatchResource {
         result.setAwayRacks(teamMatch.getAwayRacks());
         leagueService.save(result);
 
-        return leagueService.save(existing);
+        return existing;
     }
 
 
