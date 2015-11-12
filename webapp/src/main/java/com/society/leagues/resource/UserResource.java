@@ -145,16 +145,11 @@ public class UserResource {
     }
 
     @RequestMapping(value = "/reset/request", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public TokenReset reset(Principal principal, @RequestBody User user) {
-        User u = get(principal.getName());
+    public TokenReset reset(@RequestBody User user) {
+        User u = leagueService.findByLogin(user.getLogin());
         if (u == null) {
             return null;
         }
-        if (!u.isAdmin() && !user.equals(u)) {
-            logger.error("ERROR ERROR ERROR");
-            return null;
-        }
-        //user = leagueService.findOne(user);
         TokenReset reset = userService.resetRequest(u);
         return u.isAdmin() ? reset : new TokenReset("");
     }
