@@ -161,8 +161,12 @@ public class UserResource {
 
     @RequestMapping(value = "/reset/password/{token}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public User reset(@PathVariable String token, @RequestBody User user) {
-        User existingUser = leagueService.findByLogin(user.getLogin());
-        logger.info("Got reset password request for " + token + " " + existingUser.getLogin());
+        User existingUser = leagueService.findByLogin(user.getEmail());
+        if (existingUser == null) {
+            logger.info("New User Found");
+            return User.defaultUser();
+        }
+        logger.info("Got reset password request for " + token + " " + existingUser.getEmail());
         if (!existingUser.getTokens().contains(new TokenReset(token))) {
             return User.defaultUser();
         }
