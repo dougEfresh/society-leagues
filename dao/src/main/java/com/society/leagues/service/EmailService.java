@@ -31,8 +31,8 @@ public class EmailService {
     public void email(String recipient, String subject, String body) {
         try {
             service.send(new Email(recipient,subject,body));
-        } catch (Throwable t) {
-            logger.error(t.getLocalizedMessage(),t);
+        } catch (Exception t) {
+            logger.error(t.getLocalizedMessage());
         }
     }
 }

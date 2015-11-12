@@ -70,7 +70,7 @@ public class UserService {
                             "/#/reset",
                             reset.getToken())
             );
-        } catch (Throwable t) {
+        } catch (Exception ignore) {
             logger.error("Error communicating to email provider");
         }
         return reset;
