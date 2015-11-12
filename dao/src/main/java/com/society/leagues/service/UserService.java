@@ -66,7 +66,7 @@ public class UserService {
             emailService.email(u.getEmail(), "Password Reset Request",
                     String.format("Hello %s,\n     Please click: %s%s/%s \n to reset your password.",
                             u.getFirstName(),
-                            serviceUrl,
+                            serviceUrl.charAt(serviceUrl.length()-1) == '/' ? serviceUrl.substring(0,serviceUrl.length()-1) : serviceUrl,
                             "/#/reset",
                             reset.getToken())
             );
