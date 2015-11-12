@@ -79,7 +79,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .failureUrl("/")
                     .usernameParameter("username").passwordParameter("password").successHandler(loginHandler).failureHandler(fHandler)
                     .and().logout().logoutUrl("/api/logout").logoutSuccessHandler(logoutHandler).and()
-                    .authorizeRequests().antMatchers("/api/sheets/**","/signin/**","/api/signup","/api/authenticate","/api/logout").permitAll()
+                    .authorizeRequests().antMatchers(
+                "/api/sheets/**","/signin/**","/api/signup","/api/authenticate","/api/logout","/api/user/reset/**").permitAll()
                     .antMatchers("/**").authenticated().and()
                     .exceptionHandling().authenticationEntryPoint(new AuthenticationEntry("/index.html")).and()
                     //.formLogin().permitAll().loginProcessingUrl("/api/authenticate").usernameParameter("username").passwordParameter("password").successHandler(loginHandler).failureHandler(fHandler).and()
