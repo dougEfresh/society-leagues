@@ -77,7 +77,7 @@ public class StatService {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(1000*120);
+                    Thread.sleep(1000*60);
                 } catch (InterruptedException e) {
                     return;
                 }
