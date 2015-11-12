@@ -155,8 +155,8 @@ public class UserResource {
     }
 
     @RequestMapping(value = "/reset/password/{token}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public User reset(@PathVariable String token, @RequestBody User user) {
-        User existingUser = leagueService.findByLogin(user.getLogin());
+    public User reset(@PathVariable String token, @RequestBody Map<String,String> user) {
+        User existingUser = leagueService.findByLogin(user.get("login"));
         if (existingUser == null) {
             logger.error("No User Found");
             return User.defaultUser();
@@ -169,7 +169,7 @@ public class UserResource {
         for (TokenReset reset : existingUser.getTokens()) {
              if (token.equals(reset.getToken())) {
                  existingUser.getTokens().clear();
-                 existingUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+                 existingUser.setPassword(new BCryptPasswordEncoder().encode(user.get("password")));
                  return leagueService.save(existingUser);
              }
         }
