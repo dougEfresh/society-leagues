@@ -64,10 +64,10 @@ public class UserService {
         leagueService.save(u);
         try {
             emailService.email(u.getEmail(), "Password Reset Request",
-                    String.format("Hello %s,\n     Please click: %s%s=%s \n to reset your password.",
+                    String.format("Hello %s,\n     Please click: %s%s/%s \n to reset your password.",
                             u.getFirstName(),
                             serviceUrl,
-                            "/#/reset?token",
+                            "/#/reset",
                             reset.getToken())
             );
         } catch (Throwable t) {
