@@ -107,7 +107,7 @@ public enum Handicap {
                 raceChart[i][j] = "0";
             }
         }
-        raceChart[Handicap.D.ordinal()][Handicap.D.ordinal()] = "7";
+        raceChart[Handicap.D.ordinal()][Handicap.D.ordinal()] = "0/7";
         raceChart[Handicap.D.ordinal()][Handicap.DPLUS.ordinal()] = "1/7";
         raceChart[Handicap.D.ordinal()][Handicap.C.ordinal()] = "2/7";
         raceChart[Handicap.D.ordinal()][Handicap.CPLUS.ordinal()] = "3/8";
@@ -120,7 +120,7 @@ public enum Handicap {
         raceChart[Handicap.D.ordinal()][Handicap.PRO.ordinal()] = "9/11";
 
         raceChart[Handicap.DPLUS.ordinal()][Handicap.D.ordinal()] = "1/7";
-        raceChart[Handicap.DPLUS.ordinal()][Handicap.DPLUS.ordinal()] = "7";
+        raceChart[Handicap.DPLUS.ordinal()][Handicap.DPLUS.ordinal()] = "0/7";
         raceChart[Handicap.DPLUS.ordinal()][Handicap.C.ordinal()] = "1/7";
         raceChart[Handicap.DPLUS.ordinal()][Handicap.CPLUS.ordinal()] = "2/7";
         raceChart[Handicap.DPLUS.ordinal()][Handicap.B.ordinal()] = "3/8";
@@ -133,7 +133,7 @@ public enum Handicap {
 
         raceChart[Handicap.C.ordinal()][Handicap.D.ordinal()] = "2/7";
         raceChart[Handicap.C.ordinal()][Handicap.DPLUS.ordinal()] = "1/7";
-        raceChart[Handicap.C.ordinal()][Handicap.C.ordinal()] = "7";
+        raceChart[Handicap.C.ordinal()][Handicap.C.ordinal()] = "0/7";
         raceChart[Handicap.C.ordinal()][Handicap.CPLUS.ordinal()] = "1/7";
         raceChart[Handicap.C.ordinal()][Handicap.B.ordinal()] = "2/7";
         raceChart[Handicap.C.ordinal()][Handicap.BPLUS.ordinal()] = "3/8";
@@ -146,7 +146,7 @@ public enum Handicap {
         raceChart[Handicap.CPLUS.ordinal()][Handicap.D.ordinal()] = "3/8";
         raceChart[Handicap.CPLUS.ordinal()][Handicap.DPLUS.ordinal()] = "2/7";
         raceChart[Handicap.CPLUS.ordinal()][Handicap.C.ordinal()] = "1/7";
-        raceChart[Handicap.CPLUS.ordinal()][Handicap.CPLUS.ordinal()] = "7";
+        raceChart[Handicap.CPLUS.ordinal()][Handicap.CPLUS.ordinal()] = "0/7";
         raceChart[Handicap.CPLUS.ordinal()][Handicap.B.ordinal()] = "1/7";
         raceChart[Handicap.CPLUS.ordinal()][Handicap.BPLUS.ordinal()] = "2/7";
         raceChart[Handicap.CPLUS.ordinal()][Handicap.A.ordinal()] = "3/8";
@@ -159,7 +159,7 @@ public enum Handicap {
         raceChart[Handicap.B.ordinal()][Handicap.DPLUS.ordinal()] = "3/8";
         raceChart[Handicap.B.ordinal()][Handicap.C.ordinal()] = "2/7";
         raceChart[Handicap.B.ordinal()][Handicap.CPLUS.ordinal()] = "1/7";
-        raceChart[Handicap.B.ordinal()][Handicap.B.ordinal()] = "7";
+        raceChart[Handicap.B.ordinal()][Handicap.B.ordinal()] = "0/7";
         raceChart[Handicap.B.ordinal()][Handicap.BPLUS.ordinal()] = "1/7";
         raceChart[Handicap.B.ordinal()][Handicap.A.ordinal()] = "2/7";
         raceChart[Handicap.B.ordinal()][Handicap.APLUS.ordinal()] = "3/8";
@@ -172,7 +172,7 @@ public enum Handicap {
         raceChart[Handicap.BPLUS.ordinal()][Handicap.C.ordinal()] = "3/8";
         raceChart[Handicap.BPLUS.ordinal()][Handicap.CPLUS.ordinal()] = "2/7";
         raceChart[Handicap.BPLUS.ordinal()][Handicap.B.ordinal()] = "1/7";
-        raceChart[Handicap.BPLUS.ordinal()][Handicap.BPLUS.ordinal()] = "7";
+        raceChart[Handicap.BPLUS.ordinal()][Handicap.BPLUS.ordinal()] = "0/7";
         raceChart[Handicap.BPLUS.ordinal()][Handicap.A.ordinal()] = "1/7";
         raceChart[Handicap.BPLUS.ordinal()][Handicap.APLUS.ordinal()] = "2/7";
         raceChart[Handicap.BPLUS.ordinal()][Handicap.OPEN.ordinal()] = "3/8";
@@ -185,7 +185,7 @@ public enum Handicap {
         raceChart[Handicap.A.ordinal()][Handicap.CPLUS.ordinal()] = "3/8";
         raceChart[Handicap.A.ordinal()][Handicap.B.ordinal()] = "2/8";
         raceChart[Handicap.A.ordinal()][Handicap.BPLUS.ordinal()] = "1/8";
-        raceChart[Handicap.A.ordinal()][Handicap.A.ordinal()] = "8";
+        raceChart[Handicap.A.ordinal()][Handicap.A.ordinal()] = "0/8";
         raceChart[Handicap.A.ordinal()][Handicap.APLUS.ordinal()] = "1/8";
         raceChart[Handicap.A.ordinal()][Handicap.OPEN.ordinal()] = "2/8";
         raceChart[Handicap.A.ordinal()][Handicap.OPENPLUS.ordinal()] = "2/9";
@@ -198,7 +198,7 @@ public enum Handicap {
         raceChart[Handicap.APLUS.ordinal()][Handicap.B.ordinal()] = "3/8";
         raceChart[Handicap.APLUS.ordinal()][Handicap.BPLUS.ordinal()] = "2/8";
         raceChart[Handicap.APLUS.ordinal()][Handicap.A.ordinal()] = "1/8";
-        raceChart[Handicap.APLUS.ordinal()][Handicap.APLUS.ordinal()] = "8";
+        raceChart[Handicap.APLUS.ordinal()][Handicap.APLUS.ordinal()] = "0/8";
         raceChart[Handicap.APLUS.ordinal()][Handicap.OPEN.ordinal()] = "1/9";
         raceChart[Handicap.APLUS.ordinal()][Handicap.OPENPLUS.ordinal()] = "2/9";
         raceChart[Handicap.APLUS.ordinal()][Handicap.PRO.ordinal()] = "4/9";
@@ -211,7 +211,7 @@ public enum Handicap {
         raceChart[Handicap.OPEN.ordinal()][Handicap.BPLUS.ordinal()] = "3/10";
         raceChart[Handicap.OPEN.ordinal()][Handicap.A.ordinal()] = "2/9";
         raceChart[Handicap.OPEN.ordinal()][Handicap.APLUS.ordinal()] = "1/9";
-        raceChart[Handicap.OPEN.ordinal()][Handicap.OPEN.ordinal()] = "9";
+        raceChart[Handicap.OPEN.ordinal()][Handicap.OPEN.ordinal()] = "0/9";
         raceChart[Handicap.OPEN.ordinal()][Handicap.OPENPLUS.ordinal()] = "1/9";
         raceChart[Handicap.OPEN.ordinal()][Handicap.PRO.ordinal()] = "3/10";
 
@@ -224,7 +224,7 @@ public enum Handicap {
         raceChart[Handicap.OPENPLUS.ordinal()][Handicap.A.ordinal()] = "3/10";
         raceChart[Handicap.OPENPLUS.ordinal()][Handicap.APLUS.ordinal()] = "2/9";
         raceChart[Handicap.OPENPLUS.ordinal()][Handicap.OPEN.ordinal()] = "1/";
-        raceChart[Handicap.OPENPLUS.ordinal()][Handicap.OPENPLUS.ordinal()] = "9";
+        raceChart[Handicap.OPENPLUS.ordinal()][Handicap.OPENPLUS.ordinal()] = "0/9";
         raceChart[Handicap.OPENPLUS.ordinal()][Handicap.PRO.ordinal()] = "2/10";
 
         raceChart[Handicap.PRO.ordinal()][Handicap.D.ordinal()] = "9/11";
@@ -237,6 +237,6 @@ public enum Handicap {
         raceChart[Handicap.PRO.ordinal()][Handicap.APLUS.ordinal()] = "3/9";
         raceChart[Handicap.PRO.ordinal()][Handicap.OPEN.ordinal()] = "3/10";
         raceChart[Handicap.PRO.ordinal()][Handicap.OPENPLUS.ordinal()] = "2/10";
-        raceChart[Handicap.PRO.ordinal()][Handicap.PRO.ordinal()] = "9";
+        raceChart[Handicap.PRO.ordinal()][Handicap.PRO.ordinal()] = "0/9";
     }
 }
