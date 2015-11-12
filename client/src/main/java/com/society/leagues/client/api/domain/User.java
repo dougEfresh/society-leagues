@@ -18,9 +18,9 @@ public class User extends LeagueObject {
 
     @NotNull String firstName = "";
     @NotNull String lastName = "";
-    @NotNull String email = "";
-    String password = "";
-    @NotNull String login = "";
+    @NotNull String email;
+    String password;
+    @NotNull String login;
     @NotNull Role role = Role.PLAYER;
     @NotNull Status status = Status.ACTIVE;
 
