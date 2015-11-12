@@ -243,7 +243,7 @@ public class TeamMatchResource {
         Season s = leagueService.findOne(new Season(id));
         List<TeamMatch> results;
         Predicate<TeamMatch> filter;
-        LocalDateTime  now  = LocalDateTime.now().plusDays(1);
+        LocalDateTime  now  = LocalDateTime.now().minusDays(1);
         if (type.equals("upcoming")) {
             filter = teamMatch -> teamMatch.getMatchDate().isAfter(now);
         } else if (type.equals("pending")) {
