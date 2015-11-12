@@ -96,7 +96,7 @@ public class TeamMatchResource {
     public TeamMatch modify(@RequestBody TeamMatch teamMatch) {
         TeamMatch existing = leagueService.findOne(teamMatch);
         if  (existing == null)
-            return new TeamMatch();
+            existing = new TeamMatch();
         existing.setHome(leagueService.findOne(teamMatch.getHome()));
         existing.setAway(leagueService.findOne(teamMatch.getAway()));
         existing.setAwayRacks(teamMatch.getAwayRacks());
