@@ -76,11 +76,6 @@ public class StatService {
         threadPoolTaskExecutor.submit(new Runnable() {
             @Override
             public void run() {
-                try {
-                    Thread.sleep(1000*60);
-                } catch (InterruptedException e) {
-                    return;
-                }
                 logger.info("Refreshing stats");
                 long start = System.currentTimeMillis();
                 final List<Team> teams = leagueService.findAll(Team.class);
