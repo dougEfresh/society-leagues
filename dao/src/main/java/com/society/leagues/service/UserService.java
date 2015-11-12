@@ -59,11 +59,11 @@ public class UserService {
 
     public TokenReset resetRequest(User u) {
         TokenReset reset = new TokenReset(UUID.randomUUID().toString().replaceAll("-",""));
-        logger.info("Reset Token Request: " + reset.getToken() + " for " + u.getLogin());
+        logger.info("Reset Token Request: " + reset.getToken() + " for " + u);
         u.getTokens().add(reset);
         leagueService.save(u);
         try {
-            emailService.email(u.getEmail(), "Password Reset Request",
+            emailService.email(u.getLogin(), "Password Reset Request",
                     String.format("Hello %s,\n     Please click: %s%s/%s \n to reset your password.",
                             u.getFirstName(),
                             serviceUrl.charAt(serviceUrl.length()-1) == '/' ? serviceUrl.substring(0,serviceUrl.length()-1) : serviceUrl,
