@@ -163,7 +163,7 @@ public class UserResource {
     public User reset(@PathVariable String token, @RequestBody User user) {
         User existingUser = leagueService.findByLogin(user.getLogin());
         if (existingUser == null) {
-            logger.error("New User Found");
+            logger.error("No User Found");
             return User.defaultUser();
         }
         logger.info("Got reset password request for " + token + " " + existingUser.getEmail());
