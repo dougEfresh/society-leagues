@@ -159,15 +159,15 @@ public class UserResource {
         return u.isAdmin() ? reset : new TokenReset("");
     }
 
-    @RequestMapping(value = "/reset/password/{token}/{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public User reset(@PathVariable String token, @PathVariable String id ,@RequestBody String password) {
-        User existingUser = leagueService.findOne(new User(id));
+    @RequestMapping(value = "/reset/password/{token}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public User reset(@PathVariable String token, @RequestBody User user) {
+        User existingUser = leagueService.findByLogin(user.getLogin());
         logger.info("Got reset password request for " + token + " " + existingUser.getLogin());
         if (!existingUser.getTokens().contains(new TokenReset(token))) {
             return User.defaultUser();
         }
         existingUser.getTokens().clear();
-        existingUser.setPassword(new BCryptPasswordEncoder().encode(password));
+        existingUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         return leagueService.save(existingUser);
     }
 
