@@ -16,17 +16,17 @@ import java.util.stream.Collectors;
 
 public class User extends LeagueObject {
 
-    @NotNull String firstName;
-    @NotNull String lastName;
-    @NotNull String email;
-    String password;
-    @NotNull String login;
+    @NotNull String firstName = "";
+    @NotNull String lastName = "";
+    @NotNull String email = "";
+    String password = "";
+    @NotNull String login = "";
     @NotNull Role role = Role.PLAYER;
     @NotNull Status status = Status.ACTIVE;
 
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
-    LocalDateTime created;
+    LocalDateTime created = LocalDateTime.now();
     Set<HandicapSeason> handicapSeasons = new HashSet<>();
     List<TokenReset>  tokens = new ArrayList<>();
 
@@ -55,6 +55,8 @@ public class User extends LeagueObject {
     }
 
     public String getShortName() {
+        if (firstName == null || lastName == null || lastName.length() == 0 || firstName.length() == 0)
+            return "";
         return firstName + " " + lastName.substring(0,1) + ".";
     }
 
@@ -118,6 +120,9 @@ public class User extends LeagueObject {
 
     @JsonView(PlayerResultView.class)
     public String getName() {
+        if (firstName == null || lastName == null)
+        return "";
+
         return firstName + " " + lastName;
     }
 
