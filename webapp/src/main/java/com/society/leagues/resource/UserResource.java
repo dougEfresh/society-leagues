@@ -168,6 +168,7 @@ public class UserResource {
         }
         logger.info("Got reset password request for " + token + " " + existingUser.getEmail());
         if (!existingUser.getTokens().contains(new TokenReset(token))) {
+            logger.info("No tokens found");
             return User.defaultUser();
         }
         existingUser.getTokens().clear();
