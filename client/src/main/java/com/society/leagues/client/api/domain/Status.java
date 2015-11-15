@@ -8,5 +8,6 @@ public enum Status {
     ACCEPTED,
     NOTIFY,
     SENT,
-    COMPLETE
+    COMPLETE,
+    UPCOMING
 }

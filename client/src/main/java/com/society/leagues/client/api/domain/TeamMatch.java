@@ -19,12 +19,15 @@ public class TeamMatch extends LeagueObject {
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     @NotNull LocalDateTime matchDate;
 
+    Division division = null;
     Integer homeRacks = 0;
     Integer awayRacks = 0;
     Integer setHomeWins = 0;
     Integer setAwayWins = 0;
     Integer matchNumber = 0;
     User referenceUser = null;
+
+    Status status;
 
     public TeamMatch(Team home, Team away, LocalDateTime matchDate) {
         this.home = home;
@@ -33,6 +36,14 @@ public class TeamMatch extends LeagueObject {
     }
 
     public TeamMatch() {
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public TeamMatch(String id) {
@@ -68,7 +79,10 @@ public class TeamMatch extends LeagueObject {
     }
 
     public Division getDivision() {
-        return getSeason().getDivision();
+        if (division == null)
+            return getSeason().getDivision();
+
+        return division;
     }
 
     public boolean isNine() {

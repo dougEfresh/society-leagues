@@ -19,6 +19,7 @@ public class ChallengeService  {
     @Autowired LeagueService leagueService;
     @Autowired ResultService resultService;
     @Autowired TeamService teamService;
+    @Autowired EmailService emailService;
 
     @PostConstruct
     public void init() {
@@ -41,9 +42,7 @@ public class ChallengeService  {
                     .filter(tm -> tm.getHome().equals(c.getChallenger()) && tm.getAway().equals(c.getOpponent())).findFirst().orElse(null);
 
             if (teamMatch != null) {
-                PlayerResult result = leagueService.findAll(PlayerResult.class).parallelStream().filter(p->p.getTeamMatch().equals(teamMatch)).findFirst().orElse(null);
-                leagueService.purge(result);
-                leagueService.purge(teamMatch);
+                resultService.removeTeamMatchResult(teamMatch);
             }
         }
 

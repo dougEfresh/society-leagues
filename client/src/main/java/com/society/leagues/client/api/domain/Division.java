@@ -7,6 +7,8 @@ public enum Division {
     MIXED_MONDAYS_MIXED(LeagueType.MIXED,"Scramble"),
     NINE_BALL_TUESDAYS(LeagueType.TEAM,"9ball Tues"),
     STRAIGHT(LeagueType.INDIVIDUAL,"Straight"),
+    MIXED_EIGHT(LeagueType.MIXED,"Scramble 8"),
+    MIXED_NINE(LeagueType.MIXED,"Scramble 9"),
     NINE_BALL_CHALLENGE(LeagueType.INDIVIDUAL,"Top Gun");
 
     final LeagueType leagueType;

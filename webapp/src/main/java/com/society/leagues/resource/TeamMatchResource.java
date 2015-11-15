@@ -264,6 +264,32 @@ public class TeamMatchResource {
         return (Map<String,List<TeamMatch>>) new TreeMap<>(group);
     }
 
+    @RequestMapping(value = {"/season/{id}/all"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public Map<String,List<TeamMatch>> getTeamMatches(Principal principal, @PathVariable String id) {
+        Season s = leagueService.findOne(new Season(id));
+        List<TeamMatch> results;
+        LocalDateTime  now  = LocalDateTime.now().minusDays(1);
+        results = leagueService.findCurrent(TeamMatch.class).stream().parallel()
+                .filter(tm -> tm.getSeason().equals(s))
+                .sorted(new Comparator<TeamMatch>() {
+                    @Override
+                    public int compare(TeamMatch teamMatch, TeamMatch t1) {
+                        return t1.getMatchDate().compareTo(teamMatch.getMatchDate());
+                    }
+                }).collect(Collectors.toList());
+        for (TeamMatch result : results) {
+            if (result.getMatchDate().isAfter(now))
+                result.setStatus(Status.UPCOMING);
+            if (result.getMatchDate().isBefore(now) && !result.isHasResults())
+                result.setStatus(Status.PENDING);
+            if (result.isHasResults())
+                result.setStatus(Status.COMPLETE);
+        }
+        Map<String,List<TeamMatch>> group = results.stream().collect(Collectors.groupingBy(tm -> tm.getMatchDate().toLocalDate().toString()));
+        return (Map<String,List<TeamMatch>>) new TreeMap<>(group);
+    }
+
+
     @RequestMapping(value = "/user/{id}/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public List<TeamMatch> getTeamMatchUser(Principal principal, @PathVariable String id, @PathVariable String type) {
         User u = leagueService.findOne(new User(id));
