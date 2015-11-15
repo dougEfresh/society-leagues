@@ -33,7 +33,7 @@ public class StatResource {
             consumes = MediaType.ALL_VALUE)
     public Stat getTeamStat(@PathVariable String id) {
         Team team = new Team(id);
-        return statService.getTeamStats().parallelStream().filter(s->s.getTeam().equals(team)).findFirst().orElse(null);
+        return leagueService.findOne(team).getStats();
     }
 
     @RequestMapping(value = "/team/{id}/members",
@@ -51,7 +51,6 @@ public class StatResource {
         for (User user : team.getMembers()) {
             if (stats.stream().filter(s->s.getUser().equals(user)).count() == 0) {
                 Stat stat = new Stat();
-                stat.setTeam(team);
                 stat.setUser(user);
                 stat.setSeason(team.getSeason());
                 stats.add(stat);
@@ -64,29 +63,30 @@ public class StatResource {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.ALL_VALUE)
-    public List<Stat> getSeasonStats(@PathVariable String id) {
+    public List<Team> getSeasonStats(@PathVariable String id) {
         Season season = leagueService.findOne(new Season(id));
-        List<Stat> stats = statService.getTeamStats().parallelStream().filter(s->s.getSeason().equals(season)).sorted(new Comparator<Stat>() {
+        List<Team> teams = leagueService.findAll(Team.class).parallelStream().filter(t->t.getSeason().equals(season)).sorted(new Comparator<Team>() {
             @Override
-            public int compare(Stat o1, Stat o2) {
-                return o1.getTeam().getRank().compareTo(o2.getTeam().getRank());
+            public int compare(Team o1, Team o2) {
+                return  o1.getRank().compareTo(o2.getRank());
             }
         }).collect(Collectors.toList());
 
         List<MatchPoints> points = resultService.matchPoints();
         if (!season.isChallenge())
-            return stats;
+            return teams;
 
-        for (Stat stat : stats) {
+        //TODO move to stat service
+        for (Team team: teams) {
             double totalPoints = 0d;
-            User u = stat.getTeam().getChallengeUser();
+            User u =  team.getChallengeUser();
             List<MatchPoints> pointsList = points.stream().parallel().filter(p->p.getUser().equals(u)).collect(Collectors.toList());
             for (MatchPoints matchPoints : pointsList) {
                 totalPoints += matchPoints.getWeightedAvg();
             }
-            stat.setPoints(totalPoints);
+            team.getStats().setPoints(totalPoints);
         }
-        return stats;
+        return teams;
     }
 
     @RequestMapping(value = "/matchpoints", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
@@ -119,8 +119,7 @@ public class StatResource {
 
          for (Stat stat : playerStats) {
             double totalPoints = 0d;
-            User u = stat.getTeam().getChallengeUser();
-
+            User u = stat.getUser();
             List<MatchPoints> pointsList = points.stream().parallel().filter(p-> p.getUser() != null && p.getUser().equals(u)).collect(Collectors.toList());
             for (MatchPoints matchPoints : pointsList) {
                 totalPoints += matchPoints.getWeightedAvg();

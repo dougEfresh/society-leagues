@@ -80,9 +80,9 @@ public class ChallengeResource {
         Challenge c = leagueService.findOne(challenge);
         challengeService.cancel(c);
         if (c.getUserChallenger().equals(u)) {
-            sendEmail(c.getUserOpponent(), c.getUserChallenger(), Status.CANCELLED, null, null);
+            sendEmail(c.getUserOpponent(), c.getUserChallenger(), Status.CANCELLED, null, challenge.getMessage());
         } else {
-            sendEmail(c.getUserChallenger(), c.getUserOpponent(), Status.CANCELLED, null, null);
+            sendEmail(c.getUserChallenger(), c.getUserOpponent(), Status.CANCELLED, null, challenge.getMessage());
         }
         return c;
     }
@@ -122,9 +122,11 @@ public class ChallengeResource {
         try {
             LocalDate dt = LocalDate.parse(date);
             Collection<Team> teams = challengeUsers(principal);
+            User u  = leagueService.findByLogin(principal.getName());
             List<Challenge> challenges = leagueService.findAll(Challenge.class).stream().parallel().
                     filter(c -> c.getLocalDate().atStartOfDay().toLocalDate().isEqual(dt)).
                     filter(c->c.getStatus() == Status.ACCEPTED)
+                    .filter(c->c.getUserChallenger().equals(u) || c.getUserOpponent().equals(u))
                     .collect(Collectors.toList());
             List<Team> available = new ArrayList<>();
             for (Team team : teams) {

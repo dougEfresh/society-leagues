@@ -1,14 +1,12 @@
 package com.society.leagues.service;
 
-import com.society.leagues.client.api.domain.MatchPoints;
-import com.society.leagues.client.api.domain.PlayerResult;
-import com.society.leagues.client.api.domain.TeamMatch;
-import com.society.leagues.client.api.domain.User;
+import com.society.leagues.client.api.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,6 +21,30 @@ public class ResultService {
     @PostConstruct
     public void init() {
         refresh();
+        scrambleGameType();
+    }
+
+    public void scrambleGameType() {
+        Map<LocalDate,List<TeamMatch>> matches = leagueService.findCurrent(TeamMatch.class).parallelStream()
+                .filter(tm -> tm.getSeason().isScramble())
+                .filter(tm -> tm.getDivision() == Division.MIXED_MONDAYS_MIXED)
+                .collect(Collectors.groupingBy(
+                        tm->tm.getMatchDate().toLocalDate()
+        ));
+        Division division = Division.MIXED_EIGHT;
+        for (LocalDate localDate : matches.keySet().stream().sorted(new Comparator<LocalDate>() {
+            @Override
+            public int compare(LocalDate o1, LocalDate o2) {
+                return o1.compareTo(o2);
+            }
+        }).collect(Collectors.toList())) {
+
+            for (TeamMatch teamMatch : matches.get(localDate)) {
+                teamMatch.setDivision(division);
+                leagueService.save(teamMatch);
+            }
+            division = division == Division.MIXED_EIGHT ? Division.MIXED_NINE : Division.MIXED_EIGHT;
+        }
     }
 
 //    @Scheduled(fixedRate = 1000*60*6, initialDelay = 1000*60*11)

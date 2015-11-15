@@ -105,10 +105,15 @@ public class TeamMatchResource {
         existing.setSetAwayWins(teamMatch.getSetAwayWins());
         existing.setSetHomeWins(teamMatch.getSetHomeWins());
         existing.setMatchDate(teamMatch.getMatchDate());
-        PlayerResult result = leagueService.findAll(PlayerResult.class).stream().parallel().filter(p -> p.getTeamMatch().equals(teamMatch)).findFirst().orElse(null);
+        if (existing.getSeason().isScramble()) {
+            if (teamMatch.getDivision() != null)
+                existing.setDivision(teamMatch.getDivision());
+        }
+
         existing = leagueService.save(existing);
 
-          if (existing.getSeason().isChallenge()) {
+        if (existing.getSeason().isChallenge()) {
+            PlayerResult result = leagueService.findAll(PlayerResult.class).stream().parallel().filter(p -> p.getTeamMatch().equals(teamMatch)).findFirst().orElse(null);
             if (result == null) {
                 result = new PlayerResult();
                 result.setTeamMatch(existing);
@@ -116,12 +121,14 @@ public class TeamMatchResource {
                 result.setPlayerHomeHandicap(existing.getAway().getChallengeUser().getHandicap(existing.getSeason()));
                 result.setPlayerAway(existing.getAway().getChallengeUser());
                 result.setPlayerAwayHandicap(existing.getAway().getChallengeUser().getHandicap(existing.getSeason()));
+                result.setHomeRacks(existing.getHomeRacks());
+                result.setAwayRacks(existing.getAwayRacks());
+            } else {
+                result.setHomeRacks(existing.getHomeRacks());
+                result.setAwayRacks(existing.getAwayRacks());
             }
+              leagueService.save(result);
         }
-
-        result.setHomeRacks(existing.getHomeRacks());
-        result.setAwayRacks(existing.getAwayRacks());
-        leagueService.save(result);
 
         return existing;
     }
@@ -129,7 +136,7 @@ public class TeamMatchResource {
 
     @RequestMapping(value = "/admin/add/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public TeamMatch add(@PathVariable String seasonId) {
+    public TeamMatch add(Principal principal, @PathVariable String seasonId) {
         TeamMatch tm = new TeamMatch();
         tm.setMatchDate(LocalDateTime.now());
         tm.setHome(leagueService.findAll(Team.class).stream().filter(t -> t.getSeason().getId().equals(seasonId)).findFirst().get());

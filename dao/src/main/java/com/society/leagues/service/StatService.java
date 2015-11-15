@@ -7,19 +7,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Component
 public class StatService {
     final static Logger logger = Logger.getLogger(StatService.class);
-    final AtomicReference<List<Stat>> teamStats = new AtomicReference<>(new ArrayList<>(100));
-    final AtomicReference<List<Stat>> lifetimeStats = new AtomicReference<>(new ArrayList<>(1000));
+    final AtomicReference<List<Stat>> lifetimeStats = new AtomicReference<>(new CopyOnWriteArrayList<Stat>());
     final AtomicReference<Map<Season,List<Stat>>> userSeasonStat = new AtomicReference<>(new HashMap<>());
-    final AtomicReference<List<Stat>> handicapStats = new AtomicReference<>(new ArrayList<>(2000));
+    final AtomicReference<List<Stat>> handicapStats = new AtomicReference<>(new CopyOnWriteArrayList<Stat>());
     @Autowired ThreadPoolTaskExecutor threadPoolTaskExecutor;
     @Autowired LeagueService leagueService;
     boolean enableRefresh = true;
@@ -33,19 +34,25 @@ public class StatService {
         leagueService.addListener(new DaoListener() {
             @Override
             public void onAdd(LeagueObject object) {
-                if (object instanceof TeamMatch || object instanceof PlayerResult)
-                    refresh();
+                if (object instanceof TeamMatch)
+                    refreshTeamMatchStats((TeamMatch) object);
             }
 
             @Override
             public void onChange(LeagueObject object) {
-                if (object instanceof TeamMatch || object instanceof PlayerResult)
+                if (object instanceof TeamMatch)
+                    refreshTeamMatchStats((TeamMatch) object);
+
+                if (object instanceof PlayerResult)
                     refresh();
             }
 
             @Override
             public void onDelete(LeagueObject object) {
-                if (object instanceof TeamMatch || object instanceof PlayerResult)
+                if (object instanceof TeamMatch)
+                    refreshTeamMatchStats((TeamMatch) object);
+
+                if (object instanceof PlayerResult)
                     refresh();
             }
         });
@@ -61,7 +68,9 @@ public class StatService {
     }
 
     public List<Stat> getTeamStats() {
-        return teamStats.get();
+        List<Stat> teamStats = new ArrayList<>();
+        leagueService.findCurrent(Team.class).parallelStream().forEach(s -> teamStats.add(s.getStats()));
+        return teamStats;
     }
 
     @Scheduled(fixedRate = 1000*60*60, initialDelay = 1000*60*11)
@@ -78,47 +87,11 @@ public class StatService {
             public void run() {
                 logger.info("Refreshing stats");
                 long start = System.currentTimeMillis();
-                final List<Team> teams = leagueService.findAll(Team.class);
-                final List<TeamMatch>  teamMatches = leagueService.findAll(TeamMatch.class);
-                final List<Stat> ts = new ArrayList<>();
+                final Set<Team> teams = leagueService.findCurrent(Team.class);
                 for (Team team : teams) {
-                    ts.add(Stat.buildTeamStats(team,
-                            teamMatches.parallelStream()
-                                    .filter(tm -> tm.hasTeam(team))
-                                    .filter(TeamMatch::isHasResults)
-                                    .collect(Collectors.toList())
-                    ));
+                    refreshTeamStats(team);
                 }
-                Map<Season, List<Stat>> active = ts.parallelStream().filter(s -> s.getSeason().isActive()).collect(Collectors.groupingBy(s -> s.getSeason(), Collectors.toList()));
-                for (Season season : active.keySet()) {
-                    List<Stat> ranks = active.get(season);
-                    List<Stat> rankings = ranks.stream().sorted(new Comparator<Stat>() {
-                        @Override
-                        public int compare(Stat stat, Stat t1) {
-                            if (!Objects.equals(t1.getWins(), stat.getWins())) {
-                                return t1.getWins().compareTo(stat.getWins());
-                            }
-                            if (!Objects.equals(t1.getLoses(), stat.getLoses())) {
-                                return stat.getLoses().compareTo(t1.getLoses());
-                            }
-                            if (stat.getSeason().isNine()) {
-
-                            }
-                            if (!Objects.equals(t1.getRacksWon(), stat.getRacksWon())) {
-                                return t1.getRacksWon().compareTo(stat.getRacksWon());
-                            }
-                            return stat.getRacksLost().compareTo(t1.getRacksLost());
-                        }
-                    }).collect(Collectors.toList());
-                    int rank = 0;
-                    for (Stat t : rankings) {
-                        Integer old = t.getTeam().getRank();
-                        t.getTeam().setRank(++rank);
-                        if (!old.equals(t.getTeam().getRank()))
-                            leagueService.save(t.getTeam());
-                    }
-                }
-                teamStats.lazySet(ts);
+                refreshTeamRank();
                 refreshUserSeasonStats();
                 refreshUserLifetimeStats();
                 rereshUserHandicapStats();
@@ -155,7 +128,7 @@ public class StatService {
                         season,
                         all.get(user)
                 );
-                s.setTeam(teams.stream().filter(t->t.hasUser(user)).findFirst().orElse(null));
+                s.setSeason(season);
                 stats.add(s);
             }
             userSeasonStats.put(season,stats);
@@ -226,10 +199,68 @@ public class StatService {
                 if (w.isEmpty()) {
                     continue;
                 }
-                stats.add(Stat.buildHandicapStats(w,StatType.HANDICAP_WINS,user,handicap));
+                stats.add(Stat.buildHandicapStats(w, StatType.HANDICAP_WINS, user, handicap));
             }
         }
         handicapStats.lazySet(stats);
+    }
+
+    public void refreshTeamMatchStats(TeamMatch tm) {
+        refreshTeamStats(tm.getHome());
+        refreshTeamStats(tm.getAway());
+        refreshTeamRank();
+    }
+
+    public void refreshTeamRank() {
+        Map<Season, List<Team>> active =  leagueService.findCurrent(Team.class).stream()
+                .collect(Collectors.groupingBy(s -> s.getSeason(), Collectors.toList()));
+
+        for (Season season : active.keySet()) {
+            List<Team> ranks = active.get(season);
+            List<Team> rankings = ranks.stream().sorted(new Comparator<Team>() {
+                @Override
+                public int compare(Team t, Team t1) {
+                    if (!Objects.equals(t1.getStats().getWins(), t.getStats().getWins())) {
+                        return t1.getStats().getWins().compareTo(t.getStats().getWins());
+                    }
+                    if (!Objects.equals(t1.getStats().getLoses(), t.getStats().getLoses())) {
+                        return t1.getStats().getLoses().compareTo(t1.getStats().getLoses());
+                    }
+                    if (!Objects.equals(t1.getStats().getRacksWon(), t.getStats().getRacksWon())) {
+                        return t1.getStats().getRacksWon().compareTo(t.getStats().getRacksWon());
+                    }
+                    return t.getStats().getRacksLost().compareTo(t1.getStats().getRacksLost());
+                }
+            }).collect(Collectors.toList());
+            int rank = 0;
+            for (Team t : rankings) {
+                Integer old = t.getRank();
+                t.setRank(++rank);
+                t.getStats().setRank(t.getRank());
+                if (!old.equals(t.getRank())) {
+                    leagueService.save(t);
+                }
+            }
+        }
+    }
+
+    public void refreshPlayerResult(PlayerResult pr) {
+
+    }
+
+    public void refreshTeamStats(Team team) {
+        final Set<TeamMatch>  teamMatches = leagueService.findCurrent(TeamMatch.class);
+        Stat stat =  Stat.buildTeamStats(team,
+                teamMatches.parallelStream()
+                        .filter(tm -> tm.hasTeam(team))
+                        .filter(TeamMatch::isHasResults)
+                        .collect(Collectors.toList())
+        );
+
+        if (Stat.isDifferent(stat,team.getStats())) {
+            team.setStats(stat);
+            leagueService.save(team);
+        }
     }
 
     public void setEnableRefresh(boolean enableRefresh) {

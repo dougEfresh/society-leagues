@@ -30,12 +30,14 @@ public class Team extends LeagueObject {
         this.name = name;
         this.created = LocalDateTime.now();
     }
+    Stat stats = new Stat();
 
     public Team(String id) {
         this.id = id;
     }
 
     public Team() {
+
     }
 
     @JsonView(value = {TeamSummary.class, PlayerResultView.class})
@@ -153,6 +155,14 @@ public class Team extends LeagueObject {
     @JsonIgnore
     public TeamMembers getTeamMembers() {
         return this.members;
+    }
+
+    public Stat getStats() {
+        return stats;
+    }
+
+    public void setStats(Stat stats) {
+        this.stats = stats;
     }
 
     @Override

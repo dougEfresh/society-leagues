@@ -42,6 +42,10 @@ public class TeamMatch extends LeagueObject {
         return status;
     }
 
+    public void setDivision(Division division) {
+        this.division = division;
+    }
+
     public void setStatus(Status status) {
         this.status = status;
     }
@@ -78,10 +82,17 @@ public class TeamMatch extends LeagueObject {
         return home.getSeason();
     }
 
-    public Division getDivision() {
-        if (division == null)
-            return getSeason().getDivision();
+    public String score() {
+        return String.format("%s-%s",getHomeRacks(),getAwayRacks());
+    }
 
+    public Division getDivision() {
+        if (division == null) {
+            //if (getSeason().isScramble()) {
+              //  return Division.MIXED_EIGHT;
+            //}
+            return getSeason().getDivision();
+        }
         return division;
     }
 

@@ -14,6 +14,7 @@ public class Challenge extends LeagueObject {
     @NotNull @DBRef List<Slot> slots;
     @DBRef Slot acceptedSlot;
     @DBRef TeamMatch teamMatch;
+    String message;
 
     public Challenge() {
     }
@@ -105,6 +106,15 @@ public class Challenge extends LeagueObject {
             return null;
 
         return opponent.getMembers().iterator().next();
+    }
+
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     @Override

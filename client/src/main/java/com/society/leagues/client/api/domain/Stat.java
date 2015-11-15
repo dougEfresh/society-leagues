@@ -12,7 +12,6 @@ public class Stat {
     Integer setLoses = 0;
     Integer matches = 0;
     StatType type;
-    Team team;
     User user;
     Season season;
     Handicap handicap;
@@ -21,6 +20,7 @@ public class Stat {
 
     public Stat() {
     }
+
 
     public static Stat buildHandicapStats(final List<PlayerResult> results, StatType statType, User user,Handicap handicap) {
         Stat s= new Stat();
@@ -51,7 +51,7 @@ public class Stat {
 
     public static Stat buildTeamStats(final Team team, final List<TeamMatch> matches) {
         Stat s = new Stat();
-        s.setTeam(team);
+        s.setSeason(team.getSeason());
         List<TeamMatch> results = matches.stream().filter(TeamMatch::isHasResults).collect(Collectors.toList());
         s.matches = results.size();
         for (TeamMatch result : results) {
@@ -75,7 +75,7 @@ public class Stat {
     public static Stat buildPlayerTeamStats(final User u, final Team team , final List<PlayerResult> matches) {
         Stat s = new Stat();
         s.setUser(u);
-        s.setTeam(team);
+        s.setSeason(team.getSeason());
         for (PlayerResult match : matches) {
             if (!match.hasUser(u)) {
                 continue;
@@ -124,10 +124,6 @@ public class Stat {
         if (handicap != null) {
             return Handicap.format(handicap);
         }
-        if (team  != null && user != null) {
-            HandicapSeason handicapSeason = user.getHandicapSeasons().stream().filter(hs -> hs.getSeason().equals(team.getSeason()))                    .findFirst().orElse(null);
-            return handicapSeason == null ?  Handicap.format(Handicap.UNKNOWN) : Handicap.format(handicapSeason.getHandicapDisplay());
-        }
 
         if (season  != null && user != null) {
             HandicapSeason handicapSeason = user.getHandicapSeasons().stream().filter(hs -> hs.getSeason().equals(season)).findFirst().orElse(null);
@@ -157,12 +153,8 @@ public class Stat {
             return type;
         }
 
-        if (user != null && team != null) {
+        if (user != null && season != null) {
             return StatType.USER_SEASON;
-        }
-
-        if (user == null && team != null) {
-            return StatType.TEAM;
         }
 
         return StatType.UNKNOWN;
@@ -171,9 +163,6 @@ public class Stat {
     public Season getSeason() {
         if (season != null)
             return season;
-        if (team != null) {
-            return team.getSeason();
-        }
         return null;
     }
 
@@ -215,14 +204,6 @@ public class Stat {
 
     public void setMatches(Integer matches) {
         this.matches = matches;
-    }
-
-    public Team getTeam() {
-        return team;
-    }
-
-    public void setTeam(Team team) {
-        this.team = team;
     }
 
     public User getUser() {
@@ -282,5 +263,19 @@ public class Stat {
 
     public void setRank(Integer rank) {
         this.rank = rank;
+    }
+
+    public static boolean isDifferent(Stat s1, Stat s2) {
+        if (s1 == null || s2 == null)
+            return true;
+
+        return !(s1.getLoses().equals(s2.getLoses()) &&
+                        s1.getWins().equals(s2.getWins()) &&
+                        s1.getRacksLost().equals(s2.getRacksLost()) &&
+                        s1.getRacksWon().equals(s2.getRacksWon()) &&
+                        s1.getSetLoses().equals(s2.getSetLoses()) &&
+                        s1.getSetWins().equals(s2.getSetWins()));
+
+
     }
 }
