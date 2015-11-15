@@ -37,9 +37,13 @@ public class ChallengeResource {
         User u = leagueService.findByLogin(principal.getName());
         Team challenger = leagueService.findOne(challenge.getChallenger());
         Team opponent = leagueService.findOne(challenge.getOpponent());
+
         if (challenger.getChallengeUser().equals(u) || opponent.getChallengeUser().equals(u) || u.isAdmin()) {
-            return leagueService.save(challenge);
+            Challenge c = leagueService.save(challenge);
+            sendEmail(c.getUserOpponent(),c.getUserChallenger(),Status.NOTIFY,c,null);
+            return c;
         }
+
         //TODO throw exception
         return new Challenge();
     }
@@ -55,6 +59,8 @@ public class ChallengeResource {
         User u = leagueService.findByLogin(principal.getName());
         Slot accepted = leagueService.findOne(challenge.getAcceptedSlot());
         challenge = leagueService.findOne(challenge);
+
+        sendEmail(challenge.getUserChallenger(), challenge.getUserOpponent(), Status.ACCEPTED, null, null);
         if (u.equals(challenge.getChallenger().getChallengeUser()) || u.equals(challenge.getOpponent().getChallengeUser()) || u.isAdmin()) {
             challenge.setStatus(Status.ACCEPTED);
             challenge.setAcceptedSlot(accepted);
@@ -70,8 +76,14 @@ public class ChallengeResource {
          if (principal == null) {
             return null;
          }
+        User u = leagueService.findByLogin(principal.getName());
         Challenge c = leagueService.findOne(challenge);
         challengeService.cancel(c);
+        if (c.getUserChallenger().equals(u)) {
+            sendEmail(c.getUserOpponent(), c.getUserChallenger(), Status.CANCELLED, null, null);
+        } else {
+            sendEmail(c.getUserChallenger(), c.getUserOpponent(), Status.CANCELLED, null, null);
+        }
         return c;
     }
 
@@ -176,20 +188,20 @@ public class ChallengeResource {
                 subject = "Society Leagues - Challenge Request - " + from.getName();
                 body =  String.format(
 				      "You've been challenged! %s respectfully yet aggressively requests a match with you.\n" +
-                                "Click %s#/app/challenge/main for details\n",
+                                "Click %s#/app/challenge for details\n",
                         from.getName(), serviceUrl);
                 break;
             case ACCEPTED:
                 subject = "Society Leagues - Challenge Accepted - " + from.getName();
                 body = String.format("Your challenge from %s has been accepted.\n" +
-                        "See %s#/app/challenge/main for details."
+                        "See %s#/app/challenge for details."
                         , from.getName(), serviceUrl);
 
                 break;
             case CANCELLED:
                 subject = "Society Leagues - Challenge Declined - " + from.getName();
                 body = String.format("%s\n*****\n%s has declined the challenge.\n" +
-                                "Don't worry! You can click %s#/app/challenge/main to challenge someone else!\n",
+                                "Don't worry! You can click %s#/app/challenge to challenge someone else!\n",
                                 message == null ? "": message,
                         from.getName(), serviceUrl);
 
