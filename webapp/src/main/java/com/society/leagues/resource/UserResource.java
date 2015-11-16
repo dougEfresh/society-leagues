@@ -146,8 +146,12 @@ public class UserResource {
 
     @RequestMapping(value = "/reset/request", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public TokenReset reset(@RequestBody Map<String,String> user) {
-        User u = leagueService.findByLogin(user.get("login"));
+         User u = leagueService.findAll(User.class).parallelStream()
+                .filter(us-> us.getLogin() != null)
+                .filter(us -> us.getLogin().toLowerCase().equals(user.get("login"))
+                ).findFirst().orElse(null);
         if (u == null) {
+            logger.error("Could not find user " + user.get("login"));
             return null;
         }
         TokenReset reset = userService.resetRequest(u);
@@ -156,7 +160,10 @@ public class UserResource {
 
     @RequestMapping(value = "/reset/password/{token}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public User reset(@PathVariable String token, @RequestBody Map<String,String> user) {
-        User existingUser = leagueService.findByLogin(user.get("login"));
+         User existingUser = leagueService.findAll(User.class).parallelStream()
+                .filter(us-> us.getLogin() != null)
+                .filter(us -> us.getLogin().toLowerCase().equals(user.get("login"))
+                ).findFirst().orElse(null);
         if (existingUser == null) {
             logger.error("No User Found");
             return User.defaultUser();
