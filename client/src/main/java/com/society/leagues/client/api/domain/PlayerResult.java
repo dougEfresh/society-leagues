@@ -38,6 +38,14 @@ public class PlayerResult  extends LeagueObject {
     public PlayerResult() {
     }
 
+    public PlayerResult(User home, User away, TeamMatch teamMatch) {
+        this.playerHome = home ;
+        this.playerAway = away;
+        this.playerHomeHandicap = home.getHandicap(teamMatch.getSeason());
+        this.playerAwayHandicap = away.getHandicap(teamMatch.getSeason());
+        this.teamMatch = teamMatch;
+    }
+
     public PlayerResult(TeamMatch teamMatch, User playerHome, User playerAway, Integer homeRacks, Integer awayRacks,
                         Integer matchNumber, Handicap playerHomeHandicap, Handicap playerAwayHandicap) {
         this.teamMatch = teamMatch;

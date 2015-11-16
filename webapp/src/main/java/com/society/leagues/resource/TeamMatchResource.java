@@ -105,6 +105,7 @@ public class TeamMatchResource {
         existing.setSetAwayWins(teamMatch.getSetAwayWins());
         existing.setSetHomeWins(teamMatch.getSetHomeWins());
         existing.setMatchDate(teamMatch.getMatchDate());
+
         if (existing.getSeason().isScramble()) {
             if (teamMatch.getDivision() != null)
                 existing.setDivision(teamMatch.getDivision());
@@ -238,10 +239,8 @@ public class TeamMatchResource {
     public Map<String,Set<User>> getTeamMatchMembers(Principal principal, @PathVariable String id) {
         TeamMatch tm = leagueService.findOne(new TeamMatch(id));
         Map<String,Set<User>> members = new HashMap<>();
-        Team w = tm.getHomeRacks() > tm.getAwayRacks() ? tm.getHome() : tm.getAway();
-        Team l = tm.getHomeRacks() > tm.getAwayRacks() ? tm.getAway() : tm.getHome();
-        members.put("winners",w.getMembers());
-        members.put("losers",l.getMembers());
+        members.put("home",tm.getHome().getMembers());
+        members.put("away",tm.getAway().getMembers());
         return members;
     }
 
@@ -285,14 +284,20 @@ public class TeamMatchResource {
                     }
                 }).collect(Collectors.toList());
         for (TeamMatch result : results) {
-            if (result.getMatchDate().isAfter(now))
-                result.setStatus(Status.UPCOMING);
-            if (result.getMatchDate().isBefore(now) && !result.isHasResults())
+            boolean hasPlayerResults = leagueService.findCurrent(PlayerResult.class).parallelStream().filter(r->r.getTeamMatch().equals(result)).count() > 0;
+            if (result.getMatchDate().isBefore(now) && !result.isHasResults()) {
                 result.setStatus(Status.PENDING);
-            if (result.isHasResults())
+            } else if (result.getMatchDate().isBefore(now) && !hasPlayerResults) {
+                result.setStatus(Status.PENDING);
+                result.setHasPlayerResults(false);
+            } else if (result.getMatchDate().isAfter(now)) {
+                result.setStatus(Status.UPCOMING);
+            } else if (result.isHasResults() && hasPlayerResults) {
                 result.setStatus(Status.COMPLETE);
+            }
         }
         Map<String,List<TeamMatch>> group = results.stream().collect(Collectors.groupingBy(tm -> tm.getMatchDate().toLocalDate().toString()));
+
         return (Map<String,List<TeamMatch>>) new TreeMap<>(group);
     }
 

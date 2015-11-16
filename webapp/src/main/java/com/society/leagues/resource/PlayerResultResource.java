@@ -32,21 +32,20 @@ public class PlayerResultResource {
 
     @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public PlayerResult modify(@RequestBody PlayerResult playerResult) {
+    public List<PlayerResult> modify(@RequestBody List<PlayerResult> playerResult) {
         return resultService.createOrModify(playerResult);
     }
 
-    @RequestMapping(value = "/admin/delete", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/admin/delete/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Boolean delete(@RequestBody PlayerResult playerResult) {
-        leagueService.purge(playerResult);
+    public Boolean delete(@PathVariable String id) {
+        leagueService.purge(new PlayerResult(id));
         return true;
     }
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public PlayerResult get(Principal principal, @PathVariable String id) {
         return leagueService.findOne(new PlayerResult(id));
-
     }
 
     @RequestMapping(value = "/teammatch/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
@@ -59,7 +58,9 @@ public class PlayerResultResource {
         }  else {
             results = leagueService.findAll(PlayerResult.class);
         }
-
+        if (results.isEmpty()) {
+            results = resultService.createNewPlayerResults(tm);
+        }
         results = results.stream().parallel().
                 filter(pr->pr.getTeamMatch().equals(tm))
                 .filter(pr->!pr.getLoser().isFake())
@@ -70,7 +71,10 @@ public class PlayerResultResource {
                         return playerResult.getMatchNumber().compareTo(t1.getMatchNumber());
                     }
         }).collect(Collectors.toList());
-
+        User u = leagueService.findByLogin(principal.getName());
+        if (results.isEmpty() && u.isAdmin()) {
+            return resultService.createNewPlayerResults(tm);
+        }
         List<PlayerResult> copy = new ArrayList<>(results.size());
         for (PlayerResult result : results) {
             copy.add(PlayerResult.copy(result));
@@ -112,8 +116,6 @@ public class PlayerResultResource {
 
         return results.stream().collect(Collectors.groupingBy(pr->pr.getMatchDate().toLocalDate().toString()));
     }
-
-
 
     @RequestMapping(value = {"/team/{id}","/get/team/{id}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @JsonView(PlayerResultView.class)
@@ -182,7 +184,6 @@ public class PlayerResultResource {
         return resultsBySeason;
     }
 
-
     @RequestMapping(value = "/user/{id}/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @JsonView(value = {PlayerResultView.class})
     public Map<String,Object> getPlayerResultByUserSeason(Principal principal, @PathVariable String id, @PathVariable String seasonId) {
@@ -236,7 +237,6 @@ public class PlayerResultResource {
 
         return leagueService.save(result);
     }
-
 
     @RequestMapping(value = "/player/{matchId}/{type}/{playerId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")

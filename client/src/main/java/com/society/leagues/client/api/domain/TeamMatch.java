@@ -26,7 +26,7 @@ public class TeamMatch extends LeagueObject {
     Integer setAwayWins = 0;
     Integer matchNumber = 0;
     User referenceUser = null;
-
+    Boolean hasPlayerResults = false;
     Status status;
 
     public TeamMatch(Team home, Team away, LocalDateTime matchDate) {
@@ -295,6 +295,14 @@ public class TeamMatch extends LeagueObject {
                 ", setHomeWins=" + setHomeWins +
                 ", setAwayWins=" + setAwayWins +
                 '}';
+    }
+
+    public Boolean getHasPlayerResults() {
+        return hasPlayerResults;
+    }
+
+    public void setHasPlayerResults(Boolean hasPlayerResults) {
+        this.hasPlayerResults = hasPlayerResults;
     }
 
     public Integer getMatchNumber() {

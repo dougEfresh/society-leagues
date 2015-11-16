@@ -24,13 +24,46 @@ public class ResultService {
         scrambleGameType();
     }
 
+    public Collection<PlayerResult> createNewPlayerResults(TeamMatch teamMatch) {
+        List<PlayerResult> playerResults = new ArrayList<>();
+        int matches = teamMatch.getHomeRacks() + teamMatch.getAwayRacks();
+        if (teamMatch.getSeason().isNine() && !teamMatch.getSeason().isChallenge()) {
+            matches = teamMatch.getSetHomeWins() + teamMatch.getSetAwayWins();
+        }
+        User[] homeMembers = teamMatch.getHome().getMembers().toArray(new User[]{});
+        User[] awayMembers = teamMatch.getAway().getMembers().toArray(new User[]{});
+        for(int i = 0 ; i<matches; i++) {
+            PlayerResult r = new PlayerResult(homeMembers[i % 4],awayMembers[i % 4],teamMatch);
+            r.setMatchNumber(i+1);
+            playerResults.add(r);
+        }
+        if (playerResults.isEmpty())
+            return playerResults;
+
+        leagueService.save(playerResults);
+        return leagueService.findAll(PlayerResult.class).parallelStream().filter(p->p.getTeamMatch().equals(teamMatch)).collect(Collectors.toList());
+    }
+
+    public Collection<PlayerResult> createNewPlayerMatchResultsNine(TeamMatch teamMatch) {
+        List<PlayerResult> playerResults = new ArrayList<>();
+        int matches = teamMatch.getSetHomeWins() + teamMatch.getSetAwayWins();
+        User[] homeMembers = teamMatch.getHome().getMembers().toArray(new User[]{});
+        User[] awayMembers = teamMatch.getHome().getMembers().toArray(new User[]{});
+        for(int i = 0 ; i<matches; i++) {
+            PlayerResult r = new PlayerResult(homeMembers[i],awayMembers[i],teamMatch);
+            r.setMatchNumber(i+1);
+            playerResults.add(r);
+        }
+        return playerResults;
+    }
+
     public void scrambleGameType() {
         Map<LocalDate,List<TeamMatch>> matches = leagueService.findCurrent(TeamMatch.class).parallelStream()
                 .filter(tm -> tm.getSeason().isScramble())
                 .filter(tm -> tm.getDivision() == Division.MIXED_MONDAYS_MIXED)
                 .collect(Collectors.groupingBy(
-                        tm->tm.getMatchDate().toLocalDate()
-        ));
+                        tm -> tm.getMatchDate().toLocalDate()
+                ));
         Division division = Division.MIXED_EIGHT;
         for (LocalDate localDate : matches.keySet().stream().sorted(new Comparator<LocalDate>() {
             @Override
@@ -92,6 +125,35 @@ public class ResultService {
         return matchPointsCache;
     }
 
+    public List<PlayerResult> createOrModify(List<PlayerResult> playerResult) {
+        List<PlayerResult> returned = new ArrayList<>(playerResult.size());
+        for (PlayerResult result : playerResult) {
+            PlayerResult existing =  leagueService.findOne(result);
+            if (existing == null) {
+                existing = new PlayerResult();
+                existing.setTeamMatch(leagueService.findOne(result.getTeamMatch()));;
+            }
+            existing.setPlayerHome(leagueService.findOne(result.getPlayerHome()));
+            existing.setPlayerAway(leagueService.findOne(result.getPlayerAway()));
+            existing.setHomeRacks(result.getHomeRacks());
+            existing.setAwayRacks(result.getAwayRacks());
+            existing.setPlayerHomeHandicap(existing.getPlayerHome().getHandicap(existing.getSeason()));
+            existing.setPlayerAwayHandicap(existing.getPlayerAway().getHandicap(existing.getSeason()));
+            existing.setPlayerHomePartner(leagueService.findOne(result.getPlayerHomePartner()));
+            existing.setPlayerAwayPartner(leagueService.findOne(result.getPlayerAwayPartner()));
+            existing.setMatchNumber(result.getMatchNumber());
+            if (existing.getPlayerHomePartner() != null)
+                existing.setPlayerHomeHandicapPartner(result.getPlayerHomePartner().getHandicap(existing.getSeason()));
+
+            if (existing.getPlayerAwayPartner() != null)
+                existing.setPlayerAwayHandicapPartner(result.getPlayerAwayPartner().getHandicap(existing.getSeason()));
+
+            returned.add(existing);
+        }
+        leagueService.save(returned);
+        return returned;
+    }
+
     public PlayerResult createOrModify(PlayerResult playerResult) {
         if (playerResult.getSeason().isChallenge()) {
             TeamMatch tm = playerResult.getTeamMatch();
@@ -101,9 +163,7 @@ public class ResultService {
             tm.setSetHomeWins(playerResult.getHomeRacks());
             leagueService.save(tm);
         }
-
         return leagueService.save(playerResult);
-
     }
 
     public PlayerResult add(TeamMatch teamMatch) {
@@ -111,19 +171,14 @@ public class ResultService {
                 .parallelStream()
                 .filter(pr -> pr.getTeamMatch().equals(teamMatch))
                 .collect(Collectors.toList());
-        Iterator<PlayerResult> iterator = results.iterator();
         int matchNumber = 1;
-        while(iterator.hasNext()) {
-            PlayerResult a = iterator.next();
-            PlayerResult b = iterator.next();
-            if (b == null) {
-                matchNumber = a.getMatchNumber()+1;
-                break;
-            }
-            if (a.getMatchNumber()-b.getMatchNumber() > 1) {
-                matchNumber = a.getMatchNumber()+1;
-                break;
-            }
+        if (!results.isEmpty()) {
+            matchNumber = results.stream().max(new Comparator<PlayerResult>() {
+                @Override
+                public int compare(PlayerResult o1, PlayerResult o2) {
+                    return o1.getMatchNumber().compareTo(o2.getMatchNumber());
+                }
+            }).get().getMatchNumber() +1;
         }
         PlayerResult result = new PlayerResult();
         result.setMatchNumber(matchNumber);
@@ -132,7 +187,7 @@ public class ResultService {
         result.setPlayerHomeHandicap(result.getPlayerHome().getHandicap(teamMatch.getSeason()));
         result.setPlayerAwayHandicap(result.getPlayerHome().getHandicap(teamMatch.getSeason()));
         result.setTeamMatch(teamMatch);
-        return result;
+        return leagueService.save(result);
     }
 
     public Boolean removeTeamMatchResult(TeamMatch teamMatch) {

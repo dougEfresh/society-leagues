@@ -62,6 +62,29 @@ public class LeagueService {
         return newEntity;
     }
 
+    public <T extends LeagueObject> void save(final List<T> entities) {
+        for (T entity : entities) {
+            MongoRepository repo = cacheUtil.getCache(entity).getRepo();
+            Set<ConstraintViolation<T>> constraintViolations = validator.validate(entity);
+            if (!constraintViolations.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+                for (ConstraintViolation<T> constraintViolation : constraintViolations) {
+                    sb.append(constraintViolation.toString());
+                }
+                throw new RuntimeException("Could not validate " + entity + "\n" + sb.toString());
+            }
+            repo.save(entity);
+            T newEntity = (T) repo.findOne(entity.getId());
+            CachedCollection c = cacheUtil.getCache(entity);
+            if (c != null) {
+                c.add(newEntity);
+            }
+        }
+        for (DaoListener daoListener : daoListeners) {
+            daoListener.onChange(entities.get(0));
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public <T extends LeagueObject> Boolean delete(T entity) {
         cacheUtil.getCache(entity).remove(entity);
@@ -73,6 +96,8 @@ public class LeagueService {
 
     @SuppressWarnings("unchecked")
     public <T extends LeagueObject> T findOne(T entity) {
+        if (entity == null)
+            return null;
         CachedCollection<List<LeagueObject>> repo = cacheUtil.getCache(entity);
         if (repo == null) {
             return null;
