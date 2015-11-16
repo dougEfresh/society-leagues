@@ -102,12 +102,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new MongoTokenRepositoryImpl(mongo);
     }
 
-    @Bean RememberMeServices rememberMeServices() {
+    @Bean
+    RememberMeServices rememberMeServices() {
         PersistentTokenBasedRememberMeServices rememberMeServices =
                 new PersistentTokenBasedRememberMeServices("springRememberMe",principleDetailsService,tokenRepository());
         rememberMeServices.setTokenValiditySeconds(86400 * 90);
         rememberMeServices.setAlwaysRemember(true);
-
         return rememberMeServices;
     }
 

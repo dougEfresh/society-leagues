@@ -27,6 +27,10 @@ public class PrincipleDetailsService implements UserDetailsService {
         //TODO Add ROLE_ADMIN ?
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         User u = userRepository.findByLogin(username);
+        if (u == null) {
+            logger.error("Could not find user " + username);
+            throw new UsernameNotFoundException("Could not find user " + username);
+        }
         if (u.isAdmin()) {
             authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         }

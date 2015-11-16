@@ -28,6 +28,7 @@ public class TeamMatch extends LeagueObject {
     User referenceUser = null;
     Boolean hasPlayerResults = false;
     Status status;
+    Boolean forfeit = false;
 
     public TeamMatch(Team home, Team away, LocalDateTime matchDate) {
         this.home = home;
