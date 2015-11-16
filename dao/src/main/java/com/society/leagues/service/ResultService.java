@@ -102,11 +102,25 @@ public class ResultService {
             for (PlayerResult challengeResult : results) {
                 MatchPoints mp = new MatchPoints();
                 int points = 1;
+                String[] r = challengeResult.getRace().split("/");
+                int handciapGames = 0;
+                if (r.length == 0) {
+                    handciapGames = 0;
+                } else {
+                    try {
+                        handciapGames = Integer.parseInt(r[0]);
+                    } catch (NumberFormatException e) {
+                    }
+                }
                 if (challengeResult.isWinner(challengeUser)) {
+                    if (challengeResult.getLoserRacks() == 0 || challengeResult.getLoserRacks() - handciapGames <= 0)
+                        points +=2;
+
                     points += 2;
                 } else {
                     points += challengeResult.getWinnerRacks()-challengeResult.getLoserRacks() == 1 ? 1 : 0;
                 }
+
                 mp.setPoints(points);
                 mp.setWeightedAvg((double) points / (period / (period - matchNum)));
                 mp.setMatchNum(new Double(matchNum).intValue());
