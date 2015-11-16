@@ -114,7 +114,7 @@ public class ResultService {
                 }
                 if (challengeResult.isWinner(challengeUser)) {
                     if (challengeResult.getLoserRacks() == 0 || challengeResult.getLoserRacks() - handciapGames <= 0)
-                        points +=2;
+                        points +=1;
 
                     points += 2;
                 } else {
