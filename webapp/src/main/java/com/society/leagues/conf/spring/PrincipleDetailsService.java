@@ -2,6 +2,7 @@ package com.society.leagues.conf.spring;
 
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.mongo.UserRepository;
+import com.society.leagues.service.LeagueService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,18 +20,23 @@ import java.util.List;
 public class PrincipleDetailsService implements UserDetailsService {
 
     @Autowired UserRepository userRepository;
+    @Autowired LeagueService leagueService;
     Logger logger = LoggerFactory.getLogger(PrincipleDetailsService.class);
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        //TODO Add ROLE_ADMIN ?
+        List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        User u = userRepository.findByLogin(username);
+        User u = leagueService.findAll(User.class).parallelStream()
+                .filter(user -> user.getLogin() != null)
+                .filter(
+                        user -> user.getLogin().toLowerCase().equals(username.toLowerCase())
+                ).findFirst().orElse(null);
         if (u == null) {
             logger.error("Could not find user " + username);
             throw new UsernameNotFoundException("Could not find user " + username);
         }
+        u = userRepository.findOne(u.getId());
         if (u.isAdmin()) {
             authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
