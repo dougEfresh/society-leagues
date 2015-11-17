@@ -206,7 +206,7 @@ public class StatService {
     }
 
     public void refreshTeamMatchStats(final TeamMatch tm) {
-        if (threadPoolTaskExecutor.getActiveCount() > 0) {
+        if (threadPoolTaskExecutor.getActiveCount() > 1) {
             logger.info("Skipping team refresh");
             return;
         }

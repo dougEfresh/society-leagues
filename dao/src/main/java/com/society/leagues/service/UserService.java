@@ -132,7 +132,11 @@ public class UserService {
     }
 
      public void populateProfile(User user) {
-        List < Map < String, Object >> results = jdbcTemplate.queryForList("select * from UserConnection where userId is not null and userId = '" + user.getEmail() + "'");
+         if (user == null) {
+             return;
+         }
+        List < Map < String, Object >> results =
+                jdbcTemplate.queryForList("select * from UserConnection where userId is not null and userId = '" + user.getEmail() + "'");
         logger.info("Got back " + results.size());
         for (Map<String, Object> result : results) {
             UserProfile profile = new UserProfile();
