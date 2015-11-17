@@ -95,13 +95,12 @@ public class TeamMatchResource {
     public List<TeamMatch> modify(@RequestBody List<TeamMatch> teamMatch) {
         List<TeamMatch> processed = new ArrayList<>(teamMatch.size());
         processed.addAll(teamMatch.stream().map(this::modify).collect(Collectors.toList()));
+        leagueService.save(processed);
         return processed;
     }
 
-    @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public TeamMatch modify(@RequestBody TeamMatch teamMatch) {
-        final  TeamMatch existing;
+    private TeamMatch modifyNoSave(TeamMatch teamMatch) {
+         final  TeamMatch existing;
         if  (leagueService.findOne(teamMatch) == null)
             existing = new TeamMatch();
         else
@@ -120,9 +119,9 @@ public class TeamMatchResource {
                 existing.setDivision(teamMatch.getDivision());
         }
 
-        
-        
-      leagueService.save(existing);
+        if (existing.getId() == null){
+            leagueService.save(existing);
+        }
 
         if (existing.getSeason().isChallenge()) {
             PlayerResult result = leagueService.findAll(PlayerResult.class).stream().parallel().filter(p -> p.getTeamMatch().equals(teamMatch)).findFirst().orElse(null);
@@ -142,22 +141,16 @@ public class TeamMatchResource {
               leagueService.save(result);
         }
         LocalDateTime now = LocalDateTime.now().minusDays(1);
-          boolean hasPlayerResults = leagueService.findCurrent(PlayerResult.class).parallelStream().filter(r->r.getTeamMatch().equals(existing)).count() > 0;
-            if (existing.getMatchDate().isBefore(now) && !existing.isHasResults()) {
-                existing.setStatus(Status.PENDING);
-                existing.setHasPlayerResults(hasPlayerResults);
-            } else if (existing.getMatchDate().isBefore(now) && !hasPlayerResults) {
-                existing.setStatus(Status.PENDING);
-                existing.setHasPlayerResults(false);
-            } else if (existing.getMatchDate().isAfter(now)) {
-                existing.setHasPlayerResults(hasPlayerResults);
-                existing.setStatus(Status.UPCOMING);
-            } else if (existing.isHasResults() && hasPlayerResults) {
-                existing.setHasPlayerResults(true);
-                existing.setStatus(Status.COMPLETE);
-            }
-        
+        boolean hasPlayerResults = leagueService.findCurrent(PlayerResult.class).parallelStream().filter(r->r.getTeamMatch().equals(existing)).count() > 0;
+        existing.setHasPlayerResults(hasPlayerResults);
         return existing;
+    }
+
+    @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public TeamMatch modify(@RequestBody TeamMatch teamMatch) {
+        TeamMatch t = modifyNoSave(teamMatch);
+        return leagueService.save(t);
     }
 
 
@@ -311,19 +304,7 @@ public class TeamMatchResource {
                 }).collect(Collectors.toList());
         for (TeamMatch result : results) {
             boolean hasPlayerResults = leagueService.findCurrent(PlayerResult.class).parallelStream().filter(r->r.getTeamMatch().equals(result)).count() > 0;
-            if (result.getMatchDate().isBefore(now) && !result.isHasResults()) {
-                result.setStatus(Status.PENDING);
-                result.setHasPlayerResults(hasPlayerResults);
-            } else if (result.getMatchDate().isBefore(now) && !hasPlayerResults) {
-                result.setStatus(Status.PENDING);
-                result.setHasPlayerResults(false);
-            } else if (result.getMatchDate().isAfter(now)) {
-                result.setHasPlayerResults(hasPlayerResults);
-                result.setStatus(Status.UPCOMING);
-            } else if (result.isHasResults() && hasPlayerResults) {
-                result.setHasPlayerResults(true);
-                result.setStatus(Status.COMPLETE);
-            }
+            result.setHasPlayerResults(hasPlayerResults);
         }
         Map<String,List<TeamMatch>> group = results.stream().collect(Collectors.groupingBy(tm -> tm.getMatchDate().toLocalDate().toString()));
 
