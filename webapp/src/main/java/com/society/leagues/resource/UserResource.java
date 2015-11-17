@@ -1,5 +1,6 @@
 package com.society.leagues.resource;
 
+import com.society.leagues.client.api.domain.HandicapSeason;
 import com.society.leagues.service.ChallengeService;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.UserService;
@@ -112,16 +113,30 @@ public class UserResource {
     public User modify(@RequestBody User user) {
         User existingUser = leagueService.findOne(user);
         if (existingUser == null) {
-            return User.defaultUser();
+            existingUser  = new User();
         }
-        user.setPassword(existingUser.getPassword());
-        user.setLogin(existingUser.getLogin());
+        existingUser.setFirstName(user.getFirstName());
+        existingUser.setLastName(user.getLastName());
+        existingUser.setLogin(user.getLogin());
+        existingUser.setEmail(user.getLogin());
+        existingUser.setStatus(user.getStatus());
+        existingUser.setRole(user.getRole());
 
-        user = leagueService.save(user);
-        if (user.isChallenge()) {
-            challengeService.createChallengeUser(user);
+        if (user.getHandicapSeasons() != null && !user.getHandicapSeasons().isEmpty()) {
+            for (HandicapSeason handicapSeason : user.getHandicapSeasons()) {
+                if (handicapSeason.getSeason().isActive()) {
+                    HandicapSeason newHandicapSeason = new HandicapSeason(handicapSeason.getHandicap(), leagueService.findOne(handicapSeason.getSeason()));
+                    existingUser.removeHandicap(newHandicapSeason);
+                    existingUser.addHandicap(newHandicapSeason);
+                }
+            }
         }
-        return user;
+
+        existingUser = leagueService.save(existingUser);
+        if (existingUser.isChallenge()) {
+            challengeService.createChallengeUser(existingUser);
+        }
+        return existingUser;
     }
 
     static final Comparator<User> sortUsers = new Comparator<User>() {
