@@ -205,10 +205,20 @@ public class StatService {
         handicapStats.lazySet(stats);
     }
 
-    public void refreshTeamMatchStats(TeamMatch tm) {
-        refreshTeamStats(tm.getHome());
-        refreshTeamStats(tm.getAway());
-        refreshTeamRank();
+    public void refreshTeamMatchStats(final TeamMatch tm) {
+        if (threadPoolTaskExecutor.getActiveCount() > 0) {
+            logger.info("Skipping team refresh");
+            return;
+        }
+        logger.info("Submitting to task for team refresh");
+        threadPoolTaskExecutor.submit(new Runnable() {
+            @Override
+            public void run() {
+                refreshTeamStats(tm.getHome());
+                refreshTeamStats(tm.getAway());
+                refreshTeamRank();
+            }
+        });
     }
 
     public void refreshTeamRank() {

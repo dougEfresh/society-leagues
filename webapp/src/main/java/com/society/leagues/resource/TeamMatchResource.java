@@ -90,13 +90,22 @@ public class TeamMatchResource {
         }
         return leagueService.save(teamMatch);
     }
+    @RequestMapping(value = "/admin/modify/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<TeamMatch> modify(@RequestBody List<TeamMatch> teamMatch) {
+        List<TeamMatch> processed = new ArrayList<>(teamMatch.size());
+        processed.addAll(teamMatch.stream().map(this::modify).collect(Collectors.toList()));
+        return processed;
+    }
 
     @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public TeamMatch modify(@RequestBody TeamMatch teamMatch) {
-        TeamMatch existing = leagueService.findOne(teamMatch);
-        if  (existing == null)
+        final  TeamMatch existing;
+        if  (leagueService.findOne(teamMatch) == null)
             existing = new TeamMatch();
+        else
+            existing = leagueService.findOne(teamMatch);
 
         existing.setHome(leagueService.findOne(teamMatch.getHome()));
         existing.setAway(leagueService.findOne(teamMatch.getAway()));
@@ -111,7 +120,9 @@ public class TeamMatchResource {
                 existing.setDivision(teamMatch.getDivision());
         }
 
-        existing = leagueService.save(existing);
+        
+        
+      leagueService.save(existing);
 
         if (existing.getSeason().isChallenge()) {
             PlayerResult result = leagueService.findAll(PlayerResult.class).stream().parallel().filter(p -> p.getTeamMatch().equals(teamMatch)).findFirst().orElse(null);
@@ -130,7 +141,22 @@ public class TeamMatchResource {
             }
               leagueService.save(result);
         }
-
+        LocalDateTime now = LocalDateTime.now().minusDays(1);
+          boolean hasPlayerResults = leagueService.findCurrent(PlayerResult.class).parallelStream().filter(r->r.getTeamMatch().equals(existing)).count() > 0;
+            if (existing.getMatchDate().isBefore(now) && !existing.isHasResults()) {
+                existing.setStatus(Status.PENDING);
+                existing.setHasPlayerResults(hasPlayerResults);
+            } else if (existing.getMatchDate().isBefore(now) && !hasPlayerResults) {
+                existing.setStatus(Status.PENDING);
+                existing.setHasPlayerResults(false);
+            } else if (existing.getMatchDate().isAfter(now)) {
+                existing.setHasPlayerResults(hasPlayerResults);
+                existing.setStatus(Status.UPCOMING);
+            } else if (existing.isHasResults() && hasPlayerResults) {
+                existing.setHasPlayerResults(true);
+                existing.setStatus(Status.COMPLETE);
+            }
+        
         return existing;
     }
 
@@ -287,12 +313,15 @@ public class TeamMatchResource {
             boolean hasPlayerResults = leagueService.findCurrent(PlayerResult.class).parallelStream().filter(r->r.getTeamMatch().equals(result)).count() > 0;
             if (result.getMatchDate().isBefore(now) && !result.isHasResults()) {
                 result.setStatus(Status.PENDING);
+                result.setHasPlayerResults(hasPlayerResults);
             } else if (result.getMatchDate().isBefore(now) && !hasPlayerResults) {
                 result.setStatus(Status.PENDING);
                 result.setHasPlayerResults(false);
             } else if (result.getMatchDate().isAfter(now)) {
+                result.setHasPlayerResults(hasPlayerResults);
                 result.setStatus(Status.UPCOMING);
             } else if (result.isHasResults() && hasPlayerResults) {
+                result.setHasPlayerResults(true);
                 result.setStatus(Status.COMPLETE);
             }
         }
