@@ -30,7 +30,7 @@ public class PrincipleDetailsService implements UserDetailsService {
         User u = leagueService.findAll(User.class).parallelStream()
                 .filter(user -> user.getLogin() != null)
                 .filter(
-                        user -> user.getLogin().toLowerCase().equals(username.toLowerCase())
+                        user -> user.getLogin().toLowerCase().trim().equals(username.toLowerCase().trim())
                 ).findFirst().orElse(null);
         if (u == null) {
             logger.error("Could not find user " + username);

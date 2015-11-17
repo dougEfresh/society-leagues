@@ -163,7 +163,7 @@ public class UserResource {
     public TokenReset reset(@RequestBody Map<String,String> user) {
          User u = leagueService.findAll(User.class).parallelStream()
                 .filter(us-> us.getLogin() != null)
-                .filter(us -> us.getLogin().toLowerCase().equals(user.get("login"))
+                .filter(us -> us.getLogin().toLowerCase().trim().equals(user.get("login").trim())
                 ).findFirst().orElse(null);
         if (u == null) {
             logger.error("Could not find user " + user.get("login"));
