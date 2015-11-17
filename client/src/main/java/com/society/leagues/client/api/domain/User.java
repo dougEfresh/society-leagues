@@ -96,7 +96,6 @@ public class User extends LeagueObject {
         this.password = password;
     }
 
-    @JsonIgnore
     public String getLogin() {
         return login;
     }
