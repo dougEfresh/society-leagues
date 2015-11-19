@@ -63,6 +63,9 @@ public class PlayerResult  extends LeagueObject {
     }
 
     public Boolean isScotch() {
+        if (playerAwayPartner != null || playerHomePartner != null)
+            return true;
+
         return scotch;
     }
 
