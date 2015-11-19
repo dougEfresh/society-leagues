@@ -57,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/*.js", "/index.html", "/lang/**","/fonts/**","/lib/**", "/images/**",
                 "/js/**",
                  "/api-docs**",
-                "/api-docs/**",
+                "/api-docs/**", "/api/sheets/**","/api/user/reset/**",
                 "/mappings"
         );
     }
