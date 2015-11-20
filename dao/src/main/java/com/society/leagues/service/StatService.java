@@ -13,6 +13,7 @@ import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Component
@@ -193,6 +194,7 @@ public class StatService {
 
         List<Stat> stats = new ArrayList<>(1000);
         for (User user : winners.keySet()) {
+
             for (Handicap handicap : Handicap.values()) {
                 List<PlayerResult> w = winners.get(user).stream().filter(p->p.getLoserHandicap() == handicap).collect(Collectors.toList());
                 if (w.isEmpty()) {
@@ -203,16 +205,30 @@ public class StatService {
         }
         for (User user : loser.keySet()) {
             for (Handicap handicap : Handicap.values()) {
-                List<PlayerResult> w = loser.get(user).stream()
+                List<PlayerResult> l = loser.get(user).stream()
                         .filter(p -> p.getWinnerHandicap() == handicap)
                         .collect(Collectors.toList());
-                if (w.isEmpty()) {
+                if (l.isEmpty()) {
                     continue;
                 }
-                stats.add(Stat.buildHandicapStats(w, StatType.HANDICAP_WINS, user, handicap));
+                stats.add(Stat.buildHandicapStats(l, StatType.HANDICAP_LOSES, user, handicap));
             }
         }
         handicapStats.lazySet(stats);
+    }
+
+    public List<Stat> refreshUserHandicapStats(final User user, Predicate<PlayerResult> predicate, StatType type, List<PlayerResult> results) {
+        List<Stat> stats = new ArrayList<>();
+         for (Handicap handicap : Handicap.values()) {
+                List<PlayerResult> l = results.stream()
+                        .filter(predicate)
+                        .collect(Collectors.toList());
+                if (l.isEmpty()) {
+                    continue;
+                }
+                stats.add(Stat.buildHandicapStats(l, type, user, handicap));
+         }
+        return stats;
     }
 
     public void refreshTeamMatchStats(final TeamMatch tm) {
@@ -246,6 +262,11 @@ public class StatService {
                     }
                     if (!Objects.equals(t1.getStats().getLoses(), t.getStats().getLoses())) {
                         return t1.getStats().getLoses().compareTo(t1.getStats().getLoses());
+                    }
+                    if (t.isNine()) {
+                        if (!Objects.equals(t1.getStats().getSetLoses(), t.getStats().getSetLoses())) {
+                            return t.getStats().getSetLoses().compareTo(t1.getStats().getSetLoses());
+                        }
                     }
                     if (!Objects.equals(t1.getStats().getRacksWon(), t.getStats().getRacksWon())) {
                         return t1.getStats().getRacksWon().compareTo(t.getStats().getRacksWon());
@@ -283,14 +304,28 @@ public class StatService {
         int forfeits = 0;
 
         Integer max = results.get(results.size()-1).getMatchNumber();
-
+        int homeWins = 0;
+        int awayWins = 0;
         for(int i = 0 ; i < max && i<results.size(); i++) {
             PlayerResult result = results.get(i);
+            if (result.getHomeRacks() > result.getAwayRacks()) {
+                homeWins++;
+            }
 
+            if (result.getHomeRacks() < result.getAwayRacks()) {
+                awayWins++;
+            }
             if (result.getMatchNumber() != i+1+forfeits) {
                 forfeits++;
             }
         }
+        int handicapScore = 0;
+         if (tm.getHomeRacks() > tm.getAwayRacks()) {
+             handicapScore = tm.getHomeRacks() - homeWins;
+        } else {
+             handicapScore = tm.getAwayRacks() - awayWins;
+        }
+        tm.setHandicapRacks(handicapScore);
         tm.setForfeits(forfeits);
     }
 

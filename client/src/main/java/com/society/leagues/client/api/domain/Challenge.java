@@ -26,7 +26,6 @@ public class Challenge extends LeagueObject {
         this.slots = slots;
     }
 
-    @JsonIgnore
     public TeamMatch getTeamMatch() {
         return teamMatch;
     }

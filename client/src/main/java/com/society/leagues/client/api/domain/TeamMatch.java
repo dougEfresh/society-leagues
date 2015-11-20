@@ -32,6 +32,7 @@ public class TeamMatch extends LeagueObject {
     Boolean hasPlayerResults = false;
     Status status;
     Integer forfeits = 0;
+    Integer handicapRacks = 0;
 
     @Transient
     List<PlayerResult> results;
@@ -301,6 +302,14 @@ public class TeamMatch extends LeagueObject {
 
     public void setForfeits(Integer forfeits) {
         this.forfeits = forfeits;
+    }
+
+    public Integer getHandicapRacks() {
+        return handicapRacks;
+    }
+
+    public void setHandicapRacks(Integer handicapRacks) {
+        this.handicapRacks = handicapRacks;
     }
 
     @Override
