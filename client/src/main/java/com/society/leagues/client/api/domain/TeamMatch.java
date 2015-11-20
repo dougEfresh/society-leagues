@@ -5,10 +5,13 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.converters.DateTimeSerializer;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
 
 @SuppressWarnings("unused")
 public class TeamMatch extends LeagueObject {
@@ -28,7 +31,10 @@ public class TeamMatch extends LeagueObject {
     User referenceUser = null;
     Boolean hasPlayerResults = false;
     Status status;
-    Boolean forfeit = false;
+    Integer forfeits = 0;
+
+    @Transient
+    List<PlayerResult> results;
 
     public TeamMatch(Team home, Team away, LocalDateTime matchDate) {
         this.home = home;
@@ -84,7 +90,7 @@ public class TeamMatch extends LeagueObject {
     }
 
     public String score() {
-        return String.format("%s-%s",getHomeRacks(),getAwayRacks());
+        return String.format("%s-%s", getHomeRacks(), getAwayRacks());
     }
 
     public Division getDivision() {
@@ -285,6 +291,18 @@ public class TeamMatch extends LeagueObject {
         return null;
     }
 
+    public boolean isForfeit() {
+        return (homeRacks == 0 && awayRacks > 0) || (awayRacks == 0 && homeRacks > 0);
+    }
+
+    public Integer getForfeits() {
+        return forfeits;
+    }
+
+    public void setForfeits(Integer forfeits) {
+        this.forfeits = forfeits;
+    }
+
     @Override
     public String toString() {
         return "TeamMatch{" +
@@ -297,6 +315,7 @@ public class TeamMatch extends LeagueObject {
                 ", setAwayWins=" + setAwayWins +
                 '}';
     }
+
 
     public Boolean getHasPlayerResults() {
         return hasPlayerResults;

@@ -96,6 +96,7 @@ public class TeamMatchResource {
         List<TeamMatch> processed = new ArrayList<>(teamMatch.size());
         processed.addAll(teamMatch.stream().map(this::modify).collect(Collectors.toList()));
         leagueService.save(processed);
+
         return processed;
     }
 

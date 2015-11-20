@@ -34,8 +34,13 @@ public class StatService {
         leagueService.addListener(new DaoListener() {
             @Override
             public void onAdd(LeagueObject object) {
-                if (object instanceof TeamMatch)
+                if (object instanceof TeamMatch) {
                     refreshTeamMatchStats((TeamMatch) object);
+                }
+                if (object instanceof PlayerResult) {
+                    refresh();
+                    refreshPlayerResult((PlayerResult) object);
+                }
             }
 
             @Override
@@ -43,8 +48,10 @@ public class StatService {
                 if (object instanceof TeamMatch)
                     refreshTeamMatchStats((TeamMatch) object);
 
-                if (object instanceof PlayerResult)
+                if (object instanceof PlayerResult) {
                     refresh();
+                    refreshPlayerResult((PlayerResult) object);
+                }
             }
 
             @Override
@@ -52,8 +59,10 @@ public class StatService {
                 if (object instanceof TeamMatch)
                     refreshTeamMatchStats((TeamMatch) object);
 
-                if (object instanceof PlayerResult)
+                if (object instanceof PlayerResult) {
                     refresh();
+                    refreshPlayerResult((PlayerResult) object);
+                }
             }
         });
         refresh();
@@ -91,6 +100,7 @@ public class StatService {
                 for (Team team : teams) {
                     refreshTeamStats(team);
                 }
+                leagueService.findCurrent(TeamMatch.class).parallelStream().forEach(StatService.this::refreshTeamMatch);
                 refreshTeamRank();
                 refreshUserSeasonStats();
                 refreshUserLifetimeStats();
@@ -216,6 +226,7 @@ public class StatService {
             public void run() {
                 refreshTeamStats(tm.getHome());
                 refreshTeamStats(tm.getAway());
+                refreshTeamMatch(tm);
                 refreshTeamRank();
             }
         });
@@ -255,7 +266,32 @@ public class StatService {
     }
 
     public void refreshPlayerResult(PlayerResult pr) {
+        refreshTeamMatch(pr.getTeamMatch());
+    }
 
+    public void refreshTeamMatch(TeamMatch tm) {
+        List<PlayerResult> results = leagueService.findCurrent(PlayerResult.class).parallelStream().filter(p->p.getTeamMatch().equals(tm)).collect(Collectors.toList());
+        if (results.isEmpty())
+            return;
+
+         results.sort(new Comparator<PlayerResult>() {
+            @Override
+            public int compare(PlayerResult o1, PlayerResult o2) {
+                return o1.getMatchNumber().compareTo(o2.getMatchNumber());
+            }
+        });
+        int forfeits = 0;
+
+        Integer max = results.get(results.size()-1).getMatchNumber();
+
+        for(int i = 0 ; i < max && i<results.size(); i++) {
+            PlayerResult result = results.get(i);
+
+            if (result.getMatchNumber() != i+1+forfeits) {
+                forfeits++;
+            }
+        }
+        tm.setForfeits(forfeits);
     }
 
     public void refreshTeamStats(Team team) {
@@ -267,10 +303,11 @@ public class StatService {
                         .collect(Collectors.toList())
         );
 
-        if (Stat.isDifferent(stat,team.getStats())) {
+        if (Stat.isDifferent(stat, team.getStats())) {
             team.setStats(stat);
             leagueService.save(team);
         }
+
     }
 
     public void setEnableRefresh(boolean enableRefresh) {
