@@ -29,8 +29,8 @@ public class ResultService {
         if (teamMatch.getSeason().isNine() && !teamMatch.getSeason().isChallenge()) {
             matches = teamMatch.getSetHomeWins() + teamMatch.getSetAwayWins();
         }
-        User[] homeMembers = teamMatch.getHome().getTeamMembers().getMembers().toArray(new User[]{});
-        User[] awayMembers = teamMatch.getAway().getTeamMembers().getMembers().toArray(new User[]{});
+        User[] homeMembers = teamMatch.getHome().getMembers().getMembers().toArray(new User[]{});
+        User[] awayMembers = teamMatch.getAway().getMembers().getMembers().toArray(new User[]{});
         for(int i = 0 ; i<matches; i++) {
             PlayerResult r = new PlayerResult(homeMembers[i % 4],awayMembers[i % 4],teamMatch);
             r.setMatchNumber(i+1);
@@ -46,8 +46,8 @@ public class ResultService {
     public Collection<PlayerResult> createNewPlayerMatchResultsNine(TeamMatch teamMatch) {
         List<PlayerResult> playerResults = new ArrayList<>();
         int matches = teamMatch.getSetHomeWins() + teamMatch.getSetAwayWins();
-        User[] homeMembers = teamMatch.getHome().getTeamMembers().getMembers().toArray(new User[]{});
-        User[] awayMembers = teamMatch.getHome().getTeamMembers().getMembers().toArray(new User[]{});
+        User[] homeMembers = teamMatch.getHome().getMembers().getMembers().toArray(new User[]{});
+        User[] awayMembers = teamMatch.getHome().getMembers().getMembers().toArray(new User[]{});
         for(int i = 0 ; i<matches; i++) {
             PlayerResult r = new PlayerResult(homeMembers[i],awayMembers[i],teamMatch);
             r.setMatchNumber(i+1);
@@ -195,8 +195,8 @@ public class ResultService {
         }
         PlayerResult result = new PlayerResult();
         result.setMatchNumber(matchNumber);
-        result.setPlayerHome(teamMatch.getHome().getTeamMembers().getMembers().iterator().next());
-        result.setPlayerAway(teamMatch.getAway().getTeamMembers().getMembers().iterator().next());
+        result.setPlayerHome(teamMatch.getHome().getMembers().getMembers().iterator().next());
+        result.setPlayerAway(teamMatch.getAway().getMembers().getMembers().iterator().next());
         result.setPlayerHomeHandicap(result.getPlayerHome().getHandicap(teamMatch.getSeason()));
         result.setPlayerAwayHandicap(result.getPlayerHome().getHandicap(teamMatch.getSeason()));
         result.setTeamMatch(teamMatch);

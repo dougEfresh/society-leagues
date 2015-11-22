@@ -1,6 +1,5 @@
 package com.society.leagues.client.api.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -13,7 +12,6 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 public class Team extends LeagueObject {
 
@@ -22,7 +20,7 @@ public class Team extends LeagueObject {
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime created;
-    @NotNull @DBRef TeamMembers teamMembers;
+    @NotNull @DBRef TeamMembers members;
     Integer rank = 0;
     public Team(Season season, String name) {
         this.season = season;
@@ -49,29 +47,29 @@ public class Team extends LeagueObject {
     }
 
     @JsonView(value = PlayerResultView.class)
-    public TeamMembers getTeamMembers() {
-        if (teamMembers == null)
+    public TeamMembers getMembers() {
+        if (members == null)
             return new TeamMembers();
 
-        return teamMembers;
+        return members;
     }
 
     public void addMember(User user) {
-        this.teamMembers.addMember(user);
+        this.members.addMember(user);
     }
 
     public void addMembers(List<User> users) {
         for (User user : users) {
-            this.teamMembers.addMember(user);
+            this.members.addMember(user);
         }
     }
 
     public void removeMembers(List<User> users) {
-        if (this.teamMembers == null) {
+        if (this.members == null) {
             return;
         }
         for (User user : users) {
-            this.teamMembers.removeMember(user);
+            this.members.removeMember(user);
         }
     }
 
@@ -93,7 +91,7 @@ public class Team extends LeagueObject {
     }
 
     public User getCaptain() {
-        return this.teamMembers == null ? null : this.teamMembers.getCaptain();
+        return this.members == null ? null : this.members.getCaptain();
     }
 
     public boolean isNine() {
@@ -104,10 +102,10 @@ public class Team extends LeagueObject {
     public boolean hasUser(User u) {
         if (u == null)
             return false;
-        if (teamMembers == null) {
+        if (members == null) {
             return false;
         }
-        return teamMembers.getMembers().contains(u);
+        return members.getMembers().contains(u);
     }
 
     public boolean inSameSeason(User u) {
@@ -124,16 +122,16 @@ public class Team extends LeagueObject {
     }
 
     public User getChallengeUser() {
-        if (!isChallenge() || teamMembers == null || teamMembers.getMembers().isEmpty()) {
+        if (!isChallenge() || members == null || members.getMembers().isEmpty()) {
             return null;
         }
 
-        return teamMembers.getMembers().iterator().next();
+        return members.getMembers().iterator().next();
     }
 
     @JsonView(value = PlayerResultView.class)
-    public void setTeamMembers(TeamMembers teamMembers) {
-        this.teamMembers = teamMembers;
+    public void setMembers(TeamMembers members) {
+        this.members = members;
     }
 
     public Integer getRank() {

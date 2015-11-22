@@ -349,7 +349,7 @@ public class PlayerResult  extends LeagueObject {
 
     public Team getOpponentTeam() {
         if (referenceUser != null) {
-            return teamMatch.getHome().getTeamMembers().getMembers().contains(referenceUser) ? teamMatch.getAway() : teamMatch.getHome();
+            return teamMatch.getHome().getMembers().getMembers().contains(referenceUser) ? teamMatch.getAway() : teamMatch.getHome();
         }
 
         if (referenceTeam != null)
@@ -360,7 +360,7 @@ public class PlayerResult  extends LeagueObject {
 
     public Team getTeam() {
         if (referenceUser != null) {
-            return teamMatch.getHome().getTeamMembers().getMembers().contains(referenceUser) ? teamMatch.getHome() : teamMatch.getAway();
+            return teamMatch.getHome().getMembers().getMembers().contains(referenceUser) ? teamMatch.getHome() : teamMatch.getAway();
         }
         return referenceTeam;
     }

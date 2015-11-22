@@ -98,16 +98,16 @@ public class TestStat {
          PlayerResult result1 = new PlayerResult();
          result1.setHomeRacks(5);
          result1.setAwayRacks(7);
-         result1.setPlayerHome(home.getTeamMembers().stream().findFirst().get());
-         result1.setPlayerAway(away.getTeamMembers().stream().findFirst().get());
+         result1.setPlayerHome(home.getMembers().stream().findFirst().get());
+         result1.setPlayerAway(away.getMembers().stream().findFirst().get());
          result1.setTeamMatch(match1);
          leagueService.save(result1);
 
          PlayerResult result2 = new PlayerResult();
          result2.setHomeRacks(10);
          result2.setAwayRacks(5);
-         result2.setPlayerHome(home.getTeamMembers().stream().findFirst().get());
-         result2.setPlayerAway(anotherTeam.getTeamMembers().stream().findFirst().get());
+         result2.setPlayerHome(home.getMembers().stream().findFirst().get());
+         result2.setPlayerAway(anotherTeam.getMembers().stream().findFirst().get());
          result2.setTeamMatch(match2);
          leagueService.save(result2);
 
@@ -119,7 +119,7 @@ public class TestStat {
          assertTrue(stat.getMatches() == 2);
          assertEquals(new Integer(10+5), stat.getRacksWon());
          assertEquals(new Integer(5 + 7), stat.getRacksLost());
-         User user = home.getTeamMembers().stream().findFirst().get();
+         User user = home.getMembers().stream().findFirst().get();
          assertEquals(user,stat.getUser());
          assertEquals(home,stat.getTeam());
          assertEquals(new Integer(0),stat.getSetLoses());

@@ -57,7 +57,7 @@ public class SheetResource {
 
     private String members(Team team, String template, String key) {
         String members = "";
-        for (User user : team.getTeamMembers().getMembers().stream().sorted((o1, o2) -> o1.getName().compareTo(o2.getName())).collect(Collectors.toList())) {
+        for (User user : team.getMembers().getMembers().stream().sorted((o1, o2) -> o1.getName().compareTo(o2.getName())).collect(Collectors.toList())) {
             if (user.getLastName().toLowerCase().contains("handicap") || user.getLastName().toLowerCase().contains("forfeit"))
                 continue;
 

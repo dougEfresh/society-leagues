@@ -128,7 +128,7 @@ public class TeamMatch extends LeagueObject {
     }
 
     public boolean hasUser(User user) {
-        return home.getTeamMembers().getMembers().contains(user) || away.getTeamMembers().getMembers().contains(user);
+        return home.getMembers().getMembers().contains(user) || away.getMembers().getMembers().contains(user);
     }
 
     public boolean hasTeam(Team team) {
@@ -235,7 +235,7 @@ public class TeamMatch extends LeagueObject {
         if (referenceUser == null)
             return null;
 
-        return home.getTeamMembers().getMembers().contains(referenceUser) ? away : home;
+        return home.getMembers().getMembers().contains(referenceUser) ? away : home;
     }
 
     public Integer getWinnerRacks() {
@@ -269,7 +269,7 @@ public class TeamMatch extends LeagueObject {
     public String getRace() {
         if (getSeason().isChallenge()) {
             Handicap h  = getHome().getChallengeUser().getHandicap(getSeason());
-            Handicap a = getAway().getTeamMembers().getMembers().iterator().next().getHandicap(getSeason());
+            Handicap a = getAway().getMembers().getMembers().iterator().next().getHandicap(getSeason());
             return Handicap.race(h,a);
         } else {
             return "";

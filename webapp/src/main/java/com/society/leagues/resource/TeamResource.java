@@ -42,21 +42,23 @@ public class TeamResource {
         if (existingTeam == null) {
             existingTeam = new Team();
         }
-        team.setSeason(leagueService.findOne(team.getSeason()));
-        team.setName(team.getName());
-        TeamMembers existingMembers = leagueService.findOne(team.getTeamMembers());
+        existingTeam.setSeason(leagueService.findOne(team.getSeason()));
+        existingTeam.setName(team.getName());
+        TeamMembers existingMembers = leagueService.findOne(team.getMembers());
         if (existingMembers == null) {
             existingMembers = leagueService.save(new TeamMembers());
         }
-        existingMembers.setCaptain(leagueService.findOne(team.getCaptain()));
-        if (team.getTeamMembers() != null) {
+        if (existingMembers.getCaptain() != null)
+            existingMembers.setCaptain(leagueService.findOne(team.getCaptain()));
+        
+        if (team.getMembers() != null) {
             existingMembers.setMembers(new HashSet<>());
-            for (User user : team.getTeamMembers().getMembers()) {
+            for (User user : team.getMembers().getMembers()) {
                 existingMembers.addMember(user);
             }
         }
         leagueService.save(existingMembers);
-        existingTeam.setTeamMembers(existingMembers);
+        existingTeam.setMembers(existingMembers);
         return leagueService.save(existingTeam);
     }
 
@@ -154,7 +156,7 @@ public class TeamResource {
         }
 
         return leagueService.findCurrent(Team.class).stream().
-                filter(t -> t.getTeamMembers().getMembers().contains(u)).collect(Collectors.toList()
+                filter(t -> t.getMembers().getMembers().contains(u)).collect(Collectors.toList()
         );
     }
 

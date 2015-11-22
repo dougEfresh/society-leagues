@@ -79,8 +79,8 @@ public class TestTeamMatch {
         assertNotNull(newTeamMatch.getId());
         assertNotNull(newTeamMatch.getSeason());
         assertNotNull(newTeamMatch.getDivision());
-        assertTrue(newTeamMatch.getHome().getTeamMembers().contains(u1));
-        assertTrue(newTeamMatch.getAway().getTeamMembers().contains(u2));
+        assertTrue(newTeamMatch.getHome().getMembers().contains(u1));
+        assertTrue(newTeamMatch.getAway().getMembers().contains(u2));
         assertEquals(new Integer(7), newTeamMatch.getAwayRacks());
         assertEquals(new Integer(6), newTeamMatch.getHomeRacks());
     }

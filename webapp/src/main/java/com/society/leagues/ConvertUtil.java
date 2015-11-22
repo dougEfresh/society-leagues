@@ -208,10 +208,10 @@ public class ConvertUtil {
                 logger.error("Could not find team " + result.get("team_id"));
                 continue;
             }
-            team.getTeamMembers().addMember(u);
-        //    leagueService.save(team.getTeamMembers());
+            team.getMembers().addMember(u);
+        //    leagueService.save(team.getMembers());
         }
-        teams.forEach(t->leagueService.save(t.getTeamMembers()));
+        teams.forEach(t->leagueService.save(t.getMembers()));
         System.out.print("Found  " + results.size() + " teams with members ");
     }
 
@@ -337,14 +337,14 @@ public class ConvertUtil {
                 }
                 playerResult.setPlayerHomeHandicap(aHandicap);
 
-                //members =  home.getTeamMembers().size();
+                //members =  home.getMembers().size();
                 //if (members > 15) {
 //                    throw new RuntimeException("Too many people");
   //              }
     //            home.addMember(aUser);
 
-      //          if (members != home.getTeamMembers().size()) {
-                    //leagueService.save(home.getTeamMembers());
+      //          if (members != home.getMembers().size()) {
+                    //leagueService.save(home.getMembers());
           //          leagueService.save(home);
         //        }
                 playerResults.add(playerResult);
@@ -388,13 +388,13 @@ public class ConvertUtil {
 
                 playerResult.setPlayerAwayHandicap(aHandicap);
 
-              /*  members =  away.getTeamMembers().size();
+              /*  members =  away.getMembers().size();
                 if (members > 15) {
                     throw new RuntimeException("Too many people");
                 }
                 away.addMember(aUser);
-                if (members != away.getTeamMembers().size()) {
-                    leagueService.save(away.getTeamMembers());
+                if (members != away.getMembers().size()) {
+                    leagueService.save(away.getMembers());
                     leagueService.save(away);
                 }
                 */
@@ -493,8 +493,8 @@ public class ConvertUtil {
                 u.addHandicap(hs);
                 leagueService.save(u);
             }
-            t.getTeamMembers().addMember(u);
-            leagueService.save(t.getTeamMembers());
+            t.getMembers().addMember(u);
+            leagueService.save(t.getMembers());
         }
     }
 
@@ -965,8 +965,8 @@ public class ConvertUtil {
             }
             Team t = teamMap.get((Integer) player.get("team_id")).iterator().next();
             User u = userHashMap.get((Integer) player.get("tp_player")).iterator().next();
-            t.getTeamMembers().addMember(u);
-            leagueService.save(t.getTeamMembers());
+            t.getMembers().addMember(u);
+            leagueService.save(t.getMembers());
         }
     }
 
@@ -1028,8 +1028,8 @@ public class ConvertUtil {
             User u = users.parallelStream().filter(user->user.getLegacyId().equals(result.get("captain_id"))).findFirst().orElse(null);
             if (u == null)
                 continue;
-            team.getTeamMembers().setCaptain(u);
-            leagueService.save(team.getTeamMembers());
+            team.getMembers().setCaptain(u);
+            leagueService.save(team.getMembers());
         }
     }
 
@@ -1076,7 +1076,7 @@ public class ConvertUtil {
         for (PlayerResult result : nine) {
             TeamMatch tm = result.getTeamMatch();
             User winner = result.getWinner();
-            if (tm.getHome().getTeamMembers().getMembers().contains(winner)) {
+            if (tm.getHome().getMembers().getMembers().contains(winner)) {
                 tm.setSetHomeWins(tm.getSetHomeWins()+1);
             } else {
                 tm.setSetAwayWins(tm.getSetAwayWins()+1);

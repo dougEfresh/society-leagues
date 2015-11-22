@@ -58,8 +58,8 @@ public class TestTeam {
         t =  restTemplate.postForEntity(host + "/api/team/admin/create",requestEntity,Team.class).getBody();
         assertNotNull(t.getId());
         assertEquals(t.getSeason(),s);
-        assertNotNull(t.getTeamMembers());
-        assertTrue(t.getTeamMembers().size() == 1);
+        assertNotNull(t.getMembers());
+        assertTrue(t.getMembers().size() == 1);
     }
 
 
@@ -71,9 +71,9 @@ public class TestTeam {
         HttpEntity requestEntity = new HttpEntity(t, requestHeaders);
         t = restTemplate.postForEntity(host + "/api/team/admin/modify",requestEntity,Team.class).getBody();
         assertNotNull(t.getId());
-        assertNotNull(t.getTeamMembers());
-        assertFalse(t.getTeamMembers().isEmpty());
-        assertTrue(t.getTeamMembers().contains(u));
+        assertNotNull(t.getMembers());
+        assertFalse(t.getMembers().isEmpty());
+        assertTrue(t.getMembers().contains(u));
     }
 
     @Test
@@ -85,9 +85,9 @@ public class TestTeam {
         HttpEntity requestEntity = new HttpEntity(t, requestHeaders);
         t = restTemplate.exchange(host + "/api/team/get/"  + t.getId(),HttpMethod.GET,requestEntity,Team.class).getBody();
         assertNotNull(t.getId());
-        assertNotNull(t.getTeamMembers());
-        assertFalse(t.getTeamMembers().isEmpty());
-        assertTrue(t.getTeamMembers().contains(u));
+        assertNotNull(t.getMembers());
+        assertFalse(t.getMembers().isEmpty());
+        assertTrue(t.getMembers().contains(u));
     }
 
     @Test

@@ -259,8 +259,8 @@ public class TeamMatchResource {
     public Map<String,Set<User>> getTeamMatchMembers(Principal principal, @PathVariable String id) {
         TeamMatch tm = leagueService.findOne(new TeamMatch(id));
         Map<String,Set<User>> members = new HashMap<>();
-        members.put("home",tm.getHome().getTeamMembers().getMembers());
-        members.put("away",tm.getAway().getTeamMembers().getMembers());
+        members.put("home",tm.getHome().getMembers().getMembers());
+        members.put("away",tm.getAway().getMembers().getMembers());
         return members;
     }
 
@@ -317,7 +317,7 @@ public class TeamMatchResource {
     public List<TeamMatch> getTeamMatchUser(Principal principal, @PathVariable String id, @PathVariable String type) {
         User u = leagueService.findOne(new User(id));
         List<Team> userTeams = leagueService.findAll(Team.class).stream().
-                filter(tm -> tm.getTeamMembers().getMembers().contains(u)).filter(t -> t.getSeason().isActive())
+                filter(tm -> tm.getMembers().getMembers().contains(u)).filter(t -> t.getSeason().isActive())
                 .collect(Collectors.toList());
         List<TeamMatch> teamMatches = new ArrayList<>();
         for (Team userTeam : userTeams) {

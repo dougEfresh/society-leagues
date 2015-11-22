@@ -27,12 +27,12 @@ public class TeamService {
                 .findFirst().orElse(new Team());
         t.setSeason(season);
         t.setName(name);
-        TeamMembers m = t.getTeamMembers() ==  null ? new TeamMembers() : t.getTeamMembers();
+        TeamMembers m = t.getMembers() ==  null ? new TeamMembers() : t.getMembers();
         for (User member : members) {
             m.addMember(member);
         }
         m = leagueService.save(m);
-        t.setTeamMembers(m);
+        t.setMembers(m);
         return leagueService.save(t);
     }
 }
