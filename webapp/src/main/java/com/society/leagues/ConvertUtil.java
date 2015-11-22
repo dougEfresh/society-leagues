@@ -15,7 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 
-import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
@@ -338,13 +337,13 @@ public class ConvertUtil {
                 }
                 playerResult.setPlayerHomeHandicap(aHandicap);
 
-                //members =  home.getMembers().size();
+                //members =  home.getTeamMembers().size();
                 //if (members > 15) {
 //                    throw new RuntimeException("Too many people");
   //              }
     //            home.addMember(aUser);
 
-      //          if (members != home.getMembers().size()) {
+      //          if (members != home.getTeamMembers().size()) {
                     //leagueService.save(home.getTeamMembers());
           //          leagueService.save(home);
         //        }
@@ -389,12 +388,12 @@ public class ConvertUtil {
 
                 playerResult.setPlayerAwayHandicap(aHandicap);
 
-              /*  members =  away.getMembers().size();
+              /*  members =  away.getTeamMembers().size();
                 if (members > 15) {
                     throw new RuntimeException("Too many people");
                 }
                 away.addMember(aUser);
-                if (members != away.getMembers().size()) {
+                if (members != away.getTeamMembers().size()) {
                     leagueService.save(away.getTeamMembers());
                     leagueService.save(away);
                 }
@@ -1077,7 +1076,7 @@ public class ConvertUtil {
         for (PlayerResult result : nine) {
             TeamMatch tm = result.getTeamMatch();
             User winner = result.getWinner();
-            if (tm.getHome().getMembers().contains(winner)) {
+            if (tm.getHome().getTeamMembers().getMembers().contains(winner)) {
                 tm.setSetHomeWins(tm.getSetHomeWins()+1);
             } else {
                 tm.setSetAwayWins(tm.getSetAwayWins()+1);

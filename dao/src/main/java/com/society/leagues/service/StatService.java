@@ -39,7 +39,6 @@ public class StatService {
                     refreshTeamMatchStats((TeamMatch) object);
                 }
                 if (object instanceof PlayerResult) {
-                    refresh();
                     refreshPlayerResult((PlayerResult) object);
                 }
             }
@@ -50,7 +49,6 @@ public class StatService {
                     refreshTeamMatchStats((TeamMatch) object);
 
                 if (object instanceof PlayerResult) {
-                    refresh();
                     refreshPlayerResult((PlayerResult) object);
                 }
             }
@@ -61,7 +59,6 @@ public class StatService {
                     refreshTeamMatchStats((TeamMatch) object);
 
                 if (object instanceof PlayerResult) {
-                    refresh();
                     refreshPlayerResult((PlayerResult) object);
                 }
             }
@@ -217,18 +214,45 @@ public class StatService {
         handicapStats.lazySet(stats);
     }
 
-    public List<Stat> refreshUserHandicapStats(final User user, Predicate<PlayerResult> predicate, StatType type, List<PlayerResult> results) {
-        List<Stat> stats = new ArrayList<>();
-         for (Handicap handicap : Handicap.values()) {
-                List<PlayerResult> l = results.stream()
-                        .filter(predicate)
-                        .collect(Collectors.toList());
-                if (l.isEmpty()) {
-                    continue;
+    public void refreshUserHandicapStats(final User user) {
+         Map<User,List<PlayerResult>> winners = leagueService.findCurrent(PlayerResult.class).stream().filter(pr -> pr.hasUser(user)).
+                collect(Collectors.groupingBy(PlayerResult::getWinner));
+        Map<User,List<PlayerResult>> loser = leagueService.findCurrent(PlayerResult.class).stream().filter(pr -> pr.hasUser(user)).
+                collect(Collectors.groupingBy(PlayerResult::getLoser));
+
+        List<Stat> stats = new ArrayList<>(100);
+
+        for (Handicap handicap : Handicap.values()) {
+            List<PlayerResult> w = winners.get(user).stream().filter(p->p.getLoserHandicap() == handicap).collect(Collectors.toList());
+            if (w.isEmpty()) {
+                continue;
+            }
+            stats.add(Stat.buildHandicapStats(w,StatType.HANDICAP_WINS,user,handicap));
+        }
+        for (Handicap handicap : Handicap.values()) {
+            List<PlayerResult> l = loser.get(user).stream()
+                    .filter(p -> p.getWinnerHandicap() == handicap)
+                    .collect(Collectors.toList());
+            if (l.isEmpty()) {
+                continue;
+            }
+            stats.add(Stat.buildHandicapStats(l, StatType.HANDICAP_LOSES, user, handicap));
+        }
+        for (Stat stat : handicapStats.get()) {
+            for (Stat hcStats : stats) {
+                if (stat.getUser().equals(hcStats.getUser())
+                        && stat.getType() == hcStats.getType()
+                        && stat.getHandicap().equals(hcStats.getHandicap())
+                        ) {
+                    stat.setWins(hcStats.getWins());
+                    stat.setLoses(hcStats.getLoses());
+                    stat.setRacksWon(hcStats.getRacksWon());
+                    stat.setRacksLost(hcStats.getRacksLost());
+                } else {
+                    handicapStats.get().add(hcStats);
                 }
-                stats.add(Stat.buildHandicapStats(l, type, user, handicap));
-         }
-        return stats;
+            }
+        }
     }
 
     public void refreshTeamMatchStats(final TeamMatch tm) {
@@ -286,8 +310,68 @@ public class StatService {
         }
     }
 
-    public void refreshPlayerResult(PlayerResult pr) {
-        refreshTeamMatch(pr.getTeamMatch());
+    public void refreshUserSeasonStats(final User user) {
+        for (Season season : user.getSeasons().stream().filter(s -> s.isActive()).collect(Collectors.toList())) {
+            List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().
+                    filter(pr->pr.hasUser(user))
+                    .filter(pr -> pr.getSeason().equals(season)).
+                    collect(Collectors.toList());
+
+            Stat s = Stat.buildPlayerSeasonStats(user,
+                        season,
+                        results
+                );
+            Stat userStat = userSeasonStat.get().get(season).stream().parallel().filter(st->st.getUser().equals(user)).findFirst().orElse(null);
+            if (userStat == null) {
+                userSeasonStat.get().get(season).add(s);
+            } else {
+                userStat.setWins(s.getWins());
+                userStat.setLoses(s.getLoses());
+                userStat.setRacksWon(s.getRacksWon());
+                userStat.setRacksLost(s.getRacksLost());
+            }
+            List<Stat> stats = userSeasonStat.get().get(season).stream().sorted(new Comparator<Stat>() {
+                @Override
+                public int compare(Stat stat, Stat t1) {
+                    if (!t1.getWins().equals(stat.getWins())) {
+                        return t1.getWins().compareTo(stat.getWins());
+                    }
+                    if (!t1.getLoses().equals(stat.getLoses())) {
+                        return stat.getLoses().compareTo(t1.getLoses());
+                    }
+                    if (!t1.getRacksLost().equals(stat.getRacksLost())) {
+                        return stat.getRacksLost().compareTo(t1.getRacksLost());
+                    }
+                    return t1.getWinPct().compareTo(stat.getWinPct());
+                }
+            }).collect(Collectors.toList());
+
+            int rank = 0;
+            for (Stat stat : stats) {
+                stat.setRank(++rank);
+            }
+            userSeasonStat.get().put(season,stats);
+        }
+
+
+    }
+
+    public void refreshPlayerResult(final PlayerResult pr) {
+        if (threadPoolTaskExecutor.getActiveCount() > 1) {
+            logger.info("Skipping player refresh");
+            return;
+        }
+        logger.info("Submitting to task for player refresh");
+         threadPoolTaskExecutor.submit(new Runnable() {
+             @Override
+             public void run() {
+                 refreshTeamMatch(pr.getTeamMatch());
+                 refreshUserHandicapStats(pr.getPlayerHome());
+                 refreshUserHandicapStats(pr.getPlayerAway());
+                 refreshUserSeasonStats(pr.getPlayerHome());
+                 refreshUserSeasonStats(pr.getPlayerAway());
+            }
+        });
     }
 
     public void refreshTeamMatch(TeamMatch tm) {

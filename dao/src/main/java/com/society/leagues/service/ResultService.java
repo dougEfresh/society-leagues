@@ -2,7 +2,6 @@ package com.society.leagues.service;
 
 import com.society.leagues.client.api.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -30,8 +29,8 @@ public class ResultService {
         if (teamMatch.getSeason().isNine() && !teamMatch.getSeason().isChallenge()) {
             matches = teamMatch.getSetHomeWins() + teamMatch.getSetAwayWins();
         }
-        User[] homeMembers = teamMatch.getHome().getMembers().toArray(new User[]{});
-        User[] awayMembers = teamMatch.getAway().getMembers().toArray(new User[]{});
+        User[] homeMembers = teamMatch.getHome().getTeamMembers().getMembers().toArray(new User[]{});
+        User[] awayMembers = teamMatch.getAway().getTeamMembers().getMembers().toArray(new User[]{});
         for(int i = 0 ; i<matches; i++) {
             PlayerResult r = new PlayerResult(homeMembers[i % 4],awayMembers[i % 4],teamMatch);
             r.setMatchNumber(i+1);
@@ -47,8 +46,8 @@ public class ResultService {
     public Collection<PlayerResult> createNewPlayerMatchResultsNine(TeamMatch teamMatch) {
         List<PlayerResult> playerResults = new ArrayList<>();
         int matches = teamMatch.getSetHomeWins() + teamMatch.getSetAwayWins();
-        User[] homeMembers = teamMatch.getHome().getMembers().toArray(new User[]{});
-        User[] awayMembers = teamMatch.getHome().getMembers().toArray(new User[]{});
+        User[] homeMembers = teamMatch.getHome().getTeamMembers().getMembers().toArray(new User[]{});
+        User[] awayMembers = teamMatch.getHome().getTeamMembers().getMembers().toArray(new User[]{});
         for(int i = 0 ; i<matches; i++) {
             PlayerResult r = new PlayerResult(homeMembers[i],awayMembers[i],teamMatch);
             r.setMatchNumber(i+1);

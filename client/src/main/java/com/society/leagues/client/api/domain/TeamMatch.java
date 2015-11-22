@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -129,7 +128,7 @@ public class TeamMatch extends LeagueObject {
     }
 
     public boolean hasUser(User user) {
-        return home.getMembers().contains(user) || away.getMembers().contains(user);
+        return home.getTeamMembers().getMembers().contains(user) || away.getTeamMembers().getMembers().contains(user);
     }
 
     public boolean hasTeam(Team team) {
@@ -236,7 +235,7 @@ public class TeamMatch extends LeagueObject {
         if (referenceUser == null)
             return null;
 
-        return home.getMembers().contains(referenceUser) ? away : home;
+        return home.getTeamMembers().getMembers().contains(referenceUser) ? away : home;
     }
 
     public Integer getWinnerRacks() {
@@ -270,7 +269,7 @@ public class TeamMatch extends LeagueObject {
     public String getRace() {
         if (getSeason().isChallenge()) {
             Handicap h  = getHome().getChallengeUser().getHandicap(getSeason());
-            Handicap a = getAway().getMembers().iterator().next().getHandicap(getSeason());
+            Handicap a = getAway().getTeamMembers().getMembers().iterator().next().getHandicap(getSeason());
             return Handicap.race(h,a);
         } else {
             return "";

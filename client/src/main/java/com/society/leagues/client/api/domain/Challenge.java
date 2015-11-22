@@ -95,16 +95,16 @@ public class Challenge extends LeagueObject {
     }
 
     public User getUserChallenger() {
-        if (challenger == null || challenger.getMembers() == null || challenger.getMembers().isEmpty())
+        if (challenger == null || challenger.getTeamMembers() == null || challenger.getTeamMembers().getMembers().isEmpty())
             return null;
-        return challenger.getMembers().iterator().next();
+        return challenger.getTeamMembers().getMembers().iterator().next();
     }
 
     public User getUserOpponent() {
-        if (opponent == null || opponent.getMembers() == null || opponent.getMembers().isEmpty())
+        if (opponent == null || opponent.getTeamMembers() == null || opponent.getTeamMembers().getMembers().isEmpty())
             return null;
 
-        return opponent.getMembers().iterator().next();
+        return opponent.getTeamMembers().getMembers().iterator().next();
     }
 
 

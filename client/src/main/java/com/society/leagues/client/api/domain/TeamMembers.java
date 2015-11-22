@@ -29,4 +29,8 @@ public class TeamMembers extends LeagueObject {
     public boolean removeMember(User user) {
         return this.members.remove(user);
     }
+
+    public void setMembers(Set<User> members) {
+        this.members = members;
+    }
 }

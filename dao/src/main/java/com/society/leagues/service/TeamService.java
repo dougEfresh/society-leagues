@@ -32,7 +32,7 @@ public class TeamService {
             m.addMember(member);
         }
         m = leagueService.save(m);
-        t.setMembers(m);
+        t.setTeamMembers(m);
         return leagueService.save(t);
     }
 }

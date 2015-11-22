@@ -3,6 +3,8 @@ package com.society.leagues.resource;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.society.leagues.client.api.domain.Season;
+import com.society.leagues.client.api.domain.TeamMembers;
+import com.society.leagues.client.views.PlayerResultView;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.User;
@@ -15,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,12 +36,28 @@ public class TeamResource {
 
     @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @JsonView(PlayerResultView.class)
     public Team modify(@RequestBody Team team) {
         Team existingTeam = leagueService.findOne(team);
         if (existingTeam == null) {
-            return null;
+            existingTeam = new Team();
         }
-        return leagueService.save(team);
+        team.setSeason(leagueService.findOne(team.getSeason()));
+        team.setName(team.getName());
+        TeamMembers existingMembers = leagueService.findOne(team.getTeamMembers());
+        if (existingMembers == null) {
+            existingMembers = leagueService.save(new TeamMembers());
+        }
+        existingMembers.setCaptain(leagueService.findOne(team.getCaptain()));
+        if (team.getTeamMembers() != null) {
+            existingMembers.setMembers(new HashSet<>());
+            for (User user : team.getTeamMembers().getMembers()) {
+                existingMembers.addMember(user);
+            }
+        }
+        leagueService.save(existingMembers);
+        existingTeam.setTeamMembers(existingMembers);
+        return leagueService.save(existingTeam);
     }
 
     @RequestMapping(value = "/admin/members/add/{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -136,7 +154,7 @@ public class TeamResource {
         }
 
         return leagueService.findCurrent(Team.class).stream().
-                filter(t->t.getMembers().contains(u)).collect(Collectors.toList()
+                filter(t -> t.getTeamMembers().getMembers().contains(u)).collect(Collectors.toList()
         );
     }
 

@@ -68,10 +68,10 @@ public class TestChallenge {
         assertEquals(op.getId(), newChallenge.getOpponent().getId());
 
 
-        assertNotNull(newChallenge.getChallenger().getMembers());
-        assertNotNull(newChallenge.getOpponent().getMembers());
-        assertFalse(newChallenge.getChallenger().getMembers().isEmpty());
-        assertFalse(newChallenge.getOpponent().getMembers().isEmpty());
+        assertNotNull(newChallenge.getChallenger().getTeamMembers());
+        assertNotNull(newChallenge.getOpponent().getTeamMembers());
+        assertFalse(newChallenge.getChallenger().getTeamMembers().isEmpty());
+        assertFalse(newChallenge.getOpponent().getTeamMembers().isEmpty());
 
         assertEquals(3, newChallenge.getSlots().size());
         assertEquals(Status.PENDING,newChallenge.getStatus());
