@@ -2,12 +2,9 @@ package com.society.leagues.resource;
 
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.society.leagues.client.api.domain.Season;
-import com.society.leagues.client.api.domain.TeamMembers;
+import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.views.PlayerResultView;
 import com.society.leagues.service.LeagueService;
-import com.society.leagues.client.api.domain.Team;
-import com.society.leagues.client.api.domain.User;
 import com.society.leagues.client.views.TeamSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -44,18 +41,10 @@ public class TeamResource {
         }
         existingTeam.setSeason(leagueService.findOne(team.getSeason()));
         existingTeam.setName(team.getName());
-        TeamMembers existingMembers = leagueService.findOne(team.getMembers());
-        if (existingMembers == null) {
-            existingMembers = leagueService.save(new TeamMembers());
-        }
-        if (existingMembers.getCaptain() != null)
-            existingMembers.setCaptain(leagueService.findOne(team.getCaptain()));
-        
-        if (team.getMembers() != null) {
+        TeamMembers existingMembers = existingTeam.getMembers();
+        if (team.getMembers() != null &&  team.getMembers().getMembers() != null && !team.getMembers().getMembers().isEmpty()) {
             existingMembers.setMembers(new HashSet<>());
-            for (User user : team.getMembers().getMembers()) {
-                existingMembers.addMember(user);
-            }
+            team.getMembers().getMembers().forEach(existingMembers::addMember);
         }
         leagueService.save(existingMembers);
         existingTeam.setMembers(existingMembers);
