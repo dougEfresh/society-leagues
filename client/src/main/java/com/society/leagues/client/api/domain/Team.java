@@ -53,6 +53,14 @@ public class Team extends LeagueObject {
 
         return members;
     }
+     @JsonView(value = PlayerResultView.class)
+    public TeamMembers getTeamMembers() {
+        if (members == null)
+            return new TeamMembers();
+
+        return members;
+    }
+
 
     public void addMember(User user) {
         this.members.addMember(user);
