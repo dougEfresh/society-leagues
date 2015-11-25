@@ -44,6 +44,10 @@ public class TeamMatch extends LeagueObject {
     }
 
     public Status getStatus() {
+        LocalDateTime now  = LocalDateTime.now();
+        if (getMatchDate().isBefore(now) && !isHasResults()) {
+            return Status.PENDING;
+        }
         return status;
     }
 

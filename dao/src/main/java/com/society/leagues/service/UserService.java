@@ -118,7 +118,6 @@ public class UserService {
         for (User user : users) {
             user.setLogin(user.getLogin().toLowerCase());
             user.setEmail(user.getEmail().toLowerCase());
-
         }
         repository.save(users);
     }
