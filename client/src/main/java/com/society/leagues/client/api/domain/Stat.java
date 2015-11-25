@@ -17,6 +17,7 @@ public class Stat {
     Handicap handicap;
     Double points;
     Integer rank = 0;
+    Team team;
 
     public Stat() {
     }
@@ -263,6 +264,15 @@ public class Stat {
 
     public void setRank(Integer rank) {
         this.rank = rank;
+    }
+
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
     public static boolean isDifferent(Stat s1, Stat s2) {

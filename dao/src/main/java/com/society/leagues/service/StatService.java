@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
@@ -39,7 +41,7 @@ public class StatService {
                     refreshTeamMatchStats((TeamMatch) object);
                 }
                 if (object instanceof PlayerResult) {
-                    refreshPlayerResult((PlayerResult) object);
+                    refresh();
                 }
             }
 
@@ -49,7 +51,8 @@ public class StatService {
                     refreshTeamMatchStats((TeamMatch) object);
 
                 if (object instanceof PlayerResult) {
-                    refreshPlayerResult((PlayerResult) object);
+                    refreshTeamMatch(((PlayerResult) object).getTeamMatch());
+                    refresh();
                 }
             }
 
@@ -59,7 +62,7 @@ public class StatService {
                     refreshTeamMatchStats((TeamMatch) object);
 
                 if (object instanceof PlayerResult) {
-                    refreshPlayerResult((PlayerResult) object);
+                    refresh();
                 }
             }
         });
@@ -80,7 +83,7 @@ public class StatService {
         return teamStats;
     }
 
-    @Scheduled(fixedRate = 1000*60*60, initialDelay = 1000*60*11)
+    @Scheduled(fixedRate = 1000*60*5, initialDelay = 1000*60*11)
     public void refresh() {
         if (!enableRefresh)
             return;
@@ -95,14 +98,28 @@ public class StatService {
                 logger.info("Refreshing stats");
                 long start = System.currentTimeMillis();
                 final Set<Team> teams = leagueService.findCurrent(Team.class);
+                long startTime = System.currentTimeMillis();
+
+                startTime = System.currentTimeMillis();
+                logger.info("RefreshTeamMatch ");
+                leagueService.findCurrent(TeamMatch.class).parallelStream().forEach(StatService.this::refreshTeamMatch);
+                logger.info("RefreshTeamMatch " + (System.currentTimeMillis() - startTime));
+
+                startTime = System.currentTimeMillis();
+                logger.info("RefreshTeam TeamRank ");
+                //refreshTeamRank();
+                logger.info("RefreshTeam TeamRank " + (System.currentTimeMillis() - startTime));
+                startTime = System.currentTimeMillis();
+                logger.info("UserSesonStats  ");
+                refreshUserSeasonStats();
+                logger.info("UserSesonStats  " + (System.currentTimeMillis() - startTime));
+                //refreshUserLifetimeStats();
+                rereshUserHandicapStats();
+                logger.info("RefreshTeam Stats ");
                 for (Team team : teams) {
                     refreshTeamStats(team);
                 }
-                leagueService.findCurrent(TeamMatch.class).parallelStream().forEach(StatService.this::refreshTeamMatch);
-                refreshTeamRank();
-                refreshUserSeasonStats();
-                refreshUserLifetimeStats();
-                rereshUserHandicapStats();
+                logger.info("RefreshTeam Stats " + (System.currentTimeMillis() - startTime));
                 resultService.refresh();
                 logger.info("Done Refreshing stats  (" + (System.currentTimeMillis() - start) + "ms)");
             }
@@ -110,7 +127,7 @@ public class StatService {
     }
 
     private void refreshUserSeasonStats() {
-        List<Season> seasons = leagueService.findAll(Season.class);
+        Set<Season> seasons = leagueService.findCurrent(Season.class);
         Map<Season,List<Stat>> userSeasonStats = new HashMap<>(1000);
         for (Season season : seasons) {
             List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().
@@ -137,10 +154,12 @@ public class StatService {
                         all.get(user)
                 );
                 s.setSeason(season);
+                s.setTeam(teams.stream().filter(t->t.hasUser(user)).findFirst().orElse(null));
                 stats.add(s);
             }
             userSeasonStats.put(season,stats);
         }
+
         for (Season season : userSeasonStats.keySet()) {
             List<Stat> stats = userSeasonStats.get(season);
              userSeasonStats.put(season, stats.stream().sorted(new Comparator<Stat>() {
@@ -370,47 +389,42 @@ public class StatService {
                  refreshUserHandicapStats(pr.getPlayerAway());
                  refreshUserSeasonStats(pr.getPlayerHome());
                  refreshUserSeasonStats(pr.getPlayerAway());
-            }
-        });
+             }
+         });
     }
 
     public void refreshTeamMatch(TeamMatch tm) {
+        if (tm.isChallenge() || tm.isNine()) {
+            return ;
+        }
+        long start = System.currentTimeMillis();
+        logger.info("Starting Time Refresh Match ");
         List<PlayerResult> results = leagueService.findCurrent(PlayerResult.class).parallelStream().filter(p->p.getTeamMatch().equals(tm)).collect(Collectors.toList());
         if (results.isEmpty())
             return;
-
-         results.sort(new Comparator<PlayerResult>() {
-            @Override
-            public int compare(PlayerResult o1, PlayerResult o2) {
-                return o1.getMatchNumber().compareTo(o2.getMatchNumber());
-            }
-        });
-        int forfeits = 0;
-
-        Integer max = results.get(results.size()-1).getMatchNumber();
         int homeWins = 0;
         int awayWins = 0;
-        for(int i = 0 ; i < max && i<results.size(); i++) {
+
+        for(int i = 0 ; i < results.size(); i++) {
             PlayerResult result = results.get(i);
             if (result.getHomeRacks() > result.getAwayRacks()) {
                 homeWins++;
             }
-
             if (result.getHomeRacks() < result.getAwayRacks()) {
                 awayWins++;
             }
-            if (result.getMatchNumber() != i+1+forfeits) {
-                forfeits++;
+        }
+
+        if (tm.getHomeRacks() > tm.getAwayRacks()) {
+            if (tm.getHomeRacks()  != homeWins + tm.getHomeForfeits()) {
+                tm.setHandicapRacks(tm.getHomeRacks() - homeWins - tm.getHomeForfeits());
+            }
+        } else {
+            if (tm.getAwayRacks()  != awayWins + tm.getAwayForfeits()) {
+                tm.setHandicapRacks(tm.getAwayRacks() - awayWins - tm.getAwayForfeits());
             }
         }
-        int handicapScore = 0;
-         if (tm.getHomeRacks() > tm.getAwayRacks()) {
-             handicapScore = tm.getHomeRacks() - homeWins;
-        } else {
-             handicapScore = tm.getAwayRacks() - awayWins;
-        }
-        tm.setHandicapRacks(handicapScore);
-        tm.setForfeits(forfeits);
+        logger.info("End TeamMatch Refresh "  + (System.currentTimeMillis() - start));
     }
 
     public void refreshTeamStats(Team team) {

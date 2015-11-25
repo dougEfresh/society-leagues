@@ -198,7 +198,7 @@ public class ResultService {
         result.setPlayerHome(teamMatch.getHome().getMembers().getMembers().iterator().next());
         result.setPlayerAway(teamMatch.getAway().getMembers().getMembers().iterator().next());
         result.setPlayerHomeHandicap(result.getPlayerHome().getHandicap(teamMatch.getSeason()));
-        result.setPlayerAwayHandicap(result.getPlayerHome().getHandicap(teamMatch.getSeason()));
+        result.setPlayerAwayHandicap(result.getPlayerAway().getHandicap(teamMatch.getSeason()));
         result.setTeamMatch(teamMatch);
         return leagueService.save(result);
     }

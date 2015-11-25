@@ -71,6 +71,7 @@ public class PlayerResult  extends LeagueObject {
         this.scotch = scotch;
     }
 
+
     public TeamMatch getTeamMatch() {
         return teamMatch;
     }

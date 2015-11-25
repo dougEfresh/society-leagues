@@ -5,12 +5,11 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.converters.DateTimeSerializer;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Objects;
 
 @SuppressWarnings("unused")
 public class TeamMatch extends LeagueObject {
@@ -31,10 +30,9 @@ public class TeamMatch extends LeagueObject {
     Boolean hasPlayerResults = false;
     Status status;
     Integer forfeits = 0;
+    Integer homeForfeits = 0;
+    Integer awayForfeits = 0;
     Integer handicapRacks = 0;
-
-    @Transient
-    List<PlayerResult> results;
 
     public TeamMatch(Team home, Team away, LocalDateTime matchDate) {
         this.home = home;
@@ -310,6 +308,24 @@ public class TeamMatch extends LeagueObject {
     public void setHandicapRacks(Integer handicapRacks) {
         this.handicapRacks = handicapRacks;
     }
+
+    public Integer getHomeForfeits() {
+        return homeForfeits;
+    }
+
+    public void setHomeForfeits(Integer homeForfeits) {
+        this.homeForfeits = homeForfeits;
+    }
+
+    public Integer getAwayForfeits() {
+        return awayForfeits;
+    }
+
+    public void setAwayForfeits(Integer awayForfeits) {
+        this.awayForfeits = awayForfeits;
+    }
+
+
 
     @Override
     public String toString() {

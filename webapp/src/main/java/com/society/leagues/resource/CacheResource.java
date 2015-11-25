@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping(value = "/api/cache")
 @SuppressWarnings("unused")
@@ -24,11 +26,11 @@ public class CacheResource {
 
     @RequestMapping(value = "/refresh", method = RequestMethod.GET, consumes = MediaType.ALL_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Boolean refresh() {
+    public String refresh() {
         cacheUtil.refreshAllCache();
         statService.refresh();
         resultService.refresh();
         userService.refresh();
-        return Boolean.TRUE;
+        return LocalDateTime.now().toString();
     }
 }

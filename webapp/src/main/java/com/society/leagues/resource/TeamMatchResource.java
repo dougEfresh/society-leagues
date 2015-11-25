@@ -144,6 +144,8 @@ public class TeamMatchResource {
         LocalDateTime now = LocalDateTime.now().minusDays(1);
         boolean hasPlayerResults = leagueService.findCurrent(PlayerResult.class).parallelStream().filter(r->r.getTeamMatch().equals(existing)).count() > 0;
         existing.setHasPlayerResults(hasPlayerResults);
+        existing.setHomeForfeits(teamMatch.getHomeForfeits());
+        existing.setAwayForfeits(teamMatch.getAwayForfeits());
         return existing;
     }
 
