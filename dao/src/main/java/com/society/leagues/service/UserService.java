@@ -6,6 +6,7 @@ import com.society.leagues.client.api.domain.User;
 import com.society.leagues.client.api.domain.UserProfile;
 import com.society.leagues.listener.DaoListener;
 import com.society.leagues.mongo.UserRepository;
+import org.codehaus.groovy.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class UserService {
     @Autowired JdbcTemplate jdbcTemplate;
     @Autowired EmailService emailService;
     @Autowired LeagueService leagueService;
+    @Autowired UserRepository repository;
     @Value("${service-url:http://leaguesdev.societybilliards.com}") String serviceUrl;
     @Autowired ThreadPoolTaskExecutor threadPoolTaskExecutor;
     final static Logger logger = LoggerFactory.getLogger(UserService.class);
@@ -101,10 +103,24 @@ public class UserService {
                 new Runnable() {
                     @Override
                     public void run() {
+                        lowerCaseLogin();
                         populateProfile(); populateTeams();
                     }
                 }
         );
+    }
+
+    public void lowerCaseLogin() {
+        List<User> users = leagueService.findAll(User.class).parallelStream().filter(u->u.getLogin().matches("[A-Z]")).collect(Collectors.toList());
+        if (users.isEmpty())
+            return;
+
+        for (User user : users) {
+            user.setLogin(user.getLogin().toLowerCase());
+            user.setEmail(user.getEmail().toLowerCase());
+
+        }
+        repository.save(users);
     }
 
     private void populateTeams() {
