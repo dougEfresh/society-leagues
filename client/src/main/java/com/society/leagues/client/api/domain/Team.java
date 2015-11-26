@@ -1,5 +1,6 @@
 package com.society.leagues.client.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -47,13 +48,16 @@ public class Team extends LeagueObject {
     }
 
     @JsonView(value = PlayerResultView.class)
+    @JsonIgnore
     public TeamMembers getMembers() {
         if (members == null)
             return new TeamMembers();
 
         return members;
     }
-     @JsonView(value = PlayerResultView.class)
+
+    @JsonView(value = PlayerResultView.class)
+    @JsonIgnore
     public TeamMembers getTeamMembers() {
         if (members == null)
             return new TeamMembers();

@@ -23,6 +23,8 @@ public class TeamMembers extends LeagueObject {
     }
     
     public void addMember(User user) {
+        if (user == null)
+            return;
         this.members.add(user);
     }
 

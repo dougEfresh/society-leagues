@@ -12,10 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -34,17 +31,27 @@ public class TeamResource {
     @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @JsonView(PlayerResultView.class)
-    public Team modify(@RequestBody Team team) {
-        Team existingTeam = leagueService.findOne(team);
+    public Team modify(@RequestBody Map<String,Object> body) {
+        Team existingTeam = leagueService.findOne(new Team(body.get("id").toString()));
         if (existingTeam == null) {
             existingTeam = new Team();
         }
-        existingTeam.setSeason(leagueService.findOne(team.getSeason()));
-        existingTeam.setName(team.getName());
+        Map<String,Object> season = (Map<String, Object>) body.get("season");
+        existingTeam.setSeason(leagueService.findOne(new Season(season.get("id").toString())));
+        existingTeam.setName(body.get("name").toString());
         TeamMembers existingMembers = existingTeam.getMembers();
-        if (team.getMembers() != null &&  team.getMembers().getMembers() != null && !team.getMembers().getMembers().isEmpty()) {
-            existingMembers.setMembers(new HashSet<>());
-            team.getMembers().getMembers().forEach(existingMembers::addMember);
+        Map<String,Object> members = (Map<String, Object>) body.get("members");
+        if (members != null &&  members.get("members") != null) {
+            List<Map<String,Object>> user = (List<Map<String, Object>>) members.get("members");
+            if (!user.isEmpty()) {
+                existingMembers.setMembers(new HashSet<>());
+                for (Map<String, Object> u : user) {
+                    existingMembers.addMember(leagueService.findOne(
+                                    new User(u.get("id").toString())
+                            )
+                    );
+                }
+            }
         }
         leagueService.save(existingMembers);
         existingTeam.setMembers(existingMembers);

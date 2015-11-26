@@ -1,7 +1,9 @@
 package com.society.leagues.resource;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.ResultService;
 import com.society.leagues.client.api.domain.*;
@@ -23,6 +25,7 @@ public class PlayerResultResource {
     @Autowired LeagueService leagueService;
     @Autowired ResultService resultService;
     @Autowired StatService statService;
+    @Autowired ObjectMapper objectMapper;
 
     @RequestMapping(value = "/admin/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -185,9 +188,8 @@ public class PlayerResultResource {
     }
 
     @RequestMapping(value = "/user/{id}/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @JsonView(value = {PlayerResultView.class})
     public Map<String,Object> getPlayerResultByUserSeason(Principal principal, @PathVariable String id, @PathVariable String seasonId) {
-        User u = leagueService.findOne(new User(id));
+            User u = leagueService.findOne(new User(id));
         Season s = leagueService.findOne(new Season(seasonId));
         List<PlayerResult> results = new ArrayList<>(500);
         if (s == null) {
@@ -221,6 +223,7 @@ public class PlayerResultResource {
         Map<String,Object> r = new HashMap<>();
         r.put("stats",statService.getUserSeasonStats().get(s).parallelStream().filter(st->st.getUser().equals(u)).findFirst().orElse(null));
         r.put("results",copyResults);
+
         return r;
     }
 

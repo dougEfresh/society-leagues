@@ -97,9 +97,6 @@ public class TeamMatch extends LeagueObject {
 
     public Division getDivision() {
         if (division == null) {
-            //if (getSeason().isScramble()) {
-              //  return Division.MIXED_EIGHT;
-            //}
             return getSeason().getDivision();
         }
         return division;
