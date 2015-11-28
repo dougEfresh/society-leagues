@@ -25,13 +25,9 @@ public class ResultService {
 
     public Collection<PlayerResult> createNewPlayerResults(TeamMatch teamMatch) {
         List<PlayerResult> playerResults = new ArrayList<>();
-        int matches = teamMatch.getHomeRacks() + teamMatch.getAwayRacks();
-        if (teamMatch.getSeason().isNine() && !teamMatch.getSeason().isChallenge()) {
-            matches = teamMatch.getSetHomeWins() + teamMatch.getSetAwayWins();
-        }
         User[] homeMembers = teamMatch.getHome().getMembers().getMembers().toArray(new User[]{});
         User[] awayMembers = teamMatch.getAway().getMembers().getMembers().toArray(new User[]{});
-        for(int i = 0 ; i<matches; i++) {
+        for(int i = 0 ; i<4; i++) {
             PlayerResult r = new PlayerResult(homeMembers[i % 4],awayMembers[i % 4],teamMatch);
             r.setMatchNumber(i+1);
             playerResults.add(r);
@@ -41,19 +37,6 @@ public class ResultService {
 
         leagueService.save(playerResults);
         return leagueService.findAll(PlayerResult.class).parallelStream().filter(p->p.getTeamMatch().equals(teamMatch)).collect(Collectors.toList());
-    }
-
-    public Collection<PlayerResult> createNewPlayerMatchResultsNine(TeamMatch teamMatch) {
-        List<PlayerResult> playerResults = new ArrayList<>();
-        int matches = teamMatch.getSetHomeWins() + teamMatch.getSetAwayWins();
-        User[] homeMembers = teamMatch.getHome().getMembers().getMembers().toArray(new User[]{});
-        User[] awayMembers = teamMatch.getHome().getMembers().getMembers().toArray(new User[]{});
-        for(int i = 0 ; i<matches; i++) {
-            PlayerResult r = new PlayerResult(homeMembers[i],awayMembers[i],teamMatch);
-            r.setMatchNumber(i+1);
-            playerResults.add(r);
-        }
-        return playerResults;
     }
 
     public void scrambleGameType() {
@@ -141,13 +124,24 @@ public class ResultService {
     public List<PlayerResult> createOrModify(List<PlayerResult> playerResult) {
         List<PlayerResult> returned = new ArrayList<>(playerResult.size());
         for (PlayerResult result : playerResult) {
+            if (result.getPlayerAway().getId().equals("-1") || Objects.equals(result.getPlayerHome().getId(), "-1")) {
+                returned.add(result);
+                continue;
+            }
             PlayerResult existing =  leagueService.findOne(result);
             if (existing == null) {
                 existing = new PlayerResult();
                 existing.setTeamMatch(leagueService.findOne(result.getTeamMatch()));;
             }
-            existing.setPlayerHome(leagueService.findOne(result.getPlayerHome()));
-            existing.setPlayerAway(leagueService.findOne(result.getPlayerAway()));
+            User u = leagueService.findOne(result.getPlayerHome());
+            if (u == null)
+                u = User.defaultUser();
+            existing.setPlayerHome(u);
+
+            u = leagueService.findOne(result.getPlayerHome());
+            if (u == null)
+                u = User.defaultUser();
+            existing.setPlayerAway(u);
             existing.setHomeRacks(result.getHomeRacks());
             existing.setAwayRacks(result.getAwayRacks());
             existing.setPlayerHomeHandicap(existing.getPlayerHome().getHandicap(existing.getSeason()));
@@ -163,6 +157,7 @@ public class ResultService {
 
             returned.add(existing);
         }
+
         leagueService.save(returned);
         return returned;
     }

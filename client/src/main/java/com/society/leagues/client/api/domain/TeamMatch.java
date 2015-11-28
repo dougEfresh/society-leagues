@@ -96,7 +96,8 @@ public class TeamMatch extends LeagueObject {
     }
 
     public Division getDivision() {
-        if (division == null) {
+
+        if (division == null && getSeason() != null) {
             return getSeason().getDivision();
         }
         return division;
