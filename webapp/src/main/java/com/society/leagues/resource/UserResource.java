@@ -1,5 +1,6 @@
 package com.society.leagues.resource;
 
+import com.society.leagues.client.api.domain.Handicap;
 import com.society.leagues.client.api.domain.HandicapSeason;
 import com.society.leagues.service.ChallengeService;
 import com.society.leagues.service.LeagueService;
@@ -126,8 +127,12 @@ public class UserResource {
             for (HandicapSeason handicapSeason : user.getHandicapSeasons()) {
                 if (handicapSeason.getSeason().isActive()) {
                     HandicapSeason newHandicapSeason = new HandicapSeason(handicapSeason.getHandicap(), leagueService.findOne(handicapSeason.getSeason()));
-                    existingUser.removeHandicap(newHandicapSeason);
-                    existingUser.addHandicap(newHandicapSeason);
+                    if (handicapSeason.getHandicap() == Handicap.NA) {
+                        existingUser.removeHandicap(newHandicapSeason);
+                    } else {
+                        existingUser.removeHandicap(newHandicapSeason);
+                        existingUser.addHandicap(newHandicapSeason);
+                    }
                 }
             }
         }

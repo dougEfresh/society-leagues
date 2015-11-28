@@ -34,7 +34,8 @@ public enum Handicap {
     OPEN,
     OPENPLUS,
     PRO,
-    UNKNOWN;
+    UNKNOWN,
+    NA;
 
     public static String format(Handicap hc) {
         if (hc == null || hc == UNKNOWN) {
