@@ -131,7 +131,8 @@ public class ChallengeResource {
             List<Team> available = new ArrayList<>();
             for (Team team : teams) {
                 if (challenges.stream().filter(c->c.hasTeam(team)).count() == 0) {
-                    available.add(team);
+                    if (team.getChallengeUser().hasSeason(team.getSeason()))
+                        available.add(team);
                 }
             }
             return available.stream().sorted((o1, o2) -> o1.getName().compareTo(o2.getName())).collect(Collectors.toList());
