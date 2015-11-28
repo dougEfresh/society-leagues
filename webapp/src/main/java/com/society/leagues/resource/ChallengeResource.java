@@ -117,6 +117,22 @@ public class ChallengeResource {
         return challenges;
     }
 
+    @RequestMapping(value = {"/upcoming"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public List<TeamMatch> upcomingChallenges() {
+        LocalDateTime now  = LocalDateTime.now().toLocalDate().atStartOfDay().minusDays(1);
+        List<Challenge> challenges =
+                leagueService.findAll(Challenge.class).parallelStream().filter(c -> c.getLocalDate().atStartOfDay().isAfter(now)).filter(c -> c.getStatus() == Status.ACCEPTED).filter(c -> c.getTeamMatch() != null).collect(Collectors.toList());
+        List<TeamMatch> matches = new ArrayList<>();
+        challenges.forEach(c->matches.add(c.getTeamMatch()));
+        matches.sort(new Comparator<TeamMatch>() {
+            @Override
+            public int compare(TeamMatch o1, TeamMatch o2) {
+                return o1.getMatchDate().compareTo(o2.getMatchDate());
+            }
+        });
+        return matches;
+    }
+
     @RequestMapping(value = {"/date/{date}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public List<Team> getUsersAvailableOnDate(@PathVariable String date, Principal principal) {
         try {
