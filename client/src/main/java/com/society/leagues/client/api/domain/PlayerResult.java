@@ -490,4 +490,9 @@ public class PlayerResult  extends LeagueObject {
                 ", id =" + getId() +
                 '}';
     }
+
+    public boolean hasResults() {
+
+        return homeRacks + awayRacks > 0;
+    }
 }

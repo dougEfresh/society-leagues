@@ -65,9 +65,10 @@ public class PlayerResultResource {
             results = resultService.createNewPlayerResults(tm);
         }
         results = results.stream().parallel().
-                filter(pr->pr.getTeamMatch().equals(tm))
-                .filter(pr->!pr.getLoser().isFake())
+                filter(pr -> pr.getTeamMatch().equals(tm))
+                .filter(pr -> !pr.getLoser().isFake())
                 .filter(pr->!pr.getWinner().isFake())
+                .filter(pr->pr.hasResults())
                 .sorted(new Comparator<PlayerResult>() {
                     @Override
                     public int compare(PlayerResult playerResult, PlayerResult t1) {
@@ -110,7 +111,7 @@ public class PlayerResultResource {
         Season s = leagueService.findOne(new Season(id));
         List<PlayerResult> results = new ArrayList<>();
         if (s.isActive()) {
-            results = leagueService.findCurrent(PlayerResult.class).stream().parallel().filter(pr -> pr.getSeason().equals(s))
+            results = leagueService.findCurrent(PlayerResult.class).stream().parallel().filter(pr -> pr.getSeason().equals(s)).filter(PlayerResult::hasResults)
                 .collect(Collectors.toList());
         }
         results = leagueService.findAll(PlayerResult.class).stream().parallel()

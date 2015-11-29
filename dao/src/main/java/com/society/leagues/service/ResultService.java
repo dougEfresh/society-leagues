@@ -66,17 +66,19 @@ public class ResultService {
     public void refresh() {
         matchPoints().clear();
         LocalDateTime tenWeeks = LocalDateTime.now().plusDays(1).minusWeeks(10);
-        List<PlayerResult> challengeResults = leagueService.findCurrent(PlayerResult.class).stream().parallel()
-                .filter(r -> r.getSeason().isChallenge())
-                .filter(pr -> pr.getMatchDate().isAfter(tenWeeks))
-                .collect(Collectors.toList());
+        List<PlayerResult> challengeResults =
+                leagueService.findCurrent(PlayerResult.class).stream().parallel()
+                        .filter(r -> r.getSeason().isChallenge())
+                        .filter(pr -> pr.getMatchDate().isAfter(tenWeeks))
+                        .filter(r -> r.hasResults())
+                        .collect(Collectors.toList());
 
         for(User challengeUser: leagueService.findAll(User.class).stream()
                 .filter(u -> u.isChallenge())
                 .collect(Collectors.toList())
                 ) {
             List<PlayerResult> results = challengeResults.stream().parallel()
-                    .filter(pr -> pr.hasUser(challengeUser))
+                    .filter(pr -> pr.hasUser(challengeUser)).filter(PlayerResult::hasResults)
                     .sorted((playerResult, t1) -> t1.getTeamMatch().getMatchDate().compareTo(playerResult.getTeamMatch().getMatchDate())).limit(7)
                     .collect(Collectors.toList());
 
