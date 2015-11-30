@@ -128,18 +128,18 @@ public class TeamMatchResource {
             PlayerResult result = leagueService.findAll(PlayerResult.class).stream().parallel().filter(p -> p.getTeamMatch().equals(teamMatch)).findFirst().orElse(null);
             if (result == null) {
                 result = new PlayerResult();
-                result.setTeamMatch(existing);
-                result.setPlayerHome(existing.getHome().getChallengeUser());
-                result.setPlayerHomeHandicap(existing.getAway().getChallengeUser().getHandicap(existing.getSeason()));
-                result.setPlayerAway(existing.getAway().getChallengeUser());
-                result.setPlayerAwayHandicap(existing.getAway().getChallengeUser().getHandicap(existing.getSeason()));
-                result.setHomeRacks(existing.getHomeRacks());
-                result.setAwayRacks(existing.getAwayRacks());
-            } else {
-                result.setHomeRacks(existing.getHomeRacks());
-                result.setAwayRacks(existing.getAwayRacks());
             }
-              leagueService.save(result);
+            result.setTeamMatch(existing);
+            result.setPlayerHome(existing.getHome().getChallengeUser());
+            result.setPlayerHomeHandicap(existing.getHome().getChallengeUser().getHandicap(existing.getSeason()));
+
+            result.setPlayerAway(existing.getAway().getChallengeUser());
+            result.setPlayerAwayHandicap(existing.getAway().getChallengeUser().getHandicap(existing.getSeason()));
+
+            result.setHomeRacks(existing.getHomeRacks());
+            result.setAwayRacks(existing.getAwayRacks());
+
+            leagueService.save(result);
         }
         LocalDateTime now = LocalDateTime.now().minusDays(1);
         boolean hasPlayerResults = leagueService.findCurrent(PlayerResult.class).parallelStream().filter(r->r.getTeamMatch().equals(existing)).count() > 0;
