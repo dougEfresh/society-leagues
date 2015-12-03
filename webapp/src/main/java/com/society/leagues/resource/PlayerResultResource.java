@@ -68,7 +68,6 @@ public class PlayerResultResource {
                 filter(pr -> pr.getTeamMatch().equals(tm))
                 .filter(pr -> !pr.getLoser().isFake())
                 .filter(pr->!pr.getWinner().isFake())
-                .filter(pr->pr.hasResults())
                 .sorted(new Comparator<PlayerResult>() {
                     @Override
                     public int compare(PlayerResult playerResult, PlayerResult t1) {

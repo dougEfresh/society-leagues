@@ -140,7 +140,7 @@ public class ResultService {
                 u = User.defaultUser();
             existing.setPlayerHome(u);
 
-            u = leagueService.findOne(result.getPlayerHome());
+            u = leagueService.findOne(result.getPlayerAway());
             if (u == null)
                 u = User.defaultUser();
             existing.setPlayerAway(u);
