@@ -97,9 +97,14 @@ public class ResultService {
                     }
                 }
                 if (challengeResult.isWinner(challengeUser)) {
-                    if (challengeResult.getLoserRacks() == 0 || challengeResult.getLoserRacks() - handciapGames <= 0)
-                        points +=1;
-
+                    if (challengeResult.getLoserRacks() == 0) {
+                        points += 1;
+                    } else {
+                        if (challengeResult.getLoserHandicap().ordinal() < challengeResult.getWinnerHandicap().ordinal()) {
+                            if (challengeResult.getLoserRacks() - handciapGames <= 0)
+                                points += 1;
+                        }
+                    }
                     points += 2;
                 } else {
                     points += challengeResult.getWinnerRacks()-challengeResult.getLoserRacks() == 1 ? 1 : 0;
