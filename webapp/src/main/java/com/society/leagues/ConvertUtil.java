@@ -1,13 +1,12 @@
 package com.society.leagues;
 
 
-import com.society.leagues.service.ChallengeService;
-import com.society.leagues.service.LeagueService;
-import com.society.leagues.service.ResultService;
+import com.society.leagues.mongo.UserRepository;
+import com.society.leagues.resource.CacheResource;
+import com.society.leagues.service.*;
 import com.society.leagues.cache.CacheUtil;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.mongo.PlayerResultRepository;
-import com.society.leagues.service.TeamService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 
+import javax.annotation.PostConstruct;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
@@ -37,6 +37,20 @@ public class ConvertUtil {
     @Autowired CacheUtil cacheUtil;
     @Autowired TeamService teamService;
     @Autowired JdbcTemplate jdbcTemplate;
+    @Autowired UserRepository userRepository;
+    @Autowired CacheResource cacheResource;
+    @Autowired UserService userService;
+
+    @PostConstruct
+    public void init() {
+        List<User> users = userRepository.findAll();
+        users.parallelStream().filter(u->u.getEmail() != null && u.getLogin() != null).forEach(u -> {
+            u.setLogin(u.getLogin().toLowerCase());
+            u.setEmail(u.getEmail().toLowerCase());
+        });
+        leagueService.findAll(User.class).parallelStream().filter(u->u.getEmail() != null && u.getLogin() != null).forEach(u->{u.setLogin(u.getLogin().toLowerCase()) ; u.setEmail(u.getEmail().toLowerCase());});
+        userRepository.save(users);
+    }
 
     String defaultPassword = new BCryptPasswordEncoder().encode("abc123");
     public void convertUser() {
