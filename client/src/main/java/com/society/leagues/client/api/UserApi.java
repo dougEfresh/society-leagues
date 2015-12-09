@@ -8,6 +8,7 @@ import feign.RequestLine;
 
 import java.util.List;
 
+@Headers({"Accept: application/json","Content-Type: application/json"})
 public interface UserApi {
 
     @RequestLine("GET /api/user")

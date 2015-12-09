@@ -1,0 +1,43 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="/layout">
+<head>
+    <title>Challenge Scores</title>
+</head>
+<body>
+<div id="score-app" layout:fragment="content">
+    <div id="matches" >
+        <div id="seasons">
+            <table class="table table-stripped table-bordered table-condensed table">
+                <thead>
+                <th>Edit</th>
+                </thead>
+                <tbody>
+                <tr th:each="season : ${seasons}">
+                      <td th:id="${season.id}">
+                          <a th:href="@{/scores/{id}(id=${season.id})}">
+                              <span class="glyphicon glyphicon-edit"></span>
+                              <span th:text="${season.displayName}"></span>
+                          </a>
+                      </td>
+                  </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:if="${results ne null}" class="table-responsive">
+            <table class="table table-stripped table-bordered table-condensed table">
+                <thead>
+                <th>Edit</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

@@ -83,11 +83,6 @@ public enum Handicap {
         return name();
     }
 
-    @Override
-    public String toString() {
-        return Handicap.format(this);
-    }
-
     static String[][] raceChart = new String[Handicap.values().length+1][Handicap.values().length+1];
 
     static String race(Handicap hc1, Handicap hc2) {
