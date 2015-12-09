@@ -121,16 +121,11 @@ public class Stat {
         this.handicap = handicap;
     }
 
-    public String getHandicap() {
-        if (handicap != null) {
-            return Handicap.format(handicap);
+    public Handicap getHandicap() {
+        if (handicap == null) {
+            return Handicap.NA;
         }
-
-        if (season  != null && user != null) {
-            HandicapSeason handicapSeason = user.getHandicapSeasons().stream().filter(hs -> hs.getSeason().equals(season)).findFirst().orElse(null);
-            return handicapSeason == null ? Handicap.format(Handicap.UNKNOWN) : Handicap.format(handicapSeason.getHandicapDisplay());
-        }
-        return Handicap.format(Handicap.UNKNOWN);
+        return handicap;
     }
 
     public static Stat buildLifeTimeStats(final User u, final List<Stat> stats) {
