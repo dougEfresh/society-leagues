@@ -2,7 +2,6 @@ package com.society.leagues;
 
 
 import com.society.leagues.mongo.UserRepository;
-import com.society.leagues.resource.CacheResource;
 import com.society.leagues.service.*;
 import com.society.leagues.cache.CacheUtil;
 import com.society.leagues.client.api.domain.*;
@@ -38,7 +37,6 @@ public class ConvertUtil {
     @Autowired TeamService teamService;
     @Autowired JdbcTemplate jdbcTemplate;
     @Autowired UserRepository userRepository;
-    @Autowired CacheResource cacheResource;
     @Autowired UserService userService;
 
     @PostConstruct
