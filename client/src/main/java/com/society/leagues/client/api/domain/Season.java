@@ -69,6 +69,9 @@ public class Season extends LeagueObject   {
         if (division == Division.NINE_BALL_CHALLENGE) {
             return "Top Gun";
         }
+        if (year == null || division == null)
+            return "";
+
         String name = "'" + year.substring(2,4) + " ";
         name += type;
         name += " " + division.displayName;
@@ -143,7 +146,6 @@ public class Season extends LeagueObject   {
         this.type = type;
     }
 
-
     public String getShortName(){
         if (this.isChallenge())
             return "Top Gun";
@@ -170,7 +172,10 @@ public class Season extends LeagueObject   {
             if (o1.getLegacyId() != null && o2.getLegacyId() != null)
                 return o1.getLegacyId().compareTo(o2.getLegacyId());
 
-            return o1.getStartDate().compareTo(o2.getStartDate());
+            if (o1.getStartDate() != null && o2.getStartDate() != null)
+                return o1.getStartDate().compareTo(o2.getStartDate());
+
+            return 0;
         }
     };
 

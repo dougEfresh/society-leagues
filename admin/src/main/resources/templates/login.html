@@ -1,0 +1,31 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<head>
+    <title></title>
+</head>
+<body>
+  <div layout:fragment="content">
+      <div class="row">
+          <div class="col-md-offset-3 col-md-6">
+              <div id="login-app">
+                  <h2 class="form-signin-heading">Please </h2>
+                  <form  id="login" action="/login" method="post">
+                      <div class="form-field form-group">
+                          <div  class="form-group">
+                              <input id="username" type="input" name="username" placeholder="enter email" class="form-control"/>
+                          </div>
+                          <div class="form-group">
+                              <input id="password"  type='password' name='password' placeholder='enter password' class="form-control" > </input>
+                          </div>
+                      </div>
+                      <div class="btn-group  login-options">
+                          <input id="submit" type="submit" value="login">
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+</body>
+
+</html>

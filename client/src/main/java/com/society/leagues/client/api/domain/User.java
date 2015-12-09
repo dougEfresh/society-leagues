@@ -27,7 +27,7 @@ public class User extends LeagueObject {
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime created = LocalDateTime.now();
-    Set<HandicapSeason> handicapSeasons = new HashSet<>();
+    List<HandicapSeason> handicapSeasons = new ArrayList<>();
     List<TokenReset>  tokens = new ArrayList<>();
 
     Set<Team> currentTeams = new HashSet<>();
@@ -130,17 +130,17 @@ public class User extends LeagueObject {
         return status;
     }
 
-    public void setHandicapSeasons(Set<HandicapSeason> handicapSeasons) {
-        this.handicapSeasons = handicapSeasons;
-    }
-
     public void setStatus(Status status) {
         this.status = status;
     }
 
     @JsonView(PlayerResultView.class)
-    public Set<HandicapSeason> getHandicapSeasons() {
+    public List<HandicapSeason> getHandicapSeasons() {
         return handicapSeasons;
+    }
+
+    public List<HandicapSeason> getActiveHandicapSeasons() {
+        return  handicapSeasons != null ? handicapSeasons.stream().filter(hs->hs.getSeason().isActive()).collect(Collectors.toList()) : Collections.emptyList();
     }
 
     public void addHandicap(HandicapSeason hc) {
@@ -168,7 +168,8 @@ public class User extends LeagueObject {
              }
          }
     }
-    public boolean isReal(){
+
+    public boolean isReal() {
         if (lastName == null)
             return false;
         return !(lastName.toLowerCase().contains("handicap") || lastName.toLowerCase().contains("forfeit"));

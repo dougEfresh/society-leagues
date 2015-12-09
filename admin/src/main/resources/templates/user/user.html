@@ -1,0 +1,44 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="/layout">
+<head>
+    <title>User Admin</title>
+</head>
+<body>
+  <div id="user-app" layout:fragment="content">
+      <span class="subtitle">Users</span>
+      <div class="search-block">
+          <h2>Search User</h2>
+          <form action="/user" method="get">
+              <input th:value="${search}" type="text" id="search" name="search"/>
+              <br />
+              <input id="searchButton" name="searchButton" type="submit" value="Search"/>
+          </form>
+      </div>
+      <div id="users" >
+          <div class="table-responsive">
+              <table class="table table-stripped table-bordered table-condensed table">
+                  <thead>
+                  <th>Edit</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  </thead>
+                  <tbody>
+                  <!--/*@thymesVar id="users" type="com.society.leagues.client.api.domain.User"*/-->
+                  <tr th:each="user : ${users}">
+                      <td th:id="${user.id}"><a th:href="@{/user/{id}(id=${user.id})}"><span class="glyphicon glyphicon-edit"></span></a></td>
+                      <td th:text="${user.name}">
+                      </td>
+                      <td th:text="${user.login}"></td>
+                      <td th:text="${user.role}"></td>
+                      <td th:text="${user.status}"></td>
+                  </tr>
+                  </tbody>
+              </table>
+          </div>
+      </div>
+  </div>
+</body>
+</html>
+

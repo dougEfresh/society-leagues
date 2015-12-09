@@ -79,6 +79,10 @@ public enum Handicap {
         return Handicap.UNKNOWN;
     }
 
+    public String getValue() {
+        return name();
+    }
+
     @Override
     public String toString() {
         return Handicap.format(this);

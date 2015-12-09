@@ -7,9 +7,6 @@ buildscript {
       jcenter()
       mavenLocal()
   }
-  dependencies {
-    classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.2.7.RELEASE'
-  }
 }
 
 repositories {
@@ -18,5 +15,5 @@ repositories {
 }
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '2.7'
+  gradleVersion = '2.8'
 }
