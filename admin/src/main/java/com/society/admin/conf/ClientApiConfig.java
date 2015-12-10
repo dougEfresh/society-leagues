@@ -5,6 +5,7 @@ import com.society.admin.exception.ApiException;
 import com.society.admin.exception.UnauthorizedException;
 import com.society.admin.security.CookieContext;
 import com.society.leagues.client.api.SeasonApi;
+import com.society.leagues.client.api.TeamApi;
 import com.society.leagues.client.api.TeamMatchApi;
 import com.society.leagues.client.api.UserApi;
 import feign.*;
@@ -65,7 +66,6 @@ public class ClientApiConfig {
                 .target(UserApi.class, restUrl);
     }
 
-
     @Bean
     public SeasonApi seasonApi() {
         return Feign.builder().encoder(encoder).decoder(decoder)
@@ -74,6 +74,16 @@ public class ClientApiConfig {
                 .errorDecoder(new CustomErrorDecoder())
                 .requestInterceptor(new HeadersInterceptor())
                 .target(SeasonApi.class, restUrl);
+    }
+
+    @Bean
+    public TeamApi teamApi() {
+        return Feign.builder().encoder(encoder).decoder(decoder)
+                .logger(new Slf4jLogger())
+                .logLevel(Logger.Level.HEADERS)
+                .errorDecoder(new CustomErrorDecoder())
+                .requestInterceptor(new HeadersInterceptor())
+                .target(TeamApi.class, restUrl);
     }
 
     @Bean

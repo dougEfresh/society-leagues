@@ -129,15 +129,14 @@ public class Team extends LeagueObject {
         return false;
     }
 
-    public boolean isChallenge(){
-        return season.getDivision().isChallenge();
+    public boolean isChallenge() {
+        return season != null && season.getDivision().isChallenge();
     }
 
     public User getChallengeUser() {
         if (!isChallenge() || members == null || members.getMembers().isEmpty()) {
             return null;
         }
-
         return members.getMembers().iterator().next();
     }
 

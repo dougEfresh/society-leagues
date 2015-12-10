@@ -1,16 +1,19 @@
 package com.society.admin.resources;
 
+import com.society.admin.exception.ApiException;
+import com.society.admin.model.TeamMatchModel;
 import com.society.leagues.client.api.SeasonApi;
+import com.society.leagues.client.api.TeamApi;
 import com.society.leagues.client.api.TeamMatchApi;
+import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.TeamMatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +22,7 @@ public class ScoreResource extends BaseController {
 
     @Autowired TeamMatchApi teamMatchApi;
     @Autowired SeasonApi seasonApi;
+    @Autowired TeamApi teamApi;
 
     @RequestMapping(value = {"/scores"}, method = RequestMethod.GET)
     public String edit(Model model) {
@@ -26,18 +30,43 @@ public class ScoreResource extends BaseController {
         return "scores/challengeScores";
     }
 
-    @RequestMapping(value = {"/scores/{seasonId}"}, method = RequestMethod.GET)
-    public String editDate(@PathVariable String seasonId, @RequestParam(required = false) String date, Model model) {
+    private String processScoreView(String seasonId, String date, Model model) {
         model.addAttribute("seasons",seasonApi.active());
         Map<String,List<TeamMatch>> matches = teamMatchApi.matchesBySeason(seasonId);
 
-        if (date == null)
-            model.addAttribute("date",matches.keySet().iterator().next());
-        else
-            model.addAttribute("date",date);
-
-        model.addAttribute("results",matches.get(matches.keySet().iterator().next()));
+        String d = date == null ? matches.keySet().iterator().next() : date;
+        model.addAttribute("dates", matches.keySet());
+        model.addAttribute("date", d);
+        model.addAttribute("model", new TeamMatchModel(matches.get(d)));
+        model.addAttribute("teams", teamApi.getBySeason(seasonId));
+        model.addAttribute("season",seasonApi.get(seasonId));
         return "scores/challengeScores";
+    }
+
+    @RequestMapping(value = {"/scores/{seasonId}"}, method = RequestMethod.GET)
+    public String editDate(@PathVariable String seasonId, Model model) {
+        return processScoreView(seasonId,null,model);
+    }
+
+    @RequestMapping(value = {"/scores/{seasonId}/{date}"}, method = RequestMethod.GET)
+    public String editDate(@PathVariable String seasonId, @PathVariable String date, Model model) {
+        return processScoreView(seasonId,date,model);
+    }
+
+    @RequestMapping(value = {"/scores/{seasonId}/{date}"}, method = RequestMethod.POST)
+    public String save(@PathVariable String seasonId, @PathVariable String date, @ModelAttribute TeamMatchModel teamMatchModel, Model model) {
+        try {
+            teamMatchApi.save(teamMatchModel.getMatches());
+            model.addAttribute("save","success");
+            return processScoreView(seasonId,date,model);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            model.addAttribute("save","error");
+            StringWriter errors = new StringWriter();
+            e.printStackTrace(new PrintWriter(errors));
+            model.addAttribute("error",errors.toString());
+            return processScoreView(seasonId,date,model);
+        }
     }
 
 }

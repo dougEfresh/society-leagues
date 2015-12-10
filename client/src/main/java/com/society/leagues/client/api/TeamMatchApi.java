@@ -13,4 +13,7 @@ public interface TeamMatchApi {
 
     @RequestLine("GET /api/teammatch/season/{id}/all")
     Map<String,List<TeamMatch>> matchesBySeason(@Param("id") String id);
+
+    @RequestLine("POST /api/teammatch/admin/modify/list")
+    List<TeamMatch> save(List<TeamMatch> matches);
 }

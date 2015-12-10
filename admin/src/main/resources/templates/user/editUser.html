@@ -6,7 +6,7 @@
 <body>
 <div layout:fragment="content">
     <span th:value="${user.name}" class="subtitle"></span>
-         <div th:if="${save eq 'success'}">
+    <div th:if="${save eq 'success'}">
              <div class="alert alert-success alert-dismissible" role="alert">
                  <strong>Success!</strong> Updated Successfully.
              </div>
