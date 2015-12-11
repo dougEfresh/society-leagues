@@ -167,7 +167,7 @@ public class TeamMatchResource {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public TeamMatch add(Principal principal, @PathVariable String seasonId, @PathVariable String date) {
         TeamMatch tm = new TeamMatch();
-        tm.setMatchDate(LocalDateTime.parse(date));
+        tm.setMatchDate(LocalDate.parse(date).atTime(11,0));
         tm.setHome(leagueService.findAll(Team.class).stream().filter(t -> t.getSeason().getId().equals(seasonId)).findFirst().get());
         tm.setAway(leagueService.findAll(Team.class).stream().filter(t -> t.getSeason().getId().equals(seasonId)).findFirst().get());
         return leagueService.save(tm);
