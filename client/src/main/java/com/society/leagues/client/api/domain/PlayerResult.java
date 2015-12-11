@@ -199,6 +199,8 @@ public class PlayerResult  extends LeagueObject {
      * @return String
      */
     public String getLoserType() {
+        if (teamMatch.getLoser() == null)
+            return "";
         if (teamMatch.getLoser().equals(teamMatch.getHome())) {
             return "home";
         }
@@ -210,6 +212,9 @@ public class PlayerResult  extends LeagueObject {
      * @return String
      */
     public String getWinnerType() {
+        if (teamMatch.getWinner() == null)
+            return "";
+
         if (teamMatch.getWinner().equals(teamMatch.getHome())) {
             return "home";
         }
@@ -226,8 +231,9 @@ public class PlayerResult  extends LeagueObject {
 
     static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d");
     public String getDate() {
-        if (getTeamMatch() == null)
+        if (getTeamMatch() == null || getTeamMatch().getMatchDate() == null)
             return null;
+
         return getTeamMatch().getMatchDate().toLocalDate().format(formatter);
     }
 
@@ -250,6 +256,9 @@ public class PlayerResult  extends LeagueObject {
     }
 
     public boolean isNine() {
+        if (getSeason() == null)
+            return false;
+
         return getSeason().getDivision() == Division.NINE_BALL_TUESDAYS || getSeason().getDivision() == Division.NINE_BALL_CHALLENGE;
     }
 
@@ -265,7 +274,6 @@ public class PlayerResult  extends LeagueObject {
             return referenceUser.equals(playerHome) ? playerAway : playerHome;
 
         return null;
-
     }
 
 
@@ -382,26 +390,42 @@ public class PlayerResult  extends LeagueObject {
     }
 
     public Handicap getWinnerTeamHandicap() {
+        if (teamMatch.getWinner() == null)
+            return Handicap.UNKNOWN;
+
         return teamMatch.getWinner().hasUser(playerHome) ? playerHomeHandicap : playerAwayHandicap;
     }
 
     public Handicap getLoserTeamHandicap() {
+        if (teamMatch.getWinner() == null)
+            return Handicap.UNKNOWN;
         return teamMatch.getWinner().hasUser(playerHome) ? playerAwayHandicap : playerHomeHandicap;
     }
 
     public Integer getWinnerTeamRacks() {
+        if (teamMatch.getWinner() == null)
+            return 0;
+
         return teamMatch.getWinner().hasUser(playerHome) ? homeRacks : awayRacks;
     }
 
     public Integer getLoserTeamRacks() {
+        if (teamMatch.getWinner() == null)
+            return 0;
+
         return teamMatch.getWinner().hasUser(playerHome) ? awayRacks : homeRacks;
     }
 
     public User getWinnerTeamPlayer() {
+        if (teamMatch.getWinner() == null)
+            return null;
         return teamMatch.getWinner().hasUser(playerHome) ? playerHome : playerAway;
     }
 
     public User getLoserTeamPlayer() {
+        if (teamMatch.getWinner() == null)
+            return null;
+
         return teamMatch.getWinner().hasUser(playerHome) ? playerAway : playerHome;
     }
 

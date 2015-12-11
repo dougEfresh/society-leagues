@@ -52,6 +52,7 @@
                                         ></option>
                                     </select>
                                 </td>
+
                                 <td>
                                     <input th:field="*{matches[__${rowStat.index}__].homeRacks}" type="text" th:value="${match.homeRacks}"/>
                                 </td>
@@ -109,6 +110,7 @@
                             <thead>
                             <th>#</th>
                             <th>Home</th>
+                            <th>Partner</th>
                             <th>Win</th>
                             <th>Away</th>
                             <th>Win</th>
@@ -131,6 +133,16 @@
                                     </select>
                                 </td>
                                 <td>
+                                    <select th:field="*{playerResults[__${rowStat.index}__].playerHomePartner.id}" class="form-control" >
+                                        <option th:each="user: ${homeMembers}"
+                                                th:text="${user.name}"
+                                                th:value="${user.id}"
+                                                th:selected="${user.id == result.playerHomePartner.id}"
+                                        ></option>
+                                    </select>
+                                </td>
+
+                                <td>
                                     <input onchange="handleCheckbox(this)" th:id="#{home} +  ${result.id}" th:value="${result.homeWinner}"
                                             th:field="*{playerResults[__${rowStat.index}__].homeWinner}" type="checkbox"
                                     />
@@ -144,7 +156,16 @@
                                                 th:selected="${user.id == result.playerAway.id}"
                                         ></option>
                                     </select>
+                                </td> <td>
+                                    <select th:field="*{playerResults[__${rowStat.index}__].playerAwayPartner.id}" class="form-control" >
+                                        <option th:each="user: ${awayMembers}"
+                                                th:text="${user.name}"
+                                                th:value="${user.id}"
+                                                th:selected="${user.id == result.playerAwayPartner.id}"
+                                        ></option>
+                                    </select>
                                 </td>
+
                                 <td>
                                     <input  onchange="handleCheckbox(this)"
                                             th:id="#{away} + ${result.id}" th:value="${result.awayWinner}"

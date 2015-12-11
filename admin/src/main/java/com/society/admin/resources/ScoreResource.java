@@ -6,6 +6,7 @@ import com.society.leagues.client.api.PlayerResultApi;
 import com.society.leagues.client.api.SeasonApi;
 import com.society.leagues.client.api.TeamApi;
 import com.society.leagues.client.api.TeamMatchApi;
+import com.society.leagues.client.api.domain.PlayerResult;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.client.api.domain.User;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -48,8 +51,15 @@ public class ScoreResource extends BaseController {
         if (matchId != null) {
             model.addAttribute("results", new PlayerResultModel(playerResultApi.getPlayerResultByTeamMatch(matchId),matchId));
             Map<String,List<User>> members = teamMatchApi.teamMembers(matchId);
-            model.addAttribute("homeMembers",members.get("home"));
-            model.addAttribute("awayMembers",members.get("away"));
+            List<User> home = new ArrayList<>();
+            home.add(User.defaultUser());
+            List<User> away = new ArrayList<>();
+            away.add(User.defaultUser());
+            home.addAll(members.get("home"));
+            away.addAll(members.get("away"));
+
+            model.addAttribute("homeMembers", home);
+            model.addAttribute("awayMembers", away);
         }
 
         if (s.isChallenge())
@@ -82,8 +92,30 @@ public class ScoreResource extends BaseController {
     private String save(String seasonId, String date, String matchId, TeamMatchModel teamMatchModel, PlayerResultModel playerResultModel, Model model) {
         try {
             teamMatchApi.save(teamMatchModel.getMatches());
-            if (playerResultModel != null )
-                playerResultApi.save(playerResultModel.getPlayerResults());
+            if (playerResultModel != null) {
+                playerResultModel.getPlayerResults().forEach(
+                    r->{
+                        if (r.getPlayerHomePartner().equals(User.defaultUser()))
+                            r.setPlayerHomePartner(null);
+
+                        if (r.getPlayerAwayPartner().equals(User.defaultUser()))
+                            r.setPlayerAwayPartner(null);
+                    });
+                Season s = seasonApi.get(seasonId);
+                if (!s.isChallenge() && !s.isNine()) {
+                    for (PlayerResult playerResult : playerResultModel.getPlayerResults()) {
+                        if (playerResult.isHomeWinner()) {
+                            playerResult.setHomeRacks(playerResult.isScotch() ? 2 : 1);
+                            playerResult.setAwayRacks(0);
+                        } else {
+                            playerResult.setAwayRacks(playerResult.isScotch() ? 2 : 1);
+                            playerResult.setHomeRacks(0);
+                        }
+                    }
+                    if (!playerResultModel.getPlayerResults().isEmpty())
+                        playerResultApi.save(playerResultModel.getPlayerResults());
+                }
+            }
             model.addAttribute("save","success");
             return processScoreView(seasonId,date,matchId,model);
         } catch (Exception e) {

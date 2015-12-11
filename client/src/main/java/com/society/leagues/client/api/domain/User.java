@@ -43,6 +43,8 @@ public class User extends LeagueObject {
     public static User defaultUser() {
         User u = new User();
         u.setId("-1");
+        u.setFirstName("---");
+        u.setLastName("---");
         return u;
     }
 

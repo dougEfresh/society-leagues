@@ -30,8 +30,10 @@ public class LeagueHttpClient extends Client.Default {
             SecurityContext context = SecurityContextHolder.getContext();
             if (context instanceof CookieContext) {
                 CookieContext cookieContext = (CookieContext) context;
-                cookieContext.setCookieChange(true);
-                cookieContext.setNewCookies(response.headers().get("Set-Cookie"));
+                if (!cookieContext.isCookieChange()) {
+                    cookieContext.setCookieChange(true);
+                    cookieContext.setNewCookies(response.headers().get("Set-Cookie"));
+                }
             }
         }
         return response;
