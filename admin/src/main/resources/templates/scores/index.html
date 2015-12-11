@@ -5,7 +5,44 @@
 
 <body>
 <div id="score-app" layout:fragment="content">
-    <div th:replace="/fragments/scores"></div>
+    <div th:if="${save eq 'success'}">
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <strong>Success!</strong> Updated Successfully.
+        </div>
+    </div>
+    <div th:if="${save eq 'error'}">
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <strong>Error!</strong> <pre th:text="${error}"></pre>
+        </div>
+    </div>
+    <div id="seasons">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title">Seasons</div>
+            </div>
+            <div class="panel-body">
+                <!--/*@thymesVar id="seasons" type="List<com.society.leagues.client.api.domain.Season>"*/-->
+                <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+                <div class="row">
+                    <div th:each="season : ${seasons}" class="col-xs-10 col-md-2 col-lg-2">
+                        <a th:href="@{/scores/{id}/ (id=${season.id})}">
+                            <span th:text="${season.shortName}"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>/
+    <script>
+        function selectDate(e) {
+            var myselect = document.getElementById("select-date");
+            console.log(e);
+            console.log(window.location.pathname);
+            console.log(myselect.options[myselect.selectedIndex].value);
+            window.location = myselect.options[myselect.selectedIndex].value;
+        }
+    </script>
+</div>
 </div>
 </body>
 </html>
