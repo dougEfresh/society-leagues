@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.client.views.PlayerResultView;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.util.ReflectionUtils;
 
@@ -32,6 +33,9 @@ public class PlayerResult  extends LeagueObject {
     Team referenceTeam = null;
     User referenceUser = null;
     Boolean scotch = false;
+
+    @JsonIgnore @Transient Boolean homeWinner = null;
+    @JsonIgnore @Transient Boolean awayWinner = null;
 
     public PlayerResult() {
     }
@@ -474,6 +478,28 @@ public class PlayerResult  extends LeagueObject {
         this.playerAwayHandicapPartner = playerAwayHandicapPartner;
     }
 
+
+    public boolean isHomeWinner() {
+        if (homeWinner != null)
+            return homeWinner;
+
+        return homeRacks > awayRacks;
+    }
+
+    public void setHomeWinner(boolean homeWinner) {
+        this.homeWinner = homeWinner;
+    }
+
+    public boolean isAwayWinner() {
+        if (awayWinner != null)
+            return awayWinner;
+
+        return awayRacks > homeRacks;
+    }
+
+    public void setAwayWinner(boolean awayWinner) {
+        this.awayWinner = awayWinner;
+    }
 
     @Override
     public String toString() {

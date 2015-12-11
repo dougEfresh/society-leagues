@@ -1,13 +1,12 @@
 package com.society.admin.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.society.admin.LeagueHttpClient;
 import com.society.admin.exception.ApiException;
 import com.society.admin.exception.UnauthorizedException;
 import com.society.admin.security.CookieContext;
-import com.society.leagues.client.api.SeasonApi;
-import com.society.leagues.client.api.TeamApi;
-import com.society.leagues.client.api.TeamMatchApi;
-import com.society.leagues.client.api.UserApi;
+import com.society.leagues.client.api.*;
+import com.society.leagues.client.api.domain.Season;
 import feign.*;
 import feign.codec.ErrorDecoder;
 import feign.jackson.JacksonDecoder;
@@ -56,44 +55,39 @@ public class ClientApiConfig {
         }
     }
 
-    @Bean
-    public UserApi userApi() {
+    private <T> T getApi(Class<T> clzz) {
         return Feign.builder().encoder(encoder).decoder(decoder)
                 .logger(new Slf4jLogger())
+                .client(new LeagueHttpClient())
                 .logLevel(Logger.Level.HEADERS)
                 .errorDecoder(new CustomErrorDecoder())
                 .requestInterceptor(new HeadersInterceptor())
-                .target(UserApi.class, restUrl);
+                .target(clzz, restUrl);
+    }
+
+    @Bean
+    public UserApi userApi() {
+       return getApi(UserApi.class);
     }
 
     @Bean
     public SeasonApi seasonApi() {
-        return Feign.builder().encoder(encoder).decoder(decoder)
-                .logger(new Slf4jLogger())
-                .logLevel(Logger.Level.HEADERS)
-                .errorDecoder(new CustomErrorDecoder())
-                .requestInterceptor(new HeadersInterceptor())
-                .target(SeasonApi.class, restUrl);
+        return getApi(SeasonApi.class);
     }
 
     @Bean
     public TeamApi teamApi() {
-        return Feign.builder().encoder(encoder).decoder(decoder)
-                .logger(new Slf4jLogger())
-                .logLevel(Logger.Level.HEADERS)
-                .errorDecoder(new CustomErrorDecoder())
-                .requestInterceptor(new HeadersInterceptor())
-                .target(TeamApi.class, restUrl);
+        return getApi(TeamApi.class);
     }
 
     @Bean
     public TeamMatchApi teamMatchApi() {
-        return Feign.builder().encoder(encoder).decoder(decoder)
-                .logger(new Slf4jLogger())
-                .logLevel(Logger.Level.HEADERS)
-                .errorDecoder(new CustomErrorDecoder())
-                .requestInterceptor(new HeadersInterceptor())
-                .target(TeamMatchApi.class, restUrl);
+        return getApi(TeamMatchApi.class);
+    }
+
+    @Bean
+    public PlayerResultApi playerResultApi() {
+        return getApi(PlayerResultApi.class);
     }
 
 }

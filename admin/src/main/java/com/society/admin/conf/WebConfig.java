@@ -1,5 +1,6 @@
 package com.society.admin.conf;
 
+import com.society.interceptors.CookieInterceptor;
 import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.converters.DateTimeSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -17,7 +20,6 @@ import java.util.Arrays;
 
 @Configuration
 public class WebConfig extends WebMvcConfigurerAdapter {
-
     @Autowired DateTimeSerializer dateTimeSerializer;
     @Autowired DateTimeDeSerializer dateTimeDeSerializer;
     @Value("${pretty-print:true}") boolean prettyPrint;
@@ -40,5 +42,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
             System.out.println("Path  file://" + cwd + "/src/main/resources/public/" + d +"/");
             registry.addResourceHandler("/" + d + "/**").addResourceLocations("file://" + cwd + "/src/main/resources/public/" + d +"/").setCachePeriod(0);
         }
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new CookieInterceptor()).addPathPatterns("/*");
+        super.addInterceptors(registry);
     }
 }

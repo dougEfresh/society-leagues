@@ -53,7 +53,7 @@ public class PlayerResultResource {
 
     @RequestMapping(value = "/teammatch/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @JsonView(PlayerResultView.class)
-    public Collection<PlayerResult> getPlayerResultTeamMatch(Principal principal, @PathVariable String id) {
+    public List<PlayerResult> getPlayerResultTeamMatch(Principal principal, @PathVariable String id) {
         TeamMatch tm = leagueService.findOne(new TeamMatch(id));
         Collection<PlayerResult> results;
         if (tm.getSeason().isActive()) {
@@ -76,7 +76,7 @@ public class PlayerResultResource {
         }).collect(Collectors.toList());
         User u = leagueService.findByLogin(principal.getName());
         if (results.isEmpty() && u.isAdmin()) {
-            return resultService.createNewPlayerResults(tm);
+            return Arrays.asList(resultService.createNewPlayerResults(tm).toArray(new PlayerResult[]{}));
         }
         List<PlayerResult> copy = new ArrayList<>(results.size());
         for (PlayerResult result : results) {

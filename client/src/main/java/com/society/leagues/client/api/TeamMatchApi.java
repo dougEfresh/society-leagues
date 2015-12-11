@@ -1,6 +1,7 @@
 package com.society.leagues.client.api;
 
 import com.society.leagues.client.api.domain.TeamMatch;
+import com.society.leagues.client.api.domain.User;
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
@@ -13,6 +14,9 @@ public interface TeamMatchApi {
 
     @RequestLine("GET /api/teammatch/season/{id}/all")
     Map<String,List<TeamMatch>> matchesBySeason(@Param("id") String id);
+
+    @RequestLine("GET /api/teammatch/members/{id}")
+    Map<String,List<User>> teamMembers(@Param("id") String id);
 
     @RequestLine("POST /api/teammatch/admin/modify/list")
     List<TeamMatch> save(List<TeamMatch> matches);

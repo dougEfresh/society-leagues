@@ -33,7 +33,7 @@
             </div>
         </div>
             <script>
-                function selectDate(e){
+                function selectDate(e) {
                     var myselect = document.getElementById("select-date");
                     console.log(e);
                     console.log(window.location.pathname);
@@ -41,6 +41,21 @@
                     window.location = myselect.options[myselect.selectedIndex].value;
                 }
             </script>
+    <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="panel-title">Date</div>
+                </div>
+        <div id="dates" class="panel-body">
+        <select onChange="selectDate()" id="select-date" class="form-control" >
+            <option th:each="d: ${dates}"
+                    th:text="${d}"
+                    th:value="${d}"
+                    th:selected="${d == date}">
+
+            </option>
+        </select>
+        </div>
+    </div>
 </div>
 </body>
 </html>

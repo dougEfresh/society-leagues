@@ -80,8 +80,10 @@ public class LeagueService {
                 c.add(newEntity);
             }
         }
-        for (DaoListener daoListener : daoListeners) {
-            daoListener.onChange(entities.get(0));
+        if (!entities.isEmpty()) {
+            for (DaoListener daoListener : daoListeners) {
+                daoListener.onChange(entities.get(0));
+            }
         }
     }
 
