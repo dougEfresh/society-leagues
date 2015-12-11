@@ -15,6 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -84,23 +86,38 @@ public class ScoreResource extends BaseController {
         return processScoreView(seasonId,date,null,model);
     }
 
+     @RequestMapping(value = {"/scores/{seasonId}/{date}/add"}, method = RequestMethod.GET)
+     public void addTeamMatch(@PathVariable String seasonId, @PathVariable String date, Model model, HttpServletResponse response) throws IOException {
+         teamMatchApi.add(seasonId,date);
+         response.sendRedirect("/scores/" +seasonId + "/" + date);
+    }
+
     @RequestMapping(value = {"/scores/{seasonId}/{date}/{matchId}"}, method = RequestMethod.GET)
     public String editResults(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId, Model model) {
         return processScoreView(seasonId,date,matchId,model);
     }
 
+    @RequestMapping(value = {"/scores/{seasonId}/{date}"}, method = RequestMethod.POST)
+    public String save(@PathVariable String seasonId, @PathVariable String date, @ModelAttribute TeamMatchModel teamMatchModel, Model model) {
+        return save(seasonId,date,null,teamMatchModel,null,model);
+    }
+
+    @RequestMapping(value = {"/scores/{seasonId}/{date}/{matchId}"}, method = RequestMethod.POST)
+    public String saveResults(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId, @ModelAttribute TeamMatchModel teamMatchModel,@ModelAttribute PlayerResultModel playerResultModel, Model model) {
+        return save(seasonId,date,matchId,teamMatchModel,playerResultModel,model);
+    }
     private String save(String seasonId, String date, String matchId, TeamMatchModel teamMatchModel, PlayerResultModel playerResultModel, Model model) {
         try {
             teamMatchApi.save(teamMatchModel.getMatches());
             if (playerResultModel != null) {
                 playerResultModel.getPlayerResults().forEach(
-                    r->{
-                        if (r.getPlayerHomePartner().equals(User.defaultUser()))
-                            r.setPlayerHomePartner(null);
+                        r->{
+                            if (r.getPlayerHomePartner().equals(User.defaultUser()))
+                                r.setPlayerHomePartner(null);
 
-                        if (r.getPlayerAwayPartner().equals(User.defaultUser()))
-                            r.setPlayerAwayPartner(null);
-                    });
+                            if (r.getPlayerAwayPartner().equals(User.defaultUser()))
+                                r.setPlayerAwayPartner(null);
+                        });
                 Season s = seasonApi.get(seasonId);
                 if (!s.isChallenge() && !s.isNine()) {
                     for (PlayerResult playerResult : playerResultModel.getPlayerResults()) {
@@ -126,15 +143,6 @@ public class ScoreResource extends BaseController {
             model.addAttribute("error",errors.toString());
             return processScoreView(seasonId,date,matchId,model);
         }
-    }
-
-    @RequestMapping(value = {"/scores/{seasonId}/{date}"}, method = RequestMethod.POST)
-    public String save(@PathVariable String seasonId, @PathVariable String date, @ModelAttribute TeamMatchModel teamMatchModel, Model model) {
-        return save(seasonId,date,null,teamMatchModel,null,model);
-    }
-    @RequestMapping(value = {"/scores/{seasonId}/{date}/{matchId}"}, method = RequestMethod.POST)
-    public String saveResults(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId, @ModelAttribute TeamMatchModel teamMatchModel,@ModelAttribute PlayerResultModel playerResultModel, Model model) {
-        return save(seasonId,date,matchId,teamMatchModel,playerResultModel,model);
     }
 
 

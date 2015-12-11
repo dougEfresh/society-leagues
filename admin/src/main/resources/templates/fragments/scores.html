@@ -1,5 +1,4 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
-<html>
 <head>
 </head>
 <body>
@@ -42,18 +41,18 @@
                 }
             </script>
     <div class="panel panel-default">
-                <div class="panel-heading">
-                    <div class="panel-title">Date</div>
-                </div>
+        <div class="panel-heading">
+            <div class="panel-title">Date</div>
+        </div>
         <div id="dates" class="panel-body">
-        <select onChange="selectDate()" id="select-date" class="form-control" >
-            <option th:each="d: ${dates}"
-                    th:text="${d}"
-                    th:value="${d}"
-                    th:selected="${d == date}">
-
-            </option>
-        </select>
+            <select onChange="selectDate()" id="select-date" class="form-control" >
+                <option th:each="d: ${dates}"
+                        th:text="${d}"
+                        th:value="${d}"
+                        th:selected="${d == date}">
+                </option>
+            </select>
+           <a th:href="@{/scores/{id}/{date}/add (id=${season.id},date=${date})}">Add</a>
         </div>
     </div>
 </div>

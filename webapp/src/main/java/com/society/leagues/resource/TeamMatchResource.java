@@ -160,8 +160,14 @@ public class TeamMatchResource {
     @RequestMapping(value = "/admin/add/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public TeamMatch add(Principal principal, @PathVariable String seasonId) {
+        return add(principal,seasonId,LocalDate.now().toString());
+    }
+
+    @RequestMapping(value = "/admin/add/{seasonId}/{date}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public TeamMatch add(Principal principal, @PathVariable String seasonId, @PathVariable String date) {
         TeamMatch tm = new TeamMatch();
-        tm.setMatchDate(LocalDateTime.now());
+        tm.setMatchDate(LocalDateTime.parse(date));
         tm.setHome(leagueService.findAll(Team.class).stream().filter(t -> t.getSeason().getId().equals(seasonId)).findFirst().get());
         tm.setAway(leagueService.findAll(Team.class).stream().filter(t -> t.getSeason().getId().equals(seasonId)).findFirst().get());
         return leagueService.save(tm);
