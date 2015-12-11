@@ -1,0 +1,145 @@
+.panel-default {
+
+}
+
+.panel-upcoming>.panel-heading {
+    color: whitesmoke;
+    background-color: rgb(124, 19, 24);
+}
+
+.panel-leaders>.panel-heading, .panel-results-players > .panel-heading {
+    color: whitesmoke;
+    background-color: rgb(124, 19, 24);
+}
+
+.panel-body {
+   padding: 0px;
+}
+.panel-heading  {
+    color: whitesmoke;
+    background-color: rgb(124, 19, 24);
+}
+.panel-heading > .panel-title > a > span.fa.arrow.active:before {
+    content: "\f107";
+}
+
+.panel-heading > .panel-title > a> span.fa.arrow:before,
+.panel-default > a >span.fa.arrow:before,
+#headingOne > h4 > span.fa.arrow.active:before {
+    float: right;
+    content: "\f104";
+}
+
+
+
+.panel-heading > .panel-title >a> span.fa.arrow {
+    float: right;
+}
+
+.panel-standings {
+
+}
+
+.panel-members {
+
+}
+
+.panel-user {
+
+}
+
+.p-title {
+    padding-right: 0px;
+    margin-right: 0px;
+}
+
+.panel-closed {
+    /*background-color: #CDA3A3;*/
+    opacity: .25;
+    transition:  opacity 1.3s linear;
+}
+
+.panel-heading-closed {
+    /*background-color: #CDA3A3;*/
+    opacity: .30;
+}
+
+.animate-close {
+    opacity: 0;
+    transition:  opacity 1.2s linear;
+}
+
+.animate-open {
+    opacity: 1;
+    transition:  opacity 1.2s linear;
+}
+.panel-heading-animate-closed {
+    /*background-color: #CDA3A3;*/
+    opacity: .30;
+    transition:  opacity 2s linear;
+}
+
+.panel-body-animate-open {
+    /*background-color: #CDA3A3;*/
+    opacity: 1;
+    transition:  opacity 1.5s linear;
+}
+
+.panel-body-animate-closed {
+    /*background-color: #CDA3A3;*/
+    opacity: 0;
+    transition:  opacity 1.5s linear;
+}
+
+.panel-schedule , .panel-results {
+    max-width: 1000px;
+    /*margin-top: 10px;
+    margin-bottom: 5px;
+    */
+}
+
+.schedule-row {
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
+.panel-schedule-body, .panel-results-body {
+    padding: 15px;
+}
+
+.panel-schedule-week {
+
+}
+
+.panel-schedule-week-title, .panel-results-week-title {
+    line-height: .25;
+    padding-left: 5px;
+}
+
+.panel-footer {
+    background-color:  rgb(124, 19, 24);
+}
+
+.panel-default {
+    background-color: #dfdfdf;
+}
+
+.panel-animate {
+     /*transition: all 2s linear;*/
+     -webkit-animation: fadeIn 1.8s;
+    animation: fadeIn 1.8s;
+}
+
+.panel-animate-hide {
+     /*transition: all 2s linear;*/
+    /*-webkit-animation: fadeOut 2s;*/
+    /*animation: fadeOut 2s;*/
+    /*visibility: hidden;*/
+    opacity: 0;
+    transition:  opacity 1.8s linear;
+}
+
+.panel-challenge-results {
+    padding: 0px;
+}
+

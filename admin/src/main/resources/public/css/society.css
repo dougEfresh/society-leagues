@@ -1,0 +1,629 @@
+@charset "UTF-8";
+/* CSS Document */
+/*#leagueApp > div > div > div > div > div.col-md-2.col-xs-12 > nav > ul > div > div.seasonNavLink > div > div.panel-body > li:nth-child(1) > a > div > span.eightBall.badge*/
+/* Society Red: #9c302d */
+
+a:link, a:visited {
+	color: #9c302d;
+}
+a:hover, a:active {
+	color: #9c302d;
+}
+#leagueApp > .eightBall {
+	background-color: black; !important;
+}
+.no-pad {
+	padding: 0px 0px;
+}
+span.eightBall.badge {
+	background-color: black; !important;
+}
+
+span.nineBall.badge {
+	background-color: yellow; !important;
+	color: black; !important;
+}
+span .home-badge {
+	margin: -10px 0px 0px 10px;
+	padding: 5px 10px;
+	background: #fff;
+	color: #333!important;
+}
+.welcome-wrap {
+	float: left;
+	width: 98%;
+	padding: 10px 20px;
+}
+.welcome {
+	float: left;
+	width: auto;
+}
+.ss-label-group ul {
+	float: left;
+	width: auto;
+	list-style-type: none;
+	margin: 20px 0px 0px 10px;
+	font-size: 11px;
+	padding: 0px 0px;
+}
+.ss-label-group li {
+	float:left;
+	width: auto;
+	padding: 10px 10px;
+	margin: 0px 0px;
+	-webkit-box-shadow: 2px 1px 2px 0px rgba(0,0,0,1);
+	-moz-box-shadow: 2px 1px 2px 0px rgba(0,0,0,1);
+	box-shadow: 2px 1px 2px 0px rgba(0,0,0,1);
+
+}
+li.ss-label-win {
+	background: #9c302d;
+	color: #fff;
+	padding: 10px 10px;
+}
+li.ss-label-default {
+	background: #666;
+	color: #fff;
+	-moz-border-radius-topright: 10px;
+	-moz-border-radius-bottomright: 10px;
+
+	-webkit-border-top-right-radius: 10px;
+	-webkit-border-bottom-right-radius: 10px;
+}
+.ss-label-lose {
+	background: #000;
+	color: #fff;
+}
+
+.slot-time {
+	min-width: 20px;
+}
+
+.wrap {
+	padding: 0px 0px;
+}
+.panel-default>.panel-heading .badge {
+  color: #f5f5f5;
+  background-color: #9c302d;
+}
+
+.recordTable,
+.challengeStatusTable {
+   background-color: whitesmoke; !important;
+}
+.navName {
+    color: whitesmoke; !important;
+}
+body {
+    margin-top: 0px; /* Required margin for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+}
+span.glyphicon {
+	margin-right: 5px;	
+}
+span.fa {
+	margin-right: 5px;	
+}
+
+.badge {
+	background-color: #9c302d;
+	margin: 0px 5px;
+}
+.user-content .select-time, 
+.user-content .select-game {
+	width: 100%;
+	margin-bottom: 10px;
+}
+.select-game button, .select-time button {
+	min-width: 90px;
+}
+.select-game button, .select-time button {
+	width: 50%;
+}
+button.confirm-request {
+	min-width: 180px;
+	width: 100%;
+}
+button a:link, button a:visited {
+	color: #fff;
+	text-decoration: none;
+}
+button a:hover, button a:active {
+	color:#fff ;
+	text-decoration: none;
+}
+button a.active {
+	color: #fff;
+	text-decoration: none;
+}
+.btn-default a:link,.btn-default a:visited {
+	color: #333;
+}
+.bot-margin {
+	margin-bottom: 10px;
+}
+/* Header Image Background - Change the URL below to your image path (example: ../images/background.jpg) */
+/* CUSTOMIZE THE NAVBAR
+-------------------------------------------------- */
+.seasonTeamStandings {
+	background-color: whitesmoke !important;
+}
+
+/* Special class on .container surrounding .navbar, used for positioning it into place. */
+
+.full {
+    background: url('../img/break2.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+.navbar-wrapper {
+	background-color: #000;
+}
+.navbar-wrapper > .container {
+
+	padding: 0px 0px;
+}
+.navbar-wrapper .container .navbar-header {
+	
+	padding: 0px 15px 0px 0px;
+}
+
+.logo {
+	float:left;
+	display:block;
+	margin: 0px 0px; 
+	padding:0px 0px;
+	width: 80%;
+	height:70px;
+	background-image: url(../img/sbb-logo-mobile.jpg);
+	background-size: 100% 100%;
+	background-repeat:no-repeat;	
+}
+.logo a {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+header.page-header {
+    background: #2d3e50;
+    color: #eee;
+}
+
+span.page-title {
+    margin-left: 0.4em;
+    font-size: 137%;
+    vertical-align: top;
+}
+
+header a {
+    text-decoration: none;
+}
+/*    
+    This version adds support for IE 10+ and Firefox.
+*/
+ 
+.glyphicon-refresh-animate {
+	color: #fff;
+	font-size: 96px;
+	margin-top:200px;
+    -animation: spin .7s infinite linear;
+    -ms-animation: spin .7s infinite linear;
+    -webkit-animation: spinw .7s infinite linear;
+    -moz-animation: spinm .7s infinite linear;
+}
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+  
+@-webkit-keyframes spinw {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+ 
+@-moz-keyframes spinm {
+    from { -moz-transform: rotate(0deg);}
+    to { -moz-transform: rotate(360deg);}
+}
+
+a.logout {
+    color: #eee;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-right: 1em;
+}
+
+
+a.logout:hover {
+    color: #3b67a7;
+}
+.center { 
+	float: none; 
+	margin-left: auto; 
+	margin-right: auto; 
+}
+.error-messages {
+	margin-top: 5px;
+}
+h2.form-signin-heading {
+	text-align:center;
+	margin: 0px 0px 20px 0px;
+}
+.well {
+	float: none;
+	margin: 140px auto 0px auto;
+	color: #fff;
+	background-image: -webkit-linear-gradient(top, rgba(70,0,0, .9) 0%, rgba(0,0,0, .9) 100%);
+	background-image: -o-linear-gradient(top, rgba(70,0,0, .9) 0%, rgba(0,0,0, .9) 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(70,0,0, .9)), to(rgba(0,0,0, .9)));
+	background-image: linear-gradient(to bottom, rgba(70,0,0, .9) 0%, rgba(0,0,0, .9) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#460000', endColorstr='#6666666', GradientType=0);
+	background-repeat: repeat-x;
+	background-color: transparent;
+	border: 3px solid #240000;
+	border-radius: 8px;
+	-webkit-box-shadow: 0px 10px 35px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 10px 35px 0px rgba(0,0,0,0.75);
+	box-shadow: 0px 10px 35px 0px rgba(0,0,0,0.75);
+}
+#custom-bootstrap-menu.navbar-default .navbar-brand {
+    color: rgba(255, 255, 255, 1);
+}
+#custom-bootstrap-menu.navbar-default #navbar>ul {
+    margin-top: 0px;
+	margin-bottom: 0px;
+}
+#custom-bootstrap-menu.navbar-default {
+    font-size: 20px;
+    background-color: rgba(0, 0, 0, 1);
+    border-width: 0px;
+    border-radius: 0px;
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a {
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(0, 0, 0, 1);
+	padding-top: 15px;
+	padding-bottom: 15px;
+	border-bottom: 1px #666 solid;
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:focus {
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(66, 4, 5, 1);
+    background-color: rgba(138, 30, 27, 1);
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:focus {
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(138, 30, 27, 1);
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle {
+	margin: 18px 0px 0px 0px;
+    border-color: #fff;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus {
+	border-color: #8a1e1b;
+    background-color: #000;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle .icon-bar {
+    background-color: #fff;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover .icon-bar,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus .icon-bar {
+    background-color: #8a1e1b;
+}
+.footer {
+  width: 100%;
+  /* Set the fixed height of the footer here */
+}
+.footer .container {
+	margin-top: 200px;
+	background-color: #000;
+	color: #fff;
+}
+.footer .container a, .footer.container a:visited {
+	color: #fff;
+}
+.footer .container ul {
+	float: left;
+	font-family: 'Helvetica', sans-serif;
+	font-size: .9em;
+	padding: 15px 0px 15px 10px;
+	margin: 0 auto;
+	text-align: center;
+	width: 100%;
+	list-style-type: none;
+}
+.footer .container li {
+	float: left;
+	padding: 0px 10px;
+	margin: 0px 0px 10px 0px;
+	width: 30%;
+	text-align: center;
+}
+.footer .container li.footer-address {
+	clear: both;
+	width: 100%;
+}
+
+.account-wrapper .btn-group-vertical a { text-align: left;}
+.account-wrapper .btn-group-vertical a:hover, .account-wrapper .btn-group-vertical .active { background-color: #000; color: #fff;}
+
+.nav-tabs {
+  border-bottom: none;
+}
+.challenge-content {
+	font-size: 22px;
+}
+button.request a:link ,button.request a:visited {
+	color: #fff;
+}
+.request {
+	margin: 10px 0px 0px 0px;
+	width: 100%;
+}
+.request-signup {
+	margin: 0px 0px 0px 5px;
+}
+ol.request-directions li {
+	font-size: 22px;
+	margin: 0px 0px 10px 0px;
+
+}
+.sb-panel-page{
+  margin-left: 10px;
+}
+.homeNav .btn {
+	margin: 0px 0px 10px 0px;
+	text-align:left;
+	background: #000;
+}
+.homeNav .btn:hover {
+	background-color: #9c302d;
+}
+.homeNav .active {
+	background-color: #9c302d;
+}
+.homeNav .btn a {
+	float: left;
+	display: block;
+	width: 100%;
+	text-align: left;
+	margin: 0px 0px;
+	padding: 0px 0px;
+	color: #fff;
+	font-weight: bold;
+}
+.homeNav .btn a:hover {
+	float: left;
+	display: block;
+	width: 100%;
+	text-align: left;
+	margin: 0px 0px;
+	padding: 0px 0px;
+	color: #fff;
+	text-decoration: none;
+}
+.homeNav .panel {
+	border: none;
+}
+.homeNav .panel-heading {
+	background-color: #000;
+	color: #fff;
+}
+.homeNav .panel-body {
+	padding: 0px 0px;
+}
+.homeNav .panel-body li a:link,.homeNav .panel-body li a:visited {
+	float: left;
+	width: 100%;
+	text-indent: 8px;
+	padding: 15px 0px;
+	color: #000;
+}
+.homeNav .panel-body li a:hover {
+	background: #000;
+	text-decoration: none;
+	color: #fff;
+}
+/* reset text indent on badges */
+.homeNav .panel-body li .badge {
+	text-indent: 0px;
+}
+.main-item {
+	display: none;
+}
+.leagueNavGrid {
+	margin-top:30px;
+	padding:0px 0px;
+}
+
+/*
+.user-nav .nav {
+	border-bottom: none;
+	color: #9c302d;
+}
+*/
+.user-nav > .nav > li > a {
+	background: #999;
+	color: #fff;
+	border-color: #EBEBEB;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.user-nav > .nav > li > a:hover,.user-nav > .nav > li > a:focus {
+	background: #000;
+	color: #fff;
+}
+.user-nav > .nav > li.active a {
+	background: #EBEBEB;
+	color: #9c302d;
+}
+.user-nav > .nav > li > ul > li > a:hover {
+	background: #707070;
+	color: #fff;
+}
+.user-content {
+	align-content: space-around;
+	background: #EBEBEB;
+	padding-top: 10px;
+	margin-left: 0px;
+}
+.user-nav > .nav-tabs > li.dropdown.open > a {
+    border-color: #fff;
+}
+.panel-heading {
+	font-size: 20px;
+}
+.panel-body > .next-match {
+	font-size: 20px;
+}
+.btn-responsive {
+	white-space: normal;
+    width: 100%;
+	margin-top: 10px;
+}
+.welcome > .btn-default:hover {
+	/* background-color: #9c302d; */
+	color: #fff;
+	cursor: pointer!important;
+}
+.home-upcoming-challenges {
+	font-size: 16px;
+	line-height: normal;
+}
+.login-op {
+	text-align:right;
+
+}
+.stats-btn {
+	padding: 0px 0px;
+}
+@media (min-width: 768px) {
+.wrap {
+	min-width: 940px;
+	max-width: 940px;
+}
+.main-item {
+	display: inline-block;
+}
+.request {
+	margin: 0px 0px 0px 10px;
+	width: auto;
+}
+.btn-responsive {
+	margin-top: 0px;
+    width: auto;
+}
+/* remove container padding using class .outerWrapper for desktop so left and right sides are flush to upper nav */
+.outerWrapper {
+	padding: 0px 0px;
+}
+.navbar-wrapper {
+	background-color: transparent;
+}
+
+.navbar-wrapper .container .navbar-header {
+	padding: 0px 0px;
+}
+.well {
+	margin: 100px auto 0px auto;
+}
+#custom-bootstrap-menu.navbar-default {
+	font-size: 14px;
+}
+#custom-bootstrap-menu.navbar {
+	background: #000;
+	margin: 0px auto;
+	height: 114px;	
+	border: none;
+}
+
+#custom-bootstrap-menu.navbar-default .navbar-nav>ul {
+	height: 114px;
+	}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a {
+	float:left;
+	display: block;
+	background-color: #transparent;	
+	margin: 0px 0px 0px 0px;
+	padding: 78px 15px 16px 15px;
+	border-left:0px #000 solid;
+	border-bottom:0px #000 solid;
+	border-right:0px #000 solid;
+	color: #fff!important;
+	min-width: 63.5px;
+	text-decoration: none;
+	width: auto;
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:focus {
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(66, 4, 5, 1);
+    background: -webkit-linear-gradient(top, rgba(138, 30, 27, 1) 0%, rgba(66, 4, 5, 1) 100%);
+    background: linear-gradient(to bottom, rgba(138, 30, 27, 1) 0%, rgba(66, 4, 5, 1) 100%);
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:focus {
+    color: rgba(255, 255, 255, 1);
+    background-color: rgba(138, 30, 27, 1);
+	background: -webkit-linear-gradient(top, rgba(138, 30, 27, 1) 0%, rgba(66, 4, 5, 1) 100%);
+    background: linear-gradient(to bottom, rgba(138, 30, 27, 1) 0%, rgba(66, 4, 5, 1) 100%);
+}	
+.logo {
+	float:left;
+	display: block;
+	width: 200px;
+	margin: 0px 0px; 
+	padding:0px 0px;
+	height: 114px;
+	background-image: url(../img/sbb-logo-2.jpg);
+	background-size:autos;	
+}
+
+#content {
+	padding: 0px 0px;
+}
+.home-upcoming-challenges {
+	font-size: 16px;
+	line-height: 30px;
+}
+/* Reset button widths for large screens */
+.select-game button, .select-time button {
+	width: auto;
+}
+button.confirm-request {
+	width: auto;
+}
+.stats-btn {
+	padding: 0px 0px 0px 10px;
+}
+.footer .container li {
+	float: left;
+	padding: 0px 10px 0px 0px;
+	width: 13%;
+	text-align: center;
+	height: auto;
+}
+.footer .container li.footer-address {
+	width: 22%;
+	clear:none;
+}
+}
+@media (min-width: 992px) {
+ .wrap {
+	min-width: 1200;
+	max-width: 1200px;
+}
+}
+@media (min-width: 1200px) {
+ .wrap {
+	min-width: 1300px;
+	max-width: 1300px;
+}
+}
+/* asdas asdddddddddddddddddddd */
