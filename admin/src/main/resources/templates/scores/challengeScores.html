@@ -11,6 +11,7 @@
     <div class="table-responsive">
         <table class="table table-stripped table-bordered table-condensed table">
             <thead>
+            <th></th>
             <th>Date</th>
             <th>Time</th>
             <th>Challenger</th>
@@ -24,6 +25,12 @@
             <!--/*@thymesVar id="matches" type="List<com.society.leagues.client.api.domain.TeamMatch>"*/-->
             <tr th:each="match, rowStat: *{matches}">
                 <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.TeamMatch"*/-->
+                <td>
+                    <a th:href="@{/scores/{id}/{date}/{matchId}/delete (id=${season.id},date=${date},matchId=${match.id})}">
+                        X
+                    </a>
+                </td>
+
                 <input th:field="*{matches[__${rowStat.index}__].id}" type="hidden" th:value="${match.id}">
                 <td>
                     <input th:field="*{matches[__${rowStat.index}__].date}" type="text" th:value="${match.getDate()}">

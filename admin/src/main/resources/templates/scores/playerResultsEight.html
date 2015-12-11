@@ -31,6 +31,7 @@
                 <div class="table-responsive">
                     <table class="table table-stripped table-bordered table-condensed table">
                         <thead>
+                        <th></th>
                         <th>#</th>
                         <th>Home</th>
                         <th th:class="${season.isScramble()}? 'show' : 'hide'">Partner</th>
@@ -42,6 +43,9 @@
                         <tbody>
                         <tr th:each="result, rowStat: *{playerResults}">
                             <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
+                              <td>
+                                    <a th:href="@{/scores/{id}/{date}/{matchId}/{resultId}/delete (id=${season.id},date=${date},matchId=${results.matchId},resultId=${result.id})}">X</a>
+                                </td>
                             <td>
                                 <input th:field="*{playerResults[__${rowStat.index}__].matchNumber}" type="text" th:value="${result.matchNumber}" />
                             </td>

@@ -41,22 +41,6 @@
                     window.location = myselect.options[myselect.selectedIndex].value;
                 }
             </script>
-     <div th:if="${dates ne null}">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <div class="panel-title">Date</div>
-        </div>
-        <div id="dates" class="panel-body">
-            <select onChange="selectDate()" id="select-date" class="form-control" >
-                <option th:each="d: ${dates}"
-                        th:text="${d}"
-                        th:value="${d}"
-                        th:selected="${d == date}">
-                </option>
-            </select>
-        </div>
-    </div>
-     </div>
 </div>
 </body>
 </html>

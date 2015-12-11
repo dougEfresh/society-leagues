@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class HomeResource extends BaseController {
 
-    @Autowired UserApi userApi;
-
     @RequestMapping(value = {"/home","/"}, method = RequestMethod.GET)
     public String home(Model model) {
         model.addAttribute("currentUser", userApi.get());

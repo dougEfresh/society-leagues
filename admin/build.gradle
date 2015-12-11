@@ -24,7 +24,7 @@ jar {
 }
 
 bootRun {
-    jvmArgs = [ '-Dserver.port=8082', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5006' ]
+    jvmArgs = [ '-Dserver.port=8082', '-Dspring.active.profiles=dev' , '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5006' ]
 }
 
 dependencies {

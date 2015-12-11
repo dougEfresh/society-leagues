@@ -9,7 +9,8 @@
     <div class="table-responsive">
         <table class="table table-stripped table-bordered table-condensed table">
             <thead>
-            <th>Results</th>
+            <th></th>
+            <th></th>
             <th>Date</th>
             <th>Home</th>
             <th>Racks</th>
@@ -21,6 +22,11 @@
             <tbody>
             <!--/*@thymesVar id="matches" type="List<com.society.leagues.client.api.domain.TeamMatch>"*/-->
             <tr th:each="match, rowStat: *{matches}">
+                  <td>
+                    <a th:href="@{/scores/{id}/{date}/{matchId}/delete (id=${season.id},date=${date},matchId=${match.id})}">
+                        X
+                    </a>
+                </td>
                 <td>
                     <a th:href="@{/scores/{id}/{date}/{matchId} (id=${season.id},date=${date},matchId=${match.id})}">
                         Results

@@ -38,8 +38,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         String cwd = System.getProperty("user.dir");
         for(String d: Arrays.asList("img","js","css","fonts")) {
-            //registry.addResourceHandler("/" + d + "/**").addResourceLocations("file://./src/main/resources/public/" + d +"/");
-            System.out.println("Path  file://" + cwd + "/src/main/resources/public/" + d +"/");
             registry.addResourceHandler("/" + d + "/**").addResourceLocations("file://" + cwd + "/src/main/resources/public/" + d +"/").setCachePeriod(0);
         }
     }

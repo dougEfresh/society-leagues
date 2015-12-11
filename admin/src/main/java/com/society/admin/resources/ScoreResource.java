@@ -27,46 +27,9 @@ import java.util.Map;
 @Controller
 public class ScoreResource extends BaseController {
 
-    @Autowired TeamMatchApi teamMatchApi;
-    @Autowired SeasonApi seasonApi;
-    @Autowired TeamApi teamApi;
-    @Autowired PlayerResultApi playerResultApi;
-
     @RequestMapping(value = {"/scores"}, method = RequestMethod.GET)
     public String edit(Model model) {
-        model.addAttribute("seasons",seasonApi.active());
         return "scores/index";
-    }
-
-    private String processScoreView(String seasonId, String date, String matchId, Model model) {
-        model.addAttribute("seasons",seasonApi.active());
-        Map<String,List<TeamMatch>> matches = teamMatchApi.matchesBySeason(seasonId);
-
-        String d = date == null ? matches.keySet().iterator().next() : date;
-        model.addAttribute("dates", matches.keySet());
-        model.addAttribute("date", d);
-        model.addAttribute("model", new TeamMatchModel(matches.get(d)));
-        model.addAttribute("teams", teamApi.getBySeason(seasonId));
-        Season s = seasonApi.get(seasonId);
-        model.addAttribute("season",s);
-
-        if (matchId != null) {
-            PlayerResultModel results = new PlayerResultModel(playerResultApi.getPlayerResultByTeamMatch(matchId),matchId);
-            model.addAttribute("results", results);
-            Map<String,List<User>> members = teamMatchApi.teamMembers(matchId);
-            List<User> home = new ArrayList<>();
-            home.add(User.defaultUser());
-            List<User> away = new ArrayList<>();
-            away.add(User.defaultUser());
-            home.addAll(members.get("home"));
-            away.addAll(members.get("away"));
-
-            model.addAttribute("teamMatch", results.getPlayerResults().iterator().next().getTeamMatch());
-            model.addAttribute("homeMembers", home);
-            model.addAttribute("awayMembers", away);
-        }
-
-        return "scores/season";
     }
 
     @RequestMapping(value = {"/scores/{seasonId}"}, method = RequestMethod.GET)
@@ -82,12 +45,24 @@ public class ScoreResource extends BaseController {
      @RequestMapping(value = {"/scores/{seasonId}/{date}/add"}, method = RequestMethod.GET)
      public void addTeamMatch(@PathVariable String seasonId, @PathVariable String date, Model model, HttpServletResponse response) throws IOException {
          teamMatchApi.add(seasonId,date);
-         response.sendRedirect("/scores/" +seasonId + "/" + date);
+         response.sendRedirect("/scores/" + seasonId + "/" + date);
     }
 
-     @RequestMapping(value = {"/scores/{seasonId}/{date}/{matchId}/add"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/scores/{seasonId}/{date}/{matchId}/delete"}, method = RequestMethod.GET)
+    public void deleteTeamMatch(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId, Model model, HttpServletResponse response) throws IOException {
+        teamMatchApi.delete(matchId);
+        response.sendRedirect("/scores/" + seasonId + "/" + date);
+    }
+
+    @RequestMapping(value = {"/scores/{seasonId}/{date}/{matchId}/add"}, method = RequestMethod.GET)
      public void addPlayerMatch(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId, Model model, HttpServletResponse response) throws IOException {
-         teamMatchApi.add(seasonId,date);
+         playerResultApi.add(matchId);
+         response.sendRedirect("/scores/" +seasonId + "/" + date + "/" + matchId);
+    }
+
+     @RequestMapping(value = {"/scores/{seasonId}/{date}/{matchId}/{resultId}/delete"}, method = RequestMethod.GET)
+     public void deletePlayerMatch(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId, @PathVariable String resultId, Model model, HttpServletResponse response) throws IOException {
+         playerResultApi.delete(resultId);
          response.sendRedirect("/scores/" +seasonId + "/" + date + "/" + matchId);
     }
 
@@ -105,6 +80,7 @@ public class ScoreResource extends BaseController {
     public String saveResults(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId, @ModelAttribute TeamMatchModel teamMatchModel,@ModelAttribute PlayerResultModel playerResultModel, Model model) {
         return save(seasonId,date,matchId,teamMatchModel,playerResultModel,model);
     }
+
     private String save(String seasonId, String date, String matchId, TeamMatchModel teamMatchModel, PlayerResultModel playerResultModel, Model model) {
         try {
             teamMatchApi.save(teamMatchModel.getMatches());
@@ -142,6 +118,37 @@ public class ScoreResource extends BaseController {
             model.addAttribute("error",errors.toString());
             return processScoreView(seasonId,date,matchId,model);
         }
+    }
+
+    private String processScoreView(String seasonId, String date, String matchId, Model model) {
+        model.addAttribute("seasons",seasonApi.active());
+        Map<String,List<TeamMatch>> matches = teamMatchApi.matchesBySeason(seasonId);
+
+        String d = date == null ? matches.keySet().iterator().next() : date;
+        model.addAttribute("dates", matches.keySet());
+        model.addAttribute("date", d);
+        model.addAttribute("model", new TeamMatchModel(matches.get(d)));
+        model.addAttribute("teams", teamApi.getBySeason(seasonId));
+        Season s = seasonApi.get(seasonId);
+        model.addAttribute("season",s);
+
+        if (matchId != null) {
+            PlayerResultModel results = new PlayerResultModel(playerResultApi.getPlayerResultByTeamMatch(matchId),matchId);
+            model.addAttribute("results", results);
+            Map<String,List<User>> members = teamMatchApi.teamMembers(matchId);
+            List<User> home = new ArrayList<>();
+            home.add(User.defaultUser());
+            List<User> away = new ArrayList<>();
+            away.add(User.defaultUser());
+            home.addAll(members.get("home"));
+            away.addAll(members.get("away"));
+
+            model.addAttribute("teamMatch", results.getPlayerResults().iterator().next().getTeamMatch());
+            model.addAttribute("homeMembers", home);
+            model.addAttribute("awayMembers", away);
+        }
+
+        return "scores/season";
     }
 
 

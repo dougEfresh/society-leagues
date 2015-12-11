@@ -19,6 +19,7 @@
                     <div class="table-responsive">
                         <table class="table table-stripped table-bordered table-condensed table">
                             <thead>
+                            <th></th>
                             <th>#</th>
                             <th>Home</th>
                             <th>Racks</th>
@@ -28,6 +29,9 @@
                             <tbody>
                             <tr th:each="result, rowStat: *{playerResults}">
                                 <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
+                                <td>
+                                    <a th:href="@{/scores/{id}/{date}/{matchId}/{resultId}/delete (id=${season.id},date=${date},matchId=${results.matchId},resultId=${result.id})}">X</a>
+                                </td>
                                 <td>
                                     <input th:field="*{playerResults[__${rowStat.index}__].matchNumber}" type="text"
                                            th:value="${result.matchNumber}"/>
@@ -48,8 +52,9 @@
                                 </td>
                                 <td>
                                     <input th:id="#{home} +  ${result.id}"
-                                           th:value="${result.homeWinner}"
-                                           th:field="*{playerResults[__${rowStat.index}__].homeWinner}" type="text"
+                                           th:value="${result.homeRacks}"
+                                           th:field="*{playerResults[__${rowStat.index}__].homeRacks}"
+                                           type="text"
                                     />
 
                                 </td>
@@ -65,8 +70,9 @@
                                 </td>
                                 <td>
                                     <input
-                                           th:id="#{awayRacks} + ${result.id}" th:value="${result.awayWinner}"
-                                           th:field="*{playerResults[__${rowStat.index}__].awayWinner}"
+                                           th:id="#{awayRacks} + ${result.id}"
+                                           th:value="${result.awayRacks}"
+                                           th:field="*{playerResults[__${rowStat.index}__].awayRacks}"
                                            type="text"
                                     />
                                 </td>
