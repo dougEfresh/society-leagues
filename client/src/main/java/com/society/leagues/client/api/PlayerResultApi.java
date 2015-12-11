@@ -15,4 +15,7 @@ public interface PlayerResultApi {
 
     @RequestLine("POST /api/playerresult/admin/modify")
     List<PlayerResult> save(List<PlayerResult> results);
+
+    @RequestLine("POST /api/playerresult/{teamMatchId}/add")
+    List<PlayerResult> add( @Param("teamMatchId") String teamMatchId);
 }

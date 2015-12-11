@@ -1,0 +1,110 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org" >
+<head>
+</head>
+<body>
+<div th:fragments="playerresults">
+    <div th:if="${results ne null}" id="player-results">
+    <script>
+        function handleCheckbox(e) {
+            var other = null;
+            if (e.id.indexOf("home")>=0) {
+                other = document.getElementById(e.id.replace("home","away"));
+            } else {
+                other = document.getElementById(e.id.replace("away","home"));
+            }
+            other.checked = !e.checked;
+        }
+    </script>
+    <form id="result-form" th:object="${results}" th:method="post" method="post"
+          th:action="@{/scores/{id}/{date}/{matchId} (id=${season.id},date=${date},matchId=${results.matchId})}" >
+
+        <div class="panel panel-default panel-challenge">
+            <div class="panel-heading">
+                <div class="panel-title"><span th:text="${results.getName()}"></span>
+                    <span>
+                        <a th:href="@{/scores/{id}/{date}/{matchId}/add (id=${season.id},date=${date},matchId=${results.matchId})}">Add</a>
+                    </span>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-stripped table-bordered table-condensed table">
+                        <thead>
+                        <th>#</th>
+                        <th>Home</th>
+                        <th th:class="${season.isScramble()}? 'show' : 'hide'">Partner</th>
+                        <th>Win</th>
+                        <th>Away</th>
+                        <th th:class="${season.isScramble()}? 'show' : 'hide'">Partner</th>
+                        <th>Win</th>
+                        </thead>
+                        <tbody>
+                        <tr th:each="result, rowStat: *{playerResults}">
+                            <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
+                            <td>
+                                <input th:field="*{playerResults[__${rowStat.index}__].matchNumber}" type="text" th:value="${result.matchNumber}" />
+                            </td>
+                            <input th:field="*{playerResults[__${rowStat.index}__].id}" type="hidden" th:value="${result.id}" />
+                            <input th:field="*{playerResults[__${rowStat.index}__].teamMatch.id}" type="hidden" th:value="${result.teamMatch.id}" />
+                            <td>
+                                <select th:field="*{playerResults[__${rowStat.index}__].playerHome.id}" class="form-control" >
+                                    <option th:each="user: ${homeMembers}"
+                                            th:text="${user.name}"
+                                            th:value="${user.id}"
+                                            th:selected="${user.id == result.playerHome.id}"
+                                    ></option>
+                                </select>
+                            </td>
+                            <td th:class="${season.isScramble()}? 'show' : 'hide'">
+                                <select th:field="*{playerResults[__${rowStat.index}__].playerHomePartner.id}" class="form-control" >
+                                    <option th:each="user: ${homeMembers}"
+                                            th:text="${user.name}"
+                                            th:value="${user.id}"
+                                            th:selected="${user.id == result.playerHomePartner.id}"
+                                    ></option>
+                                </select>
+                            </td>
+                            <td>
+                                <input onchange="handleCheckbox(this)" th:id="#{home} +  ${result.id}" th:value="${result.homeWinner}"
+                                       th:field="*{playerResults[__${rowStat.index}__].homeWinner}" type="checkbox"
+                                />
+
+                            </td>
+                            <td>
+                                <select th:field="*{playerResults[__${rowStat.index}__].playerAway.id}" class="form-control" >
+                                    <option th:each="user: ${awayMembers}"
+                                            th:text="${user.name}"
+                                            th:value="${user.id}"
+                                            th:selected="${user.id == result.playerAway.id}"
+                                    ></option>
+                                </select>
+                            </td>
+                            <td th:class="${season.isScramble()}? 'show' : 'hide'">
+                                <select th:field="*{playerResults[__${rowStat.index}__].playerAwayPartner.id}" class="form-control" >
+                                    <option th:each="user: ${awayMembers}"
+                                            th:text="${user.name}"
+                                            th:value="${user.id}"
+                                            th:selected="${user.id == result.playerAwayPartner.id}"
+                                    ></option>
+                                </select>
+                            </td>
+                            <td>
+                                <input  onchange="handleCheckbox(this)"
+                                        th:id="#{away} + ${result.id}" th:value="${result.awayWinner}"
+                                        th:field="*{playerResults[__${rowStat.index}__].awayWinner}" type="checkbox"
+                                />
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <input type="submit" value="submit" /></div>
+        </div>
+    </form>
+</div>
+</div>
+</body>
+</html>

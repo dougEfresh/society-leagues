@@ -1,0 +1,48 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="/layout">
+<head>
+</head>
+<body>
+<div id="score-app" layout:fragment="content">
+    <div th:replace="/fragments/scores"></div>
+    <div id="matches" th:if="${model ne null}" >
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="panel-title"><span>Matches - </span> <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+                <span th:text="${season.shortName}"></span><span> - <a th:href="@{/scores/{id}/{date}/add (id=${season.id},date=${date})}">Add New</a></span></div>
+            </div>
+            <form id="team-match-form" th:object="${model}" th:method="post" method="post"
+                  th:action="@{/scores/{id}/{date} (id=${season.id},date=${date})}">
+            <div class="panel-body">
+                <div th:if="${season.isEight()}">
+                    <div th:replace="/scores/eightScores"></div>
+                </div>
+                <div th:if="${season.isTuesdayNine()}">
+                    <div th:replace="/scores/nineScores"></div>
+                </div>
+                <div th:if="${season.isScramble()}">
+                    <div th:replace="/scores/eightScores"></div>
+                </div>
+                <div th:if="${season.isChallenge()}">
+                    <div th:replace="/scores/challengeScores"></div>
+                </div>
+
+            </div>
+            <div class="panel-footer"><input type="submit" value="submit" /></div>
+            </form>
+        </div>
+    </div>
+    <div th:if="${season.isEight()}">
+        <div th:replace="/scores/playerResultsEight"></div>
+    </div>
+    <div th:if="${season.isScramble()}">
+        <div th:replace="/scores/playerResultsEight"></div>
+    </div>
+    <div th:if="${season.isNine()}">
+        <div th:replace="/scores/playerResultsNine"></div>
+    </div>
+
+    </div>
+</body>
+</html>
+

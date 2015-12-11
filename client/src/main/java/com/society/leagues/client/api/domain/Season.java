@@ -177,6 +177,20 @@ public class Season extends LeagueObject   {
         }
     };
 
+    public boolean isTuesdayNine() {
+        if (division == null)
+            return false;
+
+        return division == Division.NINE_BALL_TUESDAYS;
+    }
+
+    public boolean isEight(){
+        if (division == null)
+                return false;
+
+        return division == Division.EIGHT_BALL_THURSDAYS || division == Division.EIGHT_BALL_WEDNESDAYS;
+    }
+
     @Override
     public String toString() {
         return "Season{" +

@@ -35,7 +35,7 @@ public class ScoreResource extends BaseController {
     @RequestMapping(value = {"/scores"}, method = RequestMethod.GET)
     public String edit(Model model) {
         model.addAttribute("seasons",seasonApi.active());
-        return "scores/challengeScores";
+        return "scores/index";
     }
 
     private String processScoreView(String seasonId, String date, String matchId, Model model) {
@@ -51,7 +51,8 @@ public class ScoreResource extends BaseController {
         model.addAttribute("season",s);
 
         if (matchId != null) {
-            model.addAttribute("results", new PlayerResultModel(playerResultApi.getPlayerResultByTeamMatch(matchId),matchId));
+            PlayerResultModel results = new PlayerResultModel(playerResultApi.getPlayerResultByTeamMatch(matchId),matchId);
+            model.addAttribute("results", results);
             Map<String,List<User>> members = teamMatchApi.teamMembers(matchId);
             List<User> home = new ArrayList<>();
             home.add(User.defaultUser());
@@ -60,20 +61,12 @@ public class ScoreResource extends BaseController {
             home.addAll(members.get("home"));
             away.addAll(members.get("away"));
 
+            model.addAttribute("teamMatch", results.getPlayerResults().iterator().next().getTeamMatch());
             model.addAttribute("homeMembers", home);
             model.addAttribute("awayMembers", away);
         }
 
-        if (s.isChallenge())
-            return "scores/challengeScores";
-
-        if (s.isNine())
-            return "scores/nineScores";
-
-        if (s.isScramble())
-            return "scores/scrambleScores";
-
-        return "scores/eightScores";
+        return "scores/season";
     }
 
     @RequestMapping(value = {"/scores/{seasonId}"}, method = RequestMethod.GET)
@@ -90,6 +83,12 @@ public class ScoreResource extends BaseController {
      public void addTeamMatch(@PathVariable String seasonId, @PathVariable String date, Model model, HttpServletResponse response) throws IOException {
          teamMatchApi.add(seasonId,date);
          response.sendRedirect("/scores/" +seasonId + "/" + date);
+    }
+
+     @RequestMapping(value = {"/scores/{seasonId}/{date}/{matchId}/add"}, method = RequestMethod.GET)
+     public void addPlayerMatch(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId, Model model, HttpServletResponse response) throws IOException {
+         teamMatchApi.add(seasonId,date);
+         response.sendRedirect("/scores/" +seasonId + "/" + date + "/" + matchId);
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{date}/{matchId}"}, method = RequestMethod.GET)

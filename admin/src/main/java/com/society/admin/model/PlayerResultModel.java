@@ -2,6 +2,7 @@ package com.society.admin.model;
 
 
 import com.society.leagues.client.api.domain.PlayerResult;
+import com.society.leagues.client.api.domain.TeamMatch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,5 +38,14 @@ public class PlayerResultModel {
 
     public void setPlayerResults(List<PlayerResult> playerResults) {
         this.playerResults = playerResults;
+    }
+
+    public String getName() {
+        if (playerResults.isEmpty())
+            return "";
+
+        TeamMatch tm = playerResults.iterator().next().getTeamMatch();
+
+        return String.format("%s vs %s", tm.getHome().getName(), tm.getAway().getName());
     }
 }

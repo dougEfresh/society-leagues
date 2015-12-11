@@ -1,4 +1,5 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org" >
 <head>
 </head>
 <body>
@@ -30,7 +31,7 @@
                           </div>
                 </div>
             </div>
-        </div>
+        </div>/
             <script>
                 function selectDate(e) {
                     var myselect = document.getElementById("select-date");
@@ -40,6 +41,7 @@
                     window.location = myselect.options[myselect.selectedIndex].value;
                 }
             </script>
+     <div th:if="${dates ne null}">
     <div class="panel panel-default">
         <div class="panel-heading">
             <div class="panel-title">Date</div>
@@ -52,9 +54,9 @@
                         th:selected="${d == date}">
                 </option>
             </select>
-           <a th:href="@{/scores/{id}/{date}/add (id=${season.id},date=${date})}">Add</a>
         </div>
     </div>
+     </div>
 </div>
 </body>
 </html>

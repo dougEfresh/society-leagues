@@ -1,0 +1,85 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<div th:fragments="playerresults">
+    <div th:if="${results ne null}" id="player-results">
+        <form id="result-form" th:object="${results}" th:method="post" method="post"
+              th:action="@{/scores/{id}/{date}/{matchId} (id=${season.id},date=${date},matchId=${results.matchId})}">
+            <div class="panel panel-default panel-challenge">
+                <div class="panel-heading">
+                    <div class="panel-title"><span th:text="${results.getName()}"></span>
+                    <span>
+                        <a th:href="@{/scores/{id}/{date}/{matchId}/add (id=${season.id},date=${date},matchId=${results.matchId})}">Add</a>
+                    </span>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-stripped table-bordered table-condensed table">
+                            <thead>
+                            <th>#</th>
+                            <th>Home</th>
+                            <th>Racks</th>
+                            <th>Away</th>
+                            <th>Racks</th>
+                            </thead>
+                            <tbody>
+                            <tr th:each="result, rowStat: *{playerResults}">
+                                <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
+                                <td>
+                                    <input th:field="*{playerResults[__${rowStat.index}__].matchNumber}" type="text"
+                                           th:value="${result.matchNumber}"/>
+                                </td>
+                                <input th:field="*{playerResults[__${rowStat.index}__].id}" type="hidden"
+                                       th:value="${result.id}"/>
+                                <input th:field="*{playerResults[__${rowStat.index}__].teamMatch.id}" type="hidden"
+                                       th:value="${result.teamMatch.id}"/>
+                                <td>
+                                    <select th:field="*{playerResults[__${rowStat.index}__].playerHome.id}"
+                                            class="form-control">
+                                        <option th:each="user: ${homeMembers}"
+                                                th:text="${user.name}"
+                                                th:value="${user.id}"
+                                                th:selected="${user.id == result.playerHome.id}"
+                                        ></option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input th:id="#{home} +  ${result.id}"
+                                           th:value="${result.homeWinner}"
+                                           th:field="*{playerResults[__${rowStat.index}__].homeWinner}" type="text"
+                                    />
+
+                                </td>
+                                <td>
+                                    <select th:field="*{playerResults[__${rowStat.index}__].playerAway.id}"
+                                            class="form-control">
+                                        <option th:each="user: ${awayMembers}"
+                                                th:text="${user.name}"
+                                                th:value="${user.id}"
+                                                th:selected="${user.id == result.playerAway.id}"
+                                        ></option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input
+                                           th:id="#{awayRacks} + ${result.id}" th:value="${result.awayWinner}"
+                                           th:field="*{playerResults[__${rowStat.index}__].awayWinner}"
+                                           type="text"
+                                    />
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <input type="submit" value="submit"/></div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

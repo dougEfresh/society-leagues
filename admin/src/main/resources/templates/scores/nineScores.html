@@ -1,78 +1,67 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="/layout">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Challenge Scores</title>
 </head>
 
 <body>
-<div id="score-app" layout:fragment="content">
-    <div th:replace="/fragments/scores"></div>
-    <div id="matches" th:if="${model ne null}" >
-            <div class="panel panel-default panel-challenge">
-                <div class="panel-heading">
-                    <div class="panel-title">Matches</div>
-                </div>
-                <div class="panel-body">
-                    <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
-                    <!--/*@thymesVar id="date" type="java.lang.String"*/-->
-                    <form id="team-match-form" th:object="${model}" th:method="post" method="post"
-                          th:action="@{/scores/{id}/{date} (id=${season.id},date=${date})}">
-                    <div class="table-responsive">
-                        <table class="table table-stripped table-bordered table-condensed table">
-                            <thead>
-                            <th>Date</th>
-                            <th>Home</th>
-                            <th>Racks</th>
-                            <th>Forfeits</th>
-                            <th>Away</th>
-                            <th>Racks</th>
-                            <th>Forfeits</th>
-                            </thead>
-                            <tbody>
+<div th:fragments="nineScores">
+    <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+    <!--/*@thymesVar id="date" type="java.lang.String"*/-->
+    <div class="table-responsive">
+        <table class="table table-stripped table-bordered table-condensed table">
+            <thead>
+            <th>Date</th>
+            <th>Home</th>
+            <th>Racks</th>
+            <th>Forfeits</th>
+            <th>Away</th>
+            <th>Racks</th>
+            <th>Forfeits</th>
+            </thead>
+            <tbody>
 
-                            <!--/*@thymesVar id="matches" type="List<com.society.leagues.client.api.domain.TeamMatch>"*/-->
-                            <tr th:each="match, rowStat: *{matches}">
-                                <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.TeamMatch"*/-->
-                                <input th:field="*{matches[__${rowStat.index}__].id}" type="hidden" th:value="${match.id}" >
-                                <td>
-                                    <input th:field="*{matches[__${rowStat.index}__].date}"  type="text" th:value="${match.getDate()}">
-                                </td>
-                                <input th:field="*{matches[__${rowStat.index}__].time}" type="hidden" th:value="${match.getTime()}">
-                                <td>
-                                    <select th:field="*{matches[__${rowStat.index}__].home.id}" class="form-control" >
-                                        <option th:each="team: ${teams}"
-                                                th:text="${team.name}"
-                                                th:value="${team.id}"
-                                                th:selected="${team.id == match.home.id}"
-                                        ></option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <input th:field="*{matches[__${rowStat.index}__].homeRacks}" type="text" th:value="${match.homeRacks}">
-                                </td>
-                                <td>
-                                    <select th:field="*{matches[__${rowStat.index}__].away.id}" class="form-control" >
-                                    <option th:each="team: ${teams}"
-                                            th:text="${team.name}"
-                                            th:value="${team.id}"
-                                            th:selected="${team.id == match.away.id}"
-                                    ></option>
-                                </select>
-                                </td>
-                                <td>
-                                    <input  th:field="*{matches[__${rowStat.index}__].awayRacks}" type="text" th:value="${match.awayRacks}">
-                                </td>
-                                <td th:text="${match.getRace()}"></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                        <input type="submit" value="submit" />
-                    </form>
-                </div>
-            </div>
-        </div>
+            <!--/*@thymesVar id="matches" type="List<com.society.leagues.client.api.domain.TeamMatch>"*/-->
+            <tr th:each="match, rowStat: *{matches}">
+                <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.TeamMatch"*/-->
+                <input th:field="*{matches[__${rowStat.index}__].id}" type="hidden" th:value="${match.id}">
+                <td>
+                    <input th:field="*{matches[__${rowStat.index}__].date}" type="text" th:value="${match.getDate()}">
+                </td>
+                <input th:field="*{matches[__${rowStat.index}__].time}" type="hidden" th:value="${match.getTime()}">
+                <td>
+                    <select th:field="*{matches[__${rowStat.index}__].home.id}" class="form-control">
+                        <option th:each="team: ${teams}"
+                                th:text="${team.name}"
+                                th:value="${team.id}"
+                                th:selected="${team.id == match.home.id}"
+                        ></option>
+                    </select>
+                </td>
+                <td>
+                    <input th:field="*{matches[__${rowStat.index}__].homeRacks}" type="text"
+                           th:value="${match.homeRacks}">
+                </td>
+                <td>
+                    <select th:field="*{matches[__${rowStat.index}__].away.id}" class="form-control">
+                        <option th:each="team: ${teams}"
+                                th:text="${team.name}"
+                                th:value="${team.id}"
+                                th:selected="${team.id == match.away.id}"
+                        ></option>
+                    </select>
+                </td>
+                <td>
+                    <input th:field="*{matches[__${rowStat.index}__].awayRacks}" type="text"
+                           th:value="${match.awayRacks}">
+                </td>
+                <td th:text="${match.getRace()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
+
 </body>
 </html>
 

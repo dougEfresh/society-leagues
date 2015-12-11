@@ -16,7 +16,7 @@ public interface TeamMatchApi {
     Map<String,List<TeamMatch>> matchesBySeason(@Param("id") String id);
 
     @RequestLine("GET /api/teammatch/admin/add/{seasonId}/{date}")
-    Map<String,List<TeamMatch>> add(@Param("seasonId") String seasonId, @Param("date") String date);
+    TeamMatch add(@Param("seasonId") String seasonId, @Param("date") String date);
 
     @RequestLine("GET /api/teammatch/members/{id}")
     Map<String,List<User>> teamMembers(@Param("id") String id);
