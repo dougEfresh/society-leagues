@@ -19,9 +19,8 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
-
 @Controller
-public class LoginResource {
+public class LoginResource extends BaseController {
 
     @Value("${rest.url}")
     String restUrl;
@@ -34,12 +33,12 @@ public class LoginResource {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     }
 
-    @RequestMapping(value = {"/login"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/admin/login"}, method = RequestMethod.GET)
     public String loginPage(@RequestParam(required = false, defaultValue = "false") boolean error, HttpServletRequest request) {
         return "login";
     }
 
-    @RequestMapping(value = {"/login"}, method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @RequestMapping(value = {"/admin/login"}, method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String loginPage(@RequestParam String username, @RequestParam String password, Model model, HttpServletRequest request, ResponseFacade response) {
         logger.info("Login Request for " + username);
         MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();
@@ -54,7 +53,7 @@ public class LoginResource {
             response.addHeader("Set-Cookie",s);
         }
         logger.info("Got back "  + u.getName());
-        return "redirect:/home";
+        return "redirect:/admin/home";
     }
 
 }

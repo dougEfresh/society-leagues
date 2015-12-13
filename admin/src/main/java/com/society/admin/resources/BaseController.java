@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import javax.servlet.http.HttpServletResponse;
 import java.util.stream.Collectors;
 
-@Controller
+
 public class BaseController {
     static Logger logger = LoggerFactory.getLogger(UserResource.class);
     @Autowired TeamMatchApi teamMatchApi;

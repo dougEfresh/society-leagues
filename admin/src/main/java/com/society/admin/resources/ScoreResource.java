@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Controller
+@Controller(value = "/admin")
 public class ScoreResource extends BaseController {
 
     @RequestMapping(value = {"/scores"}, method = RequestMethod.GET)
@@ -38,7 +38,7 @@ public class ScoreResource extends BaseController {
         List<LocalDateTime> dates = new ArrayList<>();
         matches.keySet().forEach(d->dates.add(LocalDate.parse(d).atStartOfDay()));
         String d = matches.keySet().iterator().next();
-        response.sendRedirect("/scores/" + seasonId  + "/" + d);
+        response.sendRedirect("/admin/scores/" + seasonId  + "/" + d);
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{date}"}, method = RequestMethod.GET)
@@ -49,25 +49,25 @@ public class ScoreResource extends BaseController {
      @RequestMapping(value = {"/scores/{seasonId}/{date}/add"}, method = RequestMethod.GET)
      public void addTeamMatch(@PathVariable String seasonId, @PathVariable String date, Model model, HttpServletResponse response) throws IOException {
          teamMatchApi.add(seasonId,date);
-         response.sendRedirect("/scores/" + seasonId + "/" + date);
+         response.sendRedirect("/admin/scores/" + seasonId + "/" + date);
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{date}/{matchId}/delete"}, method = RequestMethod.GET)
     public void deleteTeamMatch(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId, Model model, HttpServletResponse response) throws IOException {
         teamMatchApi.delete(matchId);
-        response.sendRedirect("/scores/" + seasonId + "/" + date);
+        response.sendRedirect("/admin/scores/" + seasonId + "/" + date);
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{date}/{matchId}/add"}, method = RequestMethod.GET)
      public void addPlayerMatch(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId, Model model, HttpServletResponse response) throws IOException {
          playerResultApi.add(matchId);
-         response.sendRedirect("/scores/" +seasonId + "/" + date + "/" + matchId);
+         response.sendRedirect("/admin/scores/" +seasonId + "/" + date + "/" + matchId);
     }
 
      @RequestMapping(value = {"/scores/{seasonId}/{date}/{matchId}/{resultId}/delete"}, method = RequestMethod.GET)
      public void deletePlayerMatch(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId, @PathVariable String resultId, Model model, HttpServletResponse response) throws IOException {
          playerResultApi.delete(resultId);
-         response.sendRedirect("/scores/" +seasonId + "/" + date + "/" + matchId);
+         response.sendRedirect("/admin/scores/" +seasonId + "/" + date + "/" + matchId);
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{date}/{matchId}"}, method = RequestMethod.GET)
