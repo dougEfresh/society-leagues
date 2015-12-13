@@ -19,7 +19,7 @@
             <ul class="nav navbar-nav">
                 <!--<li th:class="${activeTab == 'home'}? 'active' : null">-->
                 <li>
-                    <a href="/" th:href="@{/}"><span class="glyphicon glyphicon-home"></span>
+                    <a href="/"><span class="glyphicon glyphicon-home"></span>
                     <span >Home</span></a>
                 </li>
                 <li>
@@ -28,7 +28,7 @@
                         <span>Users</span>
                     </a>
                 </li>
-                <li>
+                <li class="hide">
                     <a href="/teams" >
                         <i class="fa fa-users"></i>
                         <span>Teams</span>
