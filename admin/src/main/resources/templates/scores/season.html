@@ -12,14 +12,18 @@
                     <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
                     <span th:text="${season.shortName}"></span><span> -
                     <a th:href="@{/scores/{id}/{date}/add (id=${season.id},date=${date})}">Add New</a>
+                    <span> - </span>
+                    <a th:href="@{/sheets/{id}/{date} (id=${season.id},date=${date})}">Sheets</a>
                 </span>
-                    <select onChange="selectDate()" id="select-date" class="form-control" >
+                    <form id="form-select-date">
+                    <select name="select-date" id="select-date" onChange="selectDate()" class="form-control" >
                         <option th:each="d: ${dates}"
                                 th:text="${d}"
                                 th:value="${d}"
                                 th:selected="${d == date}">
                         </option>
                     </select>
+                    </form>
                 </div>
             </div>
             <form id="team-match-form" th:object="${model}" th:method="post" method="post"
@@ -39,7 +43,7 @@
                 </div>
 
             </div>
-            <div class="panel-footer"><input type="submit" value="submit" /></div>
+            <div class="panel-footer"><input id="submit-team-match-scores" type="submit" value="submit" /></div>
             </form>
         </div>
     </div>

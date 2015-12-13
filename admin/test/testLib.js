@@ -10,6 +10,12 @@ casper.options.viewportSize = {width:width, height: height};
 var authUser = null;
 var teamMatchCount = 0;
 var teamMatchId = null;
+var teamMatchDate = null;
+var homeRacks = 0;
+var awayRacks = 0;
+var homeForfeits = 0;
+var awayForfeits = 0;
+
 
 var login = function (test,username,password) {
     casper.then(function(){
@@ -85,6 +91,96 @@ var scoreSeasonTest = function(test) {
     casper.then(function () {
         test.assertNotExists('#delete-' + teamMatchId);
     });
+};
+
+var scoreSubmitTest = function(test) {
+    casper.then(function () {
+        var rows  = this.evaluate(function() {
+            return __utils__.findAll("#team-match-results > tbody > tr")
+        });
+        teamMatchId = rows[0].id;
+    });
+
+    casper.then(function () {
+        var month = Math.floor((Math.random() * 10) + 1);
+        if (month < 10)
+            month = '0' + month;
+        var day = Math.floor((Math.random() * 25) + 1);
+        if (day < 10) {
+            day = '0' + day;
+        }
+        var year = Math.floor((Math.random() * 14) + 2000);
+        teamMatchDate = year + '-' + month + '-'+  day;
+        this.echo(teamMatchDate);
+        homeRacks = this.evaluate(function(id) {
+            return parseInt(document.getElementById(id).value);
+        },'homeRacks-'+teamMatchId);
+
+        homeForfeits = this.evaluate(function(id) {
+            return parseInt(document.getElementById(id).value);
+        },'homeForfeits-'+teamMatchId);
+
+        awayRacks = this.evaluate(function(id) {
+            return parseInt(document.getElementById(id).value);
+        },'awayRacks-'+teamMatchId);
+
+        awayForfeits = this.evaluate(function(id) {
+            return parseInt(document.getElementById(id).value);
+        },'awayForfeits-'+teamMatchId);
+
+        awayRacks++;
+        homeRacks++;
+        homeForfeits++;
+        awayForfeits++;
+        this.fill('form#team-match-form', {
+            'matches[0].date': teamMatchDate,
+            'matches[0].homeRacks': homeRacks,
+            'matches[0].awayRacks': awayRacks,
+            'matches[0].homeForfeits': homeForfeits,
+            'matches[0].awayForfeits': awayForfeits
+        }, false);
+    });
+
+    casper.then(function () {
+        this.click('#submit-team-match-scores');
+    });
+
+    casper.then(function () {
+        this.fill('form#form-select-date', {
+            'select-date' : teamMatchDate
+        });
+    });
+
+    casper.then(function () {
+        test.assertExists("#date-" + teamMatchId);
+    });
+
+    casper.then(function () {
+        var hr = this.evaluate(function(id) {
+            return parseInt(document.getElementById(id).value);
+        },'homeRacks-'+teamMatchId);
+        test.assert(hr == homeRacks, 'homeRacks eq');
+
+        var ar = this.evaluate(function(id) {
+            return parseInt(document.getElementById(id).value);
+        },'awayRacks-'+teamMatchId);
+        test.assert(ar == awayRacks, 'awayRacks eq');
+
+        var af = this.evaluate(function(id) {
+            return parseInt(document.getElementById(id).value);
+        },'awayForfeits-'+teamMatchId);
+        test.assert(af == awayForfeits, 'awayForfeits eq');
+
+        var hf = this.evaluate(function(id) {
+            return parseInt(document.getElementById(id).value);
+        },'homeForfeits-'+teamMatchId);
+        test.assert(hf == homeForfeits, 'homeForfeits eq');
+
+        var dt = this.evaluate(function(id) {
+            return document.getElementById(id).value;
+        },'date-'+teamMatchId);
+        test.assert(dt == teamMatchDate, 'dates eq');
+    });
 
 };
 
@@ -97,5 +193,6 @@ module.exports = {
     timeout: timeout,
     login: login,
     scoreSeasonTest: scoreSeasonTest,
+    scoreSubmitTest: scoreSubmitTest,
     authUser: authUser
 };

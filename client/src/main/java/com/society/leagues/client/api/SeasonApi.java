@@ -7,7 +7,7 @@ import feign.RequestLine;
 
 import java.util.List;
 
-@Headers({"Accept: application/json","Content-Type: application/json"})
+@Headers({"Accept: application/json, */*","Content-Type: application/json","Accept-Encoding: gzip, deflate, sdch" })
 public interface SeasonApi {
     @RequestLine("GET /api/season")
     List<Season> get();

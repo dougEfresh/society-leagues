@@ -51,6 +51,8 @@
                 <td>
                     <input  th:id="${'homeRacks-' +match.getId()}" th:field="*{matches[__${rowStat.index}__].homeRacks}" type="text"
                            th:value="${match.homeRacks}">
+                    <input th:id="${'homeForfeits-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].homeForfeits}" type="hidden"
+                           th:value="${match.homeForfeits}"/>
                 </td>
                 <td>
                     <select th:id="${'away-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].away.id}" class="form-control">
@@ -64,6 +66,8 @@
                 <td>
                     <input th:id="${'awayRacks-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].awayRacks}" type="text"
                            th:value="${match.awayRacks}">
+                    <input th:id="${'awayForfeits-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].awayForfeits}" type="hidden"
+                           th:value="${match.awayForfeits}"/>
                 </td>
                 <td th:text="${match.getRace()}"></td>
             </tr>
