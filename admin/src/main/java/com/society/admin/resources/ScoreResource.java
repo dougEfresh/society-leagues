@@ -19,10 +19,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Controller
 public class ScoreResource extends BaseController {
@@ -33,8 +32,12 @@ public class ScoreResource extends BaseController {
     }
 
     @RequestMapping(value = {"/scores/{seasonId}"}, method = RequestMethod.GET)
-    public String editDate(@PathVariable String seasonId, Model model) {
-        return processScoreView(seasonId,null,null,model);
+    public void editDate(@PathVariable String seasonId, Model model, HttpServletResponse response) throws IOException {
+        Map<String,List<TeamMatch>> matches = teamMatchApi.matchesBySeason(seasonId);
+        List<LocalDateTime> dates = new ArrayList<>();
+        matches.keySet().forEach(d->dates.add(LocalDate.parse(d).atStartOfDay()));
+        String d = matches.keySet().iterator().next();
+        response.sendRedirect("/scores/" + seasonId  + "/" + d);
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{date}"}, method = RequestMethod.GET)
@@ -123,7 +126,8 @@ public class ScoreResource extends BaseController {
     private String processScoreView(String seasonId, String date, String matchId, Model model) {
         model.addAttribute("seasons",seasonApi.active());
         Map<String,List<TeamMatch>> matches = teamMatchApi.matchesBySeason(seasonId);
-
+        List<LocalDateTime> dates = new ArrayList<>();
+        matches.keySet().forEach(d->dates.add(LocalDate.parse(d).atStartOfDay()));
         String d = date == null ? matches.keySet().iterator().next() : date;
         model.addAttribute("dates", matches.keySet());
         model.addAttribute("date", d);
@@ -148,7 +152,7 @@ public class ScoreResource extends BaseController {
             model.addAttribute("awayMembers", away);
         }
 
-        return "scores/season";
+        return "scores/index";
     }
 
 

@@ -1,6 +1,7 @@
 package com.society.admin.resources;
 
 import com.society.leagues.client.api.*;
+import com.society.leagues.client.api.domain.Season;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.stream.Collectors;
 
 @Controller
 public class BaseController {
@@ -23,7 +25,7 @@ public class BaseController {
 
     @ModelAttribute
     public void setModels(Model model) {
-        model.addAttribute("seasons",seasonApi.active());
+        model.addAttribute("seasons",seasonApi.active().stream().sorted(Season.sortOrder).collect(Collectors.toList()));
         model.addAttribute("user", userApi.get());
     }
 

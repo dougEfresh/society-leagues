@@ -38,7 +38,7 @@ public class ThymeLeafConfiguration {
         resolver.setSuffix(properties.getSuffix());
         resolver.setPrefix(cwd + "/src/main/resources/templates/");
         resolver.setTemplateMode(properties.getMode());
-        //resolver.setCharacterEncoding(properties.getEncoding());
+        resolver.setCharacterEncoding(properties.getEncoding().name());
         resolver.setCacheable(false);
         return resolver;
 

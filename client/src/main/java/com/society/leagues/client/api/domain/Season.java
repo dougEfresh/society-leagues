@@ -160,6 +160,13 @@ public class Season extends LeagueObject   {
 
     }
 
+      public static Comparator<Season> sortOrder = new Comparator<Season>() {
+        @Override
+        public int compare(Season o1, Season o2) {
+            return o1.getDivision().order.compareTo(o2.getDivision().order);
+        }
+    };
+
     public static Comparator<Season> sort = new Comparator<Season>() {
         @Override
         public int compare(Season o1, Season o2) {

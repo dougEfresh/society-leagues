@@ -1,10 +1,9 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="/layout">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 </head>
 <body>
-<div id="score-app" layout:fragment="content">
-    <div th:replace="/fragments/scores"></div>
+<div id="season-matches-app" >
     <div id="matches" th:if="${model ne null}" >
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -44,6 +43,7 @@
             </form>
         </div>
     </div>
+
     <div th:if="${season.isEight()}">
         <div th:replace="/scores/playerResultsEight"></div>
     </div>

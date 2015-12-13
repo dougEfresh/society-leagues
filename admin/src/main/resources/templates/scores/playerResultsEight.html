@@ -41,18 +41,18 @@
                         <th>Win</th>
                         </thead>
                         <tbody>
-                        <tr th:each="result, rowStat: *{playerResults}">
-                            <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
+                        <!--/*@thymesVar id="result" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
+                        <tr th:id="${result.getId()}" th:each="result, rowStat: *{playerResults}">
                               <td>
-                                    <a th:href="@{/scores/{id}/{date}/{matchId}/{resultId}/delete (id=${season.id},date=${date},matchId=${results.matchId},resultId=${result.id})}">X</a>
+                                    <a th:id="${'delete-player-result' + result.getId()}" th:href="@{/scores/{id}/{date}/{matchId}/{resultId}/delete (id=${season.id},date=${date},matchId=${results.matchId},resultId=${result.id})}">X</a>
                                 </td>
                             <td>
-                                <input th:field="*{playerResults[__${rowStat.index}__].matchNumber}" type="text" th:value="${result.matchNumber}" />
+                                <input th:id="${'match-number-' + result.getId()}" th:field="*{playerResults[__${rowStat.index}__].matchNumber}" type="text" th:value="${result.matchNumber}" />
                             </td>
                             <input th:field="*{playerResults[__${rowStat.index}__].id}" type="hidden" th:value="${result.id}" />
                             <input th:field="*{playerResults[__${rowStat.index}__].teamMatch.id}" type="hidden" th:value="${result.teamMatch.id}" />
                             <td>
-                                <select th:field="*{playerResults[__${rowStat.index}__].playerHome.id}" class="form-control" >
+                                <select th:id="${'home-member-' + result.getId()}" th:field="*{playerResults[__${rowStat.index}__].playerHome.id}" class="form-control" >
                                     <option th:each="user: ${homeMembers}"
                                             th:text="${user.name}"
                                             th:value="${user.id}"
@@ -61,7 +61,7 @@
                                 </select>
                             </td>
                             <td th:class="${season.isScramble()}? 'show' : 'hide'">
-                                <select th:field="*{playerResults[__${rowStat.index}__].playerHomePartner.id}" class="form-control" >
+                                <select th:id="${'home-member-partner' + result.getId()}" th:field="*{playerResults[__${rowStat.index}__].playerHomePartner.id}" class="form-control" >
                                     <option th:each="user: ${homeMembers}"
                                             th:text="${user.name}"
                                             th:value="${user.id}"
@@ -70,13 +70,13 @@
                                 </select>
                             </td>
                             <td>
-                                <input onchange="handleCheckbox(this)" th:id="#{home} +  ${result.id}" th:value="${result.homeWinner}"
+                                <input th:id="${'home-winner' + result.getId()}" onchange="handleCheckbox(this)" th:id="#{home} +  ${result.id}" th:value="${result.homeWinner}"
                                        th:field="*{playerResults[__${rowStat.index}__].homeWinner}" type="checkbox"
                                 />
 
                             </td>
                             <td>
-                                <select th:field="*{playerResults[__${rowStat.index}__].playerAway.id}" class="form-control" >
+                                <select th:id="${'away-member' + result.getId()}" th:field="*{playerResults[__${rowStat.index}__].playerAway.id}" class="form-control" >
                                     <option th:each="user: ${awayMembers}"
                                             th:text="${user.name}"
                                             th:value="${user.id}"
@@ -85,7 +85,7 @@
                                 </select>
                             </td>
                             <td th:class="${season.isScramble()}? 'show' : 'hide'">
-                                <select th:field="*{playerResults[__${rowStat.index}__].playerAwayPartner.id}" class="form-control" >
+                                <select th:id="${'away-member-partner' + result.getId()}" th:field="*{playerResults[__${rowStat.index}__].playerAwayPartner.id}" class="form-control" >
                                     <option th:each="user: ${awayMembers}"
                                             th:text="${user.name}"
                                             th:value="${user.id}"
@@ -94,7 +94,7 @@
                                 </select>
                             </td>
                             <td>
-                                <input  onchange="handleCheckbox(this)"
+                                <input th:id="${'away-winner-' + result.getId()}"  onchange="handleCheckbox(this)"
                                         th:id="#{away} + ${result.id}" th:value="${result.awayWinner}"
                                         th:field="*{playerResults[__${rowStat.index}__].awayWinner}" type="checkbox"
                                 />

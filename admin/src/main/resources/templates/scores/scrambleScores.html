@@ -23,23 +23,23 @@
             <!--/*@thymesVar id="matches" type="List<com.society.leagues.client.api.domain.TeamMatch>"*/-->
             <tr th:each="match, rowStat: *{matches}">
                   <td>
-                    <a th:href="@{/scores/{id}/{date}/{matchId}/delete (id=${season.id},date=${date},matchId=${match.id})}">
+                    <a  th:id="${'delete-' + match.getId()}" th:href="@{/scores/{id}/{date}/{matchId}/delete (id=${season.id},date=${date},matchId=${match.id})}">
                         X
                     </a>
                 </td>
                 <td>
-                    <a th:href="@{/scores/{id}/{date}/{matchId} (id=${season.id},date=${date},matchId=${match.id})}">
+                    <a th:id="${'player-results-' + match.getId()}" th:href="@{/scores/{id}/{date}/{matchId} (id=${season.id},date=${date},matchId=${match.id})}">
                         Results
                     </a>
                 </td>
                 <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.TeamMatch"*/-->
                 <input th:field="*{matches[__${rowStat.index}__].id}" type="hidden" th:value="${match.id}"/>
                 <td>
-                    <input th:field="*{matches[__${rowStat.index}__].date}" type="text" th:value="${match.getDate()}"/>
+                    <input th:id="${'date-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].date}" type="text" th:value="${match.getDate()}"/>
                 </td>
                 <input th:field="*{matches[__${rowStat.index}__].time}" type="hidden" th:value="${match.getTime()}"/>
                 <td>
-                    <select th:field="*{matches[__${rowStat.index}__].home.id}" class="form-control">
+                    <select th:id="${'home-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].home.id}" class="form-control">
                         <option th:each="team: ${teams}"
                                 th:text="${team.name}"
                                 th:value="${team.id}"
@@ -49,15 +49,15 @@
                 </td>
 
                 <td>
-                    <input th:field="*{matches[__${rowStat.index}__].homeRacks}" type="text"
+                    <input th:id="${'homeRacks-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].homeRacks}" type="text"
                            th:value="${match.homeRacks}"/>
                 </td>
                 <td>
-                    <input th:field="*{matches[__${rowStat.index}__].homeForfeits}" type="text"
+                    <input th:id="${'homeForfeits-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].homeForfeits}" type="text"
                            th:value="${match.homeForfeits}"/>
                 </td>
                 <td>
-                    <select th:field="*{matches[__${rowStat.index}__].away.id}" class="form-control">
+                    <select th:id="${'away-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].away.id}" class="form-control">
                         <option th:each="team: ${teams}"
                                 th:text="${team.name}"
                                 th:value="${team.id}"
@@ -66,11 +66,11 @@
                     </select>
                 </td>
                 <td>
-                    <input th:field="*{matches[__${rowStat.index}__].awayRacks}" type="text"
+                    <input th:id="${'awayRacks-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].awayRacks}" type="text"
                            th:value="${match.awayRacks}"/>
                 </td>
                 <td>
-                    <input th:field="*{matches[__${rowStat.index}__].awayForfeits}" type="text"
+                    <input th:id="${'awayForfeits-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].awayForfeits}" type="text"
                            th:value="${match.awayForfeits}"/>
                 </td>
             </tr>
