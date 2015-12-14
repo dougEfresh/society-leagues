@@ -23,7 +23,7 @@ public class ErrorResource {
             ModelAndView mav = new ModelAndView();
             mav.addObject("error","Unauthorized");
             mav.setViewName("login");
-            return "redirect:/login";
+            return "login";
         }
         ModelAndView mav = new ModelAndView();
         //mav.addObject("exception", exception);

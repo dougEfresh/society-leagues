@@ -33,12 +33,12 @@ public class LoginResource extends BaseController {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
     }
 
-    @RequestMapping(value = {"/admin/login"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/login"}, method = RequestMethod.GET)
     public String loginPage(@RequestParam(required = false, defaultValue = "false") boolean error, HttpServletRequest request) {
         return "login";
     }
 
-    @RequestMapping(value = {"/admin/login"}, method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @RequestMapping(value = {"/login"}, method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String loginPage(@RequestParam String username, @RequestParam String password, Model model, HttpServletRequest request, ResponseFacade response) {
         logger.info("Login Request for " + username);
         MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();
@@ -53,7 +53,7 @@ public class LoginResource extends BaseController {
             response.addHeader("Set-Cookie",s);
         }
         logger.info("Got back "  + u.getName());
-        return "redirect:/admin/home";
+        return "redirect:/home";
     }
 
 }

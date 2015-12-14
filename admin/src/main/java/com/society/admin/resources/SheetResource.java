@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class SheetResource extends BaseController {
 
-    @RequestMapping(method = RequestMethod.GET,value = "/admin/sheets/{seasonId}/{date}")
+    @RequestMapping(method = RequestMethod.GET,value = "/sheets/{seasonId}/{date}")
     public String sheets(@PathVariable String seasonId, @PathVariable  String date, Model model) {
         return "sheets/eightScoreSheets";
     }

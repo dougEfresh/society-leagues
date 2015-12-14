@@ -19,7 +19,7 @@ public class UserResource extends BaseController {
     @Autowired ObjectMapper objectMapper;
     @Autowired UserApi userApi;
 
-    @RequestMapping(value = {"/admin/user"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/user"}, method = RequestMethod.GET)
     public String list(@RequestParam(defaultValue = "", required = false) String search , Model model) {
         model.addAttribute("search", search);
         if (search.length() > 1)
@@ -38,12 +38,12 @@ public class UserResource extends BaseController {
         return "user/editUser";
     }
 
-    @RequestMapping(value = {"/admin/user/{id}"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/user/{id}"}, method = RequestMethod.GET)
     public String edit(@PathVariable String id , Model model) {
         return processEditUser(userApi.get(id),model);
     }
 
-    @RequestMapping(value = {"/admin/user/{id}"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"/user/{id}"}, method = RequestMethod.POST)
     public String save(@PathVariable String id, @ModelAttribute("user") User user, Model model) {
         try {
             User u = userApi.modify(user);
