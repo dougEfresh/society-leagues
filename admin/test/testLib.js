@@ -42,6 +42,7 @@ var scoreSeasonTest = function(test) {
         test.assertExists("#matches");
     });
 
+
     casper.then(function () {
         test.assertNotExists("#player-results");
     });
@@ -88,6 +89,7 @@ var scoreSeasonTest = function(test) {
     casper.then(function () {
         this.click('#delete-' + teamMatchId);
     });
+
     casper.then(function () {
         test.assertNotExists('#delete-' + teamMatchId);
     });
@@ -144,7 +146,9 @@ var scoreSubmitTest = function(test) {
     casper.then(function () {
         this.click('#submit-team-match-scores');
     });
-
+    casper.then(function () {
+        test.assertExists("#form-select-date");
+    });
     casper.then(function () {
         this.fill('form#form-select-date', {
             'select-date' : teamMatchDate

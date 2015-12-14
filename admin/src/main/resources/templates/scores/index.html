@@ -27,7 +27,7 @@
                 <div class="row">
                     <div th:each="season : ${seasons}" class="col-xs-10 col-md-2 col-lg-2">
                         <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
-                        <a th:id="${season.getShortName().replaceAll(' ','')}" th:href="@{/scores/{id}/ (id=${season.getId()})}">
+                        <a th:id="${season.getShortName().replaceAll(' ','')}" th:href="@{/admin/scores/{id}/ (id=${season.getId()})}">
                             <span th:text="${season.getShortName()}"></span>
                         </a>
                     </div>

@@ -8,9 +8,9 @@ var awayRacks = 0;
 var homeForfeits = 0;
 var awayForfeits = 0;
 
-casper.test.begin('Test User Page', function suite(test) {
+casper.test.begin('Test Scores Page', function suite(test) {
     casper.start();
-    casper.thenOpen(testlib.server + '/login', function(){
+    casper.thenOpen(testlib.server + '/admin/login', function(){
     });
 
     testlib.login(test,testlib.user,testlib.pass);
@@ -19,7 +19,7 @@ casper.test.begin('Test User Page', function suite(test) {
          test.assertExists("#home-app")
     });
 
-    casper.thenOpen(testlib.server + '/scores', function(){
+    casper.thenOpen(testlib.server + '/admin/scores', function(){
     });
     casper.then(function () {
          test.assertExists("#score-app")

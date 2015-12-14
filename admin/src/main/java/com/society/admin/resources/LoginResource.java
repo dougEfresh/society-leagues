@@ -20,7 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-public class LoginResource extends BaseController {
+public class LoginResource  {
 
     @Value("${rest.url}")
     String restUrl;
@@ -53,7 +53,7 @@ public class LoginResource extends BaseController {
             response.addHeader("Set-Cookie",s);
         }
         logger.info("Got back "  + u.getName());
-        return "redirect:/home";
+        return "redirect:/admin/home";
     }
 
 }

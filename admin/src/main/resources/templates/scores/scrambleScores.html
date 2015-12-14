@@ -23,12 +23,12 @@
             <!--/*@thymesVar id="matches" type="List<com.society.leagues.client.api.domain.TeamMatch>"*/-->
             <tr th:each="match, rowStat: *{matches}">
                   <td>
-                    <a  th:id="${'delete-' + match.getId()}" th:href="@{/scores/{id}/{date}/{matchId}/delete (id=${season.id},date=${date},matchId=${match.id})}">
+                    <a  th:id="${'delete-' + match.getId()}" th:href="@{/admin/scores/{id}/{date}/{matchId}/delete (id=${season.id},date=${date},matchId=${match.id})}">
                         X
                     </a>
                 </td>
                 <td>
-                    <a th:id="${'player-results-' + match.getId()}" th:href="@{/scores/{id}/{date}/{matchId} (id=${season.id},date=${date},matchId=${match.id})}">
+                    <a th:id="${'player-results-' + match.getId()}" th:href="@{/admin/scores/{id}/{date}/{matchId} (id=${season.id},date=${date},matchId=${match.id})}">
                         Results
                     </a>
                 </td>

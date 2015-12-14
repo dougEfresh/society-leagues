@@ -11,9 +11,9 @@
                     <span>Matches - </span>
                     <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
                     <span th:text="${season.shortName}"></span><span> -
-                    <a th:href="@{/scores/{id}/{date}/add (id=${season.id},date=${date})}">Add New</a>
+                    <a th:href="@{/admin/scores/{id}/{date}/add (id=${season.id},date=${date})}">Add New</a>
                     <span> - </span>
-                    <a th:href="@{/sheets/{id}/{date} (id=${season.id},date=${date})}">Sheets</a>
+                    <a th:href="@{/admin/sheets/{id}/{date} (id=${season.id},date=${date})}">Sheets</a>
                 </span>
                     <form id="form-select-date">
                     <select name="select-date" id="select-date" onChange="selectDate()" class="form-control" >
@@ -27,7 +27,7 @@
                 </div>
             </div>
             <form id="team-match-form" th:object="${model}" th:method="post" method="post"
-                  th:action="@{/scores/{id}/{date} (id=${season.id},date=${date})}">
+                  th:action="@{/admin/scores/{id}/{date} (id=${season.id},date=${date})}">
             <div class="panel-body">
                 <div th:if="${season.isEight()}">
                     <div th:replace="/scores/eightScores"></div>

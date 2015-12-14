@@ -3,7 +3,7 @@ var testlib = require('./testLib');
 
 casper.test.begin('Test Home Page', function suite(test) {
     casper.start();
-    casper.thenOpen(testlib.server + '/', function(){
+    casper.thenOpen(testlib.server + '/admin', function(){
     });
 
     testlib.login(test,testlib.user,testlib.pass);
