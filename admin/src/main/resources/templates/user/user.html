@@ -10,8 +10,10 @@
           <form action="/admin/user" method="get">
               <input th:value="${search}" type="text" id="search" name="search"/>
               <input id="searchButton" name="searchButton" type="submit" value="Search"/>
+              <a href="/admin/user/new">Add New</a>
           </form>
       </div>
+
       <div id="users" >
           <div class="table-responsive">
               <table class="table table-stripped table-bordered table-condensed table">
@@ -24,7 +26,7 @@
                   </thead>
                   <tbody>
                   <!--/*@thymesVar id="users" type="com.society.leagues.client.api.domain.User"*/-->
-                  <tr th:each="user : ${users}">
+                  <tr th:id="'user-' + ${user.id} "th:each="user : ${users}">
                       <td th:id="${user.id}"><a th:href="@{/admin/user/{id}(id=${user.id})}"><span class="glyphicon glyphicon-edit"></span></a></td>
                       <td>
                           <a th:text="${user.name}" th:href="@{/admin/user/{id}(id=${user.id})}"></a>

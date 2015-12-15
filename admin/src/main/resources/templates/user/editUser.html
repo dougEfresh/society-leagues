@@ -16,7 +16,7 @@
              <strong>Error!</strong> <pre th:text="${error}"></pre>
          </div>
      </div>
-    <form id="user-form" action="#" th:action="@{/user/{id}(id=${user.id})}" th:object="${user}" method="post">
+    <form id="user-form" action="#" th:action="@{/admin/user/{id}(id=${user.id})}" th:object="${user}" method="post">
         <div class="form-group">
             <input type="hidden" th:value="${user.id}" th:field="*{id}"/>
             <label class="col-sm-2 control-label">First Name</label>

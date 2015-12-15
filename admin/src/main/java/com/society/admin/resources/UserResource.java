@@ -2,7 +2,9 @@ package com.society.admin.resources;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.society.leagues.client.api.UserApi;
+import com.society.leagues.client.api.domain.Handicap;
 import com.society.leagues.client.api.domain.HandicapSeason;
+import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
@@ -46,16 +50,27 @@ public class UserResource extends BaseController {
     }
 
     @RequestMapping(value = {"/user/new"}, method = RequestMethod.GET)
-    public String edit(Model model) {
-        return processEditUser(User.defaultUser(),model);
+    public String edit(Model model, HttpServletResponse response) {
+        User u = User.defaultUser();
+        u.setId("new");
+        List<Season> season = seasonApi.active();
+        for (Season s : season) {
+            u.addHandicap(new HandicapSeason(Handicap.NA,s));
+        }
+        return processEditUser(u,model);
     }
 
     @RequestMapping(value = {"/user/{id}"}, method = RequestMethod.POST)
-    public String save(@PathVariable String id, @ModelAttribute("user") User user, Model model) {
+    public String save(@PathVariable String id, @ModelAttribute("user") User user, Model model, HttpServletResponse response) {
         try {
+            if (id.equals("new")) {
+                user.setId(null);
+            }
             User u = userApi.modify(user);
             model.addAttribute("save","success");
-            return processEditUser(u, model);
+            if (id.equals("new"))
+                response.sendRedirect("/admin/user/" + u.getId());
+            return processEditUser(u,model);
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             model.addAttribute("save","error");

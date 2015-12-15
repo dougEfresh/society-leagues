@@ -126,7 +126,9 @@ public class UserResource {
         if (user.getHandicapSeasons() != null && !user.getHandicapSeasons().isEmpty()) {
             for (HandicapSeason handicapSeason : user.getHandicapSeasons()) {
                 if (handicapSeason.getSeason().isActive()) {
-                    HandicapSeason newHandicapSeason = new HandicapSeason(handicapSeason.getHandicap(), leagueService.findOne(handicapSeason.getSeason()));
+                    HandicapSeason newHandicapSeason =
+                            new HandicapSeason(handicapSeason.getHandicap(),
+                                    leagueService.findOne(handicapSeason.getSeason()));
                     if (handicapSeason.getHandicap() == Handicap.NA) {
                         existingUser.removeHandicap(newHandicapSeason);
                     } else {
