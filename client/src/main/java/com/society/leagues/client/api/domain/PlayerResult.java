@@ -101,7 +101,14 @@ public class PlayerResult  extends LeagueObject {
     }
 
     public Integer getHomeRacks() {
-        return homeRacks == null ? 0 :homeRacks;
+        if (homeRacks == null)
+            return 0;
+
+        if (isScotch()) {
+            return  1+homeRacks;
+        }
+
+        return homeRacks;
     }
 
     public void setHomeRacks(Integer homeRacks) {
@@ -109,7 +116,14 @@ public class PlayerResult  extends LeagueObject {
     }
 
     public Integer getAwayRacks() {
-        return awayRacks == null ? 0 : awayRacks;
+         if (awayRacks == null)
+            return 0;
+
+        if (isScotch()) {
+            return  1+awayRacks;
+        }
+
+        return awayRacks;
     }
 
     public void setAwayRacks(Integer awayRacks) {

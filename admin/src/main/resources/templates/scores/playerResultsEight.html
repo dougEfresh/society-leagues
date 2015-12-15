@@ -35,10 +35,10 @@
                         <th>#</th>
                         <th>Home</th>
                         <th th:class="${season.isScramble()}? 'show' : 'hide'">Partner</th>
-                        <th th:text="'Wins (' + ${homeWins} + ')'"  >Win</th>
+                        <th th:text="'Wins(R + F + H = '  + ${homeWins} + ' + ' + ${homeForfeits} + ' + ' + ${homeHandicap} + ')'"  >Win</th>
                         <th>Away</th>
                         <th th:class="${season.isScramble()}? 'show' : 'hide'">Partner</th>
-                        <th th:text="'Wins (' + ${awayWins} + ')'" >Win</th>
+                        <th th:text="'Wins (R + F + H = ' + ${awayWins} + ' + ' + ${awayForfeits} + ' + ' + ${awayHandicap} + ')'" >Win</th>
                         </thead>
                         <tbody>
                         <!--/*@thymesVar id="result" type="com.society.leagues.client.api.domain.PlayerResult"*/-->

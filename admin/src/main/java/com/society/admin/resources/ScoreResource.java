@@ -153,12 +153,28 @@ public class ScoreResource extends BaseController {
                 homeWins += result.getHomeRacks();
                 awayWins += result.getAwayRacks();
             }
+            TeamMatch m = results.getPlayerResults().iterator().next().getTeamMatch();
 
-            homeWins += results.getPlayerResults().iterator().next().getTeamMatch().getHomeForfeits();
-            awayWins += results.getPlayerResults().iterator().next().getTeamMatch().getAwayForfeits();
+            //homeWins += m.getHomeForfeits();
+            //awayWins += m.getAwayForfeits();
+            int homeHandicap = 0;
+            int awayHandicap = 0;
+
+            if (homeWins + m.getHomeForfeits() < m.getHomeRacks()) {
+                homeHandicap += m.getHomeRacks() - homeWins - m.getHomeForfeits();
+            }
+
+            if (awayWins + m.getAwayForfeits() < m.getAwayRacks()) {
+                awayHandicap += m.getAwayRacks() - awayWins - m.getAwayForfeits();
+            }
 
             model.addAttribute("homeWins",homeWins);
             model.addAttribute("awayWins",awayWins);
+            model.addAttribute("homeForfeits",m.getHomeForfeits());
+            model.addAttribute("awayForfeits",m.getAwayForfeits());
+
+            model.addAttribute("homeHandicap",homeHandicap);
+            model.addAttribute("awayHandicap",awayHandicap);
             model.addAttribute("teamMatch", results.getPlayerResults().iterator().next().getTeamMatch());
             model.addAttribute("homeMembers", home);
             model.addAttribute("awayMembers", away);
