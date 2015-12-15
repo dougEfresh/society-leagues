@@ -12,4 +12,11 @@ public interface TeamApi {
 
     @RequestLine("GET /api/team/season/{id}")
     List<Team> getBySeason(@Param("id") String id);
+
+    @RequestLine("GET /api/team/active")
+    List<Team> active();
+
+    @RequestLine("GET /api/team/{id}")
+    List<Team> get(@Param("id") String id);
+
 }

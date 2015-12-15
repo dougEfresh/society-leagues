@@ -141,6 +141,10 @@ public class User extends LeagueObject {
         return handicapSeasons;
     }
 
+    public void setHandicapSeasons(List<HandicapSeason> handicapSeasons) {
+        this.handicapSeasons = handicapSeasons;
+    }
+
     public List<HandicapSeason> getActiveHandicapSeasons() {
         return  handicapSeasons != null ? handicapSeasons.stream().filter(hs->hs.getSeason().isActive()).collect(Collectors.toList()) : Collections.emptyList();
     }

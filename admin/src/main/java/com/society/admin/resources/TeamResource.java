@@ -1,12 +1,7 @@
 package com.society.admin.resources;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.society.leagues.client.api.UserApi;
-import com.society.leagues.client.api.domain.Handicap;
-import com.society.leagues.client.api.domain.HandicapSeason;
-import com.society.leagues.client.api.domain.Season;
-import com.society.leagues.client.api.domain.User;
-
+import com.society.leagues.client.api.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,24 +10,43 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-public class UserResource extends BaseController {
+public class TeamResource extends BaseController {
 
-    @Autowired ObjectMapper objectMapper;
-    @Autowired UserApi userApi;
-
-    @RequestMapping(value = {"/user"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/team"}, method = RequestMethod.GET)
     public String list(@RequestParam(defaultValue = "", required = false) String search , Model model) {
         model.addAttribute("search", search);
-        if (search.length() > 1)
-            model.addAttribute("users", userApi.active().stream().filter(u->u.getName().toLowerCase().contains(search.toLowerCase())).collect(Collectors.toList()));
-        else
-            model.addAttribute("users", userApi.active());
+        if (search.length() > 1) {
+            model.addAttribute("teams", teamApi.active()
+                    .stream()
+                    .filter(u -> u.getName().toLowerCase().contains(search.toLowerCase()))
+                    .filter(t->!t.getSeason().isChallenge())
+                    .sorted(new Comparator<Team>() {
+                        @Override
+                        public int compare(Team o1, Team o2) {
+                            return o1.getName().compareTo(o2.getName());
+                        }
+                    })
+                    .collect(Collectors.toList()));
+        } else {
+            model.addAttribute("teams",  teamApi.active()
+                    .stream()
+                    .filter(u -> u.getName().toLowerCase().contains(search.toLowerCase()))
+                    .filter(t->!t.getSeason().isChallenge())
+                    .sorted(new Comparator<Team>() {
+                        @Override
+                        public int compare(Team o1, Team o2) {
+                            return o1.getName().compareTo(o2.getName());
+                        }
+                    })
+                    .collect(Collectors.toList()));
+        }
 
-        return "user/user";
+        return "team/team";
     }
 
     private String processEditUser(User u, Model model) {
@@ -51,14 +65,18 @@ public class UserResource extends BaseController {
         return "user/editUser";
     }
 
+
     @RequestMapping(value = {"/user/{id}"}, method = RequestMethod.GET)
     public String edit(@PathVariable String id , Model model) {
-        return processEditUser(userApi.get(id),model);
+        model.addAttribute("teams", teamApi.get(id));
+        model.addAttribute("seasons", seasonApi.active());
+        return "team/editTeam";
     }
 
+    /*
     @RequestMapping(value = {"/user/new"}, method = RequestMethod.GET)
     public String edit(Model model, HttpServletResponse response) {
-        User u = User.defaultUser();
+
         u.setId("new");
         List<Season> season = seasonApi.active();
         for (Season s : season) {
@@ -85,4 +103,5 @@ public class UserResource extends BaseController {
             return processEditUser(user,model);
         }
     }
+    */
 }
