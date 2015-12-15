@@ -525,6 +525,28 @@ public class PlayerResult  extends LeagueObject {
         this.awayWinner = awayWinner;
     }
 
+    public Integer getSetNumber() {
+        if (matchNumber < 5)
+            return 1;
+
+        if (matchNumber >= 5 && matchNumber < 9)
+            return 2;
+
+        if (matchNumber >= 9 && matchNumber < 13)
+            return 3;
+
+        if (matchNumber >= 13 && matchNumber < 17)
+            return 4;
+
+        if (matchNumber >= 17 && matchNumber < 21)
+            return 5;
+
+        if (matchNumber >= 21 && matchNumber < 25)
+            return 6;
+
+        return 7;
+    }
+
     @Override
     public String toString() {
         return "PlayerResult{" +

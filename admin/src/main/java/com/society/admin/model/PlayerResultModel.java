@@ -48,4 +48,8 @@ public class PlayerResultModel {
 
         return String.format("%s vs %s", tm.getHome().getName(), tm.getAway().getName());
     }
+
+    public String getRowClass(Integer index) {
+        return playerResults.get(index).getSetNumber() % 2 == 0 ? "even" : "odd";
+    }
 }

@@ -42,7 +42,7 @@
                         </thead>
                         <tbody>
                         <!--/*@thymesVar id="result" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
-                        <tr th:id="${'player-matches-'+ result.getId()}" th:each="result, rowStat: *{playerResults}">
+                        <tr  th:class="${results.getRowClass(rowStat.index)}" th:id="${'player-matches-'+ result.getId()}" th:each="result, rowStat: *{playerResults}">
                               <td>
                                     <a th:id="${'delete-player-result' + result.getId()}" th:href="@{/admin/scores/{id}/{date}/{matchId}/{resultId}/delete (id=${season.id},date=${date},matchId=${results.matchId},resultId=${result.id})}">X</a>
                                 </td>

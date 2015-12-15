@@ -21,3 +21,19 @@
     width: 85px;
     min-width: 85px;
 }
+
+
+.odd {
+    border-color: black;
+    background-color: #BDBDBD;
+    /*
+    border-bottom-style: double;
+    border-bottom-width: thick;
+    border-top-style: double;
+    border-top-width: thick;
+    border-left-style: double;
+    border-left-width: thick;
+    border-right-style: double;
+    border-right-width: thick;
+    */
+}
