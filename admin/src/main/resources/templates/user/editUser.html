@@ -5,7 +5,7 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <span th:value="${user.name}" class="subtitle"></span>
+    <span th:value="${editUser.name}" class="subtitle"></span>
     <div th:if="${save eq 'success'}">
              <div class="alert alert-success alert-dismissible" role="alert">
                  <strong>Success!</strong> Updated Successfully.
@@ -16,9 +16,9 @@
              <strong>Error!</strong> <pre th:text="${error}"></pre>
          </div>
      </div>
-    <form id="user-form" action="#" th:action="@{/admin/user/{id}(id=${user.id})}" th:object="${user}" method="post">
+    <form id="user-form" action="#" th:action="@{/admin/user/{id}(id=${editUser.id})}" th:object="${editUser}" method="post">
         <div class="form-group">
-            <input type="hidden" th:value="${user.id}" th:field="*{id}"/>
+            <input type="hidden" th:value="${editUser.id}" th:field="*{id}"/>
             <label class="col-sm-2 control-label">First Name</label>
             <div class="col-sm-10">
                 <input th:value="*{firstName}" th:field="*{firstName}" id="firstName"
@@ -27,35 +27,35 @@
             </div>
             <label class="col-sm-2 control-label">Last Name</label>
             <div class="col-sm-10">
-                <input th:value="${user.lastName}" name="lastName" th:field="*{lastName}" id="lastName" type="input" class="form-control" />
+                <input th:value="${editUser.lastName}" name="lastName" th:field="*{lastName}" id="lastName" type="input" class="form-control" />
             </div>
             <label  class="col-sm-2 control-label">Email</label>
             <div class="col-sm-10">
-                <input th:value="${user.login}" th:field="*{login}" id="login"  class="form-control" />
+                <input th:value="${editUser.login}" th:field="*{login}" id="login"  class="form-control" />
             </div>
             <label class="col-sm-2 control-label">Role</label>
             <div class="col-sm-10">
-                <select class="form-control" th:value="${user.role}" th:field="*{role}" >
+                <select class="form-control" th:value="${editUser.role}" th:field="*{role}" >
                     <option value="PLAYER">Player</option>
                     <option value="ADMIN">Admin</option>
                 </select>
             </div>
             <label  class="col-sm-2 control-label">status</label>
             <div class="col-sm-10">
-                <select ref='status' class="form-control" th:value=${user.status} th:field="*{status}">
+                <select ref='status' class="form-control" th:value=${editUser.status} th:field="*{status}">
                     <option value="ACTIVE">Active</option>
                     <option value="INACTIVE">Disable</option>
                 </select>
             </div>
         <!--/*@thymesVar id="handicapSeasons" type="com.society.leagues.client.api.domain.HandicapSeason"*/-->
-        <div th:each="hs: ${user.handicapSeasons}" >
+        <div th:each="hs: ${editUser.handicapSeasons}" >
             <label th:if="${hs.season.active}" th:text="${hs.season.getDisplayName()}" class="col-sm-2 control-label" ></label>
-            <input type="hidden" th:value="${hs.season.id}" th:field="${user.handicapSeasons[__${hs.index}__].season.id}" />
-            <input type="hidden" th:value="${hs.season.division}" th:field="${user.handicapSeasons[__${hs.index}__].season.division}" />
-            <input type="hidden" th:value="${hs.season.seasonStatus}" th:field="${user.handicapSeasons[__${hs.index}__].season.seasonStatus}" />
-            <input th:if="not ${hs.season.active}" type="hidden" th:value="${hs.handicap}" th:field="${user.handicapSeasons[__${hs.index}__].handicap}">
+            <input type="hidden" th:value="${hs.season.id}" th:field="${editUser.handicapSeasons[__${hs.index}__].season.id}" />
+            <input type="hidden" th:value="${hs.season.division}" th:field="${editUser.handicapSeasons[__${hs.index}__].season.division}" />
+            <input type="hidden" th:value="${hs.season.seasonStatus}" th:field="${editUser.handicapSeasons[__${hs.index}__].season.seasonStatus}" />
+            <input th:if="not ${hs.season.active}" type="hidden" th:value="${hs.handicap}" th:field="${editUser.handicapSeasons[__${hs.index}__].handicap}">
              <div class="col-sm-10">
-            <select th:if="${hs.season.active}" class="form-control" th:field="${user.handicapSeasons[__${hs.index}__].handicap}" >
+            <select th:if="${hs.season.active}" class="form-control" th:field="${editUser.handicapSeasons[__${hs.index}__].handicap}" >
                     <option th:each="hc: ${T(com.society.leagues.client.api.domain.Handicap).values()}"
                             th:text="${hc.value}"
                             th:value="${hc.value}"

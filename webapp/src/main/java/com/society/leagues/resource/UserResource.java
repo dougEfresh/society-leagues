@@ -114,7 +114,7 @@ public class UserResource {
     public User modify(@RequestBody User user) {
         User existingUser = leagueService.findOne(user);
         if (existingUser == null) {
-            existingUser  = new User();
+            existingUser = new User();
         }
         existingUser.setFirstName(user.getFirstName());
         existingUser.setLastName(user.getLastName());
@@ -122,23 +122,23 @@ public class UserResource {
         existingUser.setEmail(user.getLogin());
         existingUser.setStatus(user.getStatus());
         existingUser.setRole(user.getRole());
+        logger.info("Modify user " + user.getName());
 
         if (user.getHandicapSeasons() != null && !user.getHandicapSeasons().isEmpty()) {
-            for (HandicapSeason handicapSeason : user.getHandicapSeasons()) {
-                if (handicapSeason.getSeason().isActive()) {
-                    HandicapSeason newHandicapSeason =
-                            new HandicapSeason(handicapSeason.getHandicap(),
-                                    leagueService.findOne(handicapSeason.getSeason()));
-                    if (handicapSeason.getHandicap() == Handicap.NA) {
+            for (HandicapSeason handicapSeason : user.getHandicapSeasons().stream().filter(s->s.getSeason().isActive()).collect(Collectors.toList())) {
+                HandicapSeason newHandicapSeason =
+                        new HandicapSeason(handicapSeason.getHandicap(),
+                                leagueService.findOne(handicapSeason.getSeason()));
+                    if (newHandicapSeason.getHandicap() == Handicap.NA) {
+                        logger.info("Removing Handicap season " + handicapSeason.getSeason().getName());
                         existingUser.removeHandicap(newHandicapSeason);
                     } else {
+                        logger.info("Adding Handicap season " + handicapSeason.getSeason().getName());
                         existingUser.removeHandicap(newHandicapSeason);
                         existingUser.addHandicap(newHandicapSeason);
                     }
-                }
             }
         }
-
         existingUser = leagueService.save(existingUser);
         if (existingUser.isChallenge()) {
             challengeService.createChallengeUser(existingUser);

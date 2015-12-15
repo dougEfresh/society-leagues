@@ -40,7 +40,7 @@ public class UserResource extends BaseController {
         for (HandicapSeason handicapSeason : u.getHandicapSeasons()) {
             handicapSeason.setIndex(i++);
         }
-        model.addAttribute("user", u);
+        model.addAttribute("editUser", u);
         return "user/editUser";
     }
 
