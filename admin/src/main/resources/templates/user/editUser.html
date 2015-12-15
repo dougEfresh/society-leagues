@@ -4,7 +4,7 @@
     <title>User Admin</title>
 </head>
 <body>
-<div layout:fragment="content">
+<div id="user-edit" layout:fragment="content">
     <span th:value="${editUser.name}" class="subtitle"></span>
     <div th:if="${save eq 'success'}">
              <div class="alert alert-success alert-dismissible" role="alert">
@@ -35,26 +35,26 @@
             </div>
             <label class="col-sm-2 control-label">Role</label>
             <div class="col-sm-10">
-                <select class="form-control" th:value="${editUser.role}" th:field="*{role}" >
+                <select id="role" name="role" class="form-control" th:value="${editUser.role}" th:field="*{role}" >
                     <option value="PLAYER">Player</option>
                     <option value="ADMIN">Admin</option>
                 </select>
             </div>
             <label  class="col-sm-2 control-label">status</label>
             <div class="col-sm-10">
-                <select ref='status' class="form-control" th:value=${editUser.status} th:field="*{status}">
+                <select class="form-control" th:value=${editUser.status} th:field="*{status}">
                     <option value="ACTIVE">Active</option>
                     <option value="INACTIVE">Disable</option>
                 </select>
             </div>
         <!--/*@thymesVar id="handicapSeasons" type="com.society.leagues.client.api.domain.HandicapSeason"*/-->
         <div th:each="hs, rowIndex: ${editUser.handicapSeasons}" >
-            <label th:text="${hs.season.getDisplayName()}" class="col-sm-2 control-label" ></label>
+            <label th:text="${hs.season.getShortName()}" class="col-sm-2 control-label" ></label>
             <input type="hidden" th:value="${hs.season.id}" th:field="${editUser.handicapSeasons[__${rowIndex.index}__].season.id}" />
             <input type="hidden" th:value="${hs.season.division}" th:field="${editUser.handicapSeasons[__${rowIndex.index}__].season.division}" />
             <input type="hidden" th:value="${hs.season.seasonStatus}" th:field="${editUser.handicapSeasons[__${rowIndex.index}__].season.seasonStatus}" />
             <div class="col-sm-10">
-            <select class="form-control" th:field="${editUser.handicapSeasons[__${rowIndex.index}__].handicap}" >
+            <select th:id="${hs.season.getShortName().replaceAll(' ','') + '-hc'}" class="form-control" th:field="${editUser.handicapSeasons[__${rowIndex.index}__].handicap}" >
                     <option th:each="hc: ${T(com.society.leagues.client.api.domain.Handicap).values()}"
                             th:text="${hc.value}"
                             th:value="${hc.value}"

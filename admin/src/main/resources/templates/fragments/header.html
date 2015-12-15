@@ -63,7 +63,7 @@
                                 <!--/*@thymesVar id="seasons" type="List<com.society.leagues.client.api.domain.Season>"*/-->
                                 <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
                                 <li th:each="season : ${seasons}">
-                                    <a th:href="@{/admin/scores/{id}(id=${season.getId()})}" th:text="${season.getShortName()}"></a>
+                                    <a th:id="${season.getShortName().replaceAll(' ','')}" th:href="@{/admin/scores/{id}(id=${season.getId()})}" th:text="${season.getShortName()}"></a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->

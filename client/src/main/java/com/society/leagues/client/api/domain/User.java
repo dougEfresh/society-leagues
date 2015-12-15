@@ -146,7 +146,14 @@ public class User extends LeagueObject {
     }
 
     public List<HandicapSeason> getActiveHandicapSeasons() {
-        return  handicapSeasons != null ? handicapSeasons.stream().filter(hs->hs.getSeason().isActive()).collect(Collectors.toList()) : Collections.emptyList();
+        List<HandicapSeason>  s = handicapSeasons != null ? handicapSeasons.stream().filter(hs->hs.getSeason().isActive()).collect(Collectors.toList()) : Collections.emptyList();
+        s.sort(new Comparator<HandicapSeason>() {
+            @Override
+            public int compare(HandicapSeason o1, HandicapSeason o2) {
+                return o1.getSeason().getDivision().order.compareTo(o2.getSeason().getDivision().order);
+            }
+        });
+        return s;
     }
 
     public void addHandicap(HandicapSeason hc) {

@@ -30,16 +30,16 @@
                   th:action="@{/admin/scores/{id}/{date} (id=${season.id},date=${date})}">
             <div class="panel-body">
                 <div th:if="${season.isEight()}">
-                    <div th:replace="/scores/eightScores"></div>
+                    <div th:replace="scores/eightScores"></div>
                 </div>
                 <div th:if="${season.isTuesdayNine()}">
-                    <div th:replace="/scores/nineScores"></div>
+                    <div th:replace="scores/nineScores"></div>
                 </div>
                 <div th:if="${season.isScramble()}">
-                    <div th:replace="/scores/eightScores"></div>
+                    <div th:replace="scores/eightScores"></div>
                 </div>
                 <div th:if="${season.isChallenge()}">
-                    <div th:replace="/scores/challengeScores"></div>
+                    <div th:replace="scores/challengeScores"></div>
                 </div>
 
             </div>
@@ -49,13 +49,13 @@
     </div>
 
     <div th:if="${season.isEight()}">
-        <div th:replace="/scores/playerResultsEight"></div>
+        <div th:replace="scores/playerResultsEight"></div>
     </div>
     <div th:if="${season.isScramble()}">
-        <div th:replace="/scores/playerResultsEight"></div>
+        <div th:replace="scores/playerResultsEight"></div>
     </div>
     <div th:if="${season.isNine()}">
-        <div th:replace="/scores/playerResultsNine"></div>
+        <div th:replace="scores/playerResultsNine"></div>
     </div>
 
     </div>
