@@ -46,10 +46,10 @@ public class ScoreResource extends BaseController {
         return processScoreView(seasonId,date,null,model);
     }
 
-     @RequestMapping(value = {"/scores/{seasonId}/{date}/add"}, method = RequestMethod.GET)
-     public void addTeamMatch(@PathVariable String seasonId, @PathVariable String date, Model model, HttpServletResponse response) throws IOException {
-         teamMatchApi.add(seasonId,date);
-         response.sendRedirect("/admin/scores/" + seasonId + "/" + date);
+    @RequestMapping(value = {"/scores/{seasonId}/{date}/add"}, method = RequestMethod.GET)
+    public void addTeamMatch(@PathVariable String seasonId, @PathVariable String date, Model model, HttpServletResponse response) throws IOException {
+        teamMatchApi.add(seasonId,date);
+        response.sendRedirect("/admin/scores/" + seasonId + "/" + date);
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{date}/{matchId}/delete"}, method = RequestMethod.GET)
@@ -147,7 +147,18 @@ public class ScoreResource extends BaseController {
             away.add(User.defaultUser());
             home.addAll(members.get("home"));
             away.addAll(members.get("away"));
+            int homeWins = 0;
+            int awayWins = 0;
+            for (PlayerResult result : results.getPlayerResults()) {
+                homeWins += result.getHomeRacks();
+                awayWins += result.getAwayRacks();
+            }
 
+            homeWins += results.getPlayerResults().iterator().next().getTeamMatch().getHomeForfeits();
+            awayWins += results.getPlayerResults().iterator().next().getTeamMatch().getAwayForfeits();
+
+            model.addAttribute("homeWins",homeWins);
+            model.addAttribute("awayWins",awayWins);
             model.addAttribute("teamMatch", results.getPlayerResults().iterator().next().getTeamMatch());
             model.addAttribute("homeMembers", home);
             model.addAttribute("awayMembers", away);

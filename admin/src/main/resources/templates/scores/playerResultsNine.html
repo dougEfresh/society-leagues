@@ -22,9 +22,9 @@
                             <th></th>
                             <th>#</th>
                             <th>Home</th>
-                            <th>Racks</th>
+                            <th th:text="'Wins (' + ${homeWins} + ')'" >>Racks</th>
                             <th>Away</th>
-                            <th>Racks</th>
+                            <th th:text="'Wins (' + ${awayWins} + ')'" >>Racks</th>
                             </thead>
                             <tbody>
                             <tr th:each="result, rowStat: *{playerResults}">

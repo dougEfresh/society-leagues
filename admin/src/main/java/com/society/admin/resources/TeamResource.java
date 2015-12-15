@@ -56,17 +56,18 @@ public class TeamResource extends BaseController {
         }
         List<Season> season  = seasonApi.active();
         for (Season s : season) {
-            if (u.hasSeason(s))
+            if (u.hasSeason(s)) {
                 continue;
-            u.addHandicap(new HandicapSeason(Handicap.NA,s));
+            }
+            u.addHandicap(new HandicapSeason(Handicap.NA, s));
         }
         u.setHandicapSeasons(u.getActiveHandicapSeasons());
-        model.addAttribute("editUser", u);
-        return "user/editUser";
+        model.addAttribute("editTeam", u);
+        return "team/editTeam";
     }
 
 
-    @RequestMapping(value = {"/user/{id}"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/team/{id}"}, method = RequestMethod.GET)
     public String edit(@PathVariable String id , Model model) {
         model.addAttribute("teams", teamApi.get(id));
         model.addAttribute("seasons", seasonApi.active());

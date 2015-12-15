@@ -30,6 +30,13 @@ public class TeamMatchModel {
         return matches.iterator().next().getSeason();
     }
 
+
+
+    /**
+     * Score sheets
+     * @param index
+     * @return
+     */
     public String getEightFrontMargin(Integer index) {
         if (index == 0) {
             return "";

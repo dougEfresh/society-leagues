@@ -63,6 +63,9 @@ public class TeamMatch extends LeagueObject {
     }
 
     public String getGameType() {
+        if (getDivision() == null)
+            return "Unknown";
+
         switch (getDivision()) {
             case NINE_BALL_CHALLENGE:
             case NINE_BALL_TUESDAYS:
