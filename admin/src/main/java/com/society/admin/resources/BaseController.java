@@ -22,6 +22,7 @@ public class BaseController {
     @Autowired TeamApi teamApi;
     @Autowired PlayerResultApi playerResultApi;
     @Autowired UserApi userApi;
+    @Autowired StatApi statApi;
 
     @ModelAttribute
     public void setModels(Model model) {

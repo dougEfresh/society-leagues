@@ -115,7 +115,7 @@ var scoreSeasonTest = function(test) {
 
     casper.then(function () {
         teamMatchCount = this.evaluate(function() {
-            return __utils__.findAll("#table-player-results > tbody > tr").length
+            return __utils__.findAll("#team-match-results > tbody > tr").length
         });
     });
 
