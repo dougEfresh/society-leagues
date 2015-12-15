@@ -70,7 +70,7 @@ var playerResultTest = function(test) {
         var m  = this.evaluate(function() {
             return __utils__.findAll("#table-player-results > tbody > tr").length
         });
-        test.assert(m == playerMatchCount+1, "TeamMatchCount++");
+        test.assert(m == playerMatchCount+1, "PlayerMatchCount++");
         playerMatchCount = m;
     });
 
@@ -81,13 +81,13 @@ var playerResultTest = function(test) {
         playerMatchId = rows[0].id;
     });
     casper.then(function () {
-        this.click('#delete-' + playerMatchId);
+        this.click('#delete-player-result-' + playerMatchId);
     });
      casper.then(function () {
          var m = this.evaluate(function() {
              return __utils__.findAll("#table-player-results > tbody > tr").length
          });
-         test.assert(m == playerMatchCount-1, "TeamMatchCount++");
+         test.assert(m == playerMatchCount-1, "PlayerMatchCount++");
          playerMatchCount  = m;
     });
 
