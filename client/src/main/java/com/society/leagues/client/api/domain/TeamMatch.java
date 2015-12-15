@@ -62,6 +62,20 @@ public class TeamMatch extends LeagueObject {
         return status;
     }
 
+    public String getGameType() {
+        switch (getDivision()) {
+            case NINE_BALL_CHALLENGE:
+            case NINE_BALL_TUESDAYS:
+            case MIXED_NINE:
+                return "9 Ball";
+            case MIXED_EIGHT:
+            case EIGHT_BALL_THURSDAYS:
+            case EIGHT_BALL_WEDNESDAYS:
+                return "8 Ball";
+        }
+        return "Unknown";
+    }
+
     public void setDivision(Division division) {
         this.division = division;
     }

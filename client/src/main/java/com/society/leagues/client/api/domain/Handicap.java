@@ -6,36 +6,42 @@ import java.util.List;
 import java.util.Map;
 
 public enum Handicap {
-    ONE,
-    TWO,
-    THREE,
-    FOUR,
-    FIVE,
-    SIX,
-    SEVEN,
-    EIGHT,
-    NINE,
-    TEN,
-    ELEVEN,
-    TWELVE,
-    THIRTEEN,
-    FOURTEEN,
-    FIFTEEN,
-    SIXTEEN,
-    SEVENTEEN,
-    D,
-    DPLUS,
-    C,
-    CPLUS,
-    B,
-    BPLUS,
-    A,
-    APLUS,
-    OPEN,
-    OPENPLUS,
-    PRO,
-    UNKNOWN,
-    NA;
+    ONE("1"),
+    TWO("1"),
+    THREE("1"),
+    FOUR("1"),
+    FIVE("1"),
+    SIX("1"),
+    SEVEN("1"),
+    EIGHT("1"),
+    NINE("1"),
+    TEN("1"),
+    ELEVEN("1"),
+    TWELVE("1"),
+    THIRTEEN("1"),
+    FOURTEEN("1"),
+    FIFTEEN("1"),
+    SIXTEEN("1"),
+    SEVENTEEN("1"),
+    D("1"),
+    DPLUS("1"),
+    C("1"),
+    CPLUS("1"),
+    B("1"),
+    BPLUS("1"),
+    A("1"),
+    APLUS("1"),
+    OPEN("1"),
+    OPENPLUS("1"),
+    PRO("1"),
+    UNKNOWN("UNKNOWN"),
+    NA("NA");
+
+    final String displayName;
+
+    Handicap(String displayName) {
+        this.displayName = displayName;
+    }
 
     public static String format(Handicap hc) {
         if (hc == null || hc == UNKNOWN) {

@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.stream.Collectors;
 
+@Controller
 public class UserResource extends BaseController {
 
     @Autowired ObjectMapper objectMapper;
@@ -26,6 +27,7 @@ public class UserResource extends BaseController {
             model.addAttribute("users", userApi.active().stream().filter(u->u.getName().toLowerCase().contains(search.toLowerCase())).collect(Collectors.toList()));
         else
             model.addAttribute("users", userApi.active());
+
         return "user/user";
     }
 
@@ -41,6 +43,11 @@ public class UserResource extends BaseController {
     @RequestMapping(value = {"/user/{id}"}, method = RequestMethod.GET)
     public String edit(@PathVariable String id , Model model) {
         return processEditUser(userApi.get(id),model);
+    }
+
+    @RequestMapping(value = {"/user/new"}, method = RequestMethod.GET)
+    public String edit(Model model) {
+        return processEditUser(User.defaultUser(),model);
     }
 
     @RequestMapping(value = {"/user/{id}"}, method = RequestMethod.POST)

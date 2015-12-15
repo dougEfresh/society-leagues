@@ -5,12 +5,10 @@
 </head>
 <body>
   <div id="user-app" layout:fragment="content">
-      <span class="subtitle">Users</span>
       <div class="search-block">
           <h2>Search User</h2>
           <form action="/admin/user" method="get">
               <input th:value="${search}" type="text" id="search" name="search"/>
-              <br />
               <input id="searchButton" name="searchButton" type="submit" value="Search"/>
           </form>
       </div>
@@ -28,7 +26,8 @@
                   <!--/*@thymesVar id="users" type="com.society.leagues.client.api.domain.User"*/-->
                   <tr th:each="user : ${users}">
                       <td th:id="${user.id}"><a th:href="@{/admin/user/{id}(id=${user.id})}"><span class="glyphicon glyphicon-edit"></span></a></td>
-                      <td th:text="${user.name}">
+                      <td>
+                          <a th:text="${user.name}" th:href="@{/admin/user/{id}(id=${user.id})}"></a>
                       </td>
                       <td th:text="${user.login}"></td>
                       <td th:text="${user.role}"></td>

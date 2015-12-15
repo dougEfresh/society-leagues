@@ -32,7 +32,7 @@
             margin: -50px 0px 0px -50px;
             width: 108%;
             height: 954px;
-            background-image: url('/img/8-ball_Thurs_Scoresheet_F.jpg');
+            background-image: url('/admin/img/8-ball_Thurs_Scoresheet_F.jpg');
             background-repeat: no-repeat;
             background-position: top left;
             background-size: 100% 100%;
@@ -40,9 +40,71 @@
         }
 
         .sheet_page2_bg {
-            background-image: url('/img/8-ball_Thurs_Scoresheet_B.jpg');
+            background-image: url('/admin/img/8-ball_Thurs_Scoresheet_B.jpg');
             margin: -10px 0px 0px -50px;
         }
+
+
+        .sheet_Weds8Ball_page1_bg,  .sheet_Weds8Ball_page2_bg {
+            clear: both;
+            position: relative;
+            float: left;
+            display: block;
+            margin: -50px 0px 0px -50px;
+            width: 108%;
+            height: 954px;
+            background-image: url('/admin/img/8-ball_Wed_Scoresheet_F.jpg');
+            background-repeat: no-repeat;
+            background-position: top left;
+            background-size: 100% 100%;
+            page-break-after: always;
+        }
+
+         .sheet_Weds8Ball_page2_bg {
+            background-image: url('/admin/img/8-ball_Wed_Scoresheet_B.jpg');
+            margin: -10px 0px 0px -50px;
+        }
+
+        .sheet_Thurs8Ball_page1_bg,  .sheet_Thurs8Ball_page2_bg {
+            clear: both;
+            position: relative;
+            float: left;
+            display: block;
+            margin: -50px 0px 0px -50px;
+            width: 108%;
+            height: 954px;
+            background-image: url('/admin/img/8-ball_Thurs_Scoresheet_F.jpg');
+            background-repeat: no-repeat;
+            background-position: top left;
+            background-size: 100% 100%;
+            page-break-after: always;
+        }
+
+         .sheet_Thurs8Ball_page2_bg {
+            background-image: url('/admin/img/8-ball_Thurs_Scoresheet_B.jpg');
+            margin: -10px 0px 0px -50px;
+        }
+
+        .sheet_Tues9Ball_page1_bg,  .sheet_Tues9Ball_page2_bg {
+            clear: both;
+            position: relative;
+            float: left;
+            display: block;
+            margin: -50px 0px 0px -50px;
+            width: 108%;
+            height: 954px;
+            background-image: url('/admin/img/9-ball_Scoresheet_F.jpg');
+            background-repeat: no-repeat;
+            background-position: top left;
+            background-size: 100% 100%;
+            page-break-after: always;
+        }
+
+         .sheet_Tues9Ball_page2_bg {
+            background-image: url('/admin/img/9-ball_Scoresheet_B.jpg');
+            margin: -10px 0px 0px -50px;
+        }
+
 
         .margin-top-clear {
             margin-top: 0px;
@@ -147,44 +209,42 @@
 
 <body>
 <!-- BEGIN SHEET -->
-<div id="set1">
-    <div class="sheet_page1_bg">
-        <div class="game-type">
+<div th:each="match, rowIndex: ${matches.getMatches()}">
+    <div th:class="'sheet_page1_bg ' + ${matches.getFrontMargin(rowIndex.index)}" >
+        <div th:text="${match.getGameType()}" class="game-type">
             8 BALL
         </div>
-        <div class="game-date">
+        <div th:text="${date}" class="game-date">
             Nov 1, 2015
         </div>
-        <div class="home-name">
+        <div th:text="${match.getHome().getName()}" class="home-name">
             Honey Badgers Yayce
         </div>
-        <div class="away-name">
+        <div th:text="${match.getAway().getName()}" class="away-name">
             Ballocks
         </div>
-
     </div>
-
-
-    <div class="sheet_page2_bg">
-
-        <div class="game-type">
+    <div th:class="'sheet_page2_bg ' + ${matches.getBackMargin(rowIndex.index)}" >
+        <div th:text="${match.getGameType()}" class="game-type">
             8 BALL
         </div>
-        <div class="home-name-back">
-            Honey Badgers Yayce
+        <div th:text="${match.getHome().getName()}" class="home-name-back">
         </div>
-        <div class="away-name-back">
-            Blue Balls
+        <div th:text="${match.getAway().getName()}" class="away-name-back">
         </div>
         <div class="home-roster">
-            Jared "JChops" Pereira (6)
+            <div th:each="user : ${match.getHome().getTeamMembers().getMembers()}">
+                <span th:text="${user.getSheetName(season.id)}">
+                </span>
+            </div>
         </div>
         <div class="away-roster">
-            Doug "Buzzsaw McGee" Chimento (6)
+            <div th:each="user : ${match.getAway().getTeamMembers().getMembers()}">
+                <span th:text="${user.getSheetName(season.id)}">
+                </span>
+            </div>
         </div>
-
     </div>
-
 </div>
 
 <!-- END SHEET -->

@@ -12,6 +12,10 @@ import java.util.Map;
 @Headers({"Accept: application/json, */* ","Content-Type: application/json", "Accept-Encoding: gzip, deflate, sdch"})
 public interface TeamMatchApi {
 
+
+    @RequestLine("GET /api/teammatch/{id}")
+    TeamMatch get(@Param("id") String id);
+
     @RequestLine("GET /api/teammatch/season/{id}/all")
     Map<String,List<TeamMatch>> matchesBySeason(@Param("id") String id);
 

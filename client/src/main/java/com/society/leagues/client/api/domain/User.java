@@ -171,6 +171,12 @@ public class User extends LeagueObject {
          }
     }
 
+    public String getSheetName(String seasonId) {
+        String n = getName() + " (";
+        n += Handicap.format(getHandicap(new Season(seasonId))) + ")";
+        return n;
+    }
+
     public boolean isReal() {
         if (lastName == null)
             return false;

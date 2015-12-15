@@ -20,6 +20,7 @@
             <th>Away</th>
             <th>Racks</th>
             <th>Forfeits</th>
+            <th>Sheet</th>
             </thead>
             <tbody>
 
@@ -74,6 +75,11 @@
                  <td class="racks">
                     <input th:id="${'awayForfeits-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].awayForfeits}" type="text"
                            th:value="${match.awayForfeits}"/>
+                </td>
+                 <td class="sheet-link">
+                    <a th:id="${'sheet-' + match.getId()}" th:href="@{/admin/sheets/{matchId} (matchId=${match.id})}">
+                        Sheet
+                    </a>
                 </td>
             </tr>
             </tbody>
