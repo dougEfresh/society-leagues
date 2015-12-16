@@ -155,6 +155,7 @@ public class StatService {
                 );
                 s.setSeason(season);
                 s.setTeam(teams.stream().filter(t->t.hasUser(user)).findFirst().orElse(null));
+                s.setHandicap(user.getHandicap(season));
                 stats.add(s);
             }
             userSeasonStats.put(season,stats);
