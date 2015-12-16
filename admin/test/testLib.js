@@ -9,6 +9,8 @@ var timeout = casper.cli.has("timeout") ? casper.cli.get("timeout") : 10000;
 casper.options.viewportSize = {width:width, height: height};
 var authUser = null;
 var teamMatchCount = 0;
+var playerMatchCount = 0;
+var playerMatchId = null;
 var teamMatchId = null;
 var teamMatchDate = null;
 var homeRacks = 0;
@@ -33,6 +35,60 @@ var login = function (test,username,password) {
     });
     casper.then(function () {
         this.click('#submit');
+    });
+
+};
+
+var playerResultTest = function(test) {
+   casper.then(function () {
+        var rows  = this.evaluate(function() {
+            return __utils__.findAll("#team-match-results > tbody > tr")
+        });
+        teamMatchId = rows[0].id;
+    });
+
+    casper.then(function () {
+        this.click('#player-results-' + teamMatchId);
+    });
+
+    casper.then(function () {
+        test.assertExists("#player-results");
+    });
+    casper.then(function () {
+        playerMatchCount = this.evaluate(function() {
+            return __utils__.findAll("#table-player-results > tbody > tr").length
+        });
+    });
+    casper.then(function () {
+        this.clickLabel('Add');
+    });
+
+    casper.then(function () {
+        test.assertExists("#player-results");
+    });
+    casper.then(function () {
+        var m  = this.evaluate(function() {
+            return __utils__.findAll("#table-player-results > tbody > tr").length
+        });
+        test.assert(m == playerMatchCount+1, "PlayerMatchCount++");
+        playerMatchCount = m;
+    });
+
+    casper.then(function () {
+        var rows  = this.evaluate(function() {
+            return __utils__.findAll("#table-player-results > tbody > tr")
+        });
+        playerMatchId = rows[0].id;
+    });
+    casper.then(function () {
+        this.click('#delete-player-result-' + playerMatchId);
+    });
+     casper.then(function () {
+         var m = this.evaluate(function() {
+             return __utils__.findAll("#table-player-results > tbody > tr").length
+         });
+         test.assert(m == playerMatchCount-1, "PlayerMatchCount++");
+         playerMatchCount  = m;
     });
 
 };
@@ -198,5 +254,6 @@ module.exports = {
     login: login,
     scoreSeasonTest: scoreSeasonTest,
     scoreSubmitTest: scoreSubmitTest,
+    playerResultTest: playerResultTest,
     authUser: authUser
 };

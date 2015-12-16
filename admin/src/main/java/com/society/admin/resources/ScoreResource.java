@@ -136,6 +136,7 @@ public class ScoreResource extends BaseController {
         model.addAttribute("teams", teamApi.getBySeason(seasonId));
         Season s = seasonApi.get(seasonId);
         model.addAttribute("season",s);
+        model.addAttribute("stats",statApi.getSeasonStats(seasonId));
 
         if (matchId != null) {
             PlayerResultModel results = new PlayerResultModel(playerResultApi.getPlayerResultByTeamMatch(matchId),matchId);

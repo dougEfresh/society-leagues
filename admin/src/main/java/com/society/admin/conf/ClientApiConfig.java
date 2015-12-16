@@ -66,6 +66,11 @@ public class ClientApiConfig {
     }
 
     @Bean
+    public StatApi statApi() {
+       return getApi(StatApi.class);
+    }
+
+    @Bean
     public UserApi userApi() {
        return getApi(UserApi.class);
     }
