@@ -101,10 +101,10 @@ public class ScoreResource extends BaseController {
                 if (!s.isChallenge() && !s.isNine()) {
                     for (PlayerResult playerResult : playerResultModel.getPlayerResults()) {
                         if (playerResult.isHomeWinner()) {
-                            playerResult.setHomeRacks(playerResult.isScotch() ? 2 : 1);
+                            playerResult.setHomeRacks(1);
                             playerResult.setAwayRacks(0);
                         } else {
-                            playerResult.setAwayRacks(playerResult.isScotch() ? 2 : 1);
+                            playerResult.setAwayRacks(1);
                             playerResult.setHomeRacks(0);
                         }
                     }
