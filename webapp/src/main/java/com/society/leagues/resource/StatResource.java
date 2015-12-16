@@ -52,7 +52,7 @@ public class StatResource {
             stats = statService.getUserSeasonStats().get(team.getSeason()).stream().parallel().filter(s -> team.hasUser(s.getUser()))
                     .collect(Collectors.toList());
         }
-        
+
         for (User user : team.getMembers().getMembers()) {
             if (stats.stream().filter(s->s.getUser().equals(user)).count() == 0) {
                 Stat stat = new Stat();
@@ -114,7 +114,9 @@ public class StatResource {
              return Collections.emptyList();
 
          List<Stat> playerStats = statService.getUserSeasonStats().get(season);
-         if (!season.isChallenge() || playerStats == null)
+         if (playerStats == null)
+             playerStats = Collections.emptyList();
+         if (!season.isChallenge())
              return playerStats;
 
          List<MatchPoints> points = resultService.matchPoints();
