@@ -20,7 +20,6 @@ public class ResultService {
     @PostConstruct
     public void init() {
         refresh();
-        scrambleGameType();
     }
 
     public Collection<PlayerResult> createNewPlayerResults(TeamMatch teamMatch) {

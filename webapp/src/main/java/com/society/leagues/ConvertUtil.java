@@ -1099,4 +1099,26 @@ public class ConvertUtil {
     }
 
 
+    public void updateRacks() {
+        List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().filter(r->r.getSeason().isScramble()).collect(Collectors.toList());
+        for (PlayerResult result : results) {
+            if (result.isScotch()) {
+                if (result.getHomeRacks()>0) {
+                    result.setHomeRacks(2);
+                }
+
+                if (result.getAwayRacks()>0) {
+                    result.setAwayRacks(2);
+                }
+            } else {
+                if (result.getHomeRacks()>0) {
+                    result.setHomeRacks(1);
+                }
+
+                if (result.getAwayRacks()>0) {
+                    result.setAwayRacks(1);
+                }
+            }
+        }
+    }
 }
