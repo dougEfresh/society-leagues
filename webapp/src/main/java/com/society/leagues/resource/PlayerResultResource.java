@@ -55,6 +55,7 @@ public class PlayerResultResource {
     @JsonView(PlayerResultView.class)
     public List<PlayerResult> getPlayerResultTeamMatch(Principal principal, @PathVariable String id) {
         TeamMatch tm = leagueService.findOne(new TeamMatch(id));
+
         Collection<PlayerResult> results;
         if (tm.getSeason().isActive()) {
             results = leagueService.findCurrent(PlayerResult.class);
@@ -221,7 +222,9 @@ public class PlayerResultResource {
             }
         }
         Map<String,Object> r = new HashMap<>();
-        r.put("stats",statService.getUserSeasonStats().get(s).parallelStream().filter(st->st.getUser().equals(u)).findFirst().orElse(null));
+        if (statService.getUserSeasonStats().containsKey(s))
+            r.put("stats",statService.getUserSeasonStats().get(s).parallelStream().filter(st->st.getUser().equals(u)).findFirst().orElse(null));
+
         r.put("results",copyResults);
 
         return r;

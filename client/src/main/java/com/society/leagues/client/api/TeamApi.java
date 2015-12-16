@@ -17,6 +17,5 @@ public interface TeamApi {
     List<Team> active();
 
     @RequestLine("GET /api/team/{id}")
-    List<Team> get(@Param("id") String id);
-
+    Team get(@Param("id") String id);
 }

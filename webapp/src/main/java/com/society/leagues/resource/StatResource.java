@@ -46,8 +46,13 @@ public class StatResource {
             return Collections.emptyList();
         }
 
-        List<Stat> stats = statService.getUserSeasonStats().get(team.getSeason()).stream().parallel().filter(s -> team.hasUser(s.getUser()))
-                .collect(Collectors.toList());
+        List<Stat> stats = new ArrayList<>();
+
+        if (statService.getUserSeasonStats().containsKey(team.getSeason())) {
+            stats = statService.getUserSeasonStats().get(team.getSeason()).stream().parallel().filter(s -> team.hasUser(s.getUser()))
+                    .collect(Collectors.toList());
+        }
+        
         for (User user : team.getMembers().getMembers()) {
             if (stats.stream().filter(s->s.getUser().equals(user)).count() == 0) {
                 Stat stat = new Stat();

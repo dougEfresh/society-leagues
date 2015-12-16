@@ -16,7 +16,7 @@
                     <a th:href="@{/admin/sheets/{id}/{date} (id=${season.id},date=${date})}">Sheets</a>
                 </span>
                     <form id="form-select-date">
-                    <select name="select-date" id="select-date" onChange="selectDate()" class="form-control" >
+                    <select name="select-date" id="select-date" th:onChange="'selectDate()'" class="form-control" >
                         <option th:each="d: ${dates}"
                                 th:text="${d}"
                                 th:value="${d}"

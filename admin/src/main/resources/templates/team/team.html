@@ -2,19 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="/layout">
 <body>
   <div id="team-app" layout:fragment="content">
-      <div class="search-block">
-          <form action="/admin/team" method="get">
-              <input th:value="${search}" type="text" id="search" name="search"/>
-              <input id="searchButton" name="searchButton" type="submit" value="Search"/>
-              <a href="/admin/team/new">Add New</a>
-          </form>
-      </div>
-
       <div id="teams" >
           <div class="table-responsive">
               <table class="table table-stripped table-bordered table-condensed table">
                   <thead>
-                  <th>Name</th>
+                  <th>Name -    <a href="/admin/team/new">Add New</a></th>
                   <th>Season</th>
                   </thead>
                   <tbody>

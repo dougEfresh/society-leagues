@@ -21,13 +21,7 @@
     </div>
 
     <script>
-        function selectDate(e) {
-            var myselect = document.getElementById("select-date");
-            console.log(e);
-            console.log(window.location.pathname);
-            console.log(myselect.options[myselect.selectedIndex].value);
-            window.location = myselect.options[myselect.selectedIndex].value;
-        }
+
     </script>
     <div th:if="${season ne null}">
         <div id="stats" class="panel panel-default">

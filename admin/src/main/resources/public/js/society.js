@@ -1,3 +1,11 @@
+function selectDate(e,s) {
+    var myselect = document.getElementById("select-date");
+    console.log(e);
+    console.log(window.location.pathname);
+    console.log(myselect.options[myselect.selectedIndex].value);
+    window.location = myselect.options[myselect.selectedIndex].value;
+}
+
 $(function() {
 
     $('#side-menu').metisMenu();

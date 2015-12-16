@@ -69,8 +69,7 @@ public class TeamResource extends BaseController {
 
     @RequestMapping(value = {"/team/{id}"}, method = RequestMethod.GET)
     public String edit(@PathVariable String id , Model model) {
-        model.addAttribute("teams", teamApi.get(id));
-        model.addAttribute("seasons", seasonApi.active());
+        model.addAttribute("team", teamApi.get(id));
         return "team/editTeam";
     }
 

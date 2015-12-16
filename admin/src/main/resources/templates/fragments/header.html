@@ -57,9 +57,9 @@
                         </li>
                         <li>
                             <a href="#">
-                                    <span class="glyphicon glyphicon-th-list"></span> Scores<span class="fa arrow"></span>
+                                <span class="glyphicon glyphicon-th-list"></span> Scores<span class="fa arrow"></span>
                             </a>
-                            <ul class="nav nav-second-level">
+                            <ul th:if="${seasons ne null}" class="nav nav-second-level">
                                 <!--/*@thymesVar id="seasons" type="List<com.society.leagues.client.api.domain.Season>"*/-->
                                 <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
                                 <li th:each="season : ${seasons}">
@@ -71,7 +71,7 @@
                         <li>
                             <a href="/admin/user"><i class="fa fa-user fa-fw"></i> Users</a>
                         </li>
-                        <li class="hide">
+                        <li >
                             <a href="/admin/team"><i class="fa fa-users fa-fw"></i> Teams</a>
                         </li>
                     </ul>
