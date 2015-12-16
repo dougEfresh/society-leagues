@@ -1119,6 +1119,9 @@ public class ConvertUtil {
                     result.setAwayRacks(1);
                 }
             }
+
+            playerResultRepository.save(result);
         }
+
     }
 }
