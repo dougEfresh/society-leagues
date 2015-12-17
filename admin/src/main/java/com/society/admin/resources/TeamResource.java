@@ -1,5 +1,6 @@
 package com.society.admin.resources;
 
+import com.society.admin.model.TeamModel;
 import com.society.admin.model.UserModel;
 import com.society.leagues.client.api.UserApi;
 import com.society.leagues.client.api.domain.*;
@@ -51,37 +52,26 @@ public class TeamResource extends BaseController {
         return "team/team";
     }
 
-    private String processEditUser(User u, Model model) {
-        int i = 0;
-        for (HandicapSeason handicapSeason : u.getHandicapSeasons()) {
-            handicapSeason.setIndex(i++);
-        }
-        List<Season> season  = seasonApi.active();
-        for (Season s : season) {
-            if (u.hasSeason(s)) {
-                continue;
-            }
-            u.addHandicap(new HandicapSeason(Handicap.NA, s));
-        }
-        u.setHandicapSeasons(u.getActiveHandicapSeasons());
-        model.addAttribute("editTeam", u);
+    private String processEditTeam(String id, Model model) {
+        TeamModel tm = TeamModel.fromTeam(teamApi.get(id));
+        tm.setUsers(teamApi.members(id).stream().filter(User::isReal).collect(Collectors.toList()));
+        model.addAttribute("team",tm);
+        model.addAttribute("allUsers", userApi.all());
         return "team/editTeam";
     }
 
 
     @RequestMapping(value = {"/team/{id}"}, method = RequestMethod.GET)
     public String edit(@PathVariable String id , Model model) {
-        model.addAttribute("team", teamApi.get(id));
-        List<UserModel> userModelList = UserModel.fromUsers(userApi.all());
-        for(User u : teamApi.members(id)) {
-            Optional<UserModel> user = userModelList.stream().filter(usr->u.equals(usr)).findAny();
-            if (user.isPresent()) {
-                user.get().setSelected(true);
-            }
-        }
-        model.addAttribute("users", userModelList);
-        model.addAttribute("members", teamApi.members(id));
+        processEditTeam(id,model);
         return "team/editTeam";
+    }
+
+    @RequestMapping(value = {"/team/{id}"}, method = RequestMethod.POST)
+    public String save(@PathVariable String id, @ModelAttribute("team") TeamModel teamModel, Model model, HttpServletResponse response) {
+        teamModel.setMembers(new TeamMembers(teamModel.getUsers()));
+        teamApi.save()
+        return processEditTeam(id,model);
     }
 
     /*

@@ -20,7 +20,7 @@ public class UserModel extends User {
         return modelList;
     }
 
-    boolean selected;
+    public boolean selected;
 
     public boolean isSelected() {
         return selected;

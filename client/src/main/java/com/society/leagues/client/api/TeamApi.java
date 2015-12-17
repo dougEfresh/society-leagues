@@ -1,6 +1,7 @@
 package com.society.leagues.client.api;
 
 import com.society.leagues.client.api.domain.Team;
+import com.society.leagues.client.api.domain.TeamMembers;
 import com.society.leagues.client.api.domain.User;
 import feign.Headers;
 import feign.Param;
@@ -19,6 +20,9 @@ public interface TeamApi {
 
     @RequestLine("GET /api/team/{id}")
     Team get(@Param("id") String id);
+
+    @RequestLine("GET /api/team/{teamId}/members")
+    List<User> members(@Param("teamId") String teamId);
 
     @RequestLine("GET /api/team/{teamId}/members")
     List<User> members(@Param("teamId") String teamId);

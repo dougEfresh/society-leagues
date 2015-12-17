@@ -6,6 +6,16 @@ function selectDate(e,s) {
     window.location = myselect.options[myselect.selectedIndex].value;
 }
 
+function searchUser(e) {
+
+}
+ $(document).ready(function() {
+     console.log('select2');
+     $(".js-multiple").select2({ width: 600 });
+ });
+
+
+
 $(function() {
 
     $('#side-menu').metisMenu();

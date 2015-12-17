@@ -16,17 +16,27 @@
     <form id="user-form" action="#" th:action="@{/admin/team/{id}(id=${team.id})}" th:object="${team}" method="post">
         <div class="form-group">
             <input type="hidden" th:value="${team.id}" th:field="*{id}"/>
+            <input type="hidden" th:value="${team.season.id}" th:field="*{season.id}"/>
             <label class="col-sm-2 control-label">Name</label>
             <div class="col-sm-10">
-                <input th:value="*{name}" th:field="*{name}" id="name"
+                <input th:value="*{name}"
+                       th:field="*{name}" id="name"
                        type="input" name="name"
                        class="form-control" />
+                <select th:field="*{users}" id="members" class="js-multiple" multiple="multiple">
+                    <option th:field="*{users}"
+                            th:each="u : ${allUsers}"
+                            th:value="${u.id}"
+                            th:text="${u.name}"
+                            th:selected="${team.hasUser('__${u.id}__')}">
+                    </option>
+                </select>
             </div>
         </div>
-            <div class="col-sm-offset-2 col-sm-10">
-                <br/>
-                <input id="submit" type="submit" class="btn btn-sm btn-primary btn-responsive"/>
-            </div>
+        <div class="col-sm-offset-2 col-sm-10">
+            <br/>
+            <input id="submit" type="submit" class="btn btn-sm btn-primary btn-responsive"/>
+        </div>
     </form>
 </div>
 </body>
