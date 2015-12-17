@@ -22,7 +22,7 @@ public interface TeamApi {
     Team get(@Param("id") String id);
 
     @RequestLine("GET /api/team/{teamId}/members")
-    List<User> members(@Param("teamId") String teamId);
+    List<TeamMembers> members(@Param("teamId") String teamId);
 
     @RequestLine("POST /api/team/admin/modify")
     Team save(Team team);
