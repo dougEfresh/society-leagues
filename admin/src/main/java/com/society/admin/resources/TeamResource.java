@@ -55,7 +55,7 @@ public class TeamResource extends BaseController {
     private String processEditTeam(String id, Model model) {
         TeamModel tm = TeamModel.fromTeam(teamApi.get(id));
         tm.setUsers(teamApi.members(id).stream().filter(User::isReal).collect(Collectors.toList()));
-        model.addAttribute("team",tm);
+        model.addAttribute("team", tm);
         model.addAttribute("allUsers", userApi.all());
         return "team/editTeam";
     }
@@ -70,7 +70,15 @@ public class TeamResource extends BaseController {
     @RequestMapping(value = {"/team/{id}"}, method = RequestMethod.POST)
     public String save(@PathVariable String id, @ModelAttribute("team") TeamModel teamModel, Model model, HttpServletResponse response) {
         teamModel.setMembers(new TeamMembers(teamModel.getUsers()));
-        teamApi.save()
+        try {
+            teamApi.save(teamModel);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            model.addAttribute("save","error");
+            StringWriter errors = new StringWriter();
+            e.printStackTrace(new PrintWriter(errors));
+            model.addAttribute("error",errors.toString());
+        }
         return processEditTeam(id,model);
     }
 
