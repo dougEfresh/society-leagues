@@ -43,6 +43,14 @@ public class Season extends LeagueObject   {
     public Season() {
     }
 
+    public static Season getDefault() {
+        Season s = new Season();
+        s.setSeasonStatus(Status.PENDING);
+        s.setDivision(Division.NINE_BALL_TUESDAYS);
+        s.setName("default");
+        return s;
+    }
+
     public Season(String id) {
         this.id = id;
     }
@@ -66,6 +74,19 @@ public class Season extends LeagueObject   {
         if (this.name != null) {
             return this.name;
         }
+        if (division == Division.NINE_BALL_CHALLENGE) {
+            return "Top Gun";
+        }
+        if (year == null || division == null)
+            return "";
+
+        String name = "'" + year.substring(2,4) + " ";
+        name += type;
+        name += " " + division.displayName;
+        return name;
+    }
+
+     public String getFormattedName() {
         if (division == Division.NINE_BALL_CHALLENGE) {
             return "Top Gun";
         }

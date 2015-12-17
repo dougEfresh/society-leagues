@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 
 public class BaseController {
-    static Logger logger = LoggerFactory.getLogger(UserResource.class);
+    static Logger logger = LoggerFactory.getLogger(BaseController.class);
     @Autowired TeamMatchApi teamMatchApi;
     @Autowired SeasonApi seasonApi;
     @Autowired TeamApi teamApi;

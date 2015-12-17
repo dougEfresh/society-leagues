@@ -31,14 +31,13 @@ public class TeamResource {
     @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @JsonView(PlayerResultView.class)
-    public Team modify(@RequestBody Map<String,Object> body) {
-        Team existingTeam = leagueService.findOne(new Team(body.get("id").toString()));
+    public Team modify(@RequestBody Team body) {
+        Team existingTeam = leagueService.findOne(new Team(body.getId()));
         if (existingTeam == null) {
             existingTeam = new Team();
         }
-        Map<String,Object> season = (Map<String, Object>) body.get("season");
-        existingTeam.setSeason(leagueService.findOne(new Season(season.get("id").toString())));
-        existingTeam.setName(body.get("name").toString());
+        existingTeam.setSeason(leagueService.findOne(new Season(body.getSeason().getId()));
+        existingTeam.setName(body.getName());
         return leagueService.save(existingTeam);
     }
 

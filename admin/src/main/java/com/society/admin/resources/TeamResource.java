@@ -54,12 +54,14 @@ public class TeamResource extends BaseController {
 
     private String processEditTeam(String id, Model model) {
         TeamModel tm = TeamModel.fromTeam(teamApi.get(id));
-        tm.setUsers(teamApi.members(id).stream().filter(User::isReal).collect(Collectors.toList()));
+        TeamMembers members = teamApi.members(id);
+        tm.setUsers(members.getMembers().stream().filter(User::isReal).collect(Collectors.toList()));
+        tm.setMembersId(members.getId());
         model.addAttribute("team", tm);
         model.addAttribute("allUsers", userApi.all());
+        model.addAttribute("allSeasons", seasonApi.get());
         return "team/editTeam";
     }
-
 
     @RequestMapping(value = {"/team/{id}"}, method = RequestMethod.GET)
     public String edit(@PathVariable String id , Model model) {
@@ -72,7 +74,7 @@ public class TeamResource extends BaseController {
         if (id.equals("new"))
             teamModel.setId(null);
         TeamMembers members = new TeamMembers(teamModel.getUsers());
-        members.setId(teamModel.getMembers().getId());
+        members.setId(teamModel.getMembersId());
         try {
             Team  t = teamApi.save(teamModel);
             teamApi.saveMembers(t.getId(),members);
