@@ -39,7 +39,7 @@
             </div>
             <label class="col-sm-2 control-label">Season</label>
             <div class="col-sm-10">
-                <select id="all-seasons" >
+                <select th:field="*{season.id}" id="all-seasons" >
                     <option th:field="*{season.id}"
                             th:each="s : ${allSeasons}"
                             th:value="${s.id}"

@@ -21,7 +21,7 @@ public class Team extends LeagueObject {
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime created;
-    @NotNull @DBRef TeamMembers members;
+    @DBRef TeamMembers members;
     Integer rank = 0;
     public Team(Season season, String name) {
         this.season = season;
