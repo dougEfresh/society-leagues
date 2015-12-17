@@ -7,6 +7,7 @@ import com.society.admin.exception.UnauthorizedException;
 import com.society.admin.security.CookieContext;
 import com.society.leagues.client.api.*;
 import com.society.leagues.client.api.domain.Season;
+import com.society.leagues.client.api.domain.Team;
 import feign.*;
 import feign.codec.ErrorDecoder;
 import feign.jackson.JacksonDecoder;
@@ -14,6 +15,7 @@ import feign.jackson.JacksonEncoder;
 import feign.slf4j.Slf4jLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.context.SecurityContext;
@@ -24,10 +26,9 @@ import javax.annotation.PostConstruct;
 @Configuration
 public class ClientApiConfig {
     @Autowired ObjectMapper objectMapper;
+    @Autowired ClientApiProperties clientApiProperties;
     JacksonDecoder decoder;
     JacksonEncoder encoder;
-    @Value("${rest.url}")
-    String restUrl;
 
     @PostConstruct
     public void init() {
@@ -56,13 +57,17 @@ public class ClientApiConfig {
     }
 
     private <T> T getApi(Class<T> clzz) {
+        return getApi(clzz, false);
+    }
+
+    private <T> T getApi(Class<T> clzz, boolean debug) {
         return Feign.builder().encoder(encoder).decoder(decoder)
                 .logger(new Slf4jLogger())
                 .client(new LeagueHttpClient())
-                .logLevel(Logger.Level.HEADERS)
+                .logLevel(debug ? Logger.Level.FULL  : Logger.Level.HEADERS)
                 .errorDecoder(new CustomErrorDecoder())
                 .requestInterceptor(new HeadersInterceptor())
-                .target(clzz, restUrl);
+                .target(clzz, clientApiProperties.getEndpoint());
     }
 
     @Bean
@@ -82,7 +87,7 @@ public class ClientApiConfig {
 
     @Bean
     public TeamApi teamApi() {
-        return getApi(TeamApi.class);
+        return getApi(TeamApi.class, (clientApiProperties.teamDebug()));
     }
 
     @Bean

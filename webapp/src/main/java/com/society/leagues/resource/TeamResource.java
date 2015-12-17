@@ -39,19 +39,26 @@ public class TeamResource {
         Map<String,Object> season = (Map<String, Object>) body.get("season");
         existingTeam.setSeason(leagueService.findOne(new Season(season.get("id").toString())));
         existingTeam.setName(body.get("name").toString());
-        TeamMembers existingMembers = existingTeam.getMembers();
-        Map<String,Object> members = (Map<String, Object>) body.get("members");
-        if (members != null &&  members.get("members") != null) {
-            List<Map<String,Object>> user = (List<Map<String, Object>>) members.get("members");
-            if (!user.isEmpty()) {
-                existingMembers.setMembers(new HashSet<>());
-                for (Map<String, Object> u : user) {
-                    existingMembers.addMember(leagueService.findOne(
-                                    new User(u.get("id").toString())
-                            )
-                    );
-                }
-            }
+        return leagueService.save(existingTeam);
+    }
+
+    @RequestMapping(value = "/admin/modify/members/{teamId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Team modifyMembers(@PathVariable String teamId, @RequestBody TeamMembers teamMembers) {
+        TeamMembers existingMembers = leagueService.findOne(teamMembers);
+        Team existingTeam = leagueService.findOne(new Team(teamId));
+        if (existingTeam == null)
+            throw new RuntimeException("Team doesn't exist");
+
+        if (existingMembers == null) {
+            existingMembers = new TeamMembers();
+        }
+        existingMembers.setMembers(new HashSet<>());
+
+        for (User user : teamMembers.getMembers()) {
+            existingMembers.addMember(leagueService.findOne(
+                    new User(user.getId())
+            ));
         }
         leagueService.save(existingMembers);
         existingTeam.setMembers(existingMembers);
