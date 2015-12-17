@@ -1,5 +1,6 @@
 package com.society.admin.resources;
 
+import com.society.admin.model.UserModel;
 import com.society.leagues.client.api.UserApi;
 import com.society.leagues.client.api.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -70,6 +72,15 @@ public class TeamResource extends BaseController {
     @RequestMapping(value = {"/team/{id}"}, method = RequestMethod.GET)
     public String edit(@PathVariable String id , Model model) {
         model.addAttribute("team", teamApi.get(id));
+        List<UserModel> userModelList = UserModel.fromUsers(userApi.all());
+        for(User u : teamApi.members(id)) {
+            Optional<UserModel> user = userModelList.stream().filter(usr->u.equals(usr)).findAny();
+            if (user.isPresent()) {
+                user.get().setSelected(true);
+            }
+        }
+        model.addAttribute("users", userModelList);
+        model.addAttribute("members", teamApi.members(id));
         return "team/editTeam";
     }
 

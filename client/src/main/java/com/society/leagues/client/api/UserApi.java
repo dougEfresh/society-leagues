@@ -25,4 +25,7 @@ public interface UserApi {
 
     @RequestLine("GET /api/user/admin/create")
     User create(User user);
+
+    @RequestLine("GET /api/user/all")
+    List<User> all();
 }

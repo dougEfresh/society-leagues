@@ -156,5 +156,13 @@ public class TeamResource {
         );
     }
 
+    @RequestMapping(value = "/{id}/members", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public Collection<User> getMembers(Principal principal, @PathVariable String id) {
+        Team t =  leagueService.findOne(new Team(id));
+        if (t  == null)
+            return Collections.emptyList();
+
+        return t.getMembers().getMembers();
+    }
 
 }

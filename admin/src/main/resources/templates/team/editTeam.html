@@ -15,7 +15,7 @@
      </div>
     <form id="user-form" action="#" th:action="@{/admin/team/{id}(id=${team.id})}" th:object="${team}" method="post">
         <div class="form-group">
-            <input type="hidden" th:value="${editUser.id}" th:field="*{id}"/>
+            <input type="hidden" th:value="${team.id}" th:field="*{id}"/>
             <label class="col-sm-2 control-label">Name</label>
             <div class="col-sm-10">
                 <input th:value="*{name}" th:field="*{name}" id="name"
