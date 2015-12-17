@@ -39,15 +39,18 @@
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        <li th:if="${allUsers eq null}" class="sidebar-search">
+                        <li th:if="${allUsers ne null}" class="sidebar-search">
                             <div class="input-group custom-search-form">
                                 <!--<form action="/user" method="get">-->
-                                    <input id="search" name="search" type="text" class="form-control" placeholder="Search...">
-                                    <span class="input-group-btn">
-                                        <button onclick="searchUser()" class="btn btn-default" type="button">
-                                            <i class="fa fa-search"></i>
-                                        </button>
-                                    </span>
+                                <select id="users-search" class="form-control" >
+                                    <option th:each="u : ${allUsers}"  th:value="${u.id}" th:text="${u.name}"></option>
+                                </select>
+                                    <!--<input id="search" name="search" type="text" class="form-control" placeholder="Search...">-->
+                                <span class="input-group-btn">
+                                    <button onclick="searchUser()" class="btn btn-default" type="button">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
                                 <!--</form>-->
                             </div>
                             <!-- /input-group -->

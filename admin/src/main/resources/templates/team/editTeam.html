@@ -28,7 +28,7 @@
             </div>
             <label class="col-sm-2 control-label">Members</label>
             <div class="col-sm-10">
-                <select th:field="*{users}" id="members" class="js-multiple" multiple="multiple">
+                <select th:field="*{users}" id="team-members" class="team-members" multiple="multiple">
                     <option th:field="*{users}"
                             th:each="u : ${allUsers}"
                             th:value="${u.id}"

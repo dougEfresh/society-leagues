@@ -21,6 +21,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,10 +36,20 @@ public class ScoreResource extends BaseController {
     @RequestMapping(value = {"/scores/{seasonId}"}, method = RequestMethod.GET)
     public void editDate(@PathVariable String seasonId, Model model, HttpServletResponse response) throws IOException {
         Map<String,List<TeamMatch>> matches = teamMatchApi.matchesBySeason(seasonId);
+        LocalDateTime now = LocalDateTime.now();
+
         List<LocalDateTime> dates = new ArrayList<>();
         matches.keySet().forEach(d->dates.add(LocalDate.parse(d).atStartOfDay()));
-        String d = matches.keySet().iterator().next();
-        response.sendRedirect("/admin/scores/" + seasonId  + "/" + d);
+        LocalDateTime nearest = LocalDate.parse(matches.keySet().iterator().next()).atStartOfDay();
+        long distance = Long.MAX_VALUE;
+        for (LocalDateTime date : dates) {
+            long diff = Math.abs(now.toEpochSecond(ZoneOffset.UTC) - date.toEpochSecond(ZoneOffset.UTC));
+            if (diff < distance) {
+                distance = diff;
+                nearest = date;
+            }
+        }
+        response.sendRedirect("/admin/scores/" + seasonId  + "/" + nearest.toLocalDate().toString());
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{date}"}, method = RequestMethod.GET)

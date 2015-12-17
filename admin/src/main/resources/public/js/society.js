@@ -7,19 +7,17 @@ function selectDate(e,s) {
 }
 
 function searchUser(e) {
-
+    var id = $('#users-search').val();
+    window.location = '/admin/user/' + id;
 }
+
  $(document).ready(function() {
-     console.log('select2');
-     $(".js-multiple").select2({ width: 600 });
+     $("#team-members").select2({ width: 600 });
+     $("#users-search").select2();
  });
 
-
-
 $(function() {
-
     $('#side-menu').metisMenu();
-
 });
 
 //Loads the correct sidebar on window load,

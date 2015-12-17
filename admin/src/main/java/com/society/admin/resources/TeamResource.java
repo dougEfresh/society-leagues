@@ -58,7 +58,6 @@ public class TeamResource extends BaseController {
         tm.setUsers(members.getMembers().stream().filter(User::isReal).collect(Collectors.toList()));
         tm.setMembersId(members.getId());
         model.addAttribute("team", tm);
-        model.addAttribute("allUsers", userApi.all());
         model.addAttribute("allSeasons", seasonApi.get());
         return "team/editTeam";
     }

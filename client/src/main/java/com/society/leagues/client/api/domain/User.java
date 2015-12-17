@@ -191,7 +191,7 @@ public class User extends LeagueObject {
     public boolean isReal() {
         if (lastName == null)
             return false;
-        return !(lastName.toLowerCase().contains("handicap") || lastName.toLowerCase().contains("forfeit"));
+        return !(lastName.toLowerCase().contains("handicap") || lastName.toLowerCase().contains("forfeit") || getName().toLowerCase().equals("bye"));
     }
 
     public LocalDateTime getCreated() {

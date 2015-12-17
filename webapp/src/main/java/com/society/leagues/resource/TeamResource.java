@@ -130,6 +130,7 @@ public class TeamResource {
                  .collect(Collectors.toList()
                  );
     }
+
     @JsonView(TeamSummary.class)
     @RequestMapping(value = "/season/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Collection<Team> getTeamBySeason(Principal principal, @PathVariable String id) {

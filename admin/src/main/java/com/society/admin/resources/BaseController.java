@@ -2,6 +2,7 @@ package com.society.admin.resources;
 
 import com.society.leagues.client.api.*;
 import com.society.leagues.client.api.domain.Season;
+import com.society.leagues.client.api.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ public class BaseController {
     public void setModels(Model model) {
         model.addAttribute("seasons",seasonApi.active().stream().sorted(Season.sortOrder).collect(Collectors.toList()));
         model.addAttribute("user", userApi.get());
+        model.addAttribute("userTeams", teamApi.userTeams());
+        model.addAttribute("allUsers", userApi.all().parallelStream().filter(User::isReal).collect(Collectors.toList()));
     }
 
 }
