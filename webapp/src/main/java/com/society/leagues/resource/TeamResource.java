@@ -36,7 +36,7 @@ public class TeamResource {
         if (existingTeam == null) {
             existingTeam = new Team();
         }
-        existingTeam.setSeason(leagueService.findOne(new Season(body.getSeason().getId()));
+        existingTeam.setSeason(leagueService.findOne(new Season(body.getSeason().getId())));
         existingTeam.setName(body.getName());
         return leagueService.save(existingTeam);
     }
