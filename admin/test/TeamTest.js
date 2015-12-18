@@ -2,6 +2,7 @@ var utils = require('utils');
 var testlib = require('./testLib');
 var teamName = Math.random();
 var season = null;
+var members = 0;
 casper.test.begin('Test User Page', function suite(test) {
     casper.start();
     casper.thenOpen(testlib.server + '/admin/login', function(){
@@ -32,7 +33,7 @@ casper.test.begin('Test User Page', function suite(test) {
     casper.then(function () {
         season = this.evaluate(function() {
             document.querySelector('#team-seasons').selectedIndex = 3;
-            return   document.querySelector('#team-seasons').value;
+            return  document.querySelector('#team-seasons').value;
         });
     });
 
@@ -44,19 +45,23 @@ casper.test.begin('Test User Page', function suite(test) {
     });
 
     casper.then(function(){
-        this.evaluate(function() {
-            $('#team-members').select2('open');
-		$('#team-members input.select2-input').val("Chimento");
+
+        var user = this.evaluate(function() {
+            var i = 0;
+            while(i<500) {
+                var opt = $('#team-members > option')[i];
+                if (!opt.selected) {
+                    opt.selected = true;
+                    $('#team-members').find('option[value = "' + opt.value + '"]').attr('selected',true);
+                    return opt;
+                }
+                i++;
+            }
         });
-    }).waitForSelector('.select2-drop li', function() {
-        this.evaluate(function() {
-            // ** important bit ** select2 ignores click events on the dropdown, so you need to use mouseup
-		$('.select2-drop li').mouseup();
-        })
-    }).waitWhileSelector('.select2-drop li', function() {
-        this.evaluate(function() {
-		$('.write button.reply-send').click();
-        })
+        members = this.evaluate(function() {
+            return  $('#team-members > option[selected]').length
+        });
+        test.assert(members == 1, 'Members == 1');
     });
 
     casper.then(function () {
@@ -67,31 +72,25 @@ casper.test.begin('Test User Page', function suite(test) {
         test.assertExists("#team-form")
     });
 
-    /*
+
     casper.then(function () {
         var f = this.evaluate(function(){
-            return document.getElementById("firstName").value
+            return document.getElementById("name").value
         });
 
-        test.assert(f == fName, 'Fname');
+        test.assert(f == teamName, 'TeamName');
 
         f = this.evaluate(function(){
-            return document.getElementById("lastName").value
+            return document.getElementById("team-seasons").value
         });
-        test.assert(f == lName, 'Lname');
+        test.assert(f == season, 'Season');
 
-        f = this.evaluate(function() {
-            return document.getElementById("login").value;
+         f = this.evaluate(function() {
+            return  $('#team-members > option[selected]').length
         });
-        test.assert(f == email, 'login');
-
-        f = this.evaluate(function() {
-            return document.getElementById("TopGun-hc").value;
-        });
-        test.assert(f == 'D', 'Handicap');
+        test.assert(f == members, 'Members');
     });
 
-*/
     casper.run(function(){
         test.done();
     });

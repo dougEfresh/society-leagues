@@ -17,7 +17,10 @@ var homeRacks = 0;
 var awayRacks = 0;
 var homeForfeits = 0;
 var awayForfeits = 0;
-
+var homeTeam = null;
+var awayTeam = null;
+var homeState = null;
+var awayState = null;
 
 var login = function (test,username,password) {
     casper.then(function(){
@@ -91,6 +94,71 @@ var playerResultTest = function(test) {
          playerMatchCount  = m;
     });
 
+    casper.then(function () {
+        var rows  = this.evaluate(function() {
+            return __utils__.findAll("#table-player-results > tbody > tr")
+        });
+        playerMatchId = rows[0].id;
+    });
+
+    casper.then(function () {
+        var checked = this.evaluate(function (id) {
+            return document.getElementById(id).checked;
+        },'home-' + playerMatchId);
+        test.assertExists('#home-' + playerMatchId);
+        test.assertExists('#away-' + playerMatchId);
+        this.click('#home-' + playerMatchId);
+        //this.echo(checked);
+        var newCheckState = checked;
+        this.wait(800, function() {
+            newCheckState = this.evaluate(function (id) {
+                return document.getElementById(id).checked;
+            },'home-' + playerMatchId);
+            //this.echo(newCheckState);
+            test.assert(checked == !newCheckState, 'checked == !newCheckStat');
+            var aState= null;
+            if (newCheckState) {
+                aState = this.evaluate(function(id) {
+                    return document.getElementById(id).checked;
+                },'away-' +playerMatchId);
+                test.assert(newCheckState  != awayState, 'newCheckState  != awayState');
+            } else {
+                 aState= this.evaluate(function(id) {
+                    return document.getElementById(id).checked;
+                },'away-' +playerMatchId);
+                test.assert(newCheckState  != awayState, 'newCheckState  != awayState');
+            }
+            awayState = aState;
+            homeState = newCheckState;
+        }.bind(this));
+    });
+
+  casper.then(function () {
+      test.assert(awayState != null, 'awayState != null' );
+      test.assert(homeState != null, 'homeState != null');
+      test.assert(homeState != awayState, 'homeState != awayStat')
+  });
+
+    casper.then(function(){
+        this.click('#player-results-submit');
+    });
+
+    casper.then(function(){
+        test.assertExists('#player-results-submit');
+    });
+
+    casper.then(function() {
+        var hc = this.evaluate(function (id) {
+            return document.getElementById(id).checked;
+        },'home-' + playerMatchId);
+
+        var ac = this.evaluate(function (id) {
+            return document.getElementById(id).checked;
+        },'away-' + playerMatchId);
+
+        test.assert(hc == homeState, 'HomeState is submitted');
+        test.assert(ac== awayState, 'AwayState is submitted');
+    })
 };
 
 var scoreSeasonTest = function(test) {
@@ -190,12 +258,21 @@ var scoreSubmitTest = function(test) {
         homeRacks++;
         homeForfeits++;
         awayForfeits++;
+        homeTeam = this.evaluate(function(id) {
+            return $('#'+ id  + ' option:not(:selected)')[0].value;
+        },'home-'+ teamMatchId);
+        awayTeam = this.evaluate(function(id) {
+            return $('#'+ id  + ' option:not(:selected)')[2].value;
+        },'away-'+ teamMatchId);
+
         this.fill('form#team-match-form', {
             'matches[0].date': teamMatchDate,
             'matches[0].homeRacks': homeRacks,
             'matches[0].awayRacks': awayRacks,
             'matches[0].homeForfeits': homeForfeits,
-            'matches[0].awayForfeits': awayForfeits
+            'matches[0].awayForfeits': awayForfeits,
+            'matches[0].home.id': homeTeam,
+            'matches[0].away.id': awayTeam
         }, false);
     });
 
@@ -239,7 +316,15 @@ var scoreSubmitTest = function(test) {
         var dt = this.evaluate(function(id) {
             return document.getElementById(id).value;
         },'date-'+teamMatchId);
-        test.assert(dt == teamMatchDate, 'dates eq');
+
+        var ht = this.evaluate(function(id) {
+            return document.getElementById(id).value;
+        },'home-'+teamMatchId);
+
+        var at = this.evaluate(function(id) {
+            return document.getElementById(id).value;
+        },'away-'+teamMatchId);
+        test.assert(at == awayTeam, 'awayTeam eq');
     });
 
 };
