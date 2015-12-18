@@ -162,7 +162,7 @@ public class StatService {
         Map<Season,List<Stat>> userSeasonStats = new HashMap<>(1000);
         for (Season season : seasons) {
             List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().
-                    filter(pr -> pr.getSeason().equals(season)).
+                    filter(pr -> pr.getSeason().equals(season)).filter(pr->pr.hasResults()).
                     collect(Collectors.toList());
             Map<User, List<PlayerResult>> losers = results.stream().filter(r->r.getLoser() != null).collect(Collectors.groupingBy(r -> r.getLoser(), Collectors.toList()));
             Map<User, List<PlayerResult>> winners = results.stream().filter(r->r.getWinner() != null).collect(Collectors.groupingBy(r -> r.getWinner(), Collectors.toList()));
@@ -237,7 +237,7 @@ public class StatService {
     private void rereshUserHandicapStats() {
         Map<User,List<PlayerResult>> winners = leagueService.findCurrent(PlayerResult.class).stream().filter(r->r.getWinner() != null)
                 .collect(Collectors.groupingBy(PlayerResult::getWinner));
-        Map<User,List<PlayerResult>> loser = leagueService.findCurrent(PlayerResult.class).stream().filter(r->r.getLoser() != null)
+        Map<User,List<PlayerResult>> loser =   leagueService.findCurrent(PlayerResult.class).stream().filter(r->r.getLoser() != null)
                 .collect(Collectors.groupingBy(PlayerResult::getLoser));
 
         List<Stat> stats = new ArrayList<>(1000);

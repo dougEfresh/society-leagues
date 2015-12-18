@@ -580,6 +580,8 @@ public class PlayerResult  extends LeagueObject {
     }
 
     public boolean hasResults() {
+        if (homeRacks == null || awayRacks == null)
+            return false;
 
         return homeRacks + awayRacks > 0;
     }

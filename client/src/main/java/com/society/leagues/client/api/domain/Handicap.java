@@ -7,15 +7,15 @@ import java.util.Map;
 
 public enum Handicap {
     ONE("1"),
-    TWO("1"),
-    THREE("1"),
-    FOUR("1"),
-    FIVE("1"),
-    SIX("1"),
-    SEVEN("1"),
-    EIGHT("1"),
-    NINE("1"),
-    TEN("1"),
+    TWO("2"),
+    THREE("3"),
+    FOUR("4"),
+    FIVE("5"),
+    SIX("6"),
+    SEVEN("7"),
+    EIGHT("8"),
+    NINE("9"),
+    TEN("10"),
     ELEVEN("1"),
     TWELVE("1"),
     THIRTEEN("1"),
@@ -23,21 +23,25 @@ public enum Handicap {
     FIFTEEN("1"),
     SIXTEEN("1"),
     SEVENTEEN("1"),
-    D("1"),
-    DPLUS("1"),
-    C("1"),
-    CPLUS("1"),
-    B("1"),
-    BPLUS("1"),
-    A("1"),
-    APLUS("1"),
-    OPEN("1"),
-    OPENPLUS("1"),
-    PRO("1"),
+    D("D"),
+    DPLUS("D+"),
+    C("C"),
+    CPLUS("C+"),
+    B("B"),
+    BPLUS("B+"),
+    A("A"),
+    APLUS("A+"),
+    OPEN("O"),
+    OPENPLUS("O+"),
+    PRO("P"),
     UNKNOWN("UNKNOWN"),
     NA("NA");
 
     final String displayName;
+
+    public String getDisplayName() {
+        return displayName;
+    }
 
     Handicap(String displayName) {
         this.displayName = displayName;
