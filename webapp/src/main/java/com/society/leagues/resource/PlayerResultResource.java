@@ -200,7 +200,10 @@ public class PlayerResultResource {
         results = leagueService.findAll(PlayerResult.class)
                 .stream()
                 .parallel()
-                .filter(pr -> pr.hasUser(u)).filter(pr->pr.getSeason().equals(s)).collect(Collectors.toList());
+                .filter(pr -> pr.hasUser(u))
+                .filter(pr->pr.getSeason().equals(s))
+                .filter(pr->pr.hasResults())
+                .collect(Collectors.toList());
 
         List<PlayerResult> copyResults = new ArrayList<>(results.size());
         results.stream().forEach(r-> copyResults.add(PlayerResult.copy(r)));
