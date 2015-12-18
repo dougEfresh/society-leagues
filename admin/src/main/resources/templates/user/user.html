@@ -9,7 +9,7 @@
           <div class="table-responsive">
               <table class="table table-stripped table-bordered table-condensed table">
                   <thead>
-                  <th>Edit</th>
+                  <th>Edit - <a id="user-new-link" href="/admin/user/new">Add New</a></th>
                   <th>Name</th>
                   <th>Email</th>
                   <th>Role</th>
@@ -18,7 +18,9 @@
                   <tbody>
                   <!--/*@thymesVar id="users" type="com.society.leagues.client.api.domain.User"*/-->
                   <tr th:id="'user-' + ${user.id} "th:each="user : ${users}">
-                      <td th:id="${user.id}"><a th:href="@{/admin/user/{id}(id=${user.id})}"><span class="glyphicon glyphicon-edit"></span></a></td>
+                      <td th:id="${user.id}"><a th:href="@{/admin/user/{id}(id=${user.id})}">
+                          <span class="glyphicon glyphicon-edit"></span></a>
+                      </td>
                       <td>
                           <a th:text="${user.name}" th:href="@{/admin/user/{id}(id=${user.id})}"></a>
                       </td>

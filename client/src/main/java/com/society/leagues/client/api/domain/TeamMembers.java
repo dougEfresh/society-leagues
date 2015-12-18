@@ -15,7 +15,7 @@ public class TeamMembers extends LeagueObject {
     }
 
     public TeamMembers(List<User> members) {
-        this.members = new HashSet<>(members);
+        this.members = members == null ? new HashSet<>() : new HashSet<>(members);
     }
 
     public User getCaptain() {

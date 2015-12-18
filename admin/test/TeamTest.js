@@ -1,56 +1,62 @@
 var utils = require('utils');
 var testlib = require('./testLib');
-var fName = Math.random();
-var lName = Math.random();
-var email = Math.random();
-
+var teamName = Math.random();
+var season = null;
 casper.test.begin('Test User Page', function suite(test) {
     casper.start();
     casper.thenOpen(testlib.server + '/admin/login', function(){
     });
 
     testlib.login(test,testlib.user,testlib.pass);
-
     casper.then(function () {
          test.assertExists("#home-app")
     });
-
-    casper.thenOpen(testlib.server + '/admin/user', function(){
+    casper.thenOpen(testlib.server + '/admin/team', function(){
     });
-
-
     casper.then(function () {
-         test.assertExists("#user-app")
+         test.assertExists("#team-app")
     });
-
     casper.then(function () {
-         test.assertExists("#users")
+         test.assertExists("#teams")
     });
     casper.then(function () {
          this.clickLabel("Add New")
     });
     casper.then(function () {
-        test.assertExists("#user-edit")
+        test.assertExists("#team-edit")
     });
 
     casper.then(function () {
-        test.assertExists("#user-form")
+        test.assertExists("#team-form")
+    });
+    casper.then(function () {
+        season = this.evaluate(function() {
+            document.querySelector('#team-seasons').selectedIndex = 3;
+            return   document.querySelector('#team-seasons').value;
+        });
     });
 
-
     casper.then(function () {
-        test.assertExists("#user-form")
-    });
-
-
-    casper.then(function () {
-        this.fill('form#user-form', {
-            'firstName': fName,
-            'lastName': lName,
-            'login': email,
-            'role': 'ADMIN',
-            'handicapSeasons[0].handicap' : 'D'
+        this.fill('#team-form', {
+            'name': teamName,
+            'season.id' : season
         }, false);
+    });
+
+    casper.then(function(){
+        this.evaluate(function() {
+            $('#team-members').select2('open');
+		$('#team-members input.select2-input').val("Chimento");
+        });
+    }).waitForSelector('.select2-drop li', function() {
+        this.evaluate(function() {
+            // ** important bit ** select2 ignores click events on the dropdown, so you need to use mouseup
+		$('.select2-drop li').mouseup();
+        })
+    }).waitWhileSelector('.select2-drop li', function() {
+        this.evaluate(function() {
+		$('.write button.reply-send').click();
+        })
     });
 
     casper.then(function () {
@@ -58,9 +64,10 @@ casper.test.begin('Test User Page', function suite(test) {
     });
 
     casper.then(function () {
-        test.assertExists("#user-form")
+        test.assertExists("#team-form")
     });
 
+    /*
     casper.then(function () {
         var f = this.evaluate(function(){
             return document.getElementById("firstName").value
@@ -84,7 +91,7 @@ casper.test.begin('Test User Page', function suite(test) {
         test.assert(f == 'D', 'Handicap');
     });
 
-
+*/
     casper.run(function(){
         test.done();
     });

@@ -1,8 +1,7 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
 <body>
-<div layout:fragment="content">
-    <span th:value="${team.name}" class="subtitle"></span>
+<div id="team-edit" layout:fragment="content">
     <div th:if="${save eq 'success'}">
              <div class="alert alert-success alert-dismissible" role="alert">
                  <strong>Success!</strong> Updated Successfully.
@@ -13,7 +12,7 @@
              <strong>Error!</strong> <pre th:text="${error}"></pre>
          </div>
      </div>
-    <form id="user-form" action="#" th:action="@{/admin/team/{id}(id=${team.id})}" th:object="${team}" method="post">
+    <form id="team-form" action="#" th:action="@{/admin/team/{id}(id=${team.id})}" th:object="${team}" method="post">
         <div class="form-group">
             <input type="hidden" th:value="${team.id}" th:field="*{id}"/>
             <input type="hidden" th:value="${team.membersId}" th:field="*{membersId}"/>
@@ -39,7 +38,7 @@
             </div>
             <label class="col-sm-2 control-label">Season</label>
             <div class="col-sm-10">
-                <select th:field="*{season.id}" id="all-seasons" >
+                <select th:field="*{season.id}" id="team-seasons" >
                     <option th:field="*{season.id}"
                             th:each="s : ${allSeasons}"
                             th:value="${s.id}"
