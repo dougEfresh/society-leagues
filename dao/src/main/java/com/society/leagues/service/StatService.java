@@ -235,10 +235,10 @@ public class StatService {
     }
 
     private void rereshUserHandicapStats() {
-        Map<User,List<PlayerResult>> winners = leagueService.findCurrent(PlayerResult.class).stream().
-                collect(Collectors.groupingBy(PlayerResult::getWinner));
-        Map<User,List<PlayerResult>> loser = leagueService.findCurrent(PlayerResult.class).stream().
-                collect(Collectors.groupingBy(PlayerResult::getLoser));
+        Map<User,List<PlayerResult>> winners = leagueService.findCurrent(PlayerResult.class).stream().filter(r->r.getWinner() != null)
+                .collect(Collectors.groupingBy(PlayerResult::getWinner));
+        Map<User,List<PlayerResult>> loser = leagueService.findCurrent(PlayerResult.class).stream().filter(r->r.getLoser() != null)
+                .collect(Collectors.groupingBy(PlayerResult::getLoser));
 
         List<Stat> stats = new ArrayList<>(1000);
         for (User user : winners.keySet()) {

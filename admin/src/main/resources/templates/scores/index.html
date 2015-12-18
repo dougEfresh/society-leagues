@@ -30,7 +30,7 @@
                     Stats </div>
             </div>
             <div class="panel-body">
-            <table class="table table-bordered table-condensed table-striped table-grid">
+            <table th:if="${!season.isChallenge()}" class="table table-bordered table-condensed table-striped table-grid">
             <thead>
             <tr>
                 <th style="width:50px;">#</th>
@@ -60,6 +60,34 @@
             </tr>
             </tbody>
             </table>
+
+                <table th:if="${season.isChallenge()}" class="table table-bordered table-condensed table-striped table-grid">
+                    <thead>
+                    <tr>
+                        <th style="width:50px;">#</th>
+                        <th>Player</th>
+                        <th>HC</th>
+                        <th style="width:75px;">P</th>
+                        <th style="width:50px;">W</th>
+                        <th style="width:50px;">L</th>
+                        <th>RW</th>
+                        <th>RL</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!--/*@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"*/-->
+                    <tr th:id="${stat.getUser().getId}" th:each="stat : ${challengeStats}">
+                        <td th:text="${stat.rank}">1</td>
+                        <td th:text="${stat.getUser().getName()}">1</td>
+                        <td th:text="${stat.getHandicap()}">1</td>
+                        <td th:text="${stat.points}">1</td>
+                        <td th:text="${stat.wins}">1</td>
+                        <td th:text="${stat.loses}">1</td>
+                        <td th:text="${stat.racksWon}">1</td>
+                        <td th:text="${stat.racksLost}">1</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
         <div th:replace="scores/season">
