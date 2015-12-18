@@ -1,7 +1,6 @@
 package com.society.admin.resources;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.society.leagues.client.api.UserApi;
 import com.society.leagues.client.api.domain.Handicap;
 import com.society.leagues.client.api.domain.HandicapSeason;
 import com.society.leagues.client.api.domain.Season;
