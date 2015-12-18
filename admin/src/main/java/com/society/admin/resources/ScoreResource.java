@@ -102,10 +102,10 @@ public class ScoreResource extends BaseController {
             if (playerResultModel != null) {
                 playerResultModel.getPlayerResults().forEach(
                         r->{
-                            if (r.getPlayerHomePartner().equals(User.defaultUser()))
+                            if (User.defaultUser().equals(r.getPlayerHomePartner()))
                                 r.setPlayerHomePartner(null);
 
-                            if (r.getPlayerAwayPartner().equals(User.defaultUser()))
+                            if (User.defaultUser().equals(r.getPlayerAwayPartner()))
                                 r.setPlayerAwayPartner(null);
                         });
                 Season s = seasonApi.get(seasonId);
@@ -119,9 +119,9 @@ public class ScoreResource extends BaseController {
                             playerResult.setHomeRacks(0);
                         }
                     }
-                    if (!playerResultModel.getPlayerResults().isEmpty())
-                        playerResultApi.save(playerResultModel.getPlayerResults());
                 }
+                if (!playerResultModel.getPlayerResults().isEmpty())
+                    playerResultApi.save(playerResultModel.getPlayerResults());
             }
             model.addAttribute("save","success");
             return processScoreView(seasonId,date,matchId,model);

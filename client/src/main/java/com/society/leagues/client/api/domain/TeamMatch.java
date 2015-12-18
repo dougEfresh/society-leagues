@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.converters.DateTimeSerializer;
+import org.omg.CORBA.UNKNOWN;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
@@ -31,7 +32,7 @@ public class TeamMatch extends LeagueObject {
     Integer matchNumber = 0;
     User referenceUser = null;
     Boolean hasPlayerResults = false;
-    Status status;
+    Status status = null;
     Integer forfeits = 0;
     Integer homeForfeits = 0;
     Integer awayForfeits = 0;

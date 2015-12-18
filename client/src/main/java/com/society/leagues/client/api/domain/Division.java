@@ -9,6 +9,7 @@ public enum Division {
     STRAIGHT(LeagueType.INDIVIDUAL,"Straight",99),
     MIXED_EIGHT(LeagueType.MIXED,"Scramble 8",2),
     MIXED_NINE(LeagueType.MIXED,"Scramble 9",1),
+    UNKNOWN(LeagueType.INDIVIDUAL,"Unknown",100),
     NINE_BALL_CHALLENGE(LeagueType.INDIVIDUAL,"Top Gun",0);
 
     final LeagueType leagueType;
