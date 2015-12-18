@@ -16,9 +16,11 @@
             <th>Date</th>
             <th>Home</th>
             <th>Racks</th>
+            <th>SW</th>
             <th>Forfeits</th>
             <th>Away</th>
             <th>Racks</th>
+            <th>SW</th>
             <th>Forfeits</th>
             <th>Sheet</th>
             </thead>
@@ -55,6 +57,10 @@
                     <input th:id="${'homeRacks-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].homeRacks}" type="text"
                            th:value="${match.homeRacks}">
                 </td>
+                <td class="racks">
+                    <input  th:id="${'setHomeWins-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].setHomeWins}" type="text"
+                           th:value="${match.setHomeWins}">
+                </td>
                  <td class="racks">
                     <input th:id="${'homeForfeits-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].homeForfeits}" type="text"
                            th:value="${match.homeForfeits}"/>
@@ -71,6 +77,10 @@
                 <td class="racks">
                     <input  th:id="${'awayRacks-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].awayRacks}" type="text"
                            th:value="${match.awayRacks}">
+                </td>
+                 <td class="racks">
+                    <input  th:id="${'setAwayWins-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].setAwayWins}" type="text"
+                           th:value="${match.setAwayWins}">
                 </td>
                  <td class="racks">
                     <input th:id="${'awayForfeits-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].awayForfeits}" type="text"
