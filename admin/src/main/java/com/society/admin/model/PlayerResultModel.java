@@ -6,6 +6,7 @@ import com.society.leagues.client.api.domain.TeamMatch;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PlayerResultModel {
 
@@ -51,5 +52,9 @@ public class PlayerResultModel {
 
     public String getRowClass(Integer index) {
         return playerResults.get(index).getSetNumber() % 2 == 0 ? "even" : "odd";
+    }
+
+    public List<PlayerResult> getNoForfeits() {
+        return playerResults.stream().filter(r->!r.isForfeit()).collect(Collectors.toList());
     }
 }

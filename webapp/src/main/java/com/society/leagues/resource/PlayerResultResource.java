@@ -55,7 +55,9 @@ public class PlayerResultResource {
     @JsonView(PlayerResultView.class)
     public List<PlayerResult> getPlayerResultTeamMatch(Principal principal, @PathVariable String id) {
         TeamMatch tm = leagueService.findOne(new TeamMatch(id));
-
+        if (tm == null) {
+            return Collections.emptyList();
+        }
         Collection<PlayerResult> results;
         if (tm.getSeason().isActive()) {
             results = leagueService.findCurrent(PlayerResult.class);

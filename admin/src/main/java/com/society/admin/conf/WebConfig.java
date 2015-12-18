@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.env.Environment;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -23,6 +24,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Autowired DateTimeSerializer dateTimeSerializer;
     @Autowired DateTimeDeSerializer dateTimeDeSerializer;
     @Value("${pretty-print:true}") boolean prettyPrint;
+    @Autowired Environment environment;
 
     @Bean
     @Primary
@@ -36,9 +38,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String cwd = System.getProperty("user.dir");
-        for(String d: Arrays.asList("img","js","css","fonts")) {
-            registry.addResourceHandler("/" + d + "/**").addResourceLocations("file://" + cwd + "/src/main/resources/public/" + d +"/").setCachePeriod(0);
+        if (environment.acceptsProfiles("dev")) {
+            String cwd = System.getProperty("user.dir");
+            registry.addResourceHandler("/**")
+                        .addResourceLocations("file://" + cwd + "/src/main/resources/public/")
+                        .setCachePeriod(0);
         }
     }
 
@@ -47,4 +51,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(new CookieInterceptor()).addPathPatterns("/*");
         super.addInterceptors(registry);
     }
+
+
 }

@@ -64,9 +64,10 @@ public class ScoreResource extends BaseController {
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{date}/{matchId}/delete"}, method = RequestMethod.GET)
-    public void deleteTeamMatch(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId, Model model, HttpServletResponse response) throws IOException {
+    public void deleteTeamMatch(@PathVariable String seasonId, @PathVariable String date,
+                                @PathVariable String matchId, Model model, HttpServletResponse response) throws IOException {
         teamMatchApi.delete(matchId);
-        response.sendRedirect("/admin/scores/" + seasonId + "/" + date);
+        response.sendRedirect("/admin/scores/" + seasonId + "/" + date +'/' + matchId);
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{date}/{matchId}/add"}, method = RequestMethod.GET)
@@ -121,7 +122,7 @@ public class ScoreResource extends BaseController {
                     }
                 }
                 if (!playerResultModel.getPlayerResults().isEmpty())
-                    playerResultApi.save(playerResultModel.getPlayerResults());
+                    playerResultApi.save(playerResultModel.getNoForfeits());
             }
             model.addAttribute("save","success");
             return processScoreView(seasonId,date,matchId,model);
@@ -152,7 +153,17 @@ public class ScoreResource extends BaseController {
             model.addAttribute("challengeStats", statApi.getPlayersSeasonStats(seasonId));
 
         if (matchId != null) {
-            PlayerResultModel results = new PlayerResultModel(playerResultApi.getPlayerResultByTeamMatch(matchId),matchId);
+            int matchNum = 1;
+            List<PlayerResult> resultsWithForfeits = new ArrayList<>();
+            for (PlayerResult playerResult : playerResultApi.getPlayerResultByTeamMatch(matchId)) {
+                if (matchNum != playerResult.getMatchNumber()) {
+                    resultsWithForfeits.add(PlayerResult.addForfeit(matchNum,teamMatchApi.get(matchId)));
+                }
+                resultsWithForfeits.add(playerResult);
+                matchNum++;
+            }
+
+            PlayerResultModel results = new PlayerResultModel(resultsWithForfeits);
             model.addAttribute("results", results);
             Map<String,List<User>> members = teamMatchApi.teamMembers(matchId);
             List<User> home = new ArrayList<>();

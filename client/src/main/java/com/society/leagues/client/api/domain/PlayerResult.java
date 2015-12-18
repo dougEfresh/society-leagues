@@ -33,9 +33,23 @@ public class PlayerResult  extends LeagueObject {
     Team referenceTeam = null;
     User referenceUser = null;
     Boolean scotch = false;
-
+    @JsonIgnore @Transient boolean forfeit = false;
     @JsonIgnore @Transient Boolean homeWinner = null;
     @JsonIgnore @Transient Boolean awayWinner = null;
+
+    public static  PlayerResult addForfeit(int matchNumber,TeamMatch tm) {
+        PlayerResult result = new PlayerResult();
+        result.setTeamMatch(tm);
+        result.setId(matchNumber + "-forfeit");
+        result.setPlayerAway(User.defaultUser());
+        result.getPlayerAway().setFirstName("");
+        result.getPlayerAway().setLastName("Forfeit");
+        result.setPlayerHome(User.defaultUser());
+        result.getPlayerHome().setFirstName("");
+        result.getPlayerHome().setLastName("Forfeit");
+        result.forfeit = true;
+        return result;
+    }
 
     public PlayerResult() {
     }
@@ -58,6 +72,14 @@ public class PlayerResult  extends LeagueObject {
         this.matchNumber = matchNumber;
         this.playerHomeHandicap = playerHomeHandicap;
         this.playerAwayHandicap = playerAwayHandicap;
+    }
+
+    public boolean isForfeit() {
+        return forfeit;
+    }
+
+    public void setForfeit(boolean forfeit) {
+        this.forfeit = forfeit;
     }
 
     public PlayerResult(String id) {
