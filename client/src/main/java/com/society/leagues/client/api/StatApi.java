@@ -1,5 +1,6 @@
 package com.society.leagues.client.api;
 
+import com.society.leagues.client.api.domain.Stat;
 import com.society.leagues.client.api.domain.Team;
 import feign.Headers;
 import feign.Param;
@@ -11,5 +12,8 @@ import java.util.List;
 public interface StatApi {
 
     @RequestLine("GET /api/stat/season/{seasonId}")
-    public List<Team> getSeasonStats(@Param("seasonId") String seasonId);
+    List<Team> getSeasonStats(@Param("seasonId") String seasonId);
+
+    @RequestLine("GET /season/players/{seasonId}")
+    List<Stat> getPlayersSeasonStats(@Param("seasonId") String seasonId);
 }

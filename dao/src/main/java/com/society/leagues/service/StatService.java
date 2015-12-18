@@ -87,11 +87,41 @@ public class StatService {
     public void refresh() {
         if (!enableRefresh)
             return;
+          logger.info("Refreshing stats");
+                long start = System.currentTimeMillis();
+                final Set<Team> teams = leagueService.findCurrent(Team.class);
+                long startTime = System.currentTimeMillis();
+
+                startTime = System.currentTimeMillis();
+                logger.info("RefreshTeamMatch ");
+                leagueService.findCurrent(TeamMatch.class).parallelStream().forEach(StatService.this::refreshTeamMatch);
+                logger.info("RefreshTeamMatch " + (System.currentTimeMillis() - startTime));
+
+                startTime = System.currentTimeMillis();
+                logger.info("RefreshTeam TeamRank ");
+                //refreshTeamRank();
+                logger.info("RefreshTeam TeamRank " + (System.currentTimeMillis() - startTime));
+                startTime = System.currentTimeMillis();
+                logger.info("UserSesonStats  ");
+                refreshUserSeasonStats();
+                logger.info("UserSesonStats  " + (System.currentTimeMillis() - startTime));
+                //refreshUserLifetimeStats();
+                rereshUserHandicapStats();
+                logger.info("RefreshTeam Stats ");
+                for (Team team : teams) {
+                    refreshTeamStats(team);
+                }
+                logger.info("RefreshTeam Stats " + (System.currentTimeMillis() - startTime));
+                resultService.refresh();
+                logger.info("Done Refreshing stats  (" + (System.currentTimeMillis() - start) + "ms)");
+
+        /*
         if (threadPoolTaskExecutor.getActiveCount() > 0) {
             logger.info("Skipping refresh");
             return;
         }
         logger.info("Submitting to task for refresh");
+
         threadPoolTaskExecutor.submit(new Runnable() {
             @Override
             public void run() {
@@ -124,6 +154,7 @@ public class StatService {
                 logger.info("Done Refreshing stats  (" + (System.currentTimeMillis() - start) + "ms)");
             }
         });
+        */
     }
 
     private void refreshUserSeasonStats() {
@@ -276,20 +307,10 @@ public class StatService {
     }
 
     public void refreshTeamMatchStats(final TeamMatch tm) {
-        if (threadPoolTaskExecutor.getActiveCount() > 1) {
-            logger.info("Skipping team refresh");
-            return;
-        }
-        logger.info("Submitting to task for team refresh");
-        threadPoolTaskExecutor.submit(new Runnable() {
-            @Override
-            public void run() {
-                refreshTeamStats(tm.getHome());
-                refreshTeamStats(tm.getAway());
-                refreshTeamMatch(tm);
-                refreshTeamRank();
-            }
-        });
+        refreshTeamStats(tm.getHome());
+        refreshTeamStats(tm.getAway());
+        refreshTeamMatch(tm);
+        refreshTeamRank();
     }
 
     public void refreshTeamRank() {
