@@ -16,13 +16,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
 public class UserResource extends BaseController {
 
     @Autowired ObjectMapper objectMapper;
-    @Autowired UserApi userApi;
 
     @RequestMapping(value = {"/user"}, method = RequestMethod.GET)
     public String list(@RequestParam(defaultValue = "", required = false) String search , Model model) {
@@ -48,6 +48,13 @@ public class UserResource extends BaseController {
         }
         u.setHandicapSeasons(u.getActiveHandicapSeasons());
         model.addAttribute("editUser", u);
+        HandicapSeason topGun = u.getActiveHandicapSeasons().stream().filter(s->s.getSeason().isChallenge()).findAny().orElse(null);
+        if (topGun != null) {
+            Map<String,Object> resultsAndStats = resultApi.resultsBySeason(u.getId(), topGun.getSeason().getId());
+            model.addAttribute("results",resultsAndStats.get("results"));
+            model.addAttribute("stats",resultsAndStats.get("stats"));
+            model.addAttribute("season",topGun.getSeason());
+        }
         return "user/editUser";
     }
 

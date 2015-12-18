@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @ComponentScan("com.society")
-@EnableAutoConfiguration(exclude = {ErrorMvcAutoConfiguration.class})
+@EnableAutoConfiguration()
 public class Main  {
     public static void main(String[] args) throws Exception {
         SpringApplication.run(Main.class,args);

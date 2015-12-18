@@ -48,6 +48,7 @@
             <!--/*@thymesVar id="stats" type="com.society.leagues.client.api.domain.Team"*/-->
             <!--/*@thymesVar id="team" type="com.society.leagues.client.api.domain.Team"*/-->
             <tr th:id="${team.getId()}" th:each="team : ${stats}">
+                <td th:text="${team.getRank()}">1</td>
                 <td th:text="${team.getName()}">1</td>
                 <td th:text="${team.getStats().wins}">1</td>
                 <td th:text="${team.getStats().loses}">1</td>

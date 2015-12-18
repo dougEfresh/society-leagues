@@ -186,9 +186,12 @@ public class ScoreResource extends BaseController {
             model.addAttribute("awayWins",awayWins);
             model.addAttribute("homeForfeits",m.getHomeForfeits());
             model.addAttribute("awayForfeits",m.getAwayForfeits());
-
             model.addAttribute("homeHandicap",homeHandicap);
             model.addAttribute("awayHandicap",awayHandicap);
+
+            model.addAttribute("homeTotal",homeWins + m.getHomeForfeits()+homeHandicap);
+            model.addAttribute("awayTotal",awayWins + m.getAwayForfeits()+awayHandicap);
+
             model.addAttribute("teamMatch", results.getPlayerResults().iterator().next().getTeamMatch());
             model.addAttribute("homeMembers", home);
             model.addAttribute("awayMembers", away);

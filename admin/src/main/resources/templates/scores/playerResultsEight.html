@@ -35,10 +35,10 @@
                         <th>#</th>
                         <th>Home</th>
                         <th th:class="${season.isScramble()}? 'show' : 'hide'">Partner</th>
-                        <th th:text="'Wins(R + F + H = '  + ${homeWins} + ' + ' + ${homeForfeits} + ' + ' + ${homeHandicap} + ')'"  >Win</th>
+                        <th th:text="'Wins( R+F+H ='  + ${homeWins} + '+' + ${homeForfeits} + '+' + ${homeHandicap} +' = ' + ${homeTotal} + ' )'"  >Win</th>
                         <th>Away</th>
                         <th th:class="${season.isScramble()}? 'show' : 'hide'">Partner</th>
-                        <th th:text="'Wins (R + F + H = ' + ${awayWins} + ' + ' + ${awayForfeits} + ' + ' + ${awayHandicap} + ')'" >Win</th>
+                        <th th:text="'Wins( R+F+H =' + ${awayWins} + '+' + ${awayForfeits} + '+' + ${awayHandicap} +' = ' + ${awayTotal} + ' )'" >Win</th>
                         </thead>
                         <tbody>
                         <!--/*@thymesVar id="result" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
@@ -106,7 +106,11 @@
                 </div>
             </div>
             <div class="panel-footer">
-                <input id="player-results-submit" type="submit" value="submit" /></div>
+                <input id="player-results-submit" type="submit" value="submit" />
+                  <span>
+                        <a th:href="@{/admin/scores/{id}/{date}/{matchId}/add (id=${season.id},date=${date},matchId=${results.matchId})}">Add</a>
+                  </span>
+            </div>
         </div>
     </form>
 </div>
