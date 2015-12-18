@@ -53,6 +53,8 @@ dependencies {
     compile("org.springframework.social:spring-social-facebook-web:2.0.1.RELEASE")
 
 
+    compile(group: 'com.mangofactory', name: 'swagger-springmvc', version: '1.0.2')
+
     compile 'com.allanditzel:spring-security-csrf-token-filter:1.1'
     compile 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
