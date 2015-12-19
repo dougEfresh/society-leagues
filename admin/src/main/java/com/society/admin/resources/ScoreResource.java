@@ -73,7 +73,8 @@ public class ScoreResource extends BaseController {
     @RequestMapping(value = {"/scores/{seasonId}/{date}/{matchId}/add"}, method = RequestMethod.GET)
      public void addPlayerMatch(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId, Model model, HttpServletResponse response) throws IOException {
          playerResultApi.add(matchId);
-         response.sendRedirect("/admin/scores/" +seasonId + "/" + date + "/" + matchId);
+        response.sendRedirect("/admin/scores/" +seasonId + "/" + date + "/" + matchId);
+
     }
 
      @RequestMapping(value = {"/scores/{seasonId}/{date}/{matchId}/{resultId}/delete"}, method = RequestMethod.GET)
@@ -121,7 +122,7 @@ public class ScoreResource extends BaseController {
                         }
                     }
                 }
-                if (!playerResultModel.getPlayerResults().isEmpty())
+                if (!playerResultModel.getNoForfeits().isEmpty())
                     playerResultApi.save(playerResultModel.getNoForfeits());
             }
             model.addAttribute("save","success");
@@ -152,64 +153,78 @@ public class ScoreResource extends BaseController {
         if (s.isChallenge())
             model.addAttribute("challengeStats", statApi.getPlayersSeasonStats(seasonId));
 
-        if (matchId != null) {
-            int matchNum = 1;
-            List<PlayerResult> resultsWithForfeits = new ArrayList<>();
-            for (PlayerResult playerResult : playerResultApi.getPlayerResultByTeamMatch(matchId)) {
-                if (matchNum != playerResult.getMatchNumber()) {
-                    resultsWithForfeits.add(PlayerResult.addForfeit(matchNum,teamMatchApi.get(matchId)));
-                }
-                resultsWithForfeits.add(playerResult);
+        if (matchId == null) {
+            return "scores/index";
+        }
+        Map<String,List<User>> members = teamMatchApi.teamMembers(matchId);
+        if (members.isEmpty()) {
+            return "scores/index";
+        }
+        List<PlayerResult> realResults =  playerResultApi.getPlayerResultByTeamMatch(matchId);
+        HashSet<PlayerResult> resultsWithForfeits = new HashSet<>();
+        int matchNum = 0;
+        Iterator<PlayerResult> iterator = realResults.iterator();
+        TeamMatch tm = teamMatchApi.get(matchId);
+        while(iterator.hasNext()) {
+            PlayerResult playerResult = iterator.next();
+            matchNum++;
+            while(matchNum < playerResult.getMatchNumber()) {
+                resultsWithForfeits.add(PlayerResult.addForfeit(matchNum, tm));
                 matchNum++;
             }
-
-            PlayerResultModel results = new PlayerResultModel(resultsWithForfeits);
-            model.addAttribute("results", results);
-            Map<String,List<User>> members = teamMatchApi.teamMembers(matchId);
-            List<User> home = new ArrayList<>();
-            home.add(User.defaultUser());
-            List<User> away = new ArrayList<>();
-            away.add(User.defaultUser());
-            home.addAll(members.get("home").stream().filter(User::isReal).collect(Collectors.toList()));
-            away.addAll(members.get("away").stream().filter(User::isReal).collect(Collectors.toList()));
-            int homeWins = 0;
-            int awayWins = 0;
-            for (PlayerResult result : results.getPlayerResults()) {
-                homeWins += result.getHomeRacks();
-                awayWins += result.getAwayRacks();
-            }
-            TeamMatch m = results.getPlayerResults().iterator().next().getTeamMatch();
-
-            //homeWins += m.getHomeForfeits();
-            //awayWins += m.getAwayForfeits();
-            int homeHandicap = 0;
-            int awayHandicap = 0;
-
-            if (homeWins + m.getHomeForfeits() < m.getHomeRacks()) {
-                homeHandicap += m.getHomeRacks() - homeWins - m.getHomeForfeits();
-            }
-
-            if (awayWins + m.getAwayForfeits() < m.getAwayRacks()) {
-                awayHandicap += m.getAwayRacks() - awayWins - m.getAwayForfeits();
-            }
-
-            model.addAttribute("homeWins",homeWins);
-            model.addAttribute("awayWins",awayWins);
-            model.addAttribute("homeForfeits",m.getHomeForfeits());
-            model.addAttribute("awayForfeits",m.getAwayForfeits());
-            model.addAttribute("homeHandicap",homeHandicap);
-            model.addAttribute("awayHandicap",awayHandicap);
-
-            model.addAttribute("homeTotal",homeWins + m.getHomeForfeits()+homeHandicap);
-            model.addAttribute("awayTotal",awayWins + m.getAwayForfeits()+awayHandicap);
-
-            model.addAttribute("teamMatch", results.getPlayerResults().iterator().next().getTeamMatch());
-            model.addAttribute("homeMembers", home);
-            model.addAttribute("awayMembers", away);
+            matchNum = playerResult.getMatchNumber();
+            resultsWithForfeits.add(playerResult);
         }
 
+        List<PlayerResult> sortedList =Arrays.asList(resultsWithForfeits.toArray(new PlayerResult[]{})).stream().sorted(new Comparator<PlayerResult>() {
+            @Override
+            public int compare(PlayerResult o1, PlayerResult o2) {
+                return o1.getMatchNumber().compareTo(o2.getMatchNumber());
+            }
+        }).collect(Collectors.toList());
+        PlayerResultModel results = new PlayerResultModel(sortedList,matchId);
+        model.addAttribute("results", results);
+        List<User> home = new ArrayList<>();
+        home.add(User.defaultUser());
+        List<User> away = new ArrayList<>();
+        away.add(User.defaultUser());
+
+        home.addAll(members.get("home").stream().filter(User::isReal).collect(Collectors.toList()));
+        away.addAll(members.get("away").stream().filter(User::isReal).collect(Collectors.toList()));
+        int homeWins = 0;
+        int awayWins = 0;
+        for (PlayerResult result : results.getPlayerResults()) {
+            homeWins += result.getHomeRacks();
+            awayWins += result.getAwayRacks();
+        }
+        TeamMatch m = results.getPlayerResults().iterator().next().getTeamMatch();
+
+        //homeWins += m.getHomeForfeits();
+        //awayWins += m.getAwayForfeits();
+        int homeHandicap = 0;
+        int awayHandicap = 0;
+
+        if (homeWins + m.getHomeForfeits() < m.getHomeRacks()) {
+            homeHandicap += m.getHomeRacks() - homeWins - m.getHomeForfeits();
+        }
+
+        if (awayWins + m.getAwayForfeits() < m.getAwayRacks()) {
+            awayHandicap += m.getAwayRacks() - awayWins - m.getAwayForfeits();
+        }
+
+        model.addAttribute("homeWins", homeWins);
+        model.addAttribute("awayWins", awayWins);
+        model.addAttribute("homeForfeits", m.getHomeForfeits());
+        model.addAttribute("awayForfeits", m.getAwayForfeits());
+        model.addAttribute("homeHandicap", homeHandicap);
+        model.addAttribute("awayHandicap", awayHandicap);
+
+        model.addAttribute("homeTotal", homeWins + m.getHomeForfeits() + homeHandicap);
+        model.addAttribute("awayTotal", awayWins + m.getAwayForfeits() + awayHandicap);
+
+        model.addAttribute("teamMatch", results.getPlayerResults().iterator().next().getTeamMatch());
+        model.addAttribute("homeMembers", home);
+        model.addAttribute("awayMembers", away);
         return "scores/index";
     }
-
-
 }

@@ -26,10 +26,6 @@ public class PlayerResultModel {
         this.matchId = matchId;
     }
 
-    public PlayerResultModel(List<PlayerResult> playerResults) {
-        this.playerResults = playerResults;
-    }
-
     public PlayerResultModel() {
     }
 

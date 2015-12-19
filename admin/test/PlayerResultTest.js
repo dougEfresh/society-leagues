@@ -43,10 +43,11 @@ casper.test.begin('Test Result Page', function suite(test) {
     });
 
     casper.then(function () {
+        this.echo("Thurs 8 Ball - player results");
         this.clickLabel("Thurs 8 Ball");
     });
 
-    testlib.playerResultTest(test);
+    testlib.playerResultTest(test, 'Thurs 8 Ball');
 
     casper.then(function () {
         this.clickLabel("Weds 8 Ball");

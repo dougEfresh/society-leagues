@@ -30,7 +30,8 @@
                             <tr th:id="${result.getId()}" th:each="result, rowStat: *{playerResults}">
                                 <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
                                 <td th:id="'delete-player-result-' + ${result.getId()}">
-                                    <a th:href="@{/admin/scores/{id}/{date}/{matchId}/{resultId}/delete (id=${season.id},date=${date},matchId=${results.matchId},resultId=${result.id})}">X</a>
+                                    <a th:href="@{/admin/scores/{id}/{date}/{matchId}/{resultId}/delete
+                                    (id=${season.id},date=${date},matchId=${results.matchId},resultId=${result.id})}">X</a>
                                 </td>
                                 <td>
                                     <input th:field="*{playerResults[__${rowStat.index}__].matchNumber}" type="text"

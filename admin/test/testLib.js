@@ -42,7 +42,7 @@ var login = function (test,username,password) {
 
 };
 
-var playerResultTest = function(test) {
+var playerResultTest = function(test,season) {
    casper.then(function () {
         var rows  = this.evaluate(function() {
             return __utils__.findAll("#team-match-results > tbody > tr")
@@ -51,11 +51,11 @@ var playerResultTest = function(test) {
     });
 
     casper.then(function () {
-        this.click('#player-results-' + teamMatchId);
+        this.click('#player-results-' + teamMatchId, season + '#player-results-' + teamMatchId);
     });
 
     casper.then(function () {
-        test.assertExists("#player-results");
+        test.assertExists("#player-results", season + '#player-results');
     });
     casper.then(function () {
         playerMatchCount = this.evaluate(function() {
@@ -73,7 +73,7 @@ var playerResultTest = function(test) {
         var m  = this.evaluate(function() {
             return __utils__.findAll("#table-player-results > tbody > tr").length
         });
-        test.assert(m == playerMatchCount+1, "PlayerMatchCount++");
+        test.assert(m == playerMatchCount+1, season + "  PlayerMatchCount++");
         playerMatchCount = m;
     });
 
@@ -90,7 +90,7 @@ var playerResultTest = function(test) {
          var m = this.evaluate(function() {
              return __utils__.findAll("#table-player-results > tbody > tr").length
          });
-         test.assert(m == playerMatchCount-1, "PlayerMatchCount++");
+         test.assert(m == playerMatchCount-1, season + " PlayerMatchCount--");
          playerMatchCount  = m;
     });
 

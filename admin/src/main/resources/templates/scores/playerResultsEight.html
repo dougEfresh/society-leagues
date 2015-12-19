@@ -51,7 +51,8 @@
                             </td>
                             <input th:field="*{playerResults[__${rowStat.index}__].id}" type="hidden" th:value="${result.id}" />
                             <input th:field="*{playerResults[__${rowStat.index}__].teamMatch.id}" type="hidden" th:value="${result.teamMatch.id}" />
-                            <td>
+                            <input th:field="*{playerResults[__${rowStat.index}__].forfeit}" type="hidden" th:value="${result.forfeit}" />
+                            <td th:if="${!result.isForfeit()}">
                                 <select th:id="${'homeMember-' + result.getId()}" th:field="*{playerResults[__${rowStat.index}__].playerHome.id}" class="form-control" >
                                     <option th:each="user: ${homeMembers}"
                                             th:text="${user.name}"
@@ -60,6 +61,7 @@
                                     ></option>
                                 </select>
                             </td>
+                            <td class="forfeit" th:if="${result.isForfeit()}">Forfeit</td>
                             <td th:class="${season.isScramble()}? 'show' : 'hide'">
                                 <select th:id="${'homeMember-partner' + result.getId()}" th:field="*{playerResults[__${rowStat.index}__].playerHomePartner.id}" class="form-control" >
                                     <option th:each="user: ${homeMembers}"
@@ -76,7 +78,7 @@
                                 />
 
                             </td>
-                            <td>
+                            <td th:if="${!result.isForfeit()}">
                                 <select th:id="${'away-member' + result.getId()}" th:field="*{playerResults[__${rowStat.index}__].playerAway.id}" class="form-control" >
                                     <option th:each="user: ${awayMembers}"
                                             th:text="${user.name}"
@@ -85,6 +87,7 @@
                                     ></option>
                                 </select>
                             </td>
+                            <td class="forfeit" th:if="${result.isForfeit()}">Forfeit</td>
                             <td th:class="${season.isScramble()}? 'show' : 'hide'">
                                 <select th:id="${'awayMember-partner' + result.getId()}" th:field="*{playerResults[__${rowStat.index}__].playerAwayPartner.id}" class="form-control" >
                                     <option th:each="user: ${awayMembers}"

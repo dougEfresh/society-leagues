@@ -268,7 +268,7 @@ public class TeamMatchResource {
         TeamMatch tm = leagueService.findOne(new TeamMatch(id));
         if (tm == null)
             return Collections.emptyMap();
-        
+
         Map<String,Set<User>> members = new HashMap<>();
         members.put("home",tm.getHome().getMembers().getMembers());
         members.put("away",tm.getAway().getMembers().getMembers());

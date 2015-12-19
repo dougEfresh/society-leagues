@@ -30,8 +30,6 @@ public class TeamMatchModel {
         return matches.iterator().next().getSeason();
     }
 
-
-
     /**
      * Score sheets
      * @param index

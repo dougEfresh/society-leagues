@@ -40,6 +40,7 @@ public class PlayerResult  extends LeagueObject {
     public static  PlayerResult addForfeit(int matchNumber,TeamMatch tm) {
         PlayerResult result = new PlayerResult();
         result.setTeamMatch(tm);
+        result.setMatchNumber(matchNumber);
         result.setId(matchNumber + "-forfeit");
         result.setPlayerAway(User.defaultUser());
         result.getPlayerAway().setFirstName("");
