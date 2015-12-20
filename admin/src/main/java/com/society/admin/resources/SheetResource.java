@@ -44,7 +44,7 @@ public class SheetResource extends BaseController {
         if (s.isScramble())
             return "sheets/scrambleScoreSheets";
         if (s.isChallenge())
-            return "sheets/challengeScoreSheets";
+            return "sheets/topgunScoreSheets";
         if (s.isNine())
             return "sheets/nineScoreSheets";
 

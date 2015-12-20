@@ -292,16 +292,16 @@ public class TeamMatch extends LeagueObject {
     }
 
     public String getRace() {
-        if (race != null)
-            return race;
-
         if (isChallenge()) {
             Handicap h  = getHome().getChallengeUser().getHandicap(getSeason());
-            Handicap a = getAway().getMembers().getMembers().iterator().next().getHandicap(getSeason());
-            return Handicap.race(h,a);
-        } else {
-            return "";
+            Handicap a = getAway().getChallengeUser().getHandicap(getSeason());
+        return Handicap.race(h,a);
         }
+        if (race != null && !race.isEmpty())
+            return race;
+
+
+        return "";
     }
 
     public User getChallenger() {
