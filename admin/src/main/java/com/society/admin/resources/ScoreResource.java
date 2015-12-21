@@ -2,15 +2,10 @@ package com.society.admin.resources;
 
 import com.society.admin.model.PlayerResultModel;
 import com.society.admin.model.TeamMatchModel;
-import com.society.leagues.client.api.PlayerResultApi;
-import com.society.leagues.client.api.SeasonApi;
-import com.society.leagues.client.api.TeamApi;
-import com.society.leagues.client.api.TeamMatchApi;
 import com.society.leagues.client.api.domain.PlayerResult;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.client.api.domain.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -151,7 +146,7 @@ public class ScoreResource extends BaseController {
         model.addAttribute("season",s);
         model.addAttribute("stats",statApi.getSeasonStats(seasonId));
         if (s.isChallenge())
-            model.addAttribute("challengeStats", statApi.getPlayersSeasonStats(seasonId));
+            model.addAttribute("challengeStats", statApi.getUsersSeasonStats(seasonId));
 
         if (matchId == null) {
             return "scores/index";

@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -28,7 +29,9 @@ public class BaseController {
 
     @ModelAttribute
     public void setModels(Model model) {
-        model.addAttribute("seasons",seasonApi.active().stream().sorted(Season.sortOrder).collect(Collectors.toList()));
+        List<Season> seasons = seasonApi.get();
+        model.addAttribute("activeSeasons",seasons.stream().filter(Season::isActive).sorted(Season.sortOrder).collect(Collectors.toList()));
+        model.addAttribute("allSeasons",seasons);
         model.addAttribute("user", userApi.get());
         model.addAttribute("userTeams", teamApi.userTeams());
         model.addAttribute("allUsers", userApi.all().parallelStream().filter(User::isReal).collect(Collectors.toList()));

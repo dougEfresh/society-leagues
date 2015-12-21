@@ -1,8 +1,5 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
-<head>
-    <title>User Admin</title>
-</head>
 <body>
 <div id="user-edit" layout:fragment="content">
     <span th:value="${editUser.name}" class="subtitle"></span>
@@ -69,6 +66,9 @@
                 <input id="submit" type="submit" class="btn btn-sm btn-primary btn-responsive"/>
             </div>
     </form>
+    <div>
+        <a th:href="@{/admin/stats/{userId}(userId=${editUser.id})}">Stats</a>
+    </div>
     </div>
 </body>
 </html>

@@ -78,12 +78,20 @@ var playerResultTest = function(test,season) {
     });
 
     casper.then(function () {
-        var rows  = this.evaluate(function() {
-            return __utils__.findAll("#table-player-results > tbody > tr")
+        playerMatchId   = this.evaluate(function() {
+            var id = null;
+            $('#table-player-results > tbody > tr').each(function() {
+                if (this.id == undefined || this.id.indexOf("forfeit") >= 0)
+                    return;
+                id = this.id;
+            });
+            return id;
         });
-        playerMatchId = rows[0].id;
+        test.assert(playerMatchId != null);
     });
+
     casper.then(function () {
+        test.assertExists('#delete-player-result-' + playerMatchId);
         this.click('#delete-player-result-' + playerMatchId);
     });
      casper.then(function () {
@@ -95,10 +103,16 @@ var playerResultTest = function(test,season) {
     });
 
     casper.then(function () {
-        var rows  = this.evaluate(function() {
-            return __utils__.findAll("#table-player-results > tbody > tr")
+        playerMatchId   = this.evaluate(function() {
+            var id = null;
+            $('#table-player-results > tbody > tr').each(function() {
+                if (this.id == undefined || this.id.indexOf("forfeit") >= 0)
+                    return;
+                id = this.id;
+            });
+            return id;
         });
-        playerMatchId = rows[0].id;
+        test.assert(playerMatchId != null)
     });
 
     casper.then(function () {

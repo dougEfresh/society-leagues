@@ -62,10 +62,10 @@
                             <a href="#">
                                 <span class="glyphicon glyphicon-th-list"></span> Scores<span class="fa arrow"></span>
                             </a>
-                            <ul th:if="${seasons ne null}" class="nav nav-second-level">
+                            <ul th:if="${activeSeasons ne null}" class="nav nav-second-level">
                                 <!--/*@thymesVar id="seasons" type="List<com.society.leagues.client.api.domain.Season>"*/-->
                                 <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
-                                <li th:each="season : ${seasons}">
+                                <li th:each="season : ${activeSeasons}">
                                     <a th:id="${season.getShortName().replaceAll(' ','')}" th:href="@{/admin/scores/{id}(id=${season.getId()})}" th:text="${season.getShortName()}"></a>
                                 </li>
                             </ul>
