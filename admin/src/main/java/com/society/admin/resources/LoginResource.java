@@ -50,6 +50,7 @@ public class LoginResource  {
         ResponseEntity<User> responseEntity = restTemplate.exchange(restUrl + "/api/authenticate", HttpMethod.POST, httpEntity, User.class);
         User u = responseEntity.getBody();
         for (String s : responseEntity.getHeaders().get("Set-Cookie")) {
+            logger.info("Adding cookie: " + s);
             response.addHeader("Set-Cookie",s);
         }
         logger.info("Got back "  + u.getName());

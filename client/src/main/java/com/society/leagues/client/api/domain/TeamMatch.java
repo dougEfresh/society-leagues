@@ -293,6 +293,10 @@ public class TeamMatch extends LeagueObject {
 
     public String getRace() {
         if (isChallenge()) {
+            if (getHome() == null || getHome().getChallengeUser() == null)
+                return "";
+            if (getAway() == null || getAway().getChallengeUser() == null)
+                return "";
             Handicap h  = getHome().getChallengeUser().getHandicap(getSeason());
             Handicap a = getAway().getChallengeUser().getHandicap(getSeason());
         return Handicap.race(h,a);
