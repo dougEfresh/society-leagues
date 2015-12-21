@@ -10,6 +10,51 @@ public class ClientApiProperties {
 
     String endpoint;
     String team;
+    String stat;
+    String user;
+    String season;
+    String teamMatch;
+    String playerResult;
+
+    public String getPlayerResult() {
+        return playerResult;
+    }
+
+    public void setPlayerResult(String playerResult) {
+        this.playerResult = playerResult;
+    }
+
+    public String getSeason() {
+        return season;
+    }
+
+    public void setSeason(String season) {
+        this.season = season;
+    }
+
+    public String getStat() {
+        return stat;
+    }
+
+    public void setStat(String stat) {
+        this.stat = stat;
+    }
+
+    public String getTeamMatch() {
+        return teamMatch;
+    }
+
+    public void setTeamMatch(String teamMatch) {
+        this.teamMatch = teamMatch;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
 
     public String getEndpoint() {
         return endpoint;

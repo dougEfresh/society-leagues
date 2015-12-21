@@ -1,23 +1,40 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
-<body>
-<div class="table-responsive">
-    <table class="table-bordered table-condensed table-striped table-grid table-stats">
-        <thead>
-        <tr>
-            <th>#</th>
-            <th>Player</th>
-            <th>HC</th>
-            <th>P</th>
-            <th>W</th>
-            <th>L</th>
-            <th>RW</th>
-            <th>RL</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+<div xmlns:th="http://www.thymeleaf.org">
+    <div id="topgun-stats" th:if="${topgunStats ne null}" class="panel panel-default">
+        <div class="panel-heading">
+            Top Gun Stats
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table-bordered table-condensed table-striped table-grid table-stats">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>HC</th>
+                        <th>P</th>
+                        <th>W</th>
+                        <th>L</th>
+                        <th>RW</th>
+                        <th>RL</th>
+                        <th>PCT</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="stat : ${topgunStats}">
+                        <!--@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"-->
+                        <td th:text="${stat.getRank()}"> </td>
+                        <td th:text="${stat.getHandicap()}"> </td>
+                        <td th:text="${stat.getPoints()}"> </td>
+                        <td th:text="${stat.getWins()}"> </td>
+                        <td th:text="${stat.getLoses()}"> </td>
+                        <td th:text="${stat.getRacksWon()}"> </td>
+                        <td th:text="${stat.getRacksLost()}"> </td>
+                        <td th:text="${stat.getRackPct()}"> </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
-</body>
-</html>
+

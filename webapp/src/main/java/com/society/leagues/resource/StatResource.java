@@ -146,14 +146,14 @@ public class StatResource {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.ALL_VALUE)
-    public List<Stat> getUserStats(@PathVariable String id) {
+    public List<Stat> getActiveUserStats(@PathVariable String id) {
         User u = leagueService.findOne(new User(id));
         final List<Stat> userStats = new ArrayList<>();
 
         statService.getUserSeasonStats().values().stream().parallel().forEach(new Consumer<List<Stat>>() {
             @Override
             public void accept(List<Stat> stats) {
-                stats.parallelStream().filter(st -> st.getUser().equals(u)).forEach(userStats::add);
+                stats.parallelStream().filter(st->st.getSeason().isActive()).filter(st -> st.getUser().equals(u)).forEach(userStats::add);
             }
         });
         userStats.sort(new Comparator<Stat>() {
@@ -172,6 +172,44 @@ public class StatResource {
         return userStats;
     }
 
+    @RequestMapping(value = "/user/{id}/all",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.ALL_VALUE)
+    public List<Stat> getAllUserStats(@PathVariable String id) {
+        User u = leagueService.findOne(new User(id));
+        final List<Stat> userStats = new ArrayList<>();
+        statService.getUserSeasonStats().values().stream().parallel().forEach(new Consumer<List<Stat>>() {
+            @Override
+            public void accept(List<Stat> stats) {
+                stats.parallelStream().filter(st -> st.getUser().equals(u)).forEach(userStats::add);
+            }
+        });
+        userStats.sort(new Comparator<Stat>() {
+            @Override
+            public int compare(Stat o1, Stat o2) {
+                if (o1.getSeason().isChallenge()) {
+                    return -1;
+                }
+                if (o2.getSeason().isChallenge()) {
+                    return 1;
+                }
+                return o2.getSeason().getStartDate().compareTo(o1.getSeason().getStartDate());
+            }
+        });
+        Stat tg = userStats.stream().filter(s->s.getSeason().isChallenge()).findFirst().orElse(null);
+        if (tg != null) {
+            List<MatchPoints> points = resultService.matchPoints();
+            double totalPoints = 0d;
+            List<MatchPoints> pointsList = points.stream().parallel().filter(p-> p.getUser() != null && p.getUser().equals(u)).collect(Collectors.toList());
+            for (MatchPoints matchPoints : pointsList) {
+                totalPoints += matchPoints.getWeightedAvg();
+            }
+            tg.setPoints(totalPoints);
+        }
+        userStats.add(Stat.buildLifeTimeStats(u, userStats));
+        return userStats;
+    }
     @RequestMapping(value = "/user/{id}/{seasonId}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE,

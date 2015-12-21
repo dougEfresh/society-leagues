@@ -103,7 +103,7 @@ public class StatService {
                 logger.info("RefreshTeam TeamRank " + (System.currentTimeMillis() - startTime));
                 startTime = System.currentTimeMillis();
                 logger.info("UserSesonStats  ");
-                refreshUserSeasonStats();
+                refreshUserSeasonStats(true);
                 logger.info("UserSesonStats  " + (System.currentTimeMillis() - startTime));
                 //refreshUserLifetimeStats();
                 rereshUserHandicapStats();
@@ -157,8 +157,11 @@ public class StatService {
         */
     }
 
-    private void refreshUserSeasonStats() {
-        Set<Season> seasons = leagueService.findCurrent(Season.class);
+    private void refreshUserSeasonStats(boolean active) {
+        Collection<Season> seasons = leagueService.findCurrent(Season.class);
+        if (!active)
+            seasons = leagueService.findAll(Season.class);
+
         Map<Season,List<Stat>> userSeasonStats = new HashMap<>(1000);
         for (Season season : seasons) {
             List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().

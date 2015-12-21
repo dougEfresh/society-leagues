@@ -15,17 +15,14 @@ import java.util.stream.Collectors;
 @Controller
 public class StatResource  extends BaseController {
 
-
     @RequestMapping(value = {"/stats/{userId}"}, method = RequestMethod.GET)
     public String list(@PathVariable String userId, Model model) {
-        User u = userApi.get(userId);
         List<Stat> stats = statApi.getUserStats(userId);
-        model.addAttribute("topgun",   stats.stream().filter(s -> s.getSeason() != null && s.getSeason().isChallenge()).collect(Collectors.toList()));
-        model.addAttribute("thursday", stats.stream().filter(s -> s.getSeason() != null && s.getSeason().getDivision() == Division.EIGHT_BALL_THURSDAYS).collect(Collectors.toList()));
-        model.addAttribute("wednesday",stats.stream().filter(s -> s.getSeason() != null && s.getSeason().getDivision() == Division.EIGHT_BALL_WEDNESDAYS).collect(Collectors.toList()));
-        model.addAttribute("tuesday",  stats.stream().filter(s -> s.getSeason() != null && s.getSeason().getDivision() == Division.NINE_BALL_TUESDAYS).collect(Collectors.toList()));
-        model.addAttribute("scramble", stats.stream().filter(s -> s.getSeason() != null && s.getSeason().getDivision() == Division.MIXED_MONDAYS_MIXED).collect(Collectors.toList()));
-
+        model.addAttribute("topgunStats",   stats.stream().filter(s -> s.getSeason() != null && s.getSeason().isChallenge()).collect(Collectors.toList()));
+        model.addAttribute("thursdayStats", stats.stream().filter(s -> s.getSeason() != null && s.getSeason().getDivision() == Division.EIGHT_BALL_THURSDAYS).collect(Collectors.toList()));
+        model.addAttribute("wednesdayStats",stats.stream().filter(s -> s.getSeason() != null && s.getSeason().getDivision() == Division.EIGHT_BALL_WEDNESDAYS).collect(Collectors.toList()));
+        model.addAttribute("tuesdayStats",  stats.stream().filter(s -> s.getSeason() != null && s.getSeason().getDivision() == Division.NINE_BALL_TUESDAYS).collect(Collectors.toList()));
+        model.addAttribute("scrambleStats", stats.stream().filter(s -> s.getSeason() != null && s.getSeason().getDivision() == Division.MIXED_MONDAYS_MIXED).collect(Collectors.toList()));
         return "stats/userStats";
     }
 }

@@ -57,14 +57,14 @@ public class ClientApiConfig {
     }
 
     private <T> T getApi(Class<T> clzz) {
-        return getApi(clzz, false);
+        return getApi(clzz, Logger.Level.BASIC.name());
     }
 
-    private <T> T getApi(Class<T> clzz, boolean debug) {
+    private <T> T getApi(Class<T> clzz, String level) {
         return Feign.builder().encoder(encoder).decoder(decoder)
                 .logger(new Slf4jLogger())
                 .client(new LeagueHttpClient())
-                .logLevel(debug ? Logger.Level.FULL  : Logger.Level.HEADERS)
+                .logLevel( Logger.Level.valueOf(level))
                 .errorDecoder(new CustomErrorDecoder())
                 .requestInterceptor(new HeadersInterceptor())
                 .target(clzz, clientApiProperties.getEndpoint());
@@ -92,7 +92,7 @@ public class ClientApiConfig {
 
     @Bean
     public TeamApi teamApi() {
-        return getApi(TeamApi.class, (clientApiProperties.teamDebug()));
+        return getApi(TeamApi.class, (clientApiProperties.getTeam()));
     }
 
     @Bean

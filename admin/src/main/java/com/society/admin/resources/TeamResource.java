@@ -87,36 +87,4 @@ public class TeamResource extends BaseController {
             return "team/editTeam";
         }
     }
-
-    /*
-    @RequestMapping(value = {"/user/new"}, method = RequestMethod.GET)
-    public String edit(Model model, HttpServletResponse response) {
-
-        u.setId("new");
-        List<Season> season = seasonApi.active();
-        for (Season s : season) {
-            u.addHandicap(new HandicapSeason(Handicap.NA,s));
-        }
-        return processEditUser(u,model);
-    }
-
-    @RequestMapping(value = {"/user/{id}"}, method = RequestMethod.POST)
-    public String save(@PathVariable String id, @ModelAttribute("editUser") User user, Model model, HttpServletResponse response) {
-        try {
-            if (id.equals("new")) {
-                user.setId(null);
-            }
-            User u = userApi.modify(user);
-            model.addAttribute("save","success");
-            return processEditUser(u,model);
-        } catch (Exception e) {
-            logger.error(e.getMessage(),e);
-            model.addAttribute("save","error");
-            StringWriter errors = new StringWriter();
-            e.printStackTrace(new PrintWriter(errors));
-            model.addAttribute("error",errors.toString());
-            return processEditUser(user,model);
-        }
-    }
-    */
 }
