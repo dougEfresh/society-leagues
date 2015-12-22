@@ -1124,4 +1124,27 @@ public class ConvertUtil {
         }
 
     }
+      public void scrambleGameType() {
+        Map<LocalDate,List<TeamMatch>> matches = leagueService.findAll(TeamMatch.class).parallelStream()
+                .filter(tm -> tm.getSeason().isScramble())
+                .filter(tm -> !tm.getSeason().isActive())
+                .collect(Collectors.groupingBy(
+                        tm -> tm.getMatchDate().toLocalDate()
+                ));
+        Division division = Division.MIXED_EIGHT;
+        for (LocalDate localDate : matches.keySet().stream().sorted(new Comparator<LocalDate>() {
+            @Override
+            public int compare(LocalDate o1, LocalDate o2) {
+                return o1.compareTo(o2);
+            }
+        }).collect(Collectors.toList())) {
+
+            for (TeamMatch teamMatch : matches.get(localDate)) {
+                teamMatch.setDivision(division);
+                leagueService.save(teamMatch);
+            }
+            division = division == Division.MIXED_EIGHT ? Division.MIXED_NINE : Division.MIXED_EIGHT;
+        }
+    }
+
 }

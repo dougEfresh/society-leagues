@@ -38,30 +38,6 @@ public class ResultService {
         return leagueService.findAll(PlayerResult.class).parallelStream().filter(p->p.getTeamMatch().equals(teamMatch)).collect(Collectors.toList());
     }
 
-    public void scrambleGameType() {
-        Map<LocalDate,List<TeamMatch>> matches = leagueService.findCurrent(TeamMatch.class).parallelStream()
-                .filter(tm -> tm.getSeason().isScramble())
-                .filter(tm -> tm.getDivision() == Division.MIXED_MONDAYS_MIXED)
-                .collect(Collectors.groupingBy(
-                        tm -> tm.getMatchDate().toLocalDate()
-                ));
-        Division division = Division.MIXED_EIGHT;
-        for (LocalDate localDate : matches.keySet().stream().sorted(new Comparator<LocalDate>() {
-            @Override
-            public int compare(LocalDate o1, LocalDate o2) {
-                return o1.compareTo(o2);
-            }
-        }).collect(Collectors.toList())) {
-
-            for (TeamMatch teamMatch : matches.get(localDate)) {
-                teamMatch.setDivision(division);
-                leagueService.save(teamMatch);
-            }
-            division = division == Division.MIXED_EIGHT ? Division.MIXED_NINE : Division.MIXED_EIGHT;
-        }
-    }
-
-//    @Scheduled(fixedRate = 1000*60*6, initialDelay = 1000*60*11)
     public void refresh() {
         matchPoints().clear();
         LocalDateTime tenWeeks = LocalDateTime.now().plusDays(1).minusWeeks(10);

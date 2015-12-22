@@ -19,6 +19,7 @@
             <th class="name">Away</th>
             <th class="racks">Racks</th>
             <th class="racks">Forfeits</th>
+            <th th:class="${season.isScramble()}? 'show' : 'hide'">Game</th>
             <th >Sheet</th>
 
             </thead>
@@ -78,11 +79,17 @@
                     <input class="racks" th:id="${'awayForfeits-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].awayForfeits}" type="text"
                            th:value="${match.awayForfeits}"/>
                 </td>
+                <td th:class="${season.isScramble()}? 'show' : 'hide'">
+                      <input class="name" th:id="${'game-' + match.getId()}"
+                             th:field="*{matches[__${rowStat.index}__].division}" type="text"
+                             th:value="${match.division}"/>
+                </td>
                 <td class="sheet-link">
                     <a th:id="${'sheet-' + match.getId()}" th:href="@{/admin/sheets/{matchId} (matchId=${match.id})}">
                         Sheet
                     </a>
                 </td>
+
             </tr>
             </tbody>
         </table>
