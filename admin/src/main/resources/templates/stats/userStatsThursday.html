@@ -19,7 +19,8 @@
                     <tbody>
                     <tr th:each="stat : ${thursdayStats}">
                         <!--@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"-->
-                        <td th:text="${stat.getSeason().getFormattedName()}"> </td>
+                        <td th:if="${!stat.isLifeTime()}" th:text="${stat.getSeason().getFormattedName()}"> </td>
+                        <td th:if="${stat.isLifeTime()}" > Lifetime </td>
                         <td th:text="${stat.getHandicapDisplay()}"> </td>
                         <td th:text="${stat.getWins()}"> </td>
                         <td th:text="${stat.getLoses()}"> </td>

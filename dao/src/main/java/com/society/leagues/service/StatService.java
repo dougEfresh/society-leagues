@@ -149,8 +149,6 @@ public class StatService {
                         lifeDivisionStats.add(s);
                         break;
                     case MIXED_MONDAYS_MIXED:
-                    case MIXED_EIGHT:
-                    case MIXED_NINE:
                         s = new Stat();
                         s.setUser(user);
                         s.setType(StatType.LIFETIME_EIGHT_BALL_SCRAMBLE);

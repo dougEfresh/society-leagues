@@ -107,7 +107,12 @@ public class Stat {
         return handicap;
     }
 
+    public boolean isLifeTime() {
+        return getType().isLifetime();
+    }
     public String getHandicapDisplay() {
+        if (getType().isLifetime())
+            return "";
         return getHandicap().getDisplayName();
     }
 
