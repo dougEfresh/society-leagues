@@ -114,27 +114,32 @@ public class StatService {
 
         List<User> users = leagueService.findAll(User.class);
         List<Stat> lifeDivisionStats = new ArrayList<>(500);
+        List<PlayerResult> results = leagueService.findAll(PlayerResult.class);
         for (User user : users) {
+            TreeSet<Division> divisions = new TreeSet<>();
             for(Season season: user.getSeasons().stream().filter(hs->!hs.isChallenge()).collect(Collectors.toList())) {
+                divisions.add(season.getDivision());
+            }
+            for (Division division : divisions) {
                 Stat s = new Stat();
                 s.setUser(user);
-                switch (season.getDivision()) {
+                switch (division) {
                     case EIGHT_BALL_THURSDAYS:
                         s.setType(StatType.LIFETIME_EIGHT_BALL_THURSDAY);
                         Stat.calculate(user,s,
-                                leagueService.findAll(PlayerResult.class).parallelStream().filter(r->r.getSeason().getDivision() == Division.EIGHT_BALL_THURSDAYS).collect(Collectors.toList()));
+                                results.parallelStream().filter(r->r.getSeason().getDivision() == Division.EIGHT_BALL_THURSDAYS).collect(Collectors.toList()));
                         lifeDivisionStats.add(s);
                         break;
                     case EIGHT_BALL_WEDNESDAYS:
                         s.setType(StatType.LIFETIME_EIGHT_BALL_WEDNESDAY);
                         Stat.calculate(user,s,
-                                leagueService.findAll(PlayerResult.class).parallelStream().filter(r->r.getSeason().getDivision() == Division.EIGHT_BALL_WEDNESDAYS).collect(Collectors.toList()));
+                                results.parallelStream().filter(r->r.getSeason().getDivision() == Division.EIGHT_BALL_WEDNESDAYS).collect(Collectors.toList()));
                         lifeDivisionStats.add(s);
                         break;
                     case NINE_BALL_TUESDAYS:
                         s.setType(StatType.LIFETIME_NINE_BALL_TUESDAY);
                         Stat.calculate(user,s,
-                                leagueService.findAll(PlayerResult.class).parallelStream().filter(r->r.getSeason().getDivision() == Division.NINE_BALL_TUESDAYS).collect(Collectors.toList()));
+                                results.parallelStream().filter(r->r.getSeason().getDivision() == Division.NINE_BALL_TUESDAYS).collect(Collectors.toList()));
                         lifeDivisionStats.add(s);
                         break;
                     case MIXED_MONDAYS_MIXED:
@@ -144,14 +149,14 @@ public class StatService {
                         s.setUser(user);
                         s.setType(StatType.LIFETIME_EIGHT_BALL_SCRAMBLE);
                         Stat.calculate(user,s,
-                                leagueService.findAll(PlayerResult.class).parallelStream().filter(r->r.getTeamMatch().getDivision() == Division.MIXED_EIGHT).collect(Collectors.toList()));
+                                results.parallelStream().filter(r->r.getTeamMatch().getDivision() == Division.MIXED_EIGHT).collect(Collectors.toList()));
                         lifeDivisionStats.add(s);
 
                         s = new Stat();
                         s.setUser(user);
                         s.setType(StatType.LIFETIME_NINE_BALL_SCRAMBLE);
                         Stat.calculate(user,s,
-                                leagueService.findAll(PlayerResult.class).parallelStream().filter(r->r.getTeamMatch().getDivision() == Division.MIXED_NINE).collect(Collectors.toList()));
+                                results.parallelStream().filter(r->r.getTeamMatch().getDivision() == Division.MIXED_NINE).collect(Collectors.toList()));
                         lifeDivisionStats.add(s);
                         break;
                 }
