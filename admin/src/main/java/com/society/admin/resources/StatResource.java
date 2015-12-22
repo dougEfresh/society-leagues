@@ -1,6 +1,7 @@
 package com.society.admin.resources;
 
 import com.society.leagues.client.api.domain.Division;
+import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Stat;
 import com.society.leagues.client.api.domain.StatType;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
@@ -56,6 +58,14 @@ public class StatResource  extends BaseController {
 
         return "stats/userStats";
     }
+    @RequestMapping(value = {"/stats/{userId}/{seasonId}"}, method = RequestMethod.GET)
+    public String list(@PathVariable String userId, @PathVariable String seasonId , Model model) {
+        Season s = seasonApi.get(seasonId);
+        model.addAttribute("season",s);
+         resultApi.resultsBySeason(userId,seasonId);
+        return "stats/userStats";
+    }
+
 
     @RequestMapping(value = {"/stats"}, method = RequestMethod.GET)
     public String home(Model model) {
