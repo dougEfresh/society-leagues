@@ -35,22 +35,7 @@ public class Stat {
         s.setSeason(results.get(0).getSeason());
         s.setUser(user);
         s.setHandicap(handicap);
-
-        for (PlayerResult match : results) {
-            if (!match.hasUser(user)) {
-                continue;
-            }
-            s.matches++;
-            if (match.isWinner(user)) {
-                s.wins++;
-                s.racksWon += match.getWinnerRacks();
-                s.racksLost += match.getLoserRacks();
-            } else {
-                s.loses++;
-                s.racksWon += match.getLoserRacks();
-                s.racksLost += match.getWinnerRacks();
-            }
-        }
+        calculate(user,s,results);
         return s;
     }
 
@@ -77,12 +62,9 @@ public class Stat {
         return s;
     }
 
-    public static Stat buildPlayerTeamStats(final User u, final Team team , final List<PlayerResult> matches) {
-        Stat s = new Stat();
-        s.setUser(u);
-        s.setSeason(team.getSeason());
+    public static void calculate(User u, Stat s, List<PlayerResult> matches) {
         for (PlayerResult match : matches) {
-            if (!match.hasUser(u)) {
+            if (!match.hasUser(u) || !match.hasResults()) {
                 continue;
             }
             s.matches++;
@@ -96,6 +78,13 @@ public class Stat {
                 s.racksLost += match.getWinnerRacks();
             }
         }
+    }
+
+    public static Stat buildPlayerTeamStats(final User u, final Team team , final List<PlayerResult> matches) {
+        Stat s = new Stat();
+        s.setUser(u);
+        s.setSeason(team.getSeason());
+        calculate(u,s,matches);
         return s;
     }
 
@@ -103,21 +92,7 @@ public class Stat {
         Stat s = new Stat();
         s.setUser(u);
         s.setSeason(season);
-        for (PlayerResult match : matches) {
-            if (!match.hasUser(u)) {
-                continue;
-            }
-            s.matches++;
-            if (match.isWinner(u)) {
-                s.wins++;
-                s.racksWon += match.getWinnerRacks();
-                s.racksLost += match.getLoserRacks();
-            } else {
-                s.loses++;
-                s.racksWon += match.getLoserRacks();
-                s.racksLost += match.getWinnerRacks();
-            }
-        }
+        calculate(u,s,matches);
         return s;
     }
 
@@ -288,7 +263,5 @@ public class Stat {
                         s1.getRacksWon().equals(s2.getRacksWon()) &&
                         s1.getSetLoses().equals(s2.getSetLoses()) &&
                         s1.getSetWins().equals(s2.getSetWins()));
-
-
     }
 }

@@ -1,6 +1,6 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org">
-    <div id="topgun-stats" th:if="${wednesdayStats ne null}" class="panel panel-default">
+    <div id="wednesday-stats" th:if="${not #lists.isEmpty(wednesdayStats)}" class="panel panel-default">
         <div class="panel-heading">
             Wednesday Stats
         </div>
@@ -23,7 +23,7 @@
                         <td th:text="${stat.getHandicapDisplay()}"> </td>
                         <td th:text="${stat.getWins()}"> </td>
                         <td th:text="${stat.getLoses()}"> </td>
-                        <td th:text="${stat.getRackPct()}"> </td>
+                        <td th:text="${#numbers.formatDecimal(stat.getRackPct(),1,3)}"> </td>
                     </tr>
                     </tbody>
                 </table>

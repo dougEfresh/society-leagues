@@ -14,9 +14,31 @@ casper.test.begin('Test Stats Page', function suite(test) {
     casper.then(function() {
         test.assertExists('#topgun-stats',"topgun stats");
     });
-     casper.then(function() {
+    casper.then(function() {
         test.assertExists('#users-stats-search',"user seach stats");
     });
+
+    casper.then(function() {
+        test.assertExists('#thursday-stats',"thursday  stats");
+    });
+
+    casper.then(function() {
+        test.assertExists('#wednesday-stats',"wednesday  stats");
+    });
+
+    casper.then(function() {
+        test.assertExists('#tuesday-stats',"tueday  stats");
+    });
+
+    casper.then(function() {
+        test.assertNotExists('#scramble-eight-stats',"scramble 8 stats");
+    });
+
+    casper.then(function() {
+        test.assertNotExists('#scramble-nine-stats',"scramble 8 stats");
+    });
+
+
     casper.run(function(){
         test.done();
     });

@@ -7,21 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Component
 public class StatService {
     final static Logger logger = Logger.getLogger(StatService.class);
     final AtomicReference<List<Stat>> lifetimeStats = new AtomicReference<>(new CopyOnWriteArrayList<Stat>());
+    final AtomicReference<List<Stat>> lifetimeDivisionStats = new AtomicReference<>(new CopyOnWriteArrayList<Stat>());
     final AtomicReference<Map<Season,List<Stat>>> userSeasonStat = new AtomicReference<>(new HashMap<>());
     final AtomicReference<List<Stat>> handicapStats = new AtomicReference<>(new CopyOnWriteArrayList<Stat>());
     @Autowired ThreadPoolTaskExecutor threadPoolTaskExecutor;
@@ -87,74 +84,80 @@ public class StatService {
     public void refresh() {
         if (!enableRefresh)
             return;
-          logger.info("Refreshing stats");
-                long start = System.currentTimeMillis();
-                final Set<Team> teams = leagueService.findCurrent(Team.class);
-                long startTime = System.currentTimeMillis();
+        logger.info("Refreshing stats");
+        long start = System.currentTimeMillis();
+        final Set<Team> teams = leagueService.findCurrent(Team.class);
+        long startTime = System.currentTimeMillis();
 
-                startTime = System.currentTimeMillis();
-                logger.info("RefreshTeamMatch ");
-                leagueService.findCurrent(TeamMatch.class).parallelStream().forEach(StatService.this::refreshTeamMatch);
-                logger.info("RefreshTeamMatch " + (System.currentTimeMillis() - startTime));
+        startTime = System.currentTimeMillis();
+        logger.info("RefreshTeamMatch ");
+        leagueService.findCurrent(TeamMatch.class).parallelStream().forEach(StatService.this::refreshTeamMatch);
+        logger.info("RefreshTeamMatch " + (System.currentTimeMillis() - startTime));
 
-                startTime = System.currentTimeMillis();
-                logger.info("RefreshTeam TeamRank ");
-                //refreshTeamRank();
-                logger.info("RefreshTeam TeamRank " + (System.currentTimeMillis() - startTime));
-                startTime = System.currentTimeMillis();
-                logger.info("UserSesonStats  ");
-                refreshUserSeasonStats(true);
-                logger.info("UserSesonStats  " + (System.currentTimeMillis() - startTime));
-                //refreshUserLifetimeStats();
-                rereshUserHandicapStats();
-                logger.info("RefreshTeam Stats ");
-                for (Team team : teams) {
-                    refreshTeamStats(team);
-                }
-                logger.info("RefreshTeam Stats " + (System.currentTimeMillis() - startTime));
-                resultService.refresh();
-                logger.info("Done Refreshing stats  (" + (System.currentTimeMillis() - start) + "ms)");
-
-        /*
-        if (threadPoolTaskExecutor.getActiveCount() > 0) {
-            logger.info("Skipping refresh");
-            return;
+        startTime = System.currentTimeMillis();
+        logger.info("RefreshTeam TeamRank ");
+        //refreshTeamRank();
+        logger.info("RefreshTeam TeamRank " + (System.currentTimeMillis() - startTime));
+        startTime = System.currentTimeMillis();
+        logger.info("UserSesonStats  ");
+        refreshUserSeasonStats(true);
+        logger.info("UserSesonStats  " + (System.currentTimeMillis() - startTime));
+        //refreshUserLifetimeStats();
+        rereshUserHandicapStats();
+        logger.info("RefreshTeam Stats ");
+        for (Team team : teams) {
+            refreshTeamStats(team);
         }
-        logger.info("Submitting to task for refresh");
+        logger.info("RefreshTeam Stats " + (System.currentTimeMillis() - startTime));
+        resultService.refresh();
+        logger.info("Done Refreshing stats  (" + (System.currentTimeMillis() - start) + "ms)");
 
-        threadPoolTaskExecutor.submit(new Runnable() {
-            @Override
-            public void run() {
-                logger.info("Refreshing stats");
-                long start = System.currentTimeMillis();
-                final Set<Team> teams = leagueService.findCurrent(Team.class);
-                long startTime = System.currentTimeMillis();
+        List<User> users = leagueService.findAll(User.class);
+        List<Stat> lifeDivisionStats = new ArrayList<>(500);
+        for (User user : users) {
+            for(Season season: user.getSeasons().stream().filter(hs->!hs.isChallenge()).collect(Collectors.toList())) {
+                Stat s = new Stat();
+                s.setUser(user);
+                switch (season.getDivision()) {
+                    case EIGHT_BALL_THURSDAYS:
+                        s.setType(StatType.LIFETIME_EIGHT_BALL_THURSDAY);
+                        Stat.calculate(user,s,
+                                leagueService.findAll(PlayerResult.class).parallelStream().filter(r->r.getSeason().getDivision() == Division.EIGHT_BALL_THURSDAYS).collect(Collectors.toList()));
+                        lifeDivisionStats.add(s);
+                        break;
+                    case EIGHT_BALL_WEDNESDAYS:
+                        s.setType(StatType.LIFETIME_EIGHT_BALL_WEDNESDAY);
+                        Stat.calculate(user,s,
+                                leagueService.findAll(PlayerResult.class).parallelStream().filter(r->r.getSeason().getDivision() == Division.EIGHT_BALL_WEDNESDAYS).collect(Collectors.toList()));
+                        lifeDivisionStats.add(s);
+                        break;
+                    case NINE_BALL_TUESDAYS:
+                        s.setType(StatType.LIFETIME_NINE_BALL_TUESDAY);
+                        Stat.calculate(user,s,
+                                leagueService.findAll(PlayerResult.class).parallelStream().filter(r->r.getSeason().getDivision() == Division.NINE_BALL_TUESDAYS).collect(Collectors.toList()));
+                        lifeDivisionStats.add(s);
+                        break;
+                    case MIXED_MONDAYS_MIXED:
+                    case MIXED_EIGHT:
+                    case MIXED_NINE:
+                        s = new Stat();
+                        s.setUser(user);
+                        s.setType(StatType.LIFETIME_EIGHT_BALL_SCRAMBLE);
+                        Stat.calculate(user,s,
+                                leagueService.findAll(PlayerResult.class).parallelStream().filter(r->r.getTeamMatch().getDivision() == Division.MIXED_EIGHT).collect(Collectors.toList()));
+                        lifeDivisionStats.add(s);
 
-                startTime = System.currentTimeMillis();
-                logger.info("RefreshTeamMatch ");
-                leagueService.findCurrent(TeamMatch.class).parallelStream().forEach(StatService.this::refreshTeamMatch);
-                logger.info("RefreshTeamMatch " + (System.currentTimeMillis() - startTime));
-
-                startTime = System.currentTimeMillis();
-                logger.info("RefreshTeam TeamRank ");
-                //refreshTeamRank();
-                logger.info("RefreshTeam TeamRank " + (System.currentTimeMillis() - startTime));
-                startTime = System.currentTimeMillis();
-                logger.info("UserSesonStats  ");
-                refreshUserSeasonStats();
-                logger.info("UserSesonStats  " + (System.currentTimeMillis() - startTime));
-                //refreshUserLifetimeStats();
-                rereshUserHandicapStats();
-                logger.info("RefreshTeam Stats ");
-                for (Team team : teams) {
-                    refreshTeamStats(team);
+                        s = new Stat();
+                        s.setUser(user);
+                        s.setType(StatType.LIFETIME_NINE_BALL_SCRAMBLE);
+                        Stat.calculate(user,s,
+                                leagueService.findAll(PlayerResult.class).parallelStream().filter(r->r.getTeamMatch().getDivision() == Division.MIXED_NINE).collect(Collectors.toList()));
+                        lifeDivisionStats.add(s);
+                        break;
                 }
-                logger.info("RefreshTeam Stats " + (System.currentTimeMillis() - startTime));
-                resultService.refresh();
-                logger.info("Done Refreshing stats  (" + (System.currentTimeMillis() - start) + "ms)");
             }
-        });
-        */
+        }
+        lifetimeDivisionStats.lazySet(lifeDivisionStats);
     }
 
     private void refreshUserSeasonStats(Season season, Map<Season,List<Stat>> userSeasonStats) {

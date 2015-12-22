@@ -24,8 +24,8 @@ public class StatResource  extends BaseController {
         model.addAttribute("wednesdayStats",stats.stream().filter(s -> s.getSeason() != null && s.getSeason().getDivision() == Division.EIGHT_BALL_WEDNESDAYS).collect(Collectors.toList()));
         model.addAttribute("tuesdayStats",  stats.stream().filter(s -> s.getSeason() != null && s.getSeason().getDivision() == Division.NINE_BALL_TUESDAYS).collect(Collectors.toList()));
 
-        model.addAttribute("scrambleEight", stats.stream().filter(s -> s.getSeason() != null && s.getSeason().isScramble() && s.getType() == StatType.MIXED_EIGHT).collect(Collectors.toList()));
-        model.addAttribute("scrambleNine", stats.stream().filter( s -> s.getSeason() != null && s.getSeason().isScramble() && s.getType() == StatType.MIXED_NINE).collect(Collectors.toList()));
+        model.addAttribute("scrambleEightStats", stats.stream().filter(s -> s.getSeason() != null && s.getSeason().isScramble() && s.getType() == StatType.MIXED_EIGHT).collect(Collectors.toList()));
+        model.addAttribute("scrambleNineStats", stats.stream().filter( s -> s.getSeason() != null && s.getSeason().isScramble() && s.getType() == StatType.MIXED_NINE).collect(Collectors.toList()));
         return "stats/userStats";
     }
 

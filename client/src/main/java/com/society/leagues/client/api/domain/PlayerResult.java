@@ -191,6 +191,13 @@ public class PlayerResult  extends LeagueObject {
         return homeRacks > awayRacks ? playerHome : playerAway;
     }
 
+    public User getPartnerWinner() {
+        if (homeRacks  == null || awayRacks == null)
+            return playerHomePartner;
+
+        return homeRacks > awayRacks ? playerHomePartner : playerAwayPartner;
+    }
+
     public Integer getWinnerRacks() {
         if (homeRacks  == null ||  awayRacks == null)
             return 0;
@@ -230,7 +237,7 @@ public class PlayerResult  extends LeagueObject {
     }
 
     public boolean isWinner(User u) {
-        return u != null && u.equals(getWinner());
+        return u != null && ( u.equals(getWinner()) || u.equals(getPartnerWinner()));
     }
 
     /**
@@ -277,7 +284,7 @@ public class PlayerResult  extends LeagueObject {
     }
 
     public boolean hasUser(User u) {
-        return u!= null && (u.equals(playerHome) || u.equals(playerAway) );
+        return u!= null && (u.equals(playerHome) || u.equals(playerAway) || u.equals(playerHomePartner) || u.equals(playerAwayPartner));
     }
 
     public boolean hasTeam(Team t) {

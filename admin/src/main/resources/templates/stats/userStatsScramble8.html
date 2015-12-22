@@ -1,6 +1,6 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org">
-    <div id="topgun-stats" th:if="${scrambleEight ne null}" class="panel panel-default">
+    <div id="scramble-eight-stats" th:if="${not #lists.isEmpty(scrambleEightStats)}" class="panel panel-default">
         <div class="panel-heading">
             Scramble 8 Stats
         </div>
@@ -17,13 +17,13 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="stat : ${scrambleEight}">
+                    <tr th:each="stat : ${scrambleEightStats}">
                         <!--@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"-->
                         <td th:text="${stat.getSeason().getFormattedName()}"> </td>
                         <td th:text="${stat.getHandicapDisplay()}"> </td>
                         <td th:text="${stat.getWins()}"> </td>
                         <td th:text="${stat.getLoses()}"> </td>
-                        <td th:text="${stat.getRackPct()}"> </td>
+                        <td th:text="${#numbers.formatDecimal(stat.getRackPct(),1,3)}"> </td>
                     </tr>
                     </tbody>
                 </table>
