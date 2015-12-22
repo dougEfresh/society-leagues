@@ -157,41 +157,64 @@ public class StatService {
         */
     }
 
+    private void refreshUserSeasonStats(Season season, Map<Season,List<Stat>> userSeasonStats) {
+
+        List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().
+                filter(pr -> pr.getSeason().equals(season)).filter(pr->pr.hasResults()).
+                collect(Collectors.toList());
+        Map<User, List<PlayerResult>> losers = results.stream()
+                .filter(r->r.getLoser() != null).collect(Collectors.groupingBy(r -> r.getLoser(), Collectors.toList()));
+        Map<User, List<PlayerResult>> winners = results.stream()
+                .filter(r->r.getWinner() != null).collect(Collectors.groupingBy(r -> r.getWinner(), Collectors.toList()));
+        Map<User, List<PlayerResult>> all = new HashMap<>();
+        for (User user : winners.keySet()) {
+            all.put(user, winners.get(user));
+        }
+        for (User user : losers.keySet()) {
+            if (all.containsKey(user)) {
+                all.get(user).addAll(losers.get(user));
+            } else {
+                all.put(user, losers.get(user));
+            }
+        }
+        List<Stat> stats = new ArrayList<>(100);
+        List<Team> teams = leagueService.findAll(Team.class).stream().filter(t->t.getSeason().equals(season)).collect(Collectors.toList());
+        for (User user : all.keySet()) {
+            if (season.isScramble())  {
+                stats.add(buildSeasonStats(user,teams,season,
+                        all.get(user).stream().filter(pr->pr.getTeamMatch().getDivision() == Division.MIXED_EIGHT).collect(Collectors.toList()),
+                        StatType.MIXED_EIGHT));
+                stats.add(buildSeasonStats(user,teams,season,
+                        all.get(user).stream().filter(pr->pr.getTeamMatch().getDivision() == Division.MIXED_NINE).collect(Collectors.toList()),
+                        StatType.MIXED_NINE));
+            } else {
+                stats.add(buildSeasonStats(user,teams,season,all.get(user),null));
+            }
+
+        }
+        userSeasonStats.put(season,stats);
+    }
+
+    private Stat buildSeasonStats(User user, List<Team> teams, Season season, List<PlayerResult> results, StatType statType) {
+        Stat s = Stat.buildPlayerSeasonStats(user,
+                season,
+               results
+        );
+        s.setSeason(season);
+        s.setTeam(teams.stream().filter(t->t.hasUser(user)).findFirst().orElse(null));
+        s.setHandicap(user.getHandicap(season));
+        if (statType != null)
+            s.setType(statType);
+
+        return s;
+    }
+
     private void refreshUserSeasonStats(boolean active) {
         Collection<Season> seasons = leagueService.findAll(Season.class);
         Map<Season,List<Stat>> userSeasonStats = new HashMap<>(1000);
         for (Season season : seasons) {
-            List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().
-                    filter(pr -> pr.getSeason().equals(season)).filter(pr->pr.hasResults()).
-                    collect(Collectors.toList());
-            Map<User, List<PlayerResult>> losers = results.stream().filter(r->r.getLoser() != null).collect(Collectors.groupingBy(r -> r.getLoser(), Collectors.toList()));
-            Map<User, List<PlayerResult>> winners = results.stream().filter(r->r.getWinner() != null).collect(Collectors.groupingBy(r -> r.getWinner(), Collectors.toList()));
-            Map<User, List<PlayerResult>> all = new HashMap<>();
-            for (User user : winners.keySet()) {
-                all.put(user, winners.get(user));
-            }
-            for (User user : losers.keySet()) {
-                if (all.containsKey(user)) {
-                    all.get(user).addAll(losers.get(user));
-                } else {
-                    all.put(user, losers.get(user));
-                }
-            }
-            List<Stat> stats = new ArrayList<>(100);
-            List<Team> teams = leagueService.findAll(Team.class).stream().filter(t->t.getSeason().equals(season)).collect(Collectors.toList());
-            for (User user : all.keySet()) {
-                Stat s = Stat.buildPlayerSeasonStats(user,
-                        season,
-                        all.get(user)
-                );
-                s.setSeason(season);
-                s.setTeam(teams.stream().filter(t->t.hasUser(user)).findFirst().orElse(null));
-                s.setHandicap(user.getHandicap(season));
-                stats.add(s);
-            }
-            userSeasonStats.put(season,stats);
+            refreshUserSeasonStats(season,userSeasonStats);
         }
-
         for (Season season : userSeasonStats.keySet()) {
             List<Stat> stats = userSeasonStats.get(season);
              userSeasonStats.put(season, stats.stream().sorted(new Comparator<Stat>() {

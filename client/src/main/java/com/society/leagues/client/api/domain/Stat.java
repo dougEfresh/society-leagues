@@ -23,7 +23,11 @@ public class Stat {
     }
 
 
-    public static Stat buildHandicapStats(final List<PlayerResult> results, StatType statType, User user,Handicap handicap) {
+    public void setType(StatType type) {
+        this.type = type;
+    }
+
+    public static Stat buildHandicapStats(final List<PlayerResult> results, StatType statType, User user, Handicap handicap) {
         Stat s= new Stat();
         if (results == null || results.isEmpty())
             return null;
@@ -126,6 +130,10 @@ public class Stat {
             return Handicap.NA;
         }
         return handicap;
+    }
+
+    public String getHandicapDisplay() {
+        return getHandicap().getDisplayName();
     }
 
     public static Stat buildLifeTimeStats(final User u, final List<Stat> stats) {

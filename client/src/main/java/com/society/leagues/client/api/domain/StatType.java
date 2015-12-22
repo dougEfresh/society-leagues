@@ -7,5 +7,7 @@ public enum StatType {
     TEAM,
     HANDICAP_WINS,
     HANDICAP_LOSES,
+    MIXED_EIGHT,
+    MIXED_NINE,
     UNKNOWN;
 }
