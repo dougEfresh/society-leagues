@@ -66,6 +66,11 @@ public class StatService {
         refresh();
     }
 
+
+    public List<Stat> getLifetimeDivisionStats() {
+        return lifetimeDivisionStats.get();
+    }
+
     public List<Stat> getLifetimeStats() {
         return lifetimeStats.get();
     }
@@ -113,6 +118,7 @@ public class StatService {
         logger.info("Done Refreshing stats  (" + (System.currentTimeMillis() - start) + "ms)");
 
         List<User> users = leagueService.findAll(User.class);
+        logger.info("Processing lifetime stats");
         List<Stat> lifeDivisionStats = new ArrayList<>(500);
         List<PlayerResult> results = leagueService.findAll(PlayerResult.class);
         for (User user : users) {

@@ -208,6 +208,7 @@ public class StatResource {
             tg.setPoints(totalPoints);
         }
         userStats.add(Stat.buildLifeTimeStats(u, userStats));
+        userStats.addAll(statService.getLifetimeDivisionStats().stream().filter(s->s.getUser().equals(u)).collect(Collectors.toList()));
         return userStats;
     }
     @RequestMapping(value = "/user/{id}/{seasonId}",
