@@ -1,14 +1,16 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
-<html xmlns:th="http://www.thymeleaf.org">
-<body>
-<div class="panel panel-default">
-    <div class="panel-heading">
-        Results
-    </div>
-    <div class="panel-body">
+<div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"  >
+            <div th:if="${not #lists.isEmpty(results)}" class="panel panel-default">
+            <div class="panel-heading">
+                Results
+            </div>
+            <div class="panel-body">
+                <div th:replace="results/userResultsScramble">
+                </div>
+                <!--
         <div th:replace="user/userResultsTopgun">
         </div>
-    </div>
+        -->
+            </div>
+        </div>
 </div>
-</body>
-</html>

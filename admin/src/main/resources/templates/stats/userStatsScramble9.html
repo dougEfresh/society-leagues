@@ -19,7 +19,10 @@
                     <tbody>
                     <tr th:each="stat : ${scrambleNineStats}">
                         <!--@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"-->
-                        <td th:if="${!stat.isLifeTime()}" th:text="${stat.getSeason().getFormattedName()}"> </td>
+                        <td th:if="${!stat.isLifeTime()}" >
+                            <a th:text="${stat.getSeason().getFormattedName()}" th:href="@{/admin/stats/{id}/{sId} (id=${statUser.id},sId=${stat.getSeason().id})}"></a>
+                        </td>
+
                         <td th:if="${stat.isLifeTime()}" > Lifetime </td>
                         <td th:text="${stat.getHandicapDisplay()}"> </td>
                         <td th:text="${stat.getWins()}"> </td>

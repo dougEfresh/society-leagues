@@ -370,9 +370,16 @@ public class PlayerResult  extends LeagueObject {
         if (referenceTeam != null)
             return referenceTeam.equals(teamMatch.getHome()) ? playerHomePartner : playerAwayPartner;
 
-        if (referenceUser != null)
-            return referenceUser.equals(playerHome) ? playerHomePartner : playerAwayPartner;
+        if (referenceUser != null) {
+            if (referenceUser.equals(playerAwayPartner)) {
+                return playerAway;
+            }
+            if (referenceUser.equals(playerHomePartner)) {
+                return playerHome;
+            }
 
+            return referenceUser.equals(playerHome) ? playerHomePartner : playerAwayPartner;
+        }
         return null;
     }
 

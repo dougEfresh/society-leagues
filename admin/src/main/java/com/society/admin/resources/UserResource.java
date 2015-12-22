@@ -47,7 +47,6 @@ public class UserResource extends BaseController {
         }
         u.setHandicapSeasons(u.getActiveHandicapSeasons());
         model.addAttribute("editUser", u);
-        HandicapSeason topGun = u.getActiveHandicapSeasons().stream().filter(s->s.getSeason().isChallenge()).findAny().orElse(null);
         return "user/editUser";
     }
 

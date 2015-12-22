@@ -1,9 +1,6 @@
 package com.society.admin.resources;
 
-import com.society.leagues.client.api.domain.Division;
-import com.society.leagues.client.api.domain.Season;
-import com.society.leagues.client.api.domain.Stat;
-import com.society.leagues.client.api.domain.StatType;
+import com.society.leagues.client.api.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +17,7 @@ import java.util.stream.Collectors;
 public class StatResource  extends BaseController {
 
     @RequestMapping(value = {"/stats/{userId}"}, method = RequestMethod.GET)
-    public String list(@PathVariable String userId, Model model) {
+    public String stats(@PathVariable String userId, Model model) {
         List<Stat> stats = statApi.getUserStats(userId);
         model.addAttribute("statUser",userApi.get(userId));
         List<Stat> divisionStats = new ArrayList<>();
@@ -61,9 +58,14 @@ public class StatResource  extends BaseController {
     @RequestMapping(value = {"/stats/{userId}/{seasonId}"}, method = RequestMethod.GET)
     public String list(@PathVariable String userId, @PathVariable String seasonId , Model model) {
         Season s = seasonApi.get(seasonId);
+        User u = userApi.get(userId);
         model.addAttribute("season",s);
-        model.addAttribute("results",resultApi.resultsBySeason(userId,seasonId));
-        return "stats/userStats";
+        List<PlayerResult> results = resultApi.resultsBySeason(userId,seasonId);
+        for (PlayerResult result : results) {
+            result.setReferenceUser(u);
+        }
+        model.addAttribute("results",results);
+        return stats(userId,model);
     }
 
 
