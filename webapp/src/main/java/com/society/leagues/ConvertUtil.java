@@ -1141,6 +1141,7 @@ public class ConvertUtil {
 
             for (TeamMatch teamMatch : matches.get(localDate)) {
                 teamMatch.setDivision(division);
+                logger.info("Setting game type to " + division);
                 leagueService.save(teamMatch);
             }
             division = division == Division.MIXED_EIGHT ? Division.MIXED_NINE : Division.MIXED_EIGHT;

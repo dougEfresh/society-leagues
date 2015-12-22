@@ -181,6 +181,7 @@ public class StatService {
         List<Team> teams = leagueService.findAll(Team.class).stream().filter(t->t.getSeason().equals(season)).collect(Collectors.toList());
         for (User user : all.keySet()) {
             if (season.isScramble())  {
+                logger.info("Adding scramble stats");
                 stats.add(buildSeasonStats(user,teams,season,
                         all.get(user).stream().filter(pr->pr.getTeamMatch().getDivision() == Division.MIXED_EIGHT).collect(Collectors.toList()),
                         StatType.MIXED_EIGHT));
