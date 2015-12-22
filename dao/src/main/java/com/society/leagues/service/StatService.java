@@ -172,28 +172,30 @@ public class StatService {
     private void refreshUserSeasonStats(Season season, Map<Season,List<Stat>> userSeasonStats) {
 
         List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().
-                filter(pr -> pr.getSeason().equals(season)).filter(pr->pr.hasResults()).
+                filter(pr -> pr.getSeason().equals(season)).filter(PlayerResult::hasResults).
                 collect(Collectors.toList());
         Map<User, List<PlayerResult>> losers = results.stream()
-                .filter(r->r.getLoser() != null).collect(Collectors.groupingBy(r -> r.getLoser(), Collectors.toList()));
+                .filter(r->r.getLoser() != null).collect(Collectors.groupingBy(PlayerResult::getLoser, Collectors.toList()));
+
         Map<User, List<PlayerResult>> winners = results.stream()
-                .filter(r->r.getWinner() != null).collect(Collectors.groupingBy(r -> r.getWinner(), Collectors.toList()));
+                .filter(r->r.getWinner() != null).collect(Collectors.groupingBy(PlayerResult::getWinner, Collectors.toList()));
         Map<User, List<PlayerResult>> all = new HashMap<>();
         for (User user : winners.keySet()) {
             all.put(user, winners.get(user));
+            all.get(user).addAll(results.parallelStream().filter(r-> user.equals(r.getPartnerWinner())).collect(Collectors.toList()));
         }
         for (User user : losers.keySet()) {
             if (all.containsKey(user)) {
                 all.get(user).addAll(losers.get(user));
             } else {
                 all.put(user, losers.get(user));
+                all.get(user).addAll(results.parallelStream().filter(r-> user.equals(r.getPartnerWinner())).collect(Collectors.toList()));
             }
         }
         List<Stat> stats = new ArrayList<>(100);
         List<Team> teams = leagueService.findAll(Team.class).stream().filter(t->t.getSeason().equals(season)).collect(Collectors.toList());
         for (User user : all.keySet()) {
             if (season.isScramble())  {
-                logger.info("Adding scramble stats");
                 stats.add(buildSeasonStats(user,teams,season,
                         all.get(user).stream().filter(pr->pr.getTeamMatch().getDivision() == Division.MIXED_EIGHT).collect(Collectors.toList()),
                         StatType.MIXED_EIGHT));

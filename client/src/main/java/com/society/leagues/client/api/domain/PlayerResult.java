@@ -198,6 +198,11 @@ public class PlayerResult  extends LeagueObject {
         return homeRacks > awayRacks ? playerHomePartner : playerAwayPartner;
     }
 
+    @JsonIgnore
+    public User getWinnerPartner() {
+        return getPartnerWinner();
+    }
+
     public Integer getWinnerRacks() {
         if (homeRacks  == null ||  awayRacks == null)
             return 0;
@@ -218,6 +223,14 @@ public class PlayerResult  extends LeagueObject {
             return playerAway;
 
         return homeRacks > awayRacks ? playerAway : playerHome;
+    }
+
+
+    public User getLoserPartner() {
+         if (homeRacks  == null || awayRacks == null)
+            return playerAwayPartner;
+
+        return homeRacks > awayRacks ? playerAwayPartner : playerHomePartner;
     }
 
     public Integer getLoserRacks() {
