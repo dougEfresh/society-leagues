@@ -72,6 +72,11 @@
                         <li >
                             <a href="/admin/team"><i class="fa fa-users fa-fw"></i> Teams</a>
                         </li>
+                         <li  th:if="${user ne null}">
+                            <a  th:href="@{/admin/stats/{id} (id=${user.getId()})}">
+                             <i class="fa fa-chart fa-fw"></i> Stats</a>
+                        </li>
+
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->

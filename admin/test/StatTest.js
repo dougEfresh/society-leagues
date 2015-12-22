@@ -14,6 +14,9 @@ casper.test.begin('Test Stats Page', function suite(test) {
     casper.then(function() {
         test.assertExists('#topgun-stats',"topgun stats");
     });
+     casper.then(function() {
+        test.assertExists('#users-stats-search',"user seach stats");
+    });
     casper.run(function(){
         test.done();
     });

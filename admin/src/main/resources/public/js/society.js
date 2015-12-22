@@ -11,9 +11,16 @@ function searchUser(e) {
     window.location = '/admin/user/' + id;
 }
 
+function searchUserStats(e) {
+    var id = $('#users-stats-search').val();
+    window.location = '/admin/stats/' + id;
+}
+
+
  $(document).ready(function() {
      $("#team-members").select2({ width: 600 });
      $("#users-search").select2();
+     $("#users-stats-search").select2();
  });
 
 $(function() {

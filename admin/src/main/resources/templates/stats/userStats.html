@@ -1,6 +1,18 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
     <div id="stats-app"  layout:fragment="content">
+        <div th:if="${statUser ne null}" class="input-group custom-search-form">
+            <select id="users-stats-search" class="form-control" >
+                <option th:each="u : ${allUsers}" th:selected="${u.getId().equals(statUser.getId())}"
+                        th:value="${u.id}" th:text="${u.name}"></option>
+            </select>
+            <span class="input-group-btn">
+                <button onclick="searchUserStats()" class="btn btn-default" type="button">
+                    <i class="fa fa-search"></i>
+                </button>
+            </span>
+        </div>
         <div th:replace="stats/userStatsTopgun" ></div>
+        <div th:replace="stats/userStatsNine" ></div>
     </div>
 </div>

@@ -158,10 +158,7 @@ public class StatService {
     }
 
     private void refreshUserSeasonStats(boolean active) {
-        Collection<Season> seasons = leagueService.findCurrent(Season.class);
-        if (!active)
-            seasons = leagueService.findAll(Season.class);
-
+        Collection<Season> seasons = leagueService.findAll(Season.class);
         Map<Season,List<Stat>> userSeasonStats = new HashMap<>(1000);
         for (Season season : seasons) {
             List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().
