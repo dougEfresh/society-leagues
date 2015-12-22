@@ -48,12 +48,6 @@ public class UserResource extends BaseController {
         u.setHandicapSeasons(u.getActiveHandicapSeasons());
         model.addAttribute("editUser", u);
         HandicapSeason topGun = u.getActiveHandicapSeasons().stream().filter(s->s.getSeason().isChallenge()).findAny().orElse(null);
-        if (topGun != null) {
-            Map<String,Object> resultsAndStats = resultApi.resultsBySeason(u.getId(), topGun.getSeason().getId());
-            model.addAttribute("results",resultsAndStats.get("results"));
-            model.addAttribute("stats",resultsAndStats.get("stats"));
-            model.addAttribute("season",topGun.getSeason());
-        }
         return "user/editUser";
     }
 

@@ -62,7 +62,7 @@ public class StatResource  extends BaseController {
     public String list(@PathVariable String userId, @PathVariable String seasonId , Model model) {
         Season s = seasonApi.get(seasonId);
         model.addAttribute("season",s);
-         resultApi.resultsBySeason(userId,seasonId);
+        model.addAttribute("results",resultApi.resultsBySeason(userId,seasonId));
         return "stats/userStats";
     }
 
