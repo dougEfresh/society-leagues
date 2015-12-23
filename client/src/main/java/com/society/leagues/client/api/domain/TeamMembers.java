@@ -3,12 +3,20 @@ package com.society.leagues.client.api.domain;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class TeamMembers extends LeagueObject {
 
     @DBRef User captain;
     @DBRef Set<User> members = new HashSet<>();
+
+    public TeamMembers() {
+    }
+
+    public TeamMembers(List<User> members) {
+        this.members = members == null ? new HashSet<>() : new HashSet<>(members);
+    }
 
     public User getCaptain() {
         return captain;

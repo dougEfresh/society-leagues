@@ -1,1 +1,1 @@
-include 'client','dao','webapp' 
+include 'client','dao','webapp' , 'admin'

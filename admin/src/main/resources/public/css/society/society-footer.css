@@ -1,0 +1,36 @@
+/* Footer */
+.footer {
+  width: 100%;
+  /* Set the fixed height of the ss-naver here */
+}
+.footer .container {
+	margin-top: 200px;
+	border-color: #080808;
+	background-color: #080808;
+	color: #9d9d9d;
+
+}
+.footer .container a, .footer.container a:visited {
+	color: #9d9d9d;
+}
+.footer .container ul {
+	float: left;
+	font-family: 'Helvetica', sans-serif;
+	font-size: .9em;
+	padding: 15px 0px 15px 10px;
+	margin: 0 auto;
+	text-align: center;
+	width: 100%;
+	list-style-type: none;
+}
+.footer .container li {
+	float: left;
+	padding: 0px 10px;
+	margin: 0px 0px 10px 0px;
+	width: 30%;
+	text-align: center;
+}
+.footer .container li.footer-address {
+	clear: both;
+	width: 100%;
+}

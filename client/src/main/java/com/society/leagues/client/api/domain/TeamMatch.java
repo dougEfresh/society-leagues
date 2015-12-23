@@ -1,12 +1,16 @@
 package com.society.leagues.client.api.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.converters.DateTimeSerializer;
+import org.omg.CORBA.UNKNOWN;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -28,11 +32,19 @@ public class TeamMatch extends LeagueObject {
     Integer matchNumber = 0;
     User referenceUser = null;
     Boolean hasPlayerResults = false;
-    Status status;
+    Status status = null;
     Integer forfeits = 0;
     Integer homeForfeits = 0;
     Integer awayForfeits = 0;
     Integer handicapRacks = 0;
+    @JsonIgnore
+    @Transient
+    String date;
+    @JsonIgnore
+    @Transient
+    String time;
+    @Transient
+    String race = "";
 
     public TeamMatch(Team home, Team away, LocalDateTime matchDate) {
         this.home = home;
@@ -45,10 +57,27 @@ public class TeamMatch extends LeagueObject {
 
     public Status getStatus() {
         LocalDateTime now  = LocalDateTime.now();
-        if (getMatchDate().isBefore(now) && !isHasResults()) {
+        if (getMatchDate() != null && getMatchDate().isBefore(now) && !isHasResults()) {
             return Status.PENDING;
         }
         return status;
+    }
+
+    public String getGameType() {
+        if (getDivision() == null)
+            return "Unknown";
+
+        switch (getDivision()) {
+            case NINE_BALL_CHALLENGE:
+            case NINE_BALL_TUESDAYS:
+            case MIXED_NINE:
+                return "9";
+            case MIXED_EIGHT:
+            case EIGHT_BALL_THURSDAYS:
+            case EIGHT_BALL_WEDNESDAYS:
+                return "8";
+        }
+        return "N/A";
     }
 
     public void setDivision(Division division) {
@@ -80,7 +109,17 @@ public class TeamMatch extends LeagueObject {
     }
 
     public LocalDateTime getMatchDate() {
-        return matchDate;
+        if (matchDate != null)
+            return matchDate;
+
+        if (date != null && time != null) {
+            try {
+                return LocalDateTime.parse(date + "T" + time);
+            } catch (Exception e) {
+
+            }
+        }
+        return null;
     }
 
     public void setMatchDate(LocalDateTime matchDate) {
@@ -88,7 +127,10 @@ public class TeamMatch extends LeagueObject {
     }
 
     public Season getSeason() {
-        return home.getSeason();
+        if (home != null)
+            return home.getSeason();
+
+        return null;
     }
 
     public String score() {
@@ -96,7 +138,6 @@ public class TeamMatch extends LeagueObject {
     }
 
     public Division getDivision() {
-
         if (division == null && getSeason() != null) {
             return getSeason().getDivision();
         }
@@ -104,11 +145,11 @@ public class TeamMatch extends LeagueObject {
     }
 
     public boolean isNine() {
-        return getSeason().isNine();
+        return getSeason() != null && getSeason().isNine();
     }
 
     public boolean isChallenge() {
-        return getDivision().isChallenge();
+        return getDivision() != null && getDivision().isChallenge();
     }
 
     public Integer getAwayRacks() {
@@ -192,34 +233,18 @@ public class TeamMatch extends LeagueObject {
     }
 
     public Integer getWinnerSetWins() {
-        if (!getSeason().isNine() || getSeason().getDivision().isChallenge()) {
-            return null;
-        }
-
         return homeRacks > awayRacks ? setHomeWins : setAwayWins;
     }
 
     public Integer getWinnerSetLoses() {
-        if (!getSeason().isNine() || getSeason().getDivision().isChallenge()) {
-            return null;
-        }
-
         return homeRacks > awayRacks ? setAwayWins : setHomeWins;
     }
 
     public Integer getLoserSetWins() {
-        if (!getSeason().isNine() || getSeason().getDivision().isChallenge()) {
-            return  homeRacks > awayRacks  ? awayRacks  : homeRacks;
-        }
-
         return homeRacks > awayRacks ? setAwayWins : setHomeWins;
     }
 
     public Integer getLoserSetLoses() {
-        if (!getSeason().isNine() || getSeason().getDivision().isChallenge()) {
-            return  homeRacks > awayRacks  ? homeRacks  : awayRacks;
-        }
-
         return homeRacks > awayRacks ? setHomeWins : setAwayWins;
     }
 
@@ -267,17 +292,24 @@ public class TeamMatch extends LeagueObject {
     }
 
     public String getRace() {
-        if (getSeason().isChallenge()) {
+        if (isChallenge()) {
+            if (getHome() == null || getHome().getChallengeUser() == null)
+                return "";
+            if (getAway() == null || getAway().getChallengeUser() == null)
+                return "";
             Handicap h  = getHome().getChallengeUser().getHandicap(getSeason());
-            Handicap a = getAway().getMembers().getMembers().iterator().next().getHandicap(getSeason());
-            return Handicap.race(h,a);
-        } else {
-            return "";
+            Handicap a = getAway().getChallengeUser().getHandicap(getSeason());
+        return Handicap.race(h,a);
         }
+        if (race != null && !race.isEmpty())
+            return race;
+
+
+        return "";
     }
 
     public User getChallenger() {
-        if (getSeason().isChallenge()) {
+        if (isChallenge()) {
             return getHome().getChallengeUser();
         }
         return null;
@@ -285,7 +317,7 @@ public class TeamMatch extends LeagueObject {
 
 
     public User getOpponent() {
-        if (getSeason().isChallenge()) {
+        if (isChallenge()) {
             return getAway().getChallengeUser();
         }
         return null;
@@ -327,7 +359,23 @@ public class TeamMatch extends LeagueObject {
         this.awayForfeits = awayForfeits;
     }
 
+    @JsonIgnore
+    public String getTime() {
+        return getMatchDate().toLocalTime().toString();
+    }
 
+    @JsonIgnore
+    public String getDate() {
+        return getMatchDate().toLocalDate().toString();
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 
     @Override
     public String toString() {
@@ -342,6 +390,9 @@ public class TeamMatch extends LeagueObject {
                 '}';
     }
 
+    public void setRace(String race) {
+        this.race = race;
+    }
 
     public Boolean getHasPlayerResults() {
         return hasPlayerResults;

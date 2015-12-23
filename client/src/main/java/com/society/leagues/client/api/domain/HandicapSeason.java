@@ -1,5 +1,6 @@
 package com.society.leagues.client.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.omg.CORBA.UNKNOWN;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
@@ -9,6 +10,9 @@ public class HandicapSeason {
 
     @NotNull @DBRef Season season;
     @NotNull Handicap handicap;
+
+    @JsonIgnore
+    int index = 0;
 
     public HandicapSeason() {
     }
@@ -38,6 +42,14 @@ public class HandicapSeason {
 
     public void setSeason(Season season) {
         this.season = season;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     @Override

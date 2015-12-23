@@ -1,0 +1,41 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org">
+            <div class="table-responsive">
+                <table id="wednesday-stats" th:if="${not #lists.isEmpty(wednesdayStats)}" class="table-bordered table-condensed table-striped table-grid table-stats">
+                    <thead>
+                    <tr>
+                        <th>Wednesday</th>
+                        <th>HC</th>
+                        <th>Team</th>
+                        <th>W</th>
+                        <th>L</th>
+                        <th>PCT</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <td>Lifetime</td>
+                        <td></td>
+                        <td></td>
+                        <td th:text="${wednesdayStatsLifetime.getWins()}"> </td>
+                        <td th:text="${wednesdayStatsLifetime.getLoses()}"> </td>
+                        <td th:text="${#numbers.formatDecimal(wednesdayStatsLifetime.getRackPct(),1,3)}"> </td>
+                    </tr>
+                    </tfoot>
+                    <tbody>
+                    <tr th:each="stat : ${wednesdayStats}">
+                        <!--@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"-->
+                        <td>
+                            <a th:text="${stat.getSeason().getFormattedName()}" th:href="@{/admin/stats/{id}/{sId} (id=${statUser.id},sId=${stat.getSeason().id})}"></a>
+                        </td>
+                        <td th:text="${stat.getHandicapDisplay()}"> </td>
+                        <td th:text="${stat.getTeam().getName()}"> </td>
+                        <td th:text="${stat.getWins()}"> </td>
+                        <td th:text="${stat.getLoses()}"> </td>
+                        <td th:text="${#numbers.formatDecimal(stat.getRackPct(),1,3)}"> </td>
+                    </tr>
+                    </tbody>
+                </table>
+    </div>
+</div>
+

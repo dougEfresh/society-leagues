@@ -43,6 +43,14 @@ public class Season extends LeagueObject   {
     public Season() {
     }
 
+    public static Season getDefault() {
+        Season s = new Season();
+        s.setSeasonStatus(Status.PENDING);
+        s.setDivision(Division.NINE_BALL_TUESDAYS);
+        s.setName("default");
+        return s;
+    }
+
     public Season(String id) {
         this.id = id;
     }
@@ -69,6 +77,22 @@ public class Season extends LeagueObject   {
         if (division == Division.NINE_BALL_CHALLENGE) {
             return "Top Gun";
         }
+        if (year == null || division == null)
+            return "";
+
+        String name = "'" + year.substring(2,4) + " ";
+        name += type;
+        name += " " + division.displayName;
+        return name;
+    }
+
+     public String getFormattedName() {
+        if (division == Division.NINE_BALL_CHALLENGE) {
+            return "Top Gun";
+        }
+        if (year == null || division == null)
+            return "";
+
         String name = "'" + year.substring(2,4) + " ";
         name += type;
         name += " " + division.displayName;
@@ -143,22 +167,26 @@ public class Season extends LeagueObject   {
         this.type = type;
     }
 
-
     public String getShortName(){
         if (this.isChallenge())
             return "Top Gun";
         if (this.isNine())
             return "Tues 9 Ball";
-
         if (this.isScramble())
             return "Scramble";
-
         if (this.getDisplayName().toLowerCase().contains("wed"))
             return "Weds 8 Ball";
 
         return "Thurs 8 Ball";
 
     }
+
+      public static Comparator<Season> sortOrder = new Comparator<Season>() {
+        @Override
+        public int compare(Season o1, Season o2) {
+            return o1.getDivision().order.compareTo(o2.getDivision().order);
+        }
+    };
 
     public static Comparator<Season> sort = new Comparator<Season>() {
         @Override
@@ -170,9 +198,26 @@ public class Season extends LeagueObject   {
             if (o1.getLegacyId() != null && o2.getLegacyId() != null)
                 return o1.getLegacyId().compareTo(o2.getLegacyId());
 
-            return o1.getStartDate().compareTo(o2.getStartDate());
+            if (o1.getStartDate() != null && o2.getStartDate() != null)
+                return o1.getStartDate().compareTo(o2.getStartDate());
+
+            return 0;
         }
     };
+
+    public boolean isTuesdayNine() {
+        if (division == null)
+            return false;
+
+        return division == Division.NINE_BALL_TUESDAYS;
+    }
+
+    public boolean isEight(){
+        if (division == null)
+                return false;
+
+        return division == Division.EIGHT_BALL_THURSDAYS || division == Division.EIGHT_BALL_WEDNESDAYS;
+    }
 
     @Override
     public String toString() {

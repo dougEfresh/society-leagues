@@ -9,5 +9,6 @@ public enum Status {
     NOTIFY,
     SENT,
     COMPLETE,
-    UPCOMING
+    UPCOMING,
+    UNKNOWN
 }

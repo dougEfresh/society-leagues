@@ -6,46 +6,52 @@ import java.util.List;
 import java.util.Map;
 
 public enum Handicap {
-    ONE,
-    TWO,
-    THREE,
-    FOUR,
-    FIVE,
-    SIX,
-    SEVEN,
-    EIGHT,
-    NINE,
-    TEN,
-    ELEVEN,
-    TWELVE,
-    THIRTEEN,
-    FOURTEEN,
-    FIFTEEN,
-    SIXTEEN,
-    SEVENTEEN,
-    D,
-    DPLUS,
-    C,
-    CPLUS,
-    B,
-    BPLUS,
-    A,
-    APLUS,
-    OPEN,
-    OPENPLUS,
-    PRO,
-    UNKNOWN,
-    NA;
+    ONE("1"),
+    TWO("2"),
+    THREE("3"),
+    FOUR("4"),
+    FIVE("5"),
+    SIX("6"),
+    SEVEN("7"),
+    EIGHT("8"),
+    NINE("9"),
+    TEN("10"),
+    ELEVEN("1"),
+    TWELVE("1"),
+    THIRTEEN("1"),
+    FOURTEEN("1"),
+    FIFTEEN("1"),
+    SIXTEEN("1"),
+    SEVENTEEN("1"),
+    D("D"),
+    DPLUS("D+"),
+    C("C"),
+    CPLUS("C+"),
+    B("B"),
+    BPLUS("B+"),
+    A("A"),
+    APLUS("A+"),
+    OPEN("O"),
+    OPENPLUS("O+"),
+    PRO("P"),
+    UNKNOWN("NA"),
+    NA("NA");
+
+    final String displayName;
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    Handicap(String displayName) {
+        this.displayName = displayName;
+    }
 
     public static String format(Handicap hc) {
         if (hc == null || hc == UNKNOWN) {
-            return "N/A";
+            return "NA";
         }
-
-        if (hc.ordinal() > 15) {
-            return hc.name().replaceAll("PLUS", "+").replaceAll("PRO", "P").replaceAll("OPEN", "O");
-        }
-        return hc.ordinal() + 1 + "";
+        return hc.displayName;
     }
 
     public static boolean isNine(Handicap hc) {
@@ -79,9 +85,8 @@ public enum Handicap {
         return Handicap.UNKNOWN;
     }
 
-    @Override
-    public String toString() {
-        return Handicap.format(this);
+    public String getValue() {
+        return name();
     }
 
     static String[][] raceChart = new String[Handicap.values().length+1][Handicap.values().length+1];

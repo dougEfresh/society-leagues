@@ -1111,4 +1111,70 @@ public class ConvertUtil {
     }
 
 
+    public void updateRacks() {
+        List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().filter(r->r.getSeason().isScramble()).collect(Collectors.toList());
+        for (PlayerResult result : results) {
+            if (result.isScotch()) {
+                if (result.getHomeRacks()>0) {
+                    result.setHomeRacks(2);
+                }
+
+                if (result.getAwayRacks()>0) {
+                    result.setAwayRacks(2);
+                }
+            } else {
+                if (result.getHomeRacks()>0) {
+                    result.setHomeRacks(1);
+                }
+
+                if (result.getAwayRacks()>0) {
+                    result.setAwayRacks(1);
+                }
+            }
+
+            playerResultRepository.save(result);
+        }
+
+    }
+
+      public void scrambleGameHandicap() {
+          List<PlayerResult> results = leagueService.findAll(PlayerResult.class).parallelStream()
+                  .filter(p->p.getSeason().isScramble())
+                  .filter(PlayerResult::isScotch).
+                  collect(Collectors.toList());
+          for (PlayerResult result : results) {
+              if (result.getPlayerHomeHandicapPartner()  == null && result.getPlayerHomePartner() != null) {
+                  result.setPlayerHomeHandicapPartner(result.getPlayerHomePartner().getHandicap(result.getSeason()));
+              }
+              if (result.getPlayerAwayHandicapPartner()  == null && result.getPlayerAwayPartner() != null) {
+                  result.setPlayerAwayHandicapPartner(result.getPlayerAwayPartner().getHandicap(result.getSeason()));
+              }
+              leagueService.save(result);
+          }
+      }
+
+      public void scrambleGameType() {
+        Map<LocalDate,List<TeamMatch>> matches = leagueService.findAll(TeamMatch.class).parallelStream()
+                .filter(tm -> tm.getSeason().isScramble())
+                .filter(tm -> !tm.getSeason().isActive())
+                .collect(Collectors.groupingBy(
+                        tm -> tm.getMatchDate().toLocalDate()
+                ));
+        Division division = Division.MIXED_EIGHT;
+        for (LocalDate localDate : matches.keySet().stream().sorted(new Comparator<LocalDate>() {
+            @Override
+            public int compare(LocalDate o1, LocalDate o2) {
+                return o1.compareTo(o2);
+            }
+        }).collect(Collectors.toList())) {
+
+            for (TeamMatch teamMatch : matches.get(localDate)) {
+                teamMatch.setDivision(division);
+                logger.info("Setting game type to " + division);
+                leagueService.save(teamMatch);
+            }
+            division = division == Division.MIXED_EIGHT ? Division.MIXED_NINE : Division.MIXED_EIGHT;
+        }
+    }
+
 }

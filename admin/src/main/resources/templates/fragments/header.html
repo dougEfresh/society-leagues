@@ -1,0 +1,95 @@
+  <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/admin/home">Society</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li th:if="${allUsers ne null}" class="sidebar-search">
+                            <div class="input-group custom-search-form">
+                                <!--<form action="/user" method="get">-->
+                                <select id="users-search" class="form-control" >
+                                    <option th:each="u : ${allUsers}"  th:value="${u.id}" th:text="${u.name}"></option>
+                                </select>
+                                    <!--<input id="search" name="search" type="text" class="form-control" placeholder="Search...">-->
+                                <span class="input-group-btn">
+                                    <button onclick="searchUser()" class="btn btn-default" type="button">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                                <!--</form>-->
+                            </div>
+                            <!-- /input-group -->
+                        </li>
+                        <li>
+                            <a href="/admin/home"><i class="fa fa-dashboard fa-fw"></i> Home</a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-users fa-fw"></i>My Teams<span class="fa arrow"></span>
+                            </a>
+                               <ul th:if="${userTeams ne null}" class="nav nav-second-level">
+                                    <li th:if="${not team.isChallenge()}" th:each="team : ${userTeams}">
+                                        <a href="#" th:text="${team.getName()}"></a>
+                                   </li>
+                               </ul>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="glyphicon glyphicon-th-list"></span> Scores<span class="fa arrow"></span>
+                            </a>
+                            <ul th:if="${activeSeasons ne null}" class="nav nav-second-level">
+                                <!--/*@thymesVar id="seasons" type="List<com.society.leagues.client.api.domain.Season>"*/-->
+                                <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+                                <li th:each="season : ${activeSeasons}">
+                                    <a th:id="${season.getShortName().replaceAll(' ','')}" th:href="@{/admin/scores/{id}(id=${season.getId()})}" th:text="${season.getShortName()}"></a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+                        <li>
+                            <a href="/admin/user"><i class="fa fa-user fa-fw"></i> Users</a>
+                        </li>
+                        <li >
+                            <a href="/admin/team"><i class="fa fa-users fa-fw"></i> Teams</a>
+                        </li>
+                         <li  th:if="${user ne null}">
+                            <a  th:href="@{/admin/stats/{id} (id=${user.getId()})}">
+                             <i class="fa fa-bar-chart"></i> Stats</a>
+                        </li>
+
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>

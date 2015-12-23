@@ -27,7 +27,7 @@ public class User extends LeagueObject {
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime created = LocalDateTime.now();
-    Set<HandicapSeason> handicapSeasons = new HashSet<>();
+    List<HandicapSeason> handicapSeasons = new ArrayList<>();
     List<TokenReset>  tokens = new ArrayList<>();
 
     Set<Team> currentTeams = new HashSet<>();
@@ -43,6 +43,8 @@ public class User extends LeagueObject {
     public static User defaultUser() {
         User u = new User();
         u.setId("-1");
+        u.setFirstName("---");
+        u.setLastName("---");
         return u;
     }
 
@@ -130,21 +132,32 @@ public class User extends LeagueObject {
         return status;
     }
 
-    public void setHandicapSeasons(Set<HandicapSeason> handicapSeasons) {
-        this.handicapSeasons = handicapSeasons;
-    }
-
     public void setStatus(Status status) {
         this.status = status;
     }
 
     @JsonView(PlayerResultView.class)
-    public Set<HandicapSeason> getHandicapSeasons() {
+    public List<HandicapSeason> getHandicapSeasons() {
         return handicapSeasons;
     }
 
+    public void setHandicapSeasons(List<HandicapSeason> handicapSeasons) {
+        this.handicapSeasons = handicapSeasons;
+    }
+
+    public List<HandicapSeason> getActiveHandicapSeasons() {
+        List<HandicapSeason>  s = handicapSeasons != null ? handicapSeasons.stream().filter(hs->hs.getSeason().isActive()).collect(Collectors.toList()) : Collections.emptyList();
+        s.sort(new Comparator<HandicapSeason>() {
+            @Override
+            public int compare(HandicapSeason o1, HandicapSeason o2) {
+                return o1.getSeason().getDivision().order.compareTo(o2.getSeason().getDivision().order);
+            }
+        });
+        return s;
+    }
+
     public void addHandicap(HandicapSeason hc) {
-        if (hc.getHandicap() != Handicap.UNKNOWN) {
+        if (hc.getHandicap() != Handicap.UNKNOWN && hc.getHandicap() != Handicap.NA) {
             if (hc.getSeason().isNine() && !Handicap.isNine(hc.getHandicap())) {
                 throw new RuntimeException("Adding " + hc.getHandicap() + " to " + hc.getSeason().getDisplayName());
             }
@@ -168,10 +181,17 @@ public class User extends LeagueObject {
              }
          }
     }
-    public boolean isReal(){
+
+    public String getSheetName(String seasonId) {
+        String n = getName() + " (";
+        n += Handicap.format(getHandicap(new Season(seasonId))) + ")";
+        return n;
+    }
+
+    public boolean isReal() {
         if (lastName == null)
             return false;
-        return !(lastName.toLowerCase().contains("handicap") || lastName.toLowerCase().contains("forfeit"));
+        return !(lastName.toLowerCase().contains("handicap") || lastName.toLowerCase().contains("forfeit") || getName().toLowerCase().trim().equals("bye"));
     }
 
     public LocalDateTime getCreated() {

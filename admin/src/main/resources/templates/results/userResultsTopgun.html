@@ -1,0 +1,32 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<table th:if="${season ne null && season.isChallenge()}" class="table table-bordered table-condensed table-striped table-grid">
+    <thead>
+    <tr>
+        <th>Player</th>
+        <th>HC</th>
+        <th style="width:75px;">P</th>
+        <th style="width:50px;">W</th>
+        <th style="width:50px;">L</th>
+        <th>RW</th>
+        <th>RL</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!--/*@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"*/-->
+    <!--
+    <tr th:id="'stat-' + ${stat.getUser().getId()}" th:each="stat : ${matches}">
+        <td th:text="${stat.getUser().getName()}">1</td>
+        <td th:text="${stat.getHandicap().getDisplayName()}">1</td>
+        <td th:text="${#numbers.formatDecimal(stat.getPoints(),2,3)}">1</td>
+        <td th:text="${stat.wins}">1</td>
+        <td th:text="${stat.loses}">1</td>
+        <td th:text="${stat.racksWon}">1</td>
+        <td th:text="${stat.racksLost}">1</td>
+    </tr>
+    -->
+    </tbody>
+</table>
+</body>
+</html>

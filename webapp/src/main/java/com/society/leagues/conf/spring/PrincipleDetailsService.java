@@ -41,7 +41,7 @@ public class PrincipleDetailsService implements UserDetailsService {
             authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         }
         return new org.springframework.security.core.userdetails.User(
-                username,
+                u.getLogin(),
                 u.getPassword() == null ? "nullpassword" : u.getPassword(),
                 authorities
         );

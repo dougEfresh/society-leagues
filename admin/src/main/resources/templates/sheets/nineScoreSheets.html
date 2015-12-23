@@ -1,0 +1,192 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <title>Leagues</title>
+
+	<style type="text/css">
+	*. body {
+		margin: 0px 0px;
+		padding: 0px 0px;
+	}
+	@page { size:8.5in 11in; margin: .5in 0in 0in .5in; }
+	body {
+		-webkit-print-color-adjust:exact;
+		padding: 0px 0px;
+		font-family: 'Helvetica',Arial,sans-serif;
+
+	}
+	.sheet_page1_bg,.sheet_page2_bg {
+		clear:both;
+		position: relative;
+		float: left;
+		display: block;
+		margin: -70px 0px 0px -70px;
+		width: 108%;
+		height: 1400px;
+		background-image: url('/admin/img/9-ball_Scoresheet_F.jpg');
+		background-repeat: no-repeat;
+		background-position: top left;
+		background-size: 100% 100%;
+		page-break-after: always;
+	}
+	.last-page {
+		page-break-after: avoid;
+		height:1385px;
+	}
+	.sheet_page2_bg {
+		background-image: url('/admin/img/9-ball_Scoresheet_B.jpg');
+		margin: -50px 0px 0px -90px;
+		background-size: 100% 95%;
+	}
+	.margin-top-clear {
+		margin-top: 0px;
+	}
+	.margin-top-neg-4 {
+		margin-top: -4px;
+	}
+	.margin-top-neg-5 {
+		margin-top: -5px;
+	}
+	.margin-top-neg-6 {
+		margin-top: -6px;
+	}
+	.margin-top-neg-7 {
+		margin-top: -7px;
+	}
+	.margin-top-neg-8 {
+		margin-top: -8px;
+	}
+	.margin-top-neg-9 {
+		margin-top: -9px;
+	}
+	.margin-top-neg-10 {
+		margin-top: -10px;
+	}
+	.margin-top-neg-11 {
+		margin-top: -11px;
+	}
+	.margin-top-neg-15 {
+		margin-top: -15px;		
+	}
+	.margin-top-neg-20 {
+		margin-top: -20px;		
+	}
+	.margin-top-neg-30 {
+		margin-top: -30px;		
+	}
+	.margin-top-neg-40 {
+		margin-top: -40px;		
+	}
+	.margin-top-neg-50 {
+		margin-top: -50px;		
+	}
+	.margin-top-neg-60 {
+		margin-top: -60px;		
+	}
+	.game-date {
+		position:absolute;
+		top: 335px;
+		left: 0px;
+		display: block;
+		width: 160px;
+		height: 18px;
+		text-align: center;
+		padding: 0px 0px 0px 0px;
+		font-size: 14px;
+		font-weight: bold;	
+	}
+	.home-name, .away-name,
+	.home-name-back, .away-name-back, 
+	.home-roster, .away-roster {
+		position:absolute;
+		top: 425px;
+		left: -10px;
+		display: block;
+		width: 235px;
+		height: 20px;
+		text-align: left;
+		text-indent: 0px;
+		padding: 0px 0px 0px 10px;
+		font-size: 12px;
+	}
+	.away-name, .away-name-back, .away-roster {
+		left: 630px;
+	}
+	.home-name-back, .away-name-back {
+		top:167px;
+		width: 320px;
+	}
+	.home-roster, .away-roster {
+		top: 480px;
+		width: 320px;
+		height: 138px;
+	}
+	.home-roster ul, .away-roster ul {
+		list-style-type: none;
+		list-style-position: inside;
+		margin-left:-40px;
+	}
+	.away-roster ul {
+		margin-left:-35px;
+	}
+	.home-roster li, .away-roster li {
+		margin: 0px 0px 19px 0px;
+	}
+	.page {
+		float:left;
+		width: 100%;
+		height: 100%;
+		margin: 0px 0px;
+		padding: 0px 0px;
+		-webkit-transform: rotate(90deg); 
+     	-moz-transform:rotate(90deg);
+    	filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+	}
+	</style>
+</head>
+
+<body>
+<!-- BEGIN SHEET -->
+<div th:each="match, rowIndex: ${matches.getMatches()}">
+<div class="sheet_page1_bg">
+
+<div class="page">
+	  <div th:text="${match.getGameType()}" class="game-type">
+            8 BALL
+        </div>
+   <div th:text="${date}" class="game-date">
+            Nov 1, 2015
+   </div>
+	<div th:text="${match.getHome().getName()}" class="home-name">
+		Honey Badgers Yayce
+	</div>
+	<div th:text="${match.getAway().getName()}" class="away-name">
+		Ballocks
+	</div>
+<div class="home-roster">
+	<ul class="players">
+		<li th:text="${user.getSheetName(season.id)}"
+			th:each="user : ${match.getHome().getTeamMembers().getMembers()}"></li>
+	</ul>
+</div>
+<div class="away-roster">
+	<ul class="players">
+		<li th:text="${user.getSheetName(season.id)}"
+			th:each="user : ${match.getAway().getTeamMembers().getMembers()}"></li>
+	</ul>
+</div>
+</div>
+</div>
+
+<div th:class="'sheet_page2_bg ' + ${matches.getBackMargin(rowIndex.index)}" >
+</div>
+
+</div>
+
+
+</body>
+
+</html>

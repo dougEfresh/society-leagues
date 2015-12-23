@@ -160,8 +160,14 @@ public class TeamMatchResource {
     @RequestMapping(value = "/admin/add/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public TeamMatch add(Principal principal, @PathVariable String seasonId) {
+        return add(principal,seasonId,LocalDate.now().toString());
+    }
+
+    @RequestMapping(value = "/admin/add/{seasonId}/{date}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public TeamMatch add(Principal principal, @PathVariable String seasonId, @PathVariable String date) {
         TeamMatch tm = new TeamMatch();
-        tm.setMatchDate(LocalDateTime.now());
+        tm.setMatchDate(LocalDate.parse(date).atTime(11,0));
         tm.setHome(leagueService.findAll(Team.class).stream().filter(t -> t.getSeason().getId().equals(seasonId)).findFirst().get());
         tm.setAway(leagueService.findAll(Team.class).stream().filter(t -> t.getSeason().getId().equals(seasonId)).findFirst().get());
         return leagueService.save(tm);
@@ -260,6 +266,9 @@ public class TeamMatchResource {
             consumes = MediaType.ALL_VALUE)
     public Map<String,Set<User>> getTeamMatchMembers(Principal principal, @PathVariable String id) {
         TeamMatch tm = leagueService.findOne(new TeamMatch(id));
+        if (tm == null)
+            return Collections.emptyMap();
+
         Map<String,Set<User>> members = new HashMap<>();
         members.put("home",tm.getHome().getMembers().getMembers());
         members.put("away",tm.getAway().getMembers().getMembers());
@@ -302,6 +311,8 @@ public class TeamMatchResource {
                 .sorted(new Comparator<TeamMatch>() {
                     @Override
                     public int compare(TeamMatch teamMatch, TeamMatch t1) {
+                        if (t1.getMatchDate() == null || teamMatch.getMatchDate() == null)
+                            return -1;
                         return t1.getMatchDate().compareTo(teamMatch.getMatchDate());
                     }
                 }).collect(Collectors.toList());

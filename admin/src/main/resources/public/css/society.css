@@ -1,0 +1,48 @@
+.racks, .racks > input {
+    width: 65px;
+    min-width: 65px;
+}
+.date, .date > input {
+    width: 85px;
+    min-width: 65px;
+}
+
+.name, .name > select {
+    width: 180px;
+    min-width: 180px;
+}
+
+.delete, .delete > a {
+    width: 55px;
+    min-width: 55px;
+}
+
+.results, .results > a {
+    width: 85px;
+    min-width: 85px;
+}
+
+
+.odd {
+    border-color: black;
+    background-color: #BDBDBD;
+}
+
+
+.table-stats {
+    margin-bottom: 15px;
+}
+
+#team-app {
+    max-width: 600px;
+    margin-top: 10px;
+}
+
+#user-app {
+    max-width: 700px;
+    margin-top: 10px;
+}
+
+#table-users-teams {
+    max-width: 450px;
+}
