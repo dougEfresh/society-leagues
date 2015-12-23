@@ -18,12 +18,18 @@ function searchUserStats(e) {
 
 
  $(document).ready(function() {
+     /*
+     $.dynatableSetup({
+
+           dataset: {
+               perPageDefault: 20,
+               perPageOptions: [10,20,50,100],
+           }
+     });
+     */
      $("#team-members").select2({ width: 600 });
      $("#users-search").select2();
      $("#users-stats-search").select2();
-     $('#table-player-results').dynatable();
-     var dynatable = $('#table-player-results').data('dynatable');
-     dynatable.paginationPerPage.set(20);
  });
 
 $(function() {

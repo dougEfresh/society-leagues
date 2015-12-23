@@ -170,7 +170,6 @@ public class StatService {
     }
 
     private void refreshUserSeasonStats(Season season, Map<Season,List<Stat>> userSeasonStats) {
-
         List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().
                 filter(pr -> pr.getSeason().equals(season)).filter(PlayerResult::hasResults).
                 collect(Collectors.toList());
@@ -180,9 +179,8 @@ public class StatService {
 
         for (User user : users) {
             List<PlayerResult> userResults = results.parallelStream().filter(p->p.hasUser(user)).collect(Collectors.toList());
-            if (userResults.isEmpty())
-                return;
-            all.put(user,userResults);
+            if (!userResults.isEmpty())
+                all.put(user,userResults);
         }
         List<Stat> stats = new ArrayList<>(100);
         List<Team> teams = leagueService.findAll(Team.class).stream().filter(t->t.getSeason().equals(season)).collect(Collectors.toList());
