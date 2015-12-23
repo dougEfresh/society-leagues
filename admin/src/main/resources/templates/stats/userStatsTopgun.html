@@ -1,12 +1,7 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org">
-    <div id="topgun-stats" th:if="${not #lists.isEmpty(topgunStats)}" class="panel panel-default">
-        <div class="panel-heading">
-           Top Gun Stats
-        </div>
-        <div class="panel-body">
             <div class="table-responsive">
-                <table class="table-bordered table-condensed table-striped table-grid table-stats">
+                <table th:if="${not #lists.isEmpty(topgunStats)}" id="topgun-stats" class="table-bordered table-condensed table-striped table-grid table-stats">
                     <thead>
                     <tr>
                         <th></th>
@@ -23,7 +18,9 @@
                     <tr th:each="stat : ${topgunStats}">
                         <!--@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"-->
                         <td th:if="${!stat.isLifeTime()}" >
-                            <a th:text="${stat.getSeason().getFormattedName()}" th:href="@{/admin/stats/{id}/{sId} (id=${statUser.id},sId=${stat.getSeason().id})}"></a>
+                            <a th:href="@{/admin/stats/{id}/{sId} (id=${statUser.id},sId=${stat.getSeason().id})}">
+                                Top Gun
+                            </a>
                         </td>
 
                         <td th:if="${stat.isLifeTime()}" > Lifetime </td>
@@ -37,8 +34,6 @@
                     </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
     </div>
 </div>
 

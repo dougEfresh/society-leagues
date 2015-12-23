@@ -1,21 +1,25 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org">
-    <div id="thursday-stats" th:if="${not #lists.isEmpty(thursdayStats)}" class="panel panel-default">
-        <div class="panel-heading">
-            Thursday Stats
-        </div>
-        <div class="panel-body">
-            <div class="table-responsive">
-                <table class="table-bordered table-condensed table-striped table-grid table-stats">
+                <div class="table-responsive">
+                <table id="thursday-stats" th:if="${not #lists.isEmpty(thursdayStats)}" class="table-bordered table-condensed table-striped table-grid table-stats">
                     <thead>
                     <tr>
-                        <th></th>
+                        <th>Thursday</th>
                         <th>HC</th>
                         <th>W</th>
                         <th>L</th>
                         <th>PCT</th>
                     </tr>
                     </thead>
+                    <tfoot>
+                     <tr>
+                        <td>Lifetime</td>
+                        <td></td>
+                        <td th:text="${thursdayStatsLifetime.getWins()}"> </td>
+                        <td th:text="${thursdayStatsLifetime.getLoses()}"> </td>
+                        <td th:text="${#numbers.formatDecimal(thursdayStatsLifetime.getRackPct(),1,3)}"> </td>
+                    </tr>
+                    </tfoot>
                     <tbody>
                     <tr th:each="stat : ${thursdayStats}">
                         <!--@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"-->
@@ -31,8 +35,6 @@
                     </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
-    </div>
+                </div>
 </div>
 

@@ -24,34 +24,25 @@ public class StatResource  extends BaseController {
 
         model.addAttribute("topgunStats",   stats.stream().filter(s -> s.getSeason() != null && s.getSeason().isChallenge()).collect(Collectors.toList()));
 
-        divisionStats.addAll(stats.stream().filter(s -> s.getSeason() != null && s.getSeason().getDivision() == Division.EIGHT_BALL_THURSDAYS).collect(Collectors.toList()));
-        divisionStats.addAll(stats.stream().filter(s->s.getType() == StatType.LIFETIME_EIGHT_BALL_THURSDAY).collect(Collectors.toList()));
+        //divisionStats.addAll(
 
-        model.addAttribute("thursdayStats", new ArrayList<>(divisionStats));
+        model.addAttribute("thursdayStats", stats.stream().filter(s -> s.getSeason() != null && s.getSeason().getDivision() == Division.EIGHT_BALL_THURSDAYS).collect(Collectors.toList()));
+        model.addAttribute("thursdayStatsLifetime", stats.stream().filter(s->s.getType() == StatType.LIFETIME_EIGHT_BALL_THURSDAY).findFirst().orElse(null));
 
-        divisionStats.clear();
-        divisionStats.addAll(stats.stream().filter(s -> s.getSeason() != null && s.getSeason().getDivision() == Division.EIGHT_BALL_WEDNESDAYS).collect(Collectors.toList()));
-        divisionStats.addAll(stats.stream().filter(s->s.getType() == StatType.LIFETIME_EIGHT_BALL_WEDNESDAY).collect(Collectors.toList()));
-        model.addAttribute("wednesdayStats", new ArrayList<>(divisionStats));
+        model.addAttribute("wednesdayStats", stats.stream().filter(s -> s.getSeason() != null && s.getSeason().getDivision() == Division.EIGHT_BALL_WEDNESDAYS).collect(Collectors.toList()));
+        model.addAttribute("wednesdayStatsLifetime", stats.stream().filter(s->s.getType() == StatType.LIFETIME_EIGHT_BALL_WEDNESDAY).findFirst().orElse(null));
 
+        model.addAttribute("tuesdayStatsLifetime",stats.stream().filter(s->s.getType() == StatType.LIFETIME_NINE_BALL_TUESDAY).findFirst().orElse(null));
+        model.addAttribute("tuesdayStats", stats.stream().filter(s -> s.getSeason() != null && s.getSeason().getDivision() == Division.NINE_BALL_TUESDAYS).collect(Collectors.toList()));
 
-        divisionStats.clear();
-        divisionStats.addAll(stats.stream().filter(s -> s.getSeason() != null && s.getSeason().getDivision() == Division.NINE_BALL_TUESDAYS).collect(Collectors.toList()));
-        divisionStats.addAll(stats.stream().filter(s->s.getType() == StatType.LIFETIME_NINE_BALL_TUESDAY).collect(Collectors.toList()));
-        model.addAttribute("tuesdayStats", new ArrayList<>(divisionStats));
-
-        divisionStats.clear();
-        divisionStats.addAll(stats.stream().filter( s -> s.getSeason() != null && s.getSeason().isScramble() && s.getType() == StatType.MIXED_EIGHT)
+        model.addAttribute("scrambleEightStatsLifetime", stats.stream().filter(s->s.getType() == StatType.LIFETIME_EIGHT_BALL_SCRAMBLE).findFirst().orElse(null));
+                model.addAttribute("scrambleEightStats",stats.stream().filter( s -> s.getSeason() != null && s.getSeason().isScramble() && s.getType() == StatType.MIXED_EIGHT)
                 .collect(Collectors.toList()));
-        divisionStats.addAll(stats.stream().filter(s->s.getType() == StatType.LIFETIME_EIGHT_BALL_SCRAMBLE).collect(Collectors.toList()));
-        model.addAttribute("scrambleEightStats", new ArrayList<>(divisionStats));
 
-        divisionStats.clear();
-        divisionStats.addAll(stats.stream().filter( s -> s.getSeason() != null && s.getSeason().isScramble() && s.getType() == StatType.MIXED_NINE)
+        model.addAttribute("scrambleNineStatsLifetime", stats.stream().filter(s->s.getType() == StatType.LIFETIME_NINE_BALL_SCRAMBLE).findFirst().orElse(null));
+        model.addAttribute("scrambleNineStats",
+                stats.stream().filter( s -> s.getSeason() != null && s.getSeason().isScramble() && s.getType() == StatType.MIXED_NINE)
                 .collect(Collectors.toList()));
-        divisionStats.addAll(stats.stream().filter(s->s.getType() == StatType.LIFETIME_NINE_BALL_SCRAMBLE).collect(Collectors.toList()));
-
-        model.addAttribute("scrambleNineStats", new ArrayList<>(divisionStats));
 
         return "stats/userStats";
     }

@@ -12,12 +12,22 @@
                 </button>
             </span>
         </div>
-        <div th:replace="stats/userStatsTopgun" ></div>
-        <div th:replace="stats/userStatsScramble8" ></div>
-        <div th:replace="stats/userStatsScramble9" ></div>
-        <div th:replace="stats/userStatsTuesday" ></div>
-        <div th:replace="stats/userStatsWednesday" ></div>
-        <div th:replace="stats/userStatsThursday" ></div>
-        <div th:replace="results/userResults" ></div>
+        <div class="panel panel-default">
+        <div class="panel-heading">
+            Stats
+        </div>
+        <div class="panel-body">
+            <div class="table-stats" th:include="stats/userStatsTopgun" ></div>
+            <div th:if="${not #lists.isEmpty(scrambleEightStats)}"
+                 class="table-stats"
+                 th:include="stats/userStatsScramble8" ></div>
+            <div th:if="${not #lists.isEmpty(scrambleEightNineStats)}" class="table-stats" th:include="stats/userStatsScramble9" ></div>
+            <div th:if="${not #lists.isEmpty(tuesdayStats)}" class="table-stats" th:include="stats/userStatsTuesday" ></div>
+            <div th:if="${not #lists.isEmpty(wednesdayStats)}" class="table-stats" th:include="stats/userStatsWednesday" ></div>
+            <div th:if="${not #lists.isEmpty(thursdayStats)}" class="table-stats" th:include="stats/userStatsThursday" ></div>
+        </div>
+        </div>
+        <div th:if="${not #lists.isEmpty(results)}" class="user-results" th:include="results/userResults" ></div>
     </div>
+
 </div>

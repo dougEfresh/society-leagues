@@ -1,21 +1,23 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org">
-    <div id="scramble-nine-stats" th:if="${not #lists.isEmpty(scrambleNineStats)}" class="panel panel-default">
-        <div class="panel-heading">
-            Scramble 9 Stats
-        </div>
-        <div class="panel-body">
             <div class="table-responsive">
-                <table class="table-bordered table-condensed table-striped table-grid table-stats">
+                <table  id="scramble-nine-stats" th:if="${not #lists.isEmpty(scrambleNineStats)}"
+                        class="table-bordered table-condensed table-striped table-grid table-stats">
                     <thead>
                     <tr>
-                        <th></th>
+                        <th>Scramble 9</th>
                         <th>HC</th>
                         <th>W</th>
                         <th>L</th>
                         <th>PCT</th>
                     </tr>
                     </thead>
+
+                    <tfoot>
+                    <tr>
+                        <td>Lifetime </td>
+                    </tr>
+                    </tfoot>
                     <tbody>
                     <tr th:each="stat : ${scrambleNineStats}">
                         <!--@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"-->
@@ -31,8 +33,6 @@
                     </tr>
                     </tbody>
                 </table>
-            </div>
-        </div>
     </div>
 </div>
 
