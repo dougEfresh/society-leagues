@@ -29,6 +29,8 @@ function searchUserStats(e) {
      $("#users-search").select2();
      $("#users-stats-search").select2();
      $('#table-player-results').dynatable();
+     $('#table-teams').dynatable();
+     $('#table-users').dynatable();
  });
 
 $(function() {

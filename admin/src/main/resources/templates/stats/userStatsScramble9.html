@@ -15,7 +15,12 @@
 
                     <tfoot>
                     <tr>
-                        <td>Lifetime </td>
+                         <td>Lifetime</td>
+                <td></td>
+                <td th:text="${scrambleNineStatsLifetime.getWins()}"> </td>
+                <td th:text="${scrambleNineStatsLifetime.getLoses()}"> </td>
+                <td th:text="${#numbers.formatDecimal(scrambleNineStatsLifetime.getRackPct(),1,3)}"> </td>
+
                     </tr>
                     </tfoot>
                     <tbody>
