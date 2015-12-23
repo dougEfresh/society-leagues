@@ -31,7 +31,7 @@ public interface TeamApi {
     Team save(Team team);
 
     @RequestLine("GET /api/team/user/{userId}")
-    Team getTeamByUser(@Param("userId") String userId);
+    List<Team> getTeamsByUser(@Param("userId") String userId);
 
     @RequestLine("POST /api/team/admin/modify/members/{teamId}")
     TeamMembers saveMembers(@Param("teamId") String teamId, TeamMembers members);

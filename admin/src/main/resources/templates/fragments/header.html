@@ -55,6 +55,16 @@
                         </li>
                         <li>
                             <a href="#">
+                                <i class="fa fa-users fa-fw"></i>My Teams<span class="fa arrow"></span>
+                            </a>
+                               <ul th:if="${userTeams ne null}" class="nav nav-second-level">
+                                    <li th:if="${not team.isChallenge()}" th:each="team : ${userTeams}">
+                                        <a href="#" th:text="${team.getName()}"></a>
+                                   </li>
+                               </ul>
+                        </li>
+                        <li>
+                            <a href="#">
                                 <span class="glyphicon glyphicon-th-list"></span> Scores<span class="fa arrow"></span>
                             </a>
                             <ul th:if="${activeSeasons ne null}" class="nav nav-second-level">
