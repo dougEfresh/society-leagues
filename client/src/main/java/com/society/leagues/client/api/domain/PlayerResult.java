@@ -356,14 +356,15 @@ public class PlayerResult  extends LeagueObject {
         return null;
     }
 
+    public String getGameType() {
+        return teamMatch.getGameType();
+    }
+
     public Handicap getOpponentPartnerHandicap() {
-         if (referenceTeam != null)
-            return referenceTeam.equals(teamMatch.getHome()) ? playerAwayHandicapPartner : playerHomeHandicapPartner;
+        if (getOpponentPartner() == null)
+            return Handicap.NA;
 
-        if (referenceUser != null)
-            return referenceUser.equals(playerHome) ? playerAwayHandicapPartner : playerHomeHandicapPartner;
-
-        return Handicap.UNKNOWN;
+        return getOpponentPartner().getHandicap(getSeason());
     }
 
     public User getPartner() {

@@ -17,7 +17,8 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="stat : ${scrambleEightStats}">
+                    <tr th:class="${season != null && stat.getSeason() != null && stat.getSeason().equals(season) ? 'active' : ''}"
+                        th:each="stat : ${scrambleEightStats}">
                         <!--@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"-->
                         <td th:if="${!stat.isLifeTime()}" >
                             <a th:text="${stat.getSeason().getFormattedName()}" th:href="@{/admin/stats/{id}/{sId} (id=${statUser.id},sId=${stat.getSeason().id})}"></a>

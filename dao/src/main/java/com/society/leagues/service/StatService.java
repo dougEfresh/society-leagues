@@ -180,17 +180,11 @@ public class StatService {
         Map<User, List<PlayerResult>> winners = results.stream()
                 .filter(r->r.getWinner() != null).collect(Collectors.groupingBy(PlayerResult::getWinner, Collectors.toList()));
         Map<User, List<PlayerResult>> all = new HashMap<>();
-        for (User user : winners.keySet()) {
-            all.put(user, winners.get(user));
-            all.get(user).addAll(results.parallelStream().filter(r-> user.equals(r.getPartnerWinner())).collect(Collectors.toList()));
-        }
-        for (User user : losers.keySet()) {
-            if (all.containsKey(user)) {
-                all.get(user).addAll(losers.get(user));
-            } else {
-                all.put(user, losers.get(user));
-                all.get(user).addAll(results.parallelStream().filter(r-> user.equals(r.getPartnerWinner())).collect(Collectors.toList()));
-            }
+        List<User> users = leagueService.findAll(User.class);
+
+        for (User user : users) {
+            List<PlayerResult> userResults = results.parallelStream().filter(p->p.hasUser(user)).collect(Collectors.toList());
+            all.put(user,userResults);
         }
         List<Stat> stats = new ArrayList<>(100);
         List<Team> teams = leagueService.findAll(Team.class).stream().filter(t->t.getSeason().equals(season)).collect(Collectors.toList());
@@ -213,7 +207,7 @@ public class StatService {
     private Stat buildSeasonStats(User user, List<Team> teams, Season season, List<PlayerResult> results, StatType statType) {
         Stat s = Stat.buildPlayerSeasonStats(user,
                 season,
-               results
+                results
         );
         s.setSeason(season);
         s.setTeam(teams.stream().filter(t->t.hasUser(user)).findFirst().orElse(null));

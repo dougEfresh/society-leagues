@@ -71,13 +71,13 @@ public class TeamMatch extends LeagueObject {
             case NINE_BALL_CHALLENGE:
             case NINE_BALL_TUESDAYS:
             case MIXED_NINE:
-                return "9 Ball";
+                return "9";
             case MIXED_EIGHT:
             case EIGHT_BALL_THURSDAYS:
             case EIGHT_BALL_WEDNESDAYS:
-                return "8 Ball";
+                return "8";
         }
-        return "Unknown";
+        return "N/A";
     }
 
     public void setDivision(Division division) {
