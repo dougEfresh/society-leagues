@@ -65,6 +65,7 @@ public class StatResource  extends BaseController {
             result.setReferenceUser(u);
         }
         model.addAttribute("results",results);
+        model.addAttribute("resultUser",u);
         return stats(userId,model);
     }
 

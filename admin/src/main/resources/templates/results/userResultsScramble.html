@@ -4,23 +4,29 @@
         <table id="table-player-results" class="table table-stripped table-bordered table-condensed table">
             <thead>
             <th>Date</th>
+            <th>Scotch</th>
             <th>W/L</th>
-         <th> Partner</th>
-         <th>Opponent</th>
-         <th>Partner</th>
-         <th>Team</th>
-         <th>HC</th>
-         </thead>
-         <tbody>
+            <th> Partner</th>
+            <th>Opponent</th>
+            <th>HC</th>
+            <th>Op. Partner</th>
+            <th>HC</th>
+            <th>Team</th>
+            <th>Your HC</th>
+            </thead>
+            <tbody>
          <!--/*@thymesVar id="result" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
-         <tr th:id="'result-' + ${result.getId()}" th:each="result : ${results}">
-             <td th:text="${result.getMatchDate()}"></td>
-             <td th:text="${result.isWin()}"></td>
+         <tr th:class="${result.isWin() ? 'win' : 'lost'}" th:id="'result-' + ${result.getId()}" th:each="result : ${results}">
+             <td th:text="${#temporals.format(result.getMatchDate(), 'MM/dd')}"></td>
+             <td th:text="${result.isScotch() ? 'X' : ''}"></td>
+             <td th:text="${result.isWin() ? 'W' : 'L'}"></td>
              <td th:text="${result.getPartner() != null ? result.getPartner().getName() : ''}"></td>
              <td th:text="${result.getOpponent().getName()}"></td>
+             <td th:text="${result.getOpponentHandicap()}"></td>
              <td th:text="${result.getOpponentPartner() != null ? result.getOpponentPartner().getName() : ''}"></td>
+             <td th:text="${result.getOpponentPartner() != null ? result.getOpponentPartnerHandicap() : ''}"></td>
              <td th:text="${result.getOpponentTeam().getName()}"></td>
-             <td></td>
+             <td th:text="${result.getTeamMemberHandicap()}"></td>
          </tr>
          </tbody>
      </table>

@@ -1124,6 +1124,22 @@ public class ConvertUtil {
         }
 
     }
+
+      public void scrambleGameHandicap() {
+          List<PlayerResult> results = leagueService.findAll(PlayerResult.class).parallelStream()
+                  .filter(p->p.getSeason().isScramble())
+                  .filter(PlayerResult::isScotch).
+                  collect(Collectors.toList());
+          for (PlayerResult result : results) {
+              if (result.getPlayerHomeHandicapPartner()  == null && result.getPlayerHomePartner() != null) {
+                  result.setPlayerHomeHandicapPartner(result.getPlayerHomePartner().getHandicap(result.getSeason()));
+              }
+              if (result.getPlayerAwayHandicapPartner()  == null && result.getPlayerAwayPartner() != null) {
+                  result.setPlayerAwayHandicapPartner(result.getPlayerAwayPartner().getHandicap(result.getSeason()));
+              }
+          }
+      }
+
       public void scrambleGameType() {
         Map<LocalDate,List<TeamMatch>> matches = leagueService.findAll(TeamMatch.class).parallelStream()
                 .filter(tm -> tm.getSeason().isScramble())

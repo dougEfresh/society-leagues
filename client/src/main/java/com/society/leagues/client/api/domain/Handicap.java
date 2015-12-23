@@ -34,7 +34,7 @@ public enum Handicap {
     OPEN("O"),
     OPENPLUS("O+"),
     PRO("P"),
-    UNKNOWN("UNKNOWN"),
+    UNKNOWN("NA"),
     NA("NA");
 
     final String displayName;
@@ -49,13 +49,9 @@ public enum Handicap {
 
     public static String format(Handicap hc) {
         if (hc == null || hc == UNKNOWN) {
-            return "N/A";
+            return "NA";
         }
-
-        if (hc.ordinal() > 15) {
-            return hc.name().replaceAll("PLUS", "+").replaceAll("PRO", "P").replaceAll("OPEN", "O");
-        }
-        return hc.ordinal() + 1 + "";
+        return hc.displayName;
     }
 
     public static boolean isNine(Handicap hc) {

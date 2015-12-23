@@ -420,8 +420,12 @@ public class PlayerResult  extends LeagueObject {
         if (referenceTeam != null)
             return referenceTeam.equals(teamMatch.getHome()) ? Handicap.format(playerHomeHandicap) : Handicap.format(playerAwayHandicap);
 
-        if (referenceUser != null)
+        if (referenceUser != null) {
+            if (referenceUser.equals(playerHomePartner) || referenceUser.equals(playerAwayPartner)) {
+                return referenceUser.equals(playerHomePartner) ? Handicap.format(playerHomeHandicapPartner) : Handicap.format(playerAwayHandicapPartner);
+            }
             return referenceUser.equals(playerHome) ? Handicap.format(playerHomeHandicap) : Handicap.format(playerAwayHandicap);
+        }
 
         return   Handicap.format(Handicap.UNKNOWN);
     }

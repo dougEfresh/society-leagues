@@ -1,3 +1,4 @@
+
 package com.society.leagues.client.api;
 
 import com.society.leagues.client.api.domain.PlayerResult;
