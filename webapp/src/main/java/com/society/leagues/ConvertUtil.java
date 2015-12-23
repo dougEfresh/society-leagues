@@ -1137,6 +1137,7 @@ public class ConvertUtil {
               if (result.getPlayerAwayHandicapPartner()  == null && result.getPlayerAwayPartner() != null) {
                   result.setPlayerAwayHandicapPartner(result.getPlayerAwayPartner().getHandicap(result.getSeason()));
               }
+              leagueService.save(result);
           }
       }
 

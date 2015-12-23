@@ -17,16 +17,16 @@
             <tbody>
          <!--/*@thymesVar id="result" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
          <tr th:class="${result.isWin() ? 'win' : 'lost'}" th:id="'result-' + ${result.getId()}" th:each="result : ${results}">
-             <td th:text="${#temporals.format(result.getMatchDate(), 'MM/dd')}"></td>
-             <td th:text="${result.isScotch() ? 'X' : ''}"></td>
-             <td th:text="${result.isWin() ? 'W' : 'L'}"></td>
-             <td th:text="${result.getPartner() != null ? result.getPartner().getName() : ''}"></td>
-             <td th:text="${result.getOpponent().getName()}"></td>
-             <td th:text="${result.getOpponentHandicap()}"></td>
-             <td th:text="${result.getOpponentPartner() != null ? result.getOpponentPartner().getName() : ''}"></td>
-             <td th:text="${result.getOpponentPartner() != null ? result.getOpponentPartnerHandicap() : ''}"></td>
-             <td th:text="${result.getOpponentTeam().getName()}"></td>
-             <td th:text="${result.getTeamMemberHandicap()}"></td>
+             <td class="date" th:text="${#temporals.format(result.getMatchDate(), 'MM/dd')}"></td>
+             <td th:class="${result.isScotch() ? 'scotch' : '' }" th:text="${result.isScotch() ? 'X' : ''}"></td>
+             <td class="winner" th:text="${result.isWin() ? 'W' : 'L'}"></td>
+             <td class="partner" th:text="${result.getPartner() != null ? result.getPartner().getName() : ''}"></td>
+             <td class="opponent" th:text="${result.getOpponent().getName()}"></td>
+             <td class="op-hc" th:text="${result.getOpponentHandicap()}"></td>
+             <td class="op-partner" th:text="${result.getOpponentPartner() != null ? result.getOpponentPartner().getName() : ''}"></td>
+             <td class="op-partner-handicap" th:text="${result.getOpponentPartner() != null ? result.getOpponentPartnerHandicap() : ''}"></td>
+             <td class="op-team" th:text="${result.getOpponentTeam().getName()}"></td>
+             <td class="hc" th:text="${result.getTeamMemberHandicap()}"></td>
          </tr>
          </tbody>
      </table>
