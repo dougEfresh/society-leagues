@@ -6,6 +6,7 @@
                     <tr>
                         <th>Tuesday</th>
                         <th>HC</th>
+                        <th>Team</th>
                         <th>W</th>
                         <th>L</th>
                         <th>RW</th>
@@ -16,6 +17,7 @@
                     <tfoot>
                     <tr>
                         <td>Lifetime </td>
+                        <td></td>
                         <td></td>
                         <td th:text="${tuesdayStatsLifetime.getWins()}"> </td>
                         <td th:text="${tuesdayStatsLifetime.getLoses()}"> </td>
@@ -32,6 +34,7 @@
                         </td>
 
                         <td th:text="${stat.getHandicapDisplay()}"> </td>
+                        <td th:text="${stat.getTeam().getName()}"> </td>
                         <td th:text="${stat.getWins()}"> </td>
                         <td th:text="${stat.getLoses()}"> </td>
                         <td th:text="${stat.getRacksWon()}"> </td>

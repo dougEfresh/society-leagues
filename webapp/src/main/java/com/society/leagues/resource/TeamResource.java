@@ -132,6 +132,21 @@ public class TeamResource {
     }
 
     @JsonView(TeamSummary.class)
+    @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public Collection<Team> getUsersTeams(@PathVariable String userId, Principal principal) {
+         User u = leagueService.findOne(new User(userId));
+        if (u == null) {
+            return Collections.emptyList();
+        }
+         return leagueService.findAll(Team.class)
+                 .stream().parallel()
+                 .filter(t->t.hasUser(u))
+                 .filter(t->t.getSeason().isActive())
+                 .collect(Collectors.toList()
+                 );
+    }
+
+    @JsonView(TeamSummary.class)
     @RequestMapping(value = "/season/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Collection<Team> getTeamBySeason(Principal principal, @PathVariable String id) {
          Season s = leagueService.findOne(new Season(id));

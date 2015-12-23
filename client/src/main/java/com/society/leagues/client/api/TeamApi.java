@@ -30,6 +30,9 @@ public interface TeamApi {
     @RequestLine("POST /api/team/admin/modify")
     Team save(Team team);
 
+    @RequestLine("GET /api/team/user/{userId}")
+    Team getTeamByUser(@Param("userId") String userId);
+
     @RequestLine("POST /api/team/admin/modify/members/{teamId}")
     TeamMembers saveMembers(@Param("teamId") String teamId, TeamMembers members);
 }

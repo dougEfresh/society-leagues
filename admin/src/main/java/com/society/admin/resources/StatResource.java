@@ -50,6 +50,7 @@ public class StatResource  extends BaseController {
                         .collect(Collectors.toList())
         );
 
+        model.addAttribute("lifetimeStats", stats.stream().filter(s->s.getType() == StatType.ALL).findFirst().orElse(null));
         return "stats/userStats";
     }
 
