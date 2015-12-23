@@ -174,16 +174,14 @@ public class StatService {
         List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().
                 filter(pr -> pr.getSeason().equals(season)).filter(PlayerResult::hasResults).
                 collect(Collectors.toList());
-        Map<User, List<PlayerResult>> losers = results.stream()
-                .filter(r->r.getLoser() != null).collect(Collectors.groupingBy(PlayerResult::getLoser, Collectors.toList()));
 
-        Map<User, List<PlayerResult>> winners = results.stream()
-                .filter(r->r.getWinner() != null).collect(Collectors.groupingBy(PlayerResult::getWinner, Collectors.toList()));
         Map<User, List<PlayerResult>> all = new HashMap<>();
         List<User> users = leagueService.findAll(User.class);
 
         for (User user : users) {
             List<PlayerResult> userResults = results.parallelStream().filter(p->p.hasUser(user)).collect(Collectors.toList());
+            if (userResults.isEmpty())
+                return;
             all.put(user,userResults);
         }
         List<Stat> stats = new ArrayList<>(100);

@@ -22,6 +22,8 @@ function searchUserStats(e) {
      $("#users-search").select2();
      $("#users-stats-search").select2();
      $('#table-player-results').dynatable();
+     var dynatable = $('#table-player-results').data('dynatable');
+     dynatable.paginationPerPage.set(20);
  });
 
 $(function() {
