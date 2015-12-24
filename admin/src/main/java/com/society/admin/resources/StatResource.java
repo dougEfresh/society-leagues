@@ -3,6 +3,7 @@ package com.society.admin.resources;
 import com.society.leagues.client.api.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -54,17 +55,23 @@ public class StatResource  extends BaseController {
         return "stats/userStats";
     }
 
+    @ModelAttribute
+    public void setDisplay(Model model) {
+      model.addAttribute("display",false);
+    }
+
     @RequestMapping(value = {"/stats/{userId}/{seasonId}"}, method = RequestMethod.GET)
     public String list(@PathVariable String userId, @PathVariable String seasonId , Model model) {
         Season s = seasonApi.get(seasonId);
         User u = userApi.get(userId);
         model.addAttribute("season",s);
-        List<PlayerResult> results = resultApi.resultsBySeason(userId,seasonId);
+        List<PlayerResult> results = playerResultApi.getResults(userId,seasonId);
         for (PlayerResult result : results) {
             result.setReferenceUser(u);
         }
         model.addAttribute("results",results);
         model.addAttribute("resultUser",u);
+
         model.addAttribute("stats",statApi.getUserStats(userId).stream()
                 .filter(st->st.getSeason() != null)
                 .filter(st->st.getSeason().equals(s))

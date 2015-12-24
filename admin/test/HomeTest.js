@@ -8,8 +8,10 @@ casper.test.begin('Test Home Page', function suite(test) {
     testlib.login(test,testlib.user,testlib.pass);
 
     casper.then(function() {
-        test.assertExists('#name',this.debugHTML());
+        test.assertExists('#name',"Pass Name");
     });
+
+
 
     casper.run(function(){
         test.done();

@@ -1,5 +1,5 @@
   <!-- Navigation -->
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <nav xmlns:th="http://www.thymeleaf.org" class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
@@ -59,7 +59,8 @@
                             </a>
                                <ul th:if="${userTeams ne null}" class="nav nav-second-level">
                                     <li th:if="${not team.isChallenge()}" th:each="team : ${userTeams}">
-                                        <a href="#" th:text="${team.getName()}"></a>
+                                        <a th:id="'team-display-link-' + ${team.getId()}"
+                                           th:href="@{/admin/display/{id}/{teamId}(id=${team.getSeason().getId()},teamId=${team.getId()})}" th:text="${team.getName()}"></a>
                                    </li>
                                </ul>
                         </li>

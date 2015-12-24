@@ -11,6 +11,5 @@ import java.util.Map;
 @Headers({"Accept: application/json, */*","Content-Type: application/json","Accept-Encoding: gzip, deflate, sdch" })
 public interface ResultApi {
 
-    @RequestLine("GET /api/playerresult/{userId}/{seasonId}")
-    List<PlayerResult> resultsBySeason(@Param("userId") String userId, @Param("seasonId") String seasonId);
+
 }

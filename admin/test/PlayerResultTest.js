@@ -81,7 +81,7 @@ casper.test.begin('Test Result Page', function suite(test) {
     });
     casper.then(function () {
         playerMatchCount = this.evaluate(function() {
-            return __utils__.findAll("#table-player-results > tbody > tr").length
+            return __utils__.findAll("#table-player-results-admin > tbody > tr").length
         });
     });
     casper.then(function () {
@@ -90,12 +90,12 @@ casper.test.begin('Test Result Page', function suite(test) {
 
     casper.then(function () {
         test.assertExists("#player-results");
-        test.assertExists("#table-player-results");
+        test.assertExists("#table-player-results-admin");
     });
 
     casper.then(function () {
         var m  = this.evaluate(function() {
-            return __utils__.findAll("#table-player-results > tbody > tr").length
+            return __utils__.findAll("#table-player-results-admin > tbody > tr").length
         });
         this.echo(m);
         this.echo(playerMatchCount);
@@ -104,16 +104,17 @@ casper.test.begin('Test Result Page', function suite(test) {
     });
     casper.then(function () {
         var rows  = this.evaluate(function() {
-            return __utils__.findAll("#table-player-results > tbody > tr")
+            return __utils__.findAll("#table-player-results-admin > tbody > tr")
         });
         playerMatchId = rows[0].id;
+        test.assert(playerMatchId != null && playerMatchId != undefined, "PlayerMatchId Found");
     });
     casper.then(function () {
         this.click('#delete-player-result-' + playerMatchId);
     });
     casper.then(function () {
         var m = this.evaluate(function() {
-            return __utils__.findAll("#table-player-results > tbody > tr").length
+            return __utils__.findAll("#table-player-results-admin > tbody > tr").length
         });
         test.assert(m == playerMatchCount-1, "Tues 9 PlayerMatchCount--");
         playerMatchCount  = m;
@@ -121,7 +122,7 @@ casper.test.begin('Test Result Page', function suite(test) {
 
     casper.then(function () {
         var rows  = this.evaluate(function() {
-            return __utils__.findAll("#table-player-results > tbody > tr")
+            return __utils__.findAll("#table-player-results-admin > tbody > tr")
         });
         playerMatchId = rows[0].id;
     });

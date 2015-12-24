@@ -11,9 +11,8 @@ import java.util.List;
 @Headers({"Accept: application/json, */*;","Content-Type: application/json", "Accept-Encoding: gzip, deflate, sdch"})
 public interface PlayerResultApi {
 
-    @RequestLine("GET /api/playerresult/teammatch/{id}")
-    List<PlayerResult> getPlayerResult(@Param("id") String userId);
-
+    @RequestLine("GET /api/playerresult/{userId}/{seasonId}")
+    List<PlayerResult> getResults(@Param("userId") String userId, @Param("seasonId") String seasonId);
 
     @RequestLine("GET /api/playerresult/teammatch/{id}")
     List<PlayerResult> getPlayerResultByTeamMatch(@Param("id") String id);

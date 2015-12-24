@@ -71,11 +71,6 @@ public class ClientApiConfig {
     }
 
     @Bean
-    public ResultApi resultApi() {
-       return getApi(ResultApi.class);
-    }
-
-    @Bean
     public StatApi statApi() {
        return getApi(StatApi.class);
     }

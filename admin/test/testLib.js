@@ -44,6 +44,7 @@ var login = function (test,username,password) {
 
 var playerResultTest = function(test,season) {
    casper.then(function () {
+
         var rows  = this.evaluate(function() {
             return __utils__.findAll("#team-match-results > tbody > tr")
         });
@@ -55,11 +56,12 @@ var playerResultTest = function(test,season) {
     });
 
     casper.then(function () {
+        test.assertExists("#table-player-results-admin");
         test.assertExists("#player-results", season + '#player-results');
     });
     casper.then(function () {
         playerMatchCount = this.evaluate(function() {
-            return __utils__.findAll("#table-player-results > tbody > tr").length
+            return __utils__.findAll("#table-player-results-admin > tbody > tr").length
         });
     });
     casper.then(function () {
@@ -71,7 +73,7 @@ var playerResultTest = function(test,season) {
     });
     casper.then(function () {
         var m  = this.evaluate(function() {
-            return __utils__.findAll("#table-player-results > tbody > tr").length
+            return __utils__.findAll("#table-player-results-admin > tbody > tr").length
         });
         test.assert(m == playerMatchCount+1, season + "  PlayerMatchCount++");
         playerMatchCount = m;
@@ -80,14 +82,14 @@ var playerResultTest = function(test,season) {
     casper.then(function () {
         playerMatchId   = this.evaluate(function() {
             var id = null;
-            $('#table-player-results > tbody > tr').each(function() {
+            $('#table-player-results-admin > tbody > tr').each(function() {
                 if (this.id == undefined || this.id.indexOf("forfeit") >= 0)
                     return;
                 id = this.id;
             });
             return id;
         });
-        test.assert(playerMatchId != null);
+        test.assert(playerMatchId != null && playerMatchId != undefined , "PlayerMatchId Found");
     });
 
     casper.then(function () {
@@ -96,7 +98,7 @@ var playerResultTest = function(test,season) {
     });
      casper.then(function () {
          var m = this.evaluate(function() {
-             return __utils__.findAll("#table-player-results > tbody > tr").length
+             return __utils__.findAll("#table-player-results-admin > tbody > tr").length
          });
          test.assert(m == playerMatchCount-1, season + " PlayerMatchCount--");
          playerMatchCount  = m;
@@ -105,14 +107,14 @@ var playerResultTest = function(test,season) {
     casper.then(function () {
         playerMatchId   = this.evaluate(function() {
             var id = null;
-            $('#table-player-results > tbody > tr').each(function() {
+            $('#table-player-results-admin > tbody > tr').each(function() {
                 if (this.id == undefined || this.id.indexOf("forfeit") >= 0)
                     return;
                 id = this.id;
             });
             return id;
         });
-        test.assert(playerMatchId != null)
+        test.assert(playerMatchId != null && playerMatchId != undefined, "PlayerMatchId found");
     });
 
     casper.then(function () {

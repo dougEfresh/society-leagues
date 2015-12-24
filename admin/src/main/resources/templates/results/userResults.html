@@ -1,6 +1,6 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org" >
-            <div th:if="${not #lists.isEmpty(results)}" class="panel panel-default">
+    <div th:if="${not #lists.isEmpty(results)}" class="panel panel-default">
             <div class="panel-heading">
                 <div class="row">
                     <div class="results-season-name col-xs-12 col-md-3 col-lg-4" th:text="${season.getFormattedName()}" > </div>
@@ -9,8 +9,11 @@
                 </div>
             </div>
             <div class="panel-body">
-                <div class="user-results" th:include="results/userResultsScramble">
-                </div>
+                <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+                <div class="user-results" th:if="${season.isScramble()}" th:include="results/userResultsScramble"> </div>
+                <div class="user-results" th:if="${season.isTuesdayNine()}" th:include="results/userResultsNine"> </div>
+                <div class="user-results" th:if="${season.isChallenge()}" th:include="results/userResultsNine"> </div>
+                <div class="user-results" th:if="${season.isEight()}" th:include="results/userResultsEight"> </div>
             </div>
         </div>
 </div>
