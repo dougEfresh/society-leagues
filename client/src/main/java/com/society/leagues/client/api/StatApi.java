@@ -11,6 +11,9 @@ import java.util.List;
 @Headers({"Accept: application/json, */*;","Content-Type: application/json", "Accept-Encoding: gzip, deflate, sdch"})
 public interface StatApi {
 
+    @RequestLine("GET /api/stat/team/{teamId}/members")
+    List<Stat> getTeamMemberStats(@Param("teamId") String teamId);
+
     @RequestLine("GET /api/stat/season/{seasonId}")
     List<Team> getSeasonStats(@Param("seasonId") String seasonId);
 

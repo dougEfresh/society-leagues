@@ -12,6 +12,10 @@ import java.util.List;
 public interface PlayerResultApi {
 
     @RequestLine("GET /api/playerresult/teammatch/{id}")
+    List<PlayerResult> getPlayerResult(@Param("id") String userId);
+
+
+    @RequestLine("GET /api/playerresult/teammatch/{id}")
     List<PlayerResult> getPlayerResultByTeamMatch(@Param("id") String id);
 
     @RequestLine("POST /api/playerresult/admin/modify")
