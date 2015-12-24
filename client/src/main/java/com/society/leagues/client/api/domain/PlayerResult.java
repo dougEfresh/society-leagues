@@ -123,7 +123,7 @@ public class PlayerResult  extends LeagueObject {
         this.playerAway = playerAway;
     }
 
-    public Integer hs() {
+    public Integer getHomeRacks() {
         if (homeRacks == null)
             return 0;
         if (getSeason() != null && (isNine() || getSeason().isChallenge())) {
