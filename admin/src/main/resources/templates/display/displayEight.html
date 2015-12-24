@@ -16,7 +16,10 @@
         <tbody>
         <tr th:id="'team-standing-' + ${team.getId()}" th:each="team : ${displayTeams}">
             <td th:text="${team.getStats().getRank()}"></td>
-            <td><a href="#" th:text="${team.getName()}"></a></td>
+            <td><a href="#"
+                       th:href="@{/admin/display/{id}/{teamId}(id=${team.getSeason().getId()},teamId=${team.getId()})}"
+                       th:text="${team.getName()}"></a>
+            </td>
             <td th:text="${team.getStats().getWins()}"></td>
             <td th:text="${team.getStats().getLoses()}"></td>
             <td th:text="${team.getStats().getRacksWon()}"></td>

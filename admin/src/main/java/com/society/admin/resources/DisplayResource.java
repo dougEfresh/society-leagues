@@ -3,6 +3,7 @@ package com.society.admin.resources;
 import com.society.leagues.client.api.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,6 +31,11 @@ public class DisplayResource extends BaseController {
         return processDisplay(seasonId, model, teamId, userId);
     }
 
+    @ModelAttribute
+    public void setDisplay(Model model) {
+        model.addAttribute("display",true);
+    }
+
     private String processDisplay(@NotNull  String seasonId, @NotNull Model model, String teamId, String userId) {
         Season s = seasonApi.get(seasonId);
 
@@ -39,7 +45,7 @@ public class DisplayResource extends BaseController {
 
         if (teamId != null) {
             model.addAttribute("displayMemberStats" ,statApi.getTeamMemberStats(teamId));
-            model.addAttribute("displayTeam", teamApi.get(teamId));
+            model.addAttribute("team", teamApi.get(teamId));
         }
 
         if (userId != null) {
@@ -48,7 +54,6 @@ public class DisplayResource extends BaseController {
             results.forEach(r->r.setReferenceUser(u));
             model.addAttribute("results", results);
             model.addAttribute("resultUser", userApi.get(userId));
-            model.addAttribute("display",true);
             model.addAttribute("stats",statApi.getUserStats(userId).stream()
                     .filter(st->s.equals(st.getSeason()))
                     .filter(st->st.getType() == StatType.USER_SEASON)

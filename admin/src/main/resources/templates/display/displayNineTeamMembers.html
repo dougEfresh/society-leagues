@@ -13,12 +13,13 @@
             <th>PCT</th>
         </tr>
         </thead>
-        <tbody>
-        <!--/*@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"*/-->
+              <tbody>
+              <!--/*@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"*/-->
+              <!--/*@thymesVar id="team" type="com.society.leagues.client.api.domain.Team"*/-->
         <tr th:id="'team-standing-' + ${stat.getUser().getId()}" th:each="stat : ${displayMemberStats}">
             <td th:text="${stat.getRank()}"></td>
             <td><a href="#"
-                   th:href="@{/admin/display/{id}/{teamId}/{userId} (id=${displayTeam.getSeason().getId()},teamId=${displayTeam.getId()},userId=${stat.getUser().getId()})}"
+                   th:href="@{/admin/display/{id}/{teamId}/{userId} (id=${season.getId()},teamId=${team.getId()},userId=${stat.getUser().getId()})}"
                    th:text="${stat.getUser().getName()}"></a></td>
             <td th:text="${stat.getWins()}"></td>
             <td th:text="${stat.getLoses()}"></td>

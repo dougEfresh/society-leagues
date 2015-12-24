@@ -18,8 +18,7 @@
             <!--/*@thymesVar id="result" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
             <tr th:class="${result.isWin() ? 'win' : 'lost'}" th:id="'result-' + ${result.getId()}" th:each="result : ${results}">
                 <td class="date" th:text="${#temporals.format(result.getMatchDate(), 'MM/dd')}"></td>
-                <td th:class="${result.isScotch() ? 'scotch' : '' }" th:text="${result.isScotch() ? 'X' : ''}"></td>
-                <td class="winner" th:text="${result.isWin() ? 'W' : 'L'}"></td>
+                <td class="wl" th:text="${result.isWin() ? 'W' : 'L'}"></td>
                 <td class="score" th:text="${result.getScore()}"></td>
                 <td class="race" th:text="${result.getRace()}"></td>
                 <td class="opponent" >
