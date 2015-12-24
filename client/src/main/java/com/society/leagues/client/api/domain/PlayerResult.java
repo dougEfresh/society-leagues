@@ -123,7 +123,7 @@ public class PlayerResult  extends LeagueObject {
         this.playerAway = playerAway;
     }
 
-    public Integer getHomeRacks() {
+    public Integer hs() {
         if (homeRacks == null)
             return 0;
         if (getSeason() != null && (isNine() || getSeason().isChallenge())) {
@@ -132,7 +132,7 @@ public class PlayerResult  extends LeagueObject {
         //if (getWinner().equals(getPlayerHome())) {
           //  return isScotch() ? 2 : 1;
         //}
-        return homeRacks;
+        return 0;
     }
 
     public void setHomeRacks(Integer homeRacks) {
@@ -148,7 +148,7 @@ public class PlayerResult  extends LeagueObject {
         //if (getWinner().equals(getPlayerAway())) {
           //  return isScotch() ? 2 : 1;
         //}
-        return awayRacks;
+        return 0;
     }
 
     public void setAwayRacks(Integer awayRacks) {
