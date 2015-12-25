@@ -12,7 +12,7 @@
                 <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
                 <div class="user-results" th:if="${season.isScramble()}" th:include="results/userResultsScramble"> </div>
                 <div class="user-results" th:if="${season.isTuesdayNine()}" th:include="results/userResultsNine"> </div>
-                <div class="user-results" th:if="${season.isChallenge()}" th:include="results/userResultsNine"> </div>
+                <div class="user-results" th:if="${season.isChallenge()}" th:include="results/userResultsTopgun"> </div>
                 <div class="user-results" th:if="${season.isEight()}" th:include="results/userResultsEight"> </div>
             </div>
         </div>

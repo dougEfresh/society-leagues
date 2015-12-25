@@ -20,6 +20,7 @@ public class StatService {
     final AtomicReference<List<Stat>> lifetimeStats = new AtomicReference<>(new CopyOnWriteArrayList<Stat>());
     final AtomicReference<List<Stat>> lifetimeDivisionStats = new AtomicReference<>(new CopyOnWriteArrayList<Stat>());
     final AtomicReference<Map<Season,List<Stat>>> userSeasonStat = new AtomicReference<>(new HashMap<>());
+    final AtomicReference<Map<Season,List<Stat>>> userSeasonStatPast = new AtomicReference<>(new HashMap<>());
     final AtomicReference<List<Stat>> handicapStats = new AtomicReference<>(new CopyOnWriteArrayList<Stat>());
     @Autowired ThreadPoolTaskExecutor threadPoolTaskExecutor;
     @Autowired LeagueService leagueService;
@@ -64,11 +65,9 @@ public class StatService {
             }
         });
         refresh();
+        refreshUserSeasonStats(false);
         refreshLifetime();
     }
-
-
-
 
     public List<Stat> getLifetimeDivisionStats() {
         return lifetimeDivisionStats.get();
@@ -79,7 +78,10 @@ public class StatService {
     }
 
     public Map<Season,List<Stat>>  getUserSeasonStats() {
-        return this.userSeasonStat.get();
+        Map<Season,List<Stat>> stats = new HashMap<>();
+        stats.putAll(this.userSeasonStat.get());
+        stats.putAll(this.userSeasonStatPast.get());
+        return stats;
     }
 
     public List<Stat> getTeamStats() {
@@ -256,8 +258,10 @@ public class StatService {
                 stat.setRank(++rank);
             }
         }
-
-        this.userSeasonStat.lazySet(userSeasonStats);
+        if (active)
+            this.userSeasonStat.lazySet(userSeasonStats);
+        else
+            this.userSeasonStatPast.lazySet(userSeasonStats);
 
         resultService.refresh();
     }

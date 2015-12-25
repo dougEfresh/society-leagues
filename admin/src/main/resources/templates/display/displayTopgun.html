@@ -6,6 +6,7 @@
             <tr>
                 <th>#</th>
                 <th></th>
+                <th>HC</th>
                 <th>P</th>
                 <th>W</th>
                 <th>L</th>
@@ -23,6 +24,7 @@
                        th:href="@{/admin/display/{id}/topgun/{userId} (id=${stat.getSeason().getId()},userId=${stat.getUser().getId()})}"
                        th:text="${stat.getUser().getName()}"></a>
                 </td>
+                <td th:text="${stat.getHandicapDisplay()}"></td>
                 <td th:text="${#numbers.formatDecimal(stat.getPoints(),1,3)}"></td>
                 <td th:text="${stat.getWins()}"></td>
                 <td th:text="${stat.getLoses()}"></td>
