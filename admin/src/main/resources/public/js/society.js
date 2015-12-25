@@ -21,7 +21,7 @@ function searchUserStats(e) {
      $.dynatableSetup({
            dataset: {
                perPageDefault: 20,
-               perPageOptions: [10,20,50,100],
+               perPageOptions: [10,20,50]
            }
      });
 
@@ -31,6 +31,17 @@ function searchUserStats(e) {
      $('#table-player-results').dynatable();
      $('#table-teams').dynatable();
      $('#table-users').dynatable();
+     $('#table-team-members').dynatable(
+         {
+             features: {
+             paginate: false,
+             sort: true,
+             pushState: true,
+             search: false,
+             recordCount: false,
+             perPageSelect: false
+             }
+         });
  });
 
 $(function() {

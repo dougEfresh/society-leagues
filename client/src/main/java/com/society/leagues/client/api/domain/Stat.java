@@ -27,6 +27,9 @@ public class Stat {
         this.type = type;
     }
 
+    public String getGame() {
+        return getType() == StatType.MIXED_EIGHT ? "8" : "9";
+    }
     public static Stat buildHandicapStats(final List<PlayerResult> results, StatType statType, User user, Handicap handicap) {
         Stat s= new Stat();
         if (results == null || results.isEmpty())

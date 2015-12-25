@@ -1,4 +1,5 @@
 <!-- Navigation -->
+<!--suppress ALL -->
 <nav xmlns:th="http://www.thymeleaf.org" class="navbar navbar-default navbar-static-top" role="navigation"
      style="margin-bottom: 0">
     <div class="navbar-header">
@@ -28,28 +29,22 @@
             </ul>
             <!-- /.dropdown-user -->
         </li>
-        <!-- /.dropdown -->
     </ul>
-    <!-- /.navbar-top-links -->
 
-    <div class="navbar-default sidebar" role="navigation">
-        <div class="sidebar-nav navbar-collapse">
+    <aside class="sidebar" >
+        <nav class="sidebar-nav">
             <ul class="nav metismenu" id="side-menu">
                 <li th:if="${allUsers ne null}" class="sidebar-search">
                     <div class="input-group custom-search-form">
-                        <!--<form action="/user" method="get">-->
                         <select id="users-search" class="form-control">
-                            <option th:each="u : ${allUsers}" th:value="${u.id}" th:text="${u.name}"></option>
+                            <option th:each="u : ${allUsers}" th:value="${u.getId()}" th:text="${u.getName()}"></option>
                         </select>
-                        <!--<input id="search" name="search" type="text" class="form-control" placeholder="Search...">-->
-                                <span class="input-group-btn">
-                                    <button onclick="searchUser()" class="btn btn-default" type="button">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </span>
-                        <!--</form>-->
+                        <span class="input-group-btn">
+                            <button onclick="searchUser()" class="btn btn-default" type="button">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
                     </div>
-                    <!-- /input-group -->
                 </li>
                 <li>
                     <a href="/admin/home"><i class="fa fa-dashboard fa-fw"></i> Home</a>
@@ -70,9 +65,8 @@
                             <!--/*@thymesVar id="seasons" type="List<com.society.leagues.client.api.domain.Season>"*/-->
                             <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
                             <ul th:if="${activeSeasons ne null}" class="nav nav-third-level">
-
                                 <li th:each="season : ${activeSeasons}">
-                                    <a th:id="${season.getShortName().replaceAll(' ','')}"
+                                    <a aria-expanded="false" th:id="${season.getShortName().replaceAll(' ','')}"
                                        th:href="@{/admin/scores/{id}(id=${season.getId()})}"
                                        th:text="${season.getShortName()}"></a>
                                 </li>
@@ -107,6 +101,6 @@
                         <i class="fa fa-bar-chart"></i> Stats</a>
                 </li>
             </ul>
-        </div>
-    </div>
+        </nav>
+    </aside>
 </nav>
