@@ -46,5 +46,6 @@ logger("org.springframework.security",INFO)
 logger("org.springframework.web.authentication",DEBUG)
 logger("org.springframework.web.social",DEBUG)
 logger("org.springframework.data.mongodb",INFO)
+logger("org.thymeleaf",DEBUG)
 
 root(INFO, ["FILE", "CONSOLE","SYSLOG"])

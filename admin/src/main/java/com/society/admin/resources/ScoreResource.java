@@ -178,6 +178,9 @@ public class ScoreResource extends BaseController {
             }
         }).collect(Collectors.toList());
         PlayerResultModel results = new PlayerResultModel(sortedList,matchId);
+        if (s.isNine()) {
+            results = new PlayerResultModel(realResults,matchId);
+        }
         model.addAttribute("results", results);
         List<User> home = new ArrayList<>();
         home.add(User.defaultUser());

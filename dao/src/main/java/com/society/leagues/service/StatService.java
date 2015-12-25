@@ -67,6 +67,8 @@ public class StatService {
     }
 
 
+
+
     public List<Stat> getLifetimeDivisionStats() {
         return lifetimeDivisionStats.get();
     }
@@ -95,29 +97,32 @@ public class StatService {
         long startTime = System.currentTimeMillis();
 
         startTime = System.currentTimeMillis();
-        logger.info("RefreshTeamMatch ");
-        leagueService.findCurrent(TeamMatch.class).parallelStream().forEach(StatService.this::refreshTeamMatch);
-        logger.info("RefreshTeamMatch " + (System.currentTimeMillis() - startTime));
+        //logger.info("RefreshTeamMatch ");
+        //leagueService.findCurrent(TeamMatch.class).parallelStream().forEach(StatService.this::refreshTeamMatch);
+        //logger.info("RefreshTeamMatch " + (System.currentTimeMillis() - startTime));
 
-        startTime = System.currentTimeMillis();
-        logger.info("RefreshTeam TeamRank ");
-        //refreshTeamRank();
-        logger.info("RefreshTeam TeamRank " + (System.currentTimeMillis() - startTime));
+        //logger.info("RefreshTeam TeamRank ");
+        for (Team team : teams) {
+            refreshTeamStats(team);
+        }
+        refreshTeamRank();
+        //logger.info("RefreshTeam TeamRank " + (System.currentTimeMillis() - startTime));
         startTime = System.currentTimeMillis();
         logger.info("UserSesonStats  ");
         refreshUserSeasonStats(true);
         logger.info("UserSesonStats  " + (System.currentTimeMillis() - startTime));
         //refreshUserLifetimeStats();
-        rereshUserHandicapStats();
-        logger.info("RefreshTeam Stats ");
-        for (Team team : teams) {
-            refreshTeamStats(team);
-        }
-        logger.info("RefreshTeam Stats " + (System.currentTimeMillis() - startTime));
+        //rereshUserHandicapStats();
+        //logger.info("RefreshTeam Stats ");
+
+        //logger.info("RefreshTeam Stats " + (System.currentTimeMillis() - startTime));
         resultService.refresh();
         logger.info("Done Refreshing stats  (" + (System.currentTimeMillis() - start) + "ms)");
+    }
 
-        List<User> users = leagueService.findAll(User.class);
+    @Scheduled(fixedRate = 1000*60*30, initialDelay = 1000*60*25)
+    public void refreshLifetime() {
+          List<User> users = leagueService.findAll(User.class);
         logger.info("Processing lifetime stats");
         List<Stat> lifeDivisionStats = new ArrayList<>(500);
         List<PlayerResult> results = leagueService.findAll(PlayerResult.class);
@@ -166,6 +171,10 @@ public class StatService {
                 }
             }
         }
+        for (Team team :leagueService.findAll(Team.class)) {
+            refreshTeamStats(team);
+        }
+        refreshUserSeasonStats(false);
         lifetimeDivisionStats.lazySet(lifeDivisionStats);
     }
 
@@ -192,6 +201,9 @@ public class StatService {
                 stats.add(buildSeasonStats(user,teams,season,
                         all.get(user).stream().filter(pr->pr.getTeamMatch().getDivision() == Division.MIXED_NINE).collect(Collectors.toList()),
                         StatType.MIXED_NINE));
+                stats.add(buildSeasonStats(user,teams,season,
+                        all.get(user).stream().filter(PlayerResult::isScotch).collect(Collectors.toList()),
+                        StatType.MIXED_SCOTCH));
             } else {
                 stats.add(buildSeasonStats(user,teams,season,all.get(user),null));
             }
@@ -216,13 +228,15 @@ public class StatService {
 
     private void refreshUserSeasonStats(boolean active) {
         Collection<Season> seasons = leagueService.findAll(Season.class);
+        if (active)
+            seasons = seasons.stream().filter(Season::isActive).collect(Collectors.toList());
         Map<Season,List<Stat>> userSeasonStats = new HashMap<>(1000);
-        for (Season season : seasons) {
-            refreshUserSeasonStats(season,userSeasonStats);
-        }
+        seasons.forEach(s-> refreshUserSeasonStats(s,userSeasonStats));
+
         for (Season season : userSeasonStats.keySet()) {
             List<Stat> stats = userSeasonStats.get(season);
-             userSeasonStats.put(season, stats.stream().sorted(new Comparator<Stat>() {
+             userSeasonStats.put(season, stats.stream().
+                     sorted(new Comparator<Stat>() {
                  @Override
                  public int compare(Stat stat, Stat t1) {
                      if (!t1.getWins().equals(stat.getWins())) {
@@ -373,7 +387,7 @@ public class StatService {
                 t.setRank(++rank);
                 t.getStats().setRank(t.getRank());
                 if (!old.equals(t.getRank())) {
-                    leagueService.save(t);
+                    //leagueService.save(t);
                 }
             }
         }
@@ -444,6 +458,7 @@ public class StatService {
     }
 
     public void refreshTeamMatch(TeamMatch tm) {
+        /*
         if (tm.isChallenge() || tm.isNine()) {
             return ;
         }
@@ -475,6 +490,7 @@ public class StatService {
             }
         }
         logger.info("End TeamMatch Refresh "  + (System.currentTimeMillis() - start));
+        */
     }
 
     public void refreshTeamStats(Team team) {
@@ -488,7 +504,7 @@ public class StatService {
 
         if (Stat.isDifferent(stat, team.getStats())) {
             team.setStats(stat);
-            leagueService.save(team);
+            //leagueService.save(team);
         }
 
     }
