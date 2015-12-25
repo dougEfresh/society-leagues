@@ -56,7 +56,7 @@ public class LeagueHttpClient extends Client.Default {
     @PostConstruct
     public void init() {
         CacheBuilder.newBuilder()
-                .maximumSize(1000).expireAfterAccess(5, TimeUnit.MINUTES).build();
+                .maximumSize(5000).expireAfterAccess(5, TimeUnit.MINUTES).build();
     }
 
     @Override
@@ -77,7 +77,7 @@ public class LeagueHttpClient extends Client.Default {
                 }
             }
         }
-        if (response.status() == 200 && request.method().equals(RequestMethod.GET.name()) && (!request.url().equals("/api/user"))) {
+        if (response.status() == 200 && request.method().equals(RequestMethod.GET.name()) && (!request.url().endsWith("/api/user"))) {
             logger.info("storing cache");
             String resp = IOUtils.toString(response.body().asInputStream());
             cachedResponse.put(request.url(),resp);

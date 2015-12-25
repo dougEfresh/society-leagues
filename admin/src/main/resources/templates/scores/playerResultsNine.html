@@ -52,7 +52,7 @@
                                     </select>
                                 </td>
                                 <td>
-                                    <input th:id="#{home} +  ${result.id}"
+                                    <input th:id="'homeRacks-' +  ${result.id}"
                                            th:value="${result.homeRacks}"
                                            th:field="*{playerResults[__${rowStat.index}__].homeRacks}"
                                            type="text"
@@ -71,7 +71,7 @@
                                 </td>
                                 <td>
                                     <input
-                                           th:id="#{awayRacks} + ${result.id}"
+                                           th:id="'awayRacks-' + ${result.id}"
                                            th:value="${result.awayRacks}"
                                            th:field="*{playerResults[__${rowStat.index}__].awayRacks}"
                                            type="text"
@@ -83,7 +83,7 @@
                     </div>
                 </div>
                 <div class="panel-footer">
-                    <input type="submit" value="submit"/></div>
+                    <input id="player-results-submit" type="submit" value="submit"/></div>
             </div>
         </form>
     </div>

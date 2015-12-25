@@ -16,77 +16,23 @@
         </div>
     </div>
 
-    <script>
-
-    </script>
-    <div th:if="${season ne null}">
-        <div id="stats" class="panel panel-default">
-            <div class="panel-heading">
-                <div class="panel-title">
-                    Stats </div>
+    <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+    <div th:if="${season ne null}" class="row">
+        <div class="col-xs-12 col-md-6 col-lg-5">
+            <div class="panel panel-default">
+                <div th:text="${season.getFormattedName()}" class="panel-heading">
+                    Standings
+                </div>
+                <div class="panel-body">
+                    <div id="display-eight" th:if="${season.isEight()}" th:include="display/displayEight"></div>
+                    <div id="display-scramble" th:if="${season.isScramble()}" th:include="display/displayEight"></div>
+                    <div id="display-nine" th:if="${season.isTuesdayNine()}" th:include="display/displayNine"></div>
+                    <div id="display-topgun" th:if="${season.isChallenge()}" th:include="display/displayTopgun"></div>
+                </div>
             </div>
-            <div class="panel-body">
-            <table th:if="${!season.isChallenge()}" class="table table-bordered table-condensed table-striped table-grid">
-            <thead>
-            <tr>
-                <th style="width:50px;">#</th>
-                <th>Team</th>
-                <th style="width:50px;">W</th>
-                <th style="width:50px;">L</th>
-                <th>SW</th>
-                <th>SL</th>
-                <th>RW</th>
-                <th>RL</th>
-                <th style="width:60px;">PCT</th>
-            </tr>
-            </thead>
-            <tbody>
-            <!--/*@thymesVar id="stats" type="com.society.leagues.client.api.domain.Team"*/-->
-            <!--/*@thymesVar id="team" type="com.society.leagues.client.api.domain.Team"*/-->
-            <tr th:id="${team.getId()}" th:each="team : ${stats}">
-                <td th:text="${team.getRank()}">1</td>
-                <td th:text="${team.getName()}">1</td>
-                <td th:text="${team.getStats().wins}">1</td>
-                <td th:text="${team.getStats().loses}">1</td>
-                <td th:text="${team.getStats().setWins}">1</td>
-                <td th:text="${team.getStats().setLoses}">1</td>
-                <td th:text="${team.getStats().racksWon}">1</td>
-                <td th:text="${team.getStats().racksLost}">1</td>
-                <td style="width: 75px; min-width: 75px" th:text="${team.getStats().getWinPct()}">1</td>
-            </tr>
-            </tbody>
-            </table>
-                <table th:if="${season.isChallenge()}" class="table table-bordered table-condensed table-striped table-grid">
-                    <thead>
-                    <tr>
-                        <th>Player</th>
-                        <th>HC</th>
-                        <th style="width:75px;">P</th>
-                        <th style="width:50px;">W</th>
-                        <th style="width:50px;">L</th>
-                        <th>RW</th>
-                        <th>RL</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <!--/*@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"*/-->
-                    <tr th:id="'stat-' + ${stat.getUser().getId()}" th:each="stat : ${challengeStats}">
-                        <td th:text="${stat.getUser().getName()}">1</td>
-                        <td th:text="${stat.getHandicap().getDisplayName()}">1</td>
-                        <td th:text="${#numbers.formatDecimal(stat.getPoints(),2,3)}">1</td>
-                        <!--<td th:text="${#numbers.formatDecimal(stat.getPoints(),2,3)}">1</td>-->
-                        <td th:text="${stat.wins}">1</td>
-                        <td th:text="${stat.loses}">1</td>
-                        <td th:text="${stat.racksWon}">1</td>
-                        <td th:text="${stat.racksLost}">1</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div th:replace="scores/season">
         </div>
     </div>
+    <div th:replace="scores/season"></div>
 </div>
 </div>
 

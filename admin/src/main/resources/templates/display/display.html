@@ -13,6 +13,7 @@
                         <div id="display-eight" th:if="${season.isEight()}" th:include="display/displayEight"></div>
                         <div id="display-scramble" th:if="${season.isScramble()}" th:include="display/displayEight"></div>
                         <div id="display-nine" th:if="${season.isTuesdayNine()}" th:include="display/displayNine"></div>
+                        <div id="display-topgun" th:if="${season.isChallenge()}" th:include="display/displayTopgun"></div>
                     </div>
                 </div>
             </div>

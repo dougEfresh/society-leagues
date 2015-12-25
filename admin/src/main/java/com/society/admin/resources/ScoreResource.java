@@ -2,10 +2,8 @@ package com.society.admin.resources;
 
 import com.society.admin.model.PlayerResultModel;
 import com.society.admin.model.TeamMatchModel;
-import com.society.leagues.client.api.domain.PlayerResult;
-import com.society.leagues.client.api.domain.Season;
-import com.society.leagues.client.api.domain.TeamMatch;
-import com.society.leagues.client.api.domain.User;
+import com.society.leagues.client.api.domain.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +20,8 @@ import java.util.stream.Collectors;
 
 @Controller
 public class ScoreResource extends BaseController {
+
+    @Autowired DisplayResource displayResource;
 
     @RequestMapping(value = {"/scores"}, method = RequestMethod.GET)
     public String edit(Model model) {
@@ -133,20 +133,19 @@ public class ScoreResource extends BaseController {
     }
 
     private String processScoreView(String seasonId, String date, String matchId, Model model) {
-        model.addAttribute("seasons",seasonApi.active());
-        Map<String,List<TeamMatch>> matches = teamMatchApi.matchesBySeason(seasonId);
+        model.addAttribute("seasons", seasonApi.active());
+        Map<String, List<TeamMatch>> matches = teamMatchApi.matchesBySeason(seasonId);
         List<LocalDateTime> dates = new ArrayList<>();
-        matches.keySet().forEach(d->dates.add(LocalDate.parse(d).atStartOfDay()));
+        matches.keySet().forEach(d -> dates.add(LocalDate.parse(d).atStartOfDay()));
         String d = date == null ? matches.keySet().iterator().next() : date;
         model.addAttribute("dates", matches.keySet());
         model.addAttribute("date", d);
         model.addAttribute("model", new TeamMatchModel(matches.get(d)));
         model.addAttribute("teams", teamApi.getBySeason(seasonId));
         Season s = seasonApi.get(seasonId);
-        model.addAttribute("season",s);
-        model.addAttribute("stats",statApi.getSeasonStats(seasonId));
-        if (s.isChallenge())
-            model.addAttribute("challengeStats", statApi.getUsersSeasonStats(seasonId));
+        model.addAttribute("season", s);
+
+        displayResource.processDisplay(seasonId,model,null,null);
 
         if (matchId == null) {
             return "scores/index";
