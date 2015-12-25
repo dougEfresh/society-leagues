@@ -2,32 +2,38 @@
 <div xmlns:th="http://www.thymeleaf.org">
     <div class="table-responsive">
         <table th:if="${not #lists.isEmpty(displayMemberStats)}" id="table-team-members-scramble"
-               gclass="table table-bordered table-striped table-condensed">
+               class="table table-bordered table-striped table-condensed">
         <thead>
         <tr>
             <th>#</th>
             <th>Player</th>
             <th>HC</th>
-            <th>G</th>
-            <th>W</th>
-            <th>L</th>
-            <th>PCT</th>
+            <th>8 W</th>
+            <th>8 L</th>
+            <th>8 PCT</th>
+            <th>9 W</th>
+            <th>9 L</th>
+            <th>9 PCT</th>
         </tr>
         </thead>
         <tbody>
-        <!--/*@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"*/-->
+        <!--/*@thymesVar id="stat" type="com.society.admin.model.ScrambleStatModel"*/-->
         <tr th:id="'team-standing-' + ${stat.getUser().getId()}" th:each="stat : ${displayMemberStats}">
             <td th:text="${stat.getRank()}"></td>
-            <td th:text="${stat.getGame()}"></td>
-            <td th:if="${stat.getGame() == '8'}">
+
+            <td>
                 <a href="#"
                    th:href="@{/admin/display/{id}/{teamId}/{userId} (id=${season.getId()},teamId=${team.getId()},userId=${stat.getUser().getId()})}"
                    th:text="${stat.getUser().getName()}"></a>
             </td>
-            <td th:if="${stat.getGame() == '9'}"></td>
-            <td th:text="${stat.getWins()}"></td>
-            <td th:text="${stat.getLoses()}"></td>
-            <td th:text="${#numbers.formatDecimal(stat.getWinPct(),1,3)}"></td>
+            <td th:text="${stat.getHandicapDisplay()}"></td>
+            <td th:text="${stat.getEightWins()}"></td>
+            <td th:text="${stat.getEightLoses()}"></td>
+            <td th:text="${#numbers.formatDecimal(stat.getEightWinsPct(),1,3)}"></td>
+
+            <td th:text="${stat.getNineWins()}"></td>
+            <td th:text="${stat.getNineLoses()}"></td>
+            <td th:text="${#numbers.formatDecimal(stat.getNineWinsPct(),1,3)}"></td>
         </tr>
         </tbody>
           </table>

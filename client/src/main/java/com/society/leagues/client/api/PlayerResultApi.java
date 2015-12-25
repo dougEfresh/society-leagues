@@ -20,9 +20,9 @@ public interface PlayerResultApi {
     @RequestLine("POST /api/playerresult/admin/modify")
     List<PlayerResult> save(List<PlayerResult> results);
 
-    @RequestLine("GET /api/playerresult/admin/delete/{resultId}")
+    @RequestLine("DELETE /api/playerresult/admin/delete/{resultId}")
     Boolean delete(@Param("resultId") String resultId);
 
-    @RequestLine("GET /api/playerresult/{teamMatchId}/add")
+    @RequestLine("PUT /api/playerresult/{teamMatchId}/add")
     List<PlayerResult> add(@Param("teamMatchId") String teamMatchId);
 }

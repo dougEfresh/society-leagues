@@ -47,19 +47,19 @@ casper.test.begin('Test Result Page', function suite(test) {
         this.clickLabel("Thurs 8 Ball");
     });
 
-    //testlib.playerResultTest(test, 'Thurs 8 Ball');
+    testlib.playerResultTest(test, 'Thurs 8 Ball');
 
     casper.then(function () {
         this.clickLabel("Weds 8 Ball");
     });
 
-    //testlib.playerResultTest(test);
+    testlib.playerResultTest(test);
 
     casper.then(function () {
         this.clickLabel("Scramble");
     });
 
-    //testlib.playerResultTest(test);
+    testlib.playerResultTest(test);
 
     casper.then(function () {
         this.clickLabel("Tues 9 Ball");
@@ -112,6 +112,7 @@ casper.test.begin('Test Result Page', function suite(test) {
         });
         test.assert(playerMatchId != null && playerMatchId != undefined, "PlayerMatchId Found");
     });
+    /*
     casper.then(function () {
         this.click('#delete-player-result-' + playerMatchId);
     });
@@ -124,7 +125,7 @@ casper.test.begin('Test Result Page', function suite(test) {
         test.assert(m == playerMatchCount-1, "Tues 9 PlayerMatchCount-- " + m + " " + playerMatchCount);
         playerMatchCount  = m;
     });
-
+*/
     casper.then(function () {
          playerMatchId  = this.evaluate(function() {
             var id = null;

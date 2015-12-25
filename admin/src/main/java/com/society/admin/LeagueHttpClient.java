@@ -1,20 +1,26 @@
 package com.society.admin;
 
 
+import com.google.common.cache.CacheBuilder;
 import com.society.admin.security.CookieAuth;
 import com.society.admin.security.CookieContext;
 import feign.Client;
 import feign.Request;
 import feign.Response;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.annotation.PostConstruct;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import feign.Request;
 import feign.Request.Options;
 import feign.Response;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -26,10 +32,8 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import static feign.Util.CONTENT_LENGTH;
@@ -38,17 +42,29 @@ import static feign.Util.UTF_8;
 public class LeagueHttpClient extends Client.Default {
     static final String CONTENT_ENCODING = "Content-Encoding";
     static final String GZIP_ENCODING = "gzip";
+    static Logger logger = LoggerFactory.getLogger(LeagueHttpClient.class);
 
     public LeagueHttpClient() {
         super(null,null);
     }
+    Map<String,String> cachedResponse = new HashMap<>();
 
     public LeagueHttpClient(SSLSocketFactory sslContextFactory, HostnameVerifier hostnameVerifier) {
         super(sslContextFactory, hostnameVerifier);
     }
 
+    @PostConstruct
+    public void init() {
+        CacheBuilder.newBuilder()
+                .maximumSize(1000).expireAfterAccess(5, TimeUnit.MINUTES).build();
+    }
+
     @Override
     public Response execute(Request request, Request.Options options) throws IOException {
+        if (request.method().equals(RequestMethod.GET.name()) && cachedResponse.containsKey(request.url())) {
+            logger.info("serving cache");
+            return Response.create(200, "", Collections.emptyMap() , cachedResponse.get(request.url()).getBytes());
+        }
         HttpURLConnection connection = convertAndSend(request, options);
         Response response = convertResponse(connection);
         if (response.headers().containsKey("Set-Cookie")) {
@@ -61,7 +77,14 @@ public class LeagueHttpClient extends Client.Default {
                 }
             }
         }
-
+        if (response.status() == 200 && request.method().equals(RequestMethod.GET.name()) && (!request.url().equals("/api/user"))) {
+            logger.info("storing cache");
+            String resp = IOUtils.toString(response.body().asInputStream());
+            cachedResponse.put(request.url(),resp);
+            return Response.create(200, response.reason(), response.headers(), resp.getBytes());
+        } else {
+            cachedResponse.clear();
+        }
         return response;
     }
 
@@ -139,7 +162,7 @@ public class LeagueHttpClient extends Client.Default {
         } else {
             stream = connection.getInputStream();
         }
-        //Reader body = stream != null ? new InputStreamReader(stream) : null;
-        return Response.create(status, reason, headers, status != 200 ? stream : new GZIPInputStream(stream), length);
+
+            return Response.create(status, reason, headers, status != 200 ? stream : new GZIPInputStream(stream), length);
     }
 }

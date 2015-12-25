@@ -39,7 +39,7 @@ public class PlayerResultResource {
         return resultService.createOrModify(playerResult);
     }
 
-    @RequestMapping(value = "/admin/delete/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @RequestMapping(value = "/admin/delete/{id}", method = {RequestMethod.GET, RequestMethod.DELETE }, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Boolean delete(@PathVariable String id) {
         leagueService.purge(new PlayerResult(id));
@@ -305,7 +305,7 @@ public class PlayerResultResource {
         return leagueService.save(result);
     }
 
-    @RequestMapping(value = "/{matchId}/add", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @RequestMapping(value = "/{matchId}/add", method = {RequestMethod.GET, RequestMethod.PUT}, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<PlayerResult> addMatch(Principal principal, @PathVariable String matchId) {
         TeamMatch teamMatch = leagueService.findOne(new TeamMatch(matchId));

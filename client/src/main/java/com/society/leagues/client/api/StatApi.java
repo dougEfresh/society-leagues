@@ -22,4 +22,7 @@ public interface StatApi {
 
     @RequestLine("GET /api/stat/user/{userId}/all")
     List<Stat> getUserStats(@Param("userId") String userId);
+
+    @RequestLine("GET /api/stat/user/{userId}")
+    List<Stat> getUserStatsActive(@Param("userId") String userId);
 }

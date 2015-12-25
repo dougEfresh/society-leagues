@@ -51,10 +51,11 @@
   /*display: block;
   float: left;
   width: 250px;
-  */
   background: #333;
+  */
 }
 
+/*
 .sidebar-nav {
   border-bottom: 1px solid rgba(0, 0, 0, 0.3);
   background-image: -webkit-linear-gradient(left, color-stop(#333333 10px), color-stop(#222222 10px));
@@ -97,3 +98,4 @@
 .sidebar-nav-item-icon {
   padding-right: 5px;
 }
+*/

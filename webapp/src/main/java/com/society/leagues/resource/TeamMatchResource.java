@@ -31,7 +31,7 @@ public class TeamMatchResource {
         return leagueService.save(teamMatch);
     }
 
-    @RequestMapping(value = "/admin/delete/{teamMatchId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @RequestMapping(value = "/admin/delete/{teamMatchId}", method = {RequestMethod.GET , RequestMethod.DELETE}, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Map<String,List<TeamMatch>> delete(Principal principal, @PathVariable String teamMatchId) {
         TeamMatch tm = leagueService.findOne(new TeamMatch(teamMatchId));
@@ -163,7 +163,7 @@ public class TeamMatchResource {
         return add(principal,seasonId,LocalDate.now().toString());
     }
 
-    @RequestMapping(value = "/admin/add/{seasonId}/{date}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @RequestMapping(value = "/admin/add/{seasonId}/{date}", method = {RequestMethod.GET, RequestMethod.PUT}, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public TeamMatch add(Principal principal, @PathVariable String seasonId, @PathVariable String date) {
         TeamMatch tm = new TeamMatch();

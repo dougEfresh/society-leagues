@@ -20,10 +20,10 @@ public interface UserApi {
     @RequestLine("GET /api/user/{id}")
     User get(@Param("id") String id);
 
-    @RequestLine("GET /api/user/admin/modify")
+    @RequestLine("POST /api/user/admin/modify")
     User modify(User user);
 
-    @RequestLine("GET /api/user/admin/create")
+    @RequestLine("POST /api/user/admin/create")
     User create(User user);
 
     @RequestLine("GET /api/user/all")

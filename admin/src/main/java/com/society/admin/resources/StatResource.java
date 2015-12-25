@@ -42,7 +42,9 @@ public class StatResource  extends BaseController {
                          .collect(Collectors.toList()));
 
 
-        model.addAttribute("scrambleNineStatsLifetime", stats.stream().filter(s->s.getType() == StatType.LIFETIME_NINE_BALL_SCRAMBLE).findFirst().orElse(null));
+        model.addAttribute("scrambleNineStatsLifetime", stats.stream()
+                .filter(s->s.getType() == StatType.LIFETIME_NINE_BALL_SCRAMBLE).findFirst().orElse(null)
+        );
         model.addAttribute("scrambleNineStats",
                 stats.stream()
                         .filter(s -> s.getSeason() != null)
@@ -57,7 +59,8 @@ public class StatResource  extends BaseController {
 
     @ModelAttribute
     public void setDisplay(Model model) {
-      model.addAttribute("display",false);
+        //flag for this view which determines if stats are being viewed from  /stats/* or /display/* section of websire
+        model.addAttribute("display",false);
     }
 
     @RequestMapping(value = {"/stats/{userId}/{seasonId}"}, method = RequestMethod.GET)
@@ -66,16 +69,21 @@ public class StatResource  extends BaseController {
         User u = userApi.get(userId);
         model.addAttribute("season",s);
         List<PlayerResult> results = playerResultApi.getResults(userId,seasonId);
-        for (PlayerResult result : results) {
-            result.setReferenceUser(u);
-        }
+        results.forEach(r->r.setReferenceUser(u));
         model.addAttribute("results",results);
         model.addAttribute("resultUser",u);
 
-        model.addAttribute("stats",statApi.getUserStats(userId).stream()
-                .filter(st->st.getSeason() != null)
-                .filter(st->st.getSeason().equals(s))
-                .findFirst().orElse(null));
+        if (s.isScramble()) {
+            model.addAttribute("stats", statApi.getUserStats(userId).stream()
+                    .filter(st -> st.getSeason() != null)
+                    .filter(st -> st.getSeason().equals(s))
+                    .findFirst().orElse(null));
+        } else {
+            model.addAttribute("stats", statApi.getUserStats(userId).stream()
+                    .filter(st -> st.getSeason() != null)
+                    .filter(st -> st.getSeason().equals(s))
+                    .findFirst().orElse(null));
+        }
         return stats(userId,model);
     }
 
