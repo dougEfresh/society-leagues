@@ -64,6 +64,7 @@ public class StatService {
             }
         });
         refresh();
+        refreshLifetime();
     }
 
 
@@ -171,9 +172,7 @@ public class StatService {
                 }
             }
         }
-        for (Team team :leagueService.findAll(Team.class)) {
-            refreshTeamStats(team);
-        }
+        leagueService.findAll(Team.class).forEach(this::refreshTeamStats);
         refreshUserSeasonStats(false);
         lifetimeDivisionStats.lazySet(lifeDivisionStats);
     }
