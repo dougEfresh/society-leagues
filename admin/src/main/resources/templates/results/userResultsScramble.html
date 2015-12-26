@@ -47,7 +47,7 @@
              <td class="op-team" th:text="${result.getOpponentTeam().getName()}">
                  <a th:href="@{/admin/display/{sId}/{tId}
                  (sId=${result.getSeason().getId()},tId=${result.getOpponentTeam().getId()})}"
-                    th:text="${result.getOpponent().getName()}"></a>
+                    th:text="${result.getOpponentTeam().getName()}"></a>
              </td>
              <td class="hc" th:text="${result.getTeamMemberHandicap()}"></td>
          </tr>

@@ -37,14 +37,10 @@ public class TeamMatch extends LeagueObject {
     Integer homeForfeits = 0;
     Integer awayForfeits = 0;
     Integer handicapRacks = 0;
-    @JsonIgnore
-    @Transient
-    String date;
-    @JsonIgnore
-    @Transient
-    String time;
-    @Transient
-    String race = "";
+
+    @JsonIgnore  @Transient String date;
+    @JsonIgnore  @Transient String time;
+    @Transient String race = "";
 
     public TeamMatch(Team home, Team away, LocalDateTime matchDate) {
         this.home = home;
