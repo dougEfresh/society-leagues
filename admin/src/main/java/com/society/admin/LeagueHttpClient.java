@@ -81,7 +81,7 @@ public class LeagueHttpClient extends Client.Default {
                 }
             }
         }
-        if (response.status() == 200 && request.method().equals(RequestMethod.GET.name())  && (!request.url().endsWith("/api/user"))) {
+        if (response.status() == 200 && request.method().equals(RequestMethod.GET.name()) && (!request.url().endsWith("/api/user"))) {
             logger.info("storing cache");
             String resp = IOUtils.toString(response.body().asInputStream());
             cachedResponse.put(request.url(),resp);

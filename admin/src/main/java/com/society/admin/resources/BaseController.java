@@ -31,7 +31,7 @@ public class BaseController {
         List<Season> seasons = seasonApi.get();
         model.addAttribute("activeSeasons",seasons.stream().filter(Season::isActive).sorted(Season.sortOrder).collect(Collectors.toList()));
         model.addAttribute("allSeasons",seasons);
-        User u  = userApi.get();
+        User u = userApi.get();
         model.addAttribute("user", u);
         model.addAttribute("userTeams", teamApi.userTeams(u.getId()));
         model.addAttribute("allUsers", userApi.all().parallelStream().filter(User::isReal).collect(Collectors.toList()));
