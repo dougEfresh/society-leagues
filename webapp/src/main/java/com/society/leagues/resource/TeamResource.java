@@ -109,6 +109,9 @@ public class TeamResource {
     @RequestMapping(value = "/get/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Collection<Team> getTeamSeason(Principal principal, @PathVariable String id) {
          User u = leagueService.findOne(new User(id));
+        if (u == null)
+             return  Collections.emptyList();
+        
          return leagueService.findAll(Team.class)
                  .stream().parallel()
                  .filter(t->t.hasUser(u) || t.inSameSeason(u))

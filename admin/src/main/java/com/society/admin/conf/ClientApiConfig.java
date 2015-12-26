@@ -27,6 +27,7 @@ import javax.annotation.PostConstruct;
 public class ClientApiConfig {
     @Autowired ObjectMapper objectMapper;
     @Autowired ClientApiProperties clientApiProperties;
+    @Autowired LeagueHttpClient leagueHttpClient;
     JacksonDecoder decoder;
     JacksonEncoder encoder;
 
@@ -63,7 +64,7 @@ public class ClientApiConfig {
     private <T> T getApi(Class<T> clzz, String level) {
         return Feign.builder().encoder(encoder).decoder(decoder)
                 .logger(new Slf4jLogger())
-                .client(new LeagueHttpClient())
+                .client(leagueHttpClient)
                 .logLevel( Logger.Level.valueOf(level))
                 .errorDecoder(new CustomErrorDecoder())
                 .requestInterceptor(new HeadersInterceptor())
