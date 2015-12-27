@@ -5,6 +5,7 @@ import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.client.api.domain.User;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class TeamMatchModel {
@@ -19,6 +20,12 @@ public class TeamMatchModel {
     }
 
     public List<TeamMatch> getMatches() {
+         matches.sort(new Comparator<TeamMatch>() {
+             @Override
+             public int compare(TeamMatch o1, TeamMatch o2) {
+                 return o1.getMatchDate().compareTo(o2.getMatchDate());
+             }
+         });
         return matches;
     }
 
