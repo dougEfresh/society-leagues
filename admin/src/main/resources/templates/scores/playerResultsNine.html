@@ -11,7 +11,7 @@
                 <div class="panel-heading">
                     <div class="panel-title"><span th:text="${results.getName()}"></span>
                     <span>
-                        <a th:href="@{/admin/scores/{id}/{date}/{matchId}/add (id=${season.id},date=${date},matchId=${results.matchId})}">Add</a>
+                        <a th:href="@{/admin/scores/{id}/{matchId}/add/{date} (id=${season.id},date=${date},matchId=${results.matchId})}">Add</a>
                     </span>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                             <tr th:id="${result.getId()}" th:each="result, rowStat: *{playerResults}">
                                 <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
                                 <td th:id="'delete-player-result-' + ${result.getId()}">
-                                    <a th:href="@{/admin/scores/{id}/{date}/{matchId}/{resultId}/delete
+                                    <a th:href="@{/admin/scores/{id}/{matchId}/{resultId}/delete
                                     (id=${season.id},date=${date},matchId=${results.matchId},resultId=${result.id})}">X</a>
                                 </td>
                                 <td>

@@ -69,6 +69,9 @@ public class LeagueHttpClient extends Client.Default {
             logger.info("hits " + cachedResponse.stats().toString());
             return Response.create(200, "", Collections.emptyMap() , cachedResponse.getIfPresent(request.url()).getBytes());
         }
+        if (!request.method().equals(RequestMethod.GET.name())) {
+            cachedResponse.invalidateAll();
+        }
         HttpURLConnection connection = convertAndSend(request, options);
         Response response = convertResponse(connection);
         if (response.headers().containsKey("Set-Cookie")) {
