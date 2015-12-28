@@ -56,8 +56,8 @@ var playerResultTest = function(test,season) {
     });
 
     casper.then(function () {
-        test.assertExists("#table-player-results-admin");
-        test.assertExists("#player-results", season + '#player-results');
+        //this.debugHTML();
+        test.assertExists("#table-player-results-admin", season + ' #table-player-results-admin');
     });
     casper.then(function () {
         playerMatchCount = this.evaluate(function() {
@@ -69,7 +69,7 @@ var playerResultTest = function(test,season) {
     });
 
     casper.then(function () {
-        test.assertExists("#player-results");
+        test.assertExists("#table-player-results-admin");
     });
     casper.then(function () {
         var m  = this.evaluate(function() {
@@ -184,7 +184,7 @@ var scoreSeasonTest = function(test) {
 
 
     casper.then(function () {
-        test.assertNotExists("#player-results");
+        test.assertNotExists("#table-player-results-admin");
     });
 
     casper.then(function () {

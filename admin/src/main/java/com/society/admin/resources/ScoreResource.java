@@ -69,7 +69,7 @@ public class ScoreResource extends BaseController {
     @RequestMapping(value = {"/scores/{seasonId}/{matchId}/add/{date}"}, method = RequestMethod.GET)
      public void addPlayerMatch(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId, Model model, HttpServletResponse response) throws IOException {
          playerResultApi.add(matchId);
-         processScoreView(seasonId,date,null,model);
+        response.sendRedirect("/admin/scores/" + seasonId + "/" + matchId + "?date=" + date);
     }
 
      @RequestMapping(value = {"/scores/{seasonId}/{matchId}/{resultId}/delete/{date}"}, method = RequestMethod.GET)
@@ -85,21 +85,21 @@ public class ScoreResource extends BaseController {
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{date}"}, method = RequestMethod.POST)
-    public String save(@PathVariable String seasonId,
+    public void save(@PathVariable String seasonId,
                        @PathVariable String date,
                        @ModelAttribute TeamMatchModel teamMatchModel, Model model,
                        HttpServletResponse response) throws IOException {
         response.sendRedirect("/admin/scores/" +seasonId +  "?date=" + date);
-        return save(seasonId,date,null,teamMatchModel,null,model);
+        save(seasonId,date,null,teamMatchModel,null,model);
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{matchId}/{date}"}, method = RequestMethod.POST)
-    public String saveResults(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId,
+    public void saveResults(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId,
                               @ModelAttribute TeamMatchModel teamMatchModel,@ModelAttribute PlayerResultModel playerResultModel,
                               Model model,
                               HttpServletResponse response) throws IOException {
         response.sendRedirect("/admin/scores/" +seasonId + "/" + matchId + "?date=" + date);
-        return save(seasonId,date,matchId,teamMatchModel,playerResultModel,model);
+        save(seasonId,date,matchId,teamMatchModel,playerResultModel,model);
     }
 
     private String save(String seasonId, String date, String matchId, TeamMatchModel teamMatchModel, PlayerResultModel playerResultModel, Model model) {

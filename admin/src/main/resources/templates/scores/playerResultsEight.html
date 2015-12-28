@@ -17,13 +17,13 @@
         }
     </script>
     <form id="result-form" th:object="${results}" th:method="post" method="post"
-          th:action="@{/admin/scores/{id}/{date}/{matchId}/{date} (id=${season.id},date=${date},matchId=${results.matchId})}" >
+          th:action="@{/admin/scores/{id}/{matchId}/{date} (id=${season.id},date=${date},matchId=${results.matchId})}" >
 
         <div class="panel panel-default panel-challenge">
             <div class="panel-heading">
                 <div class="panel-title"><span th:text="${results.getName()}"></span>
                     <span>
-                        <a th:href="@{/admin/scores/{id}/{matchId}/add (id=${season.id},date=${date},matchId=${results.matchId})}">Add</a>
+                        <a th:href="@{/admin/scores/{id}/{matchId}/add/{date} (id=${season.id},date=${date},matchId=${results.matchId})}">Add</a>
                     </span>
                 </div>
             </div>
@@ -44,7 +44,7 @@
                         <!--/*@thymesVar id="result" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
                         <tr  th:class="${results.getRowClass(rowStat.index)}" th:id="${result.getId()}" th:each="result, rowStat: *{playerResults}">
                               <td>
-                                    <a th:id="${'delete-player-result-' + result.getId()}" th:href="@{/admin/scores/{id}/{matchId}/{resultId}/delete (id=${season.id},date=${date},matchId=${results.matchId},resultId=${result.id})}">X</a>
+                                    <a th:id="${'delete-player-result-' + result.getId()}" th:href="@{/admin/scores/{id}/{matchId}/{resultId}/delete/{date} (id=${season.id},date=${date},matchId=${results.matchId},resultId=${result.id})}">X</a>
                                 </td>
                             <td>
                                 <input th:id="${'matchNumber-' + result.getId()}" th:field="*{playerResults[__${rowStat.index}__].matchNumber}" type="text" th:value="${result.matchNumber}" />
@@ -111,7 +111,7 @@
             <div class="panel-footer">
                 <input id="player-results-submit" type="submit" value="submit" />
                   <span>
-                        <a th:href="@{/admin/scores/{id}/{matchId}/add (id=${season.id},date=${date},matchId=${results.matchId})}">Add</a>
+                        <a th:href="@{/admin/scores/{id}/{matchId}/add/{date} (id=${season.id},date=${date},matchId=${results.matchId})}">Add</a>
                   </span>
             </div>
         </div>

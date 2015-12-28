@@ -17,11 +17,6 @@ casper.test.begin('Test Result Page', function suite(test) {
          test.assertExists("#home-app")
     });
 
-    casper.thenOpen(testlib.server + '/admin/scores', function(){
-    });
-    casper.then(function () {
-         test.assertExists("#score-app")
-    });
 
     casper.then(function () {
          test.assertExists("#TopGun")
@@ -47,22 +42,35 @@ casper.test.begin('Test Result Page', function suite(test) {
         this.clickLabel("Thurs 8 Ball");
     });
 
+    casper.then(function () {
+         test.assertExists("#score-app")
+    });
+
     testlib.playerResultTest(test, 'Thurs 8 Ball');
 
     casper.then(function () {
         this.clickLabel("Weds 8 Ball");
     });
+    casper.then(function () {
+         test.assertExists("#score-app")
+    });
 
-    testlib.playerResultTest(test);
+    testlib.playerResultTest(test, 'Weds 8 ball');
 
     casper.then(function () {
         this.clickLabel("Scramble");
     });
+    casper.then(function () {
+         test.assertExists("#score-app")
+    });
 
-    testlib.playerResultTest(test);
+    testlib.playerResultTest(test, 'Scramble');
 
     casper.then(function () {
         this.clickLabel("Tues 9 Ball");
+    });
+    casper.then(function () {
+         test.assertExists("#score-app")
     });
 
     casper.then(function () {
