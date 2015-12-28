@@ -1,9 +1,6 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
-<head>
-    <title>User Admin</title>
-</head>
-<body>
+<div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+
   <div id="user-app" layout:fragment="content">
       <div id="users" >
           <div class="table-responsive">
@@ -32,8 +29,10 @@
               </table>
           </div>
       </div>
-
+      <div>
+          <a href="/admin/user/new">Add New</a>
+      </div>
   </div>
-</body>
-</html>
+</div>
+
 

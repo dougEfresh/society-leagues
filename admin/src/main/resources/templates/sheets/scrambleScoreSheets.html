@@ -139,13 +139,13 @@
 			Ballocks
 		</div>
 		<div class="home-roster">
-		<div th:each="user : ${match.getHome().getTeamMembers().getMembers()}">
+		<div th:each="user : ${match.getHome().getMembers().getMembers()}">
                 <span th:text="${user.getSheetName(season.id)}">
                 </span>
 		</div>
 	</div>
 		<div class="away-roster">
-			<div th:each="user : ${match.getAway().getTeamMembers().getMembers()}">
+			<div th:each="user : ${match.getAway().getMembers().getMembers()}">
                 <span th:text="${user.getSheetName(season.id)}">
                 </span>
 			</div>

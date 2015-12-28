@@ -19,12 +19,6 @@ casper.test.begin('Test Scores Page', function suite(test) {
          test.assertExists("#home-app")
     });
 
-    casper.thenOpen(testlib.server + '/admin/scores', function(){
-    });
-    casper.then(function () {
-         test.assertExists("#score-app")
-    });
-
     casper.then(function () {
          test.assertExists("#TopGun")
     });
@@ -45,66 +39,69 @@ casper.test.begin('Test Scores Page', function suite(test) {
     });
 
     casper.then(function () {
-        this.clickLabel("Top Gun")
+        this.click("#TopGun")
+    });
+    casper.then(function () {
+        test.assertExists("#score-app")
     });
 
     testlib.scoreSeasonTest(test);
 
     casper.then(function () {
-        this.clickLabel("Thurs 8 Ball")
+        this.click("#Thurs8Ball")
     });
 
     testlib.scoreSeasonTest(test);
 
     casper.then(function () {
-        this.clickLabel("Weds 8 Ball")
+        this.click("#Weds8Ball")
     });
 
     testlib.scoreSeasonTest(test);
 
     casper.then(function () {
-        this.clickLabel("Tues 9 Ball")
+        this.click("#Tues9Ball")
     });
 
     testlib.scoreSeasonTest(test);
 
     casper.then(function () {
-        this.clickLabel("Weds 8 Ball")
+        this.click("#Weds8Ball")
     });
 
     testlib.scoreSeasonTest(test);
 
     casper.then(function () {
         this.echo('Submit test Weds');
-        this.clickLabel("Weds 8 Ball")
+        this.click("#Weds8Ball")
     });
 
     testlib.scoreSubmitTest(test);
 
     casper.then(function () {
         this.echo('Submit test Thurs');
-        this.clickLabel("Thurs 8 Ball")
+        this.click("#Thurs8Ball")
     });
 
     testlib.scoreSubmitTest(test);
 
     casper.then(function () {
         this.echo('Submit test Tues');
-        this.clickLabel("Tues 9 Ball")
+        this.click("#Tues9Ball")
     });
 
     testlib.scoreSubmitTest(test);
 
     casper.then(function () {
         this.echo('Submit test Top Gun');
-        this.clickLabel("Top Gun")
+        this.click("#TopGun")
     });
 
     testlib.scoreSubmitTest(test);
 
     casper.then(function () {
         this.echo('Submit test scramble');
-        this.clickLabel("Scramble")
+        this.click("#Scramble")
     });
 
     testlib.scoreSubmitTest(test);

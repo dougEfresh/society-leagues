@@ -40,6 +40,10 @@ public class SheetResource extends BaseController {
         model.addAttribute("date", date);
         model.addAttribute("matches", teamMatchModel);
         Season s = teamMatchModel.getMatches().iterator().next().getSeason();
+        for (TeamMatch teamMatch : teamMatchModel.getMatches()) {
+            teamMatch.getHome().setMembers(teamApi.members(teamMatch.getHome().getId()));
+            teamMatch.getAway().setMembers(teamApi.members(teamMatch.getAway().getId()));
+        }
         model.addAttribute("season", s);
         if (s.isScramble())
             return "sheets/scrambleScoreSheets";
