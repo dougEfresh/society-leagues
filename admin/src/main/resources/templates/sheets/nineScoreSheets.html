@@ -169,13 +169,13 @@
 <div class="home-roster">
 	<ul class="players">
 		<li th:text="${user.getSheetName(season.id)}"
-			th:each="user : ${match.getHome().getTeamMembers().getMembers()}"></li>
+			th:each="user : ${match.getHome().getMembers().getMembers()}"></li>
 	</ul>
 </div>
 <div class="away-roster">
 	<ul class="players">
 		<li th:text="${user.getSheetName(season.id)}"
-			th:each="user : ${match.getAway().getTeamMembers().getMembers()}"></li>
+			th:each="user : ${match.getAway().getMembers().getMembers()}"></li>
 	</ul>
 </div>
 </div>
