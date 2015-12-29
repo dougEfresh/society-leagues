@@ -37,7 +37,6 @@ public class Team extends LeagueObject {
 
     }
 
-    @JsonView(value = {TeamSummary.class, PlayerResultView.class})
     public Season getSeason() {
         return season;
     }
@@ -72,7 +71,6 @@ public class Team extends LeagueObject {
         }
     }
 
-    @JsonView(value = {TeamSummary.class,PlayerResultView.class})
     public String getName() {
         return name;
     }
@@ -127,7 +125,6 @@ public class Team extends LeagueObject {
         return members.getMembers().iterator().next();
     }
 
-    @JsonView(value = PlayerResultView.class)
     public void setMembers(TeamMembers members) {
         this.members = members;
     }
