@@ -50,8 +50,8 @@
                     <a href="/admin/home"><i class="fa fa-dashboard fa-fw"></i> Home</a>
                 </li>
                 <li th:if="${user ne null && user.isAdmin()}">
-                    <a href="#"><i class="fa fa-gears fa-fw"></i> Admin <span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
+                    <a href="/admin" aria-expanded="false" ><i class="fa fa-gears fa-fw"></i> Admin <span class="fa arrow"></span></a>
+                    <ul  aria-expanded="false" class="nav nav-second-level">
                         <li>
                             <a href="/admin/user"><i class="fa fa-user fa-fw"></i> Users</a>
                         </li>
@@ -59,22 +59,22 @@
                             <a href="/admin/team"><i class="fa fa-users fa-fw"></i> Teams</a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a  aria-expanded="false" href="#">
                                 <span class="glyphicon glyphicon-th-list"></span> Scores<span class="fa arrow"></span>
                             </a>
                             <!--/*@thymesVar id="seasons" type="List<com.society.leagues.client.api.domain.Season>"*/-->
                             <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
-                            <ul th:if="${activeSeasons ne null}" class="nav nav-third-level">
+                            <ul  aria-expanded="false" th:if="${activeSeasons ne null}" class="nav nav-third-level">
                                 <li th:each="season : ${activeSeasons}">
-                                    <a aria-expanded="true" th:id="${season.getShortName().replaceAll(' ','')}"
+                                    <a aria-expanded="false" th:id="${season.getShortName().replaceAll(' ','')}"
                                        th:href="@{/admin/scores/{id}(id=${season.getId()})}"
                                        th:text="${season.getShortName()}"></a>
                                 </li>
                             </ul>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-trophy fa-fw"></i> Standings <span class="fa arrow"></span></a>
-                            <ul th:if="${activeSeasons ne null}" class="nav nav-third-level">
+                            <a  aria-expanded="false" href="#"><i class="fa fa-trophy fa-fw"></i> Standings <span class="fa arrow"></span></a>
+                            <ul aria-expanded="false" th:if="${activeSeasons ne null}" class="nav nav-third-level">
                                 <li th:each="season : ${activeSeasons}">
                                     <a th:id="${season.getShortName().replaceAll(' ','')}"
                                        th:href="@{/admin/display/{id} (id=${season.getId()})}"

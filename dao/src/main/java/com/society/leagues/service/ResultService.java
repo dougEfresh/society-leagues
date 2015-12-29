@@ -44,6 +44,7 @@ public class ResultService {
         List<PlayerResult> challengeResults =
                 leagueService.findCurrent(PlayerResult.class).stream().parallel()
                         .filter(r -> r.getSeason().isChallenge())
+                        .filter(pr -> pr.getMatchDate() != null)
                         .filter(pr -> pr.getMatchDate().isAfter(tenWeeks))
                         .filter(r -> r.hasResults())
                         .collect(Collectors.toList());
