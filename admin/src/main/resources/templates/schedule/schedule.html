@@ -1,0 +1,21 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorator="layout">
+    <div id="schedule-app" layout:fragment="content">
+        <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+        <div class="col-xs-12 col-md-12 col-lg-8">
+            <div class="panel panel-default">
+                <div th:text="${season.getFormattedName()}" class="panel-heading">
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div th:style="|height: ${maxHeight + 'px'}|" class="col-xs-12 col-md-6" th:each="date: ${teamMatches.keySet()}">
+                            <div th:replace="schedule/scheduleNine"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

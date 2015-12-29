@@ -18,6 +18,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.ResolverStyle;
 import java.time.format.SignStyle;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,14 +29,24 @@ import static java.time.temporal.ChronoField.YEAR;
 
 @Controller
 public class SheetResource extends BaseController {
+    final static Comparator<User> sortUser = new Comparator<User>() {
+        @Override
+        public int compare(User o1, User o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    };
 
     @RequestMapping(method = RequestMethod.GET,value = "/sheets/{seasonId}/{date}")
     public String sheets(@PathVariable String seasonId, @PathVariable  String date, Model model) {
         TeamMatchModel teamMatchModel = new TeamMatchModel(teamMatchApi.matchesBySeason(seasonId).get(date));
         for (TeamMatch teamMatch : teamMatchModel.getMatches()) {
             Map<String,List<User>> users = teamMatchApi.teamMembers(teamMatch.getId());
-            teamMatch.getHome().setMembers(new TeamMembers(users.get("home").stream().filter(User::isReal).collect(Collectors.toList())));
-            teamMatch.getAway().setMembers(new TeamMembers(users.get("away").stream().filter(User::isReal).collect(Collectors.toList())));
+            teamMatch.getHome().setMembers(new TeamMembers(users.get("home").stream().filter(User::isReal)
+                    .sorted(sortUser)
+                    .collect(Collectors.toList())));
+            teamMatch.getAway().setMembers(new TeamMembers(users.get("away").stream().filter(User::isReal)
+                    .sorted(sortUser)
+                    .collect(Collectors.toList())));
         }
         model.addAttribute("date", date);
         model.addAttribute("matches", teamMatchModel);
@@ -60,8 +71,12 @@ public class SheetResource extends BaseController {
         TeamMatchModel teamMatchModel = new TeamMatchModel(Arrays.asList(teamMatchApi.get(teamMatchId)));
         for (TeamMatch teamMatch : teamMatchModel.getMatches()) {
             Map<String,List<User>> users = teamMatchApi.teamMembers(teamMatch.getId());
-            teamMatch.getHome().setMembers(new TeamMembers(users.get("home").stream().filter(User::isReal).collect(Collectors.toList())));
-            teamMatch.getAway().setMembers(new TeamMembers(users.get("away").stream().filter(User::isReal).collect(Collectors.toList())));
+            teamMatch.getHome().setMembers(new TeamMembers(users.get("home").stream().filter(User::isReal)
+                    .sorted(sortUser)
+                    .collect(Collectors.toList())));
+            teamMatch.getAway().setMembers(new TeamMembers(users.get("away").stream().filter(User::isReal)
+                    .sorted(sortUser)
+                    .collect(Collectors.toList())));
         }
         DateTimeFormatterBuilder builder =  new DateTimeFormatterBuilder()
                 .appendValue(YEAR, 4, 10, SignStyle.EXCEEDS_PAD)

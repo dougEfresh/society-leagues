@@ -1,0 +1,32 @@
+   <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org">
+       <div class="panel panel-default">
+           <div th:text="${date}" class="panel-heading"></div>
+           <div class="panel-body">
+               <table th:id="'table-team-schedule-' + ${date}"
+                      class="table table-bordered table-striped table-condensed">
+                   <thead>
+                   <tr>
+                       <th></th>
+                       <th>SW</th>
+                       <th>R</th>
+                       <th></th>
+                       <th>SW</th>
+                       <th>R</th>
+                   </tr>
+                   </thead>
+                   <tbody>
+                   <tr th:class="${match.isHasResults() ? 'results' : 'no-results'}" th:each="match: ${teamMatches.get(date)}">
+                       <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.TeamMatch"*/-->
+                       <td th:class="${team.getId().equals(match.getWinner().getId()) ? 'active' : 'not-active'}" th:text="${match.getWinner().getName()}"></td>
+                       <td th:text="${match.getWinnerSetWins()}"></td>
+                       <td th:text="${match.getWinnerRacks()}"></td>
+                       <td th:class="${team.getId().equals(match.getWinner().getId()) ? 'active' : 'not-active'}" th:text="${match.getLoser().getName()}"></td>
+                       <td th:text="${match.getLoserSetWins()}"></td>
+                       <td th:text="${match.getLoserRacks()}"></td>
+                   </tr>
+                   </tbody>
+               </table>
+           </div>
+       </div>
+   </div>

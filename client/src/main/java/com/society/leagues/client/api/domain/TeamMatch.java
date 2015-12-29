@@ -213,6 +213,11 @@ public class TeamMatch extends LeagueObject {
     }
 
     public boolean isHasResults() {
+        if (homeRacks > 0 && homeRacks.equals(homeForfeits))
+            return true;
+        if (awayRacks > 0 && awayRacks.equals(awayForfeits))
+            return true;
+
         return homeRacks + awayRacks > 0;
     }
 
@@ -229,14 +234,21 @@ public class TeamMatch extends LeagueObject {
     }
 
     public Integer getWinnerSetWins() {
+        if (!isHasResults())
+            return null;
         return homeRacks > awayRacks ? setHomeWins : setAwayWins;
     }
 
     public Integer getWinnerSetLoses() {
+        if (!isHasResults())
+            return null;
+
         return homeRacks > awayRacks ? setAwayWins : setHomeWins;
     }
 
     public Integer getLoserSetWins() {
+        if (!isHasResults())
+            return null;
         return homeRacks > awayRacks ? setAwayWins : setHomeWins;
     }
 
@@ -277,7 +289,7 @@ public class TeamMatch extends LeagueObject {
         if (homeRacks.equals(awayRacks))
             return home;
 
-        return  homeRacks > awayRacks ? home : away;
+        return homeRacks > awayRacks ? home : away;
     }
 
     public Team getLoser() {
