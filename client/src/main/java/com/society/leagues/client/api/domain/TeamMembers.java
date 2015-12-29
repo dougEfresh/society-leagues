@@ -2,9 +2,11 @@ package com.society.leagues.client.api.domain;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TeamMembers extends LeagueObject {
 
@@ -27,7 +29,10 @@ public class TeamMembers extends LeagueObject {
     }
 
     public Set<User> getMembers() {
-        return members;
+        if (members == null)
+            return Collections.emptySet();
+
+        return members.stream().filter(User::isReal).collect(Collectors.toSet());
     }
     
     public void addMember(User user) {
