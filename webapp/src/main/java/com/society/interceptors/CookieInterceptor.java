@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class CookieInterceptor extends HandlerInterceptorAdapter {
+
     static {
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
     }
