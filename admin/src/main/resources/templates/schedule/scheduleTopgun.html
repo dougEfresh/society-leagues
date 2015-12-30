@@ -8,10 +8,8 @@
                    <thead>
                    <tr>
                        <th></th>
-                       <th>SW</th>
                        <th>R</th>
                        <th></th>
-                       <th>SW</th>
                        <th>R</th>
                    </tr>
                    </thead>
@@ -19,10 +17,8 @@
                    <tr th:class="${match.isHasResults() ? 'results' : 'no-results'}" th:each="match: ${teamMatches.get(date)}">
                        <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.TeamMatch"*/-->
                        <td th:class="${team.getId().equals(match.getWinner().getId()) ? 'active team-name' : 'not-active team-name'}" th:text="${match.getWinner().getName()}"></td>
-                       <td class="racks" th:text="${match.getWinnerSetWins()}"></td>
                        <td class="racks"  th:text="${match.getWinnerRacks()}"></td>
                        <td th:class="${team.getId().equals(match.getLoser().getId()) ? 'active team-name' : 'not-active team-name' }" th:text="${match.getLoser().getName()}"></td>
-                       <td class="racks"  th:text="${match.getLoserSetWins()}"></td>
                        <td class="racks"  th:text="${match.getLoserRacks()}"></td>
                    </tr>
                    </tbody>

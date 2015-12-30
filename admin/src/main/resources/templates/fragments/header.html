@@ -82,6 +82,17 @@
                                 </li>
                             </ul>
                         </li>
+                        <li>
+                            <a  aria-expanded="false" href="#"><i class="fa fa-calendar fa-fw"></i> Schedule <span class="fa arrow"></span></a>
+                            <ul aria-expanded="false" th:if="${activeSeasons ne null}" class="nav nav-third-level">
+                                <li th:each="season : ${activeSeasons}">
+                                    <a th:id="${season.getShortName().replaceAll(' ','')}"
+                                       th:href="@{/admin/schedule/{id} (id=${season.getId()})}"
+                                       th:text="${season.getShortName()}"></a>
+                                </li>
+                            </ul>
+                        </li>
+
                     </ul>
                 </li>
                 <li>

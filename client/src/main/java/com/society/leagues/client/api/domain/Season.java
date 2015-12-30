@@ -214,7 +214,7 @@ public class Season extends LeagueObject   {
 
     public boolean isEight(){
         if (division == null)
-                return false;
+            return false;
 
         return division == Division.EIGHT_BALL_THURSDAYS || division == Division.EIGHT_BALL_WEDNESDAYS;
     }

@@ -10,7 +10,10 @@
                 <div class="panel-body">
                     <div class="row">
                         <div th:style="|height: ${maxHeight + 'px'}|" class="col-xs-12 col-md-6" th:each="date: ${teamMatches.keySet()}">
-                            <div th:replace="schedule/scheduleNine"></div>
+                            <div th:if="${season.isTuesdayNine()}" th:include="schedule/scheduleNine"></div>
+                            <div th:if="${season.isChallenge()}" th:include="schedule/scheduleTopgun"></div>
+                            <div th:if="${season.isEight()}" th:include="schedule/scheduleEight"></div>
+                            <div th:if="${season.isScramble()}" th:include="schedule/scheduleEight"></div>
                         </div>
                     </div>
                 </div>
