@@ -1,0 +1,102 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Challenge Scores</title>
+</head>
+
+<body>
+<div th:fragments="nineScores">
+    <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+    <!--/*@thymesVar id="date" type="java.lang.String"*/-->
+    <div class="table-responsive">
+        <table id="team-match-results" class="table table-stripped table-bordered table-condensed table">
+            <thead>
+            <th></th>
+            <th></th>
+            <th>Date</th>
+            <th>Home</th>
+            <th>Racks</th>
+            <th>SW</th>
+            <th>Forfeits</th>
+            <th>Away</th>
+            <th>Racks</th>
+            <th>SW</th>
+            <th>Forfeits</th>
+            <th>Sheet</th>
+            </thead>
+            <tbody>
+
+            <!--/*@thymesVar id="matches" type="List<com.society.leagues.client.api.domain.TeamMatch>"*/-->
+            <tr th:id="${match.getId()}" th:each="match, rowStat: *{matches}">
+                  <td class="delete">
+                    <a th:id="${'delete-' + match.getId()}" th:href="@{/app/scores/{id}/{matchId}/delete/{date} (id=${season.id},date=${date},matchId=${match.id})}">
+                        X
+                    </a>
+                </td>
+                 <td class="results">
+                    <a th:id="${'player-results-' + match.getId()}" th:href="@{/app/scores/{id}/{matchId} (id=${season.id},date=${date},matchId=${match.id})}">
+                        Results
+                    </a>
+                </td>
+                <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.TeamMatch"*/-->
+                <input th:field="*{matches[__${rowStat.index}__].id}" type="hidden" th:value="${match.id}">
+                <td class="date">
+                    <input  th:id="${'date-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].date}" type="text" th:value="${match.getDate()}">
+                </td>
+                <input th:field="*{matches[__${rowStat.index}__].time}" type="hidden" th:value="${match.getTime()}">
+                <td class="name">
+                    <select th:id="${'home-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].home.id}" class="form-control">
+                        <option th:each="team: ${teams}"
+                                th:text="${team.name}"
+                                th:value="${team.id}"
+                                th:selected="${team.id == match.home.id}"
+                        ></option>
+                    </select>
+                </td>
+                <td class="racks">
+                    <input th:id="${'homeRacks-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].homeRacks}" type="text"
+                           th:value="${match.homeRacks}">
+                </td>
+                <td class="racks">
+                    <input  th:id="${'setHomeWins-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].setHomeWins}" type="text"
+                           th:value="${match.setHomeWins}">
+                </td>
+                 <td class="racks">
+                    <input th:id="${'homeForfeits-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].homeForfeits}" type="text"
+                           th:value="${match.homeForfeits}"/>
+                </td>
+                <td class="name">
+                    <select  th:id="${'away-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].away.id}" class="form-control">
+                        <option th:each="team: ${teams}"
+                                th:text="${team.name}"
+                                th:value="${team.id}"
+                                th:selected="${team.id == match.away.id}"
+                        ></option>
+                    </select>
+                </td>
+                <td class="racks">
+                    <input  th:id="${'awayRacks-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].awayRacks}" type="text"
+                           th:value="${match.awayRacks}">
+                </td>
+                 <td class="racks">
+                    <input  th:id="${'setAwayWins-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].setAwayWins}" type="text"
+                           th:value="${match.setAwayWins}">
+                </td>
+                 <td class="racks">
+                    <input th:id="${'awayForfeits-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].awayForfeits}" type="text"
+                           th:value="${match.awayForfeits}"/>
+                </td>
+                 <td class="sheet-link">
+                    <a th:id="${'sheet-' + match.getId()}" th:href="@{/app/sheets/{matchId} (matchId=${match.id})}">
+                        Sheet
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
+

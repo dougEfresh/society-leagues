@@ -1,0 +1,94 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+
+    <div id="user-edit" layout:fragment="content">
+    <div th:if="${save eq 'success'}">
+             <div class="alert alert-success alert-dismissible" role="alert">
+                 <strong>Success!</strong> Updated Successfully.
+             </div>
+         </div>
+     <div th:if="${save eq 'error'}">
+         <div class="alert alert-danger alert-dismissible" role="alert">
+             <strong>Error!</strong> <pre th:text="${error}"></pre>
+         </div>
+     </div>
+        <div>
+    <form id="user-form" action="#" th:action="@{/app/user/{id}(id=${editUser.id})}" th:object="${editUser}" method="post">
+        <div class="form-group">
+            <input type="hidden" th:value="${editUser.id}" th:field="*{id}"/>
+            <label class="col-sm-2 control-label">First Name</label>
+            <div class="col-sm-10">
+                <input th:value="*{firstName}" th:field="*{firstName}" id="firstName"
+                       type="input" name="firstName"
+                       class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label">Last Name</label>
+            <div class="col-sm-10">
+                <input th:value="${editUser.lastName}" name="lastName" th:field="*{lastName}" id="lastName" type="input" class="form-control" />
+            </div>
+            <label  class="col-sm-2 control-label">Email</label>
+            <div class="col-sm-10">
+                <input th:value="${editUser.login}" th:field="*{login}" id="login"  class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label">Role</label>
+            <div class="col-sm-10">
+                <select id="role" name="role" class="form-control" th:value="${editUser.role}" th:field="*{role}" >
+                    <option value="PLAYER">Player</option>
+                    <option value="ADMIN">Admin</option>
+                </select>
+            </div>
+            <label  class="col-sm-2 control-label">status</label>
+            <div class="col-sm-10">
+                <select class="form-control" th:value=${editUser.status} th:field="*{status}">
+                    <option value="ACTIVE">Active</option>
+                    <option value="INACTIVE">Disable</option>
+                </select>
+            </div>
+        <!--/*@thymesVar id="handicapSeasons" type="com.society.leagues.client.api.domain.HandicapSeason"*/-->
+        <div th:each="hs, rowIndex: ${editUser.handicapSeasons}" >
+            <label th:text="${hs.season.getShortName()}" class="col-sm-2 control-label" ></label>
+            <input type="hidden" th:value="${hs.season.id}" th:field="${editUser.handicapSeasons[__${rowIndex.index}__].season.id}" />
+            <input type="hidden" th:value="${hs.season.division}" th:field="${editUser.handicapSeasons[__${rowIndex.index}__].season.division}" />
+            <input type="hidden" th:value="${hs.season.seasonStatus}" th:field="${editUser.handicapSeasons[__${rowIndex.index}__].season.seasonStatus}" />
+            <div class="col-sm-10">
+            <select th:id="${hs.season.getShortName().replaceAll(' ','') + '-hc'}" class="form-control" th:field="${editUser.handicapSeasons[__${rowIndex.index}__].handicap}" >
+                    <option th:each="hc: ${T(com.society.leagues.client.api.domain.Handicap).values()}"
+                            th:text="${hc.value}"
+                            th:value="${hc.value}"
+                            th:selected="${hc.value == hs.handicap.value}"
+                    ></option>
+                </select>
+             </div>
+        </div>
+        </div>
+            <div class="col-sm-offset-2 col-sm-10">
+                <br/>
+                <input id="submit" type="submit" class="btn btn-sm btn-primary btn-responsive"/>
+            </div>
+    </form>
+        </div>
+        <div th:if="${not #lists.isEmpty(editUserTeams)}" id="user-teams">
+                <table id="table-users-teams" class="table table-stripped table-bordered table-condensed">
+                    <thead>
+                    <th>Team</th>
+                    <th>Season</th>
+                    </thead>
+                    <tbody>
+                    <!--/*@thymesVar id="team" type="com.society.leagues.client.api.domain.Team"*/-->
+                    <tr th:each="team : ${editUserTeams}">
+                        <td >
+                            <a th:text="${team.getName()}" th:href="@{/app/team/{id}(id=${team.id})}">
+                            </a>
+                        </td>
+                        <td >
+                            <a th:text="${team.getSeason().getFormattedName()}" href="#">
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+    </div>
+
+</div>
+

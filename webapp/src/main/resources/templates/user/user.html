@@ -1,0 +1,38 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+
+  <div id="user-app" layout:fragment="content">
+      <div id="users" >
+          <div class="table-responsive">
+              <table id="table-users" class="table table-stripped table-bordered table-condensed table">
+                  <thead>
+                  <th>Name</th>
+                  <th>Stats</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  </thead>
+                  <tbody>
+                  <!--/*@thymesVar id="users" type="com.society.leagues.client.api.domain.User"*/-->
+                  <tr th:id="'user-' + ${user.id} "th:each="user : ${users}">
+                      <td>
+                          <a th:text="${user.name}" th:href="@{/app/user/{id}(id=${user.id})}"></a>
+                      </td>
+                      <td>
+                          <a th:href="@{/app/stats/{id}(id=${user.id})}">Stats</a>
+                      </td>
+                      <td th:text="${user.login}"></td>
+                      <td th:text="${user.role}"></td>
+                      <td th:text="${user.status}"></td>
+                  </tr>
+                  </tbody>
+              </table>
+          </div>
+      </div>
+      <div>
+          <a href="/app/user/new">Add New</a>
+      </div>
+  </div>
+</div>
+
+
