@@ -97,7 +97,7 @@ public class ChallengeResource {
     public Collection<Team> challengeUsers(Principal principal) {
         User user = leagueService.findByLogin(principal.getName());
 
-        return leagueService.findAll(Team.class).parallelStream().filter(t -> t.isChallenge()).collect(Collectors.toList());
+        return leagueService.findAll(Team.class).parallelStream().filter(Team::isChallenge).collect(Collectors.toList());
     }
 
     @RequestMapping(value = {"/", "","get"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)

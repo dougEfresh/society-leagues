@@ -70,7 +70,10 @@ public class ClientApiConfig {
                 .requestInterceptor(new HeadersInterceptor())
                 .target(clzz, clientApiProperties.getEndpoint());
     }
-
+    @Bean
+    public ChallengeApi challengeApiApi() {
+       return getApi(ChallengeApi.class);
+    }
     @Bean
     public StatApi statApi() {
        return getApi(StatApi.class);
