@@ -16,10 +16,10 @@
                   <!--/*@thymesVar id="users" type="com.society.leagues.client.api.domain.User"*/-->
                   <tr th:id="'user-' + ${user.id} "th:each="user : ${users}">
                       <td>
-                          <a th:text="${user.name}" th:href="@{/admin/user/{id}(id=${user.id})}"></a>
+                          <a th:text="${user.name}" th:href="@{/app/user/{id}(id=${user.id})}"></a>
                       </td>
                       <td>
-                          <a th:href="@{/admin/stats/{id}(id=${user.id})}">Stats</a>
+                          <a th:href="@{/app/stats/{id}(id=${user.id})}">Stats</a>
                       </td>
                       <td th:text="${user.login}"></td>
                       <td th:text="${user.role}"></td>
@@ -30,7 +30,7 @@
           </div>
       </div>
       <div>
-          <a href="/admin/user/new">Add New</a>
+          <a href="/app/user/new">Add New</a>
       </div>
   </div>
 </div>

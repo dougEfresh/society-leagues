@@ -6,7 +6,7 @@ var email = Math.random();
 
 casper.test.begin('Test User Page', function suite(test) {
     casper.start();
-    casper.thenOpen(testlib.server + '/admin/login', function(){
+    casper.thenOpen(testlib.server + '/app/login', function(){
     });
 
     testlib.login(test,testlib.user,testlib.pass);
@@ -15,7 +15,7 @@ casper.test.begin('Test User Page', function suite(test) {
          test.assertExists("#home-app")
     });
 
-    casper.thenOpen(testlib.server + '/admin/user', function(){
+    casper.thenOpen(testlib.server + '/app/user', function(){
     });
 
 

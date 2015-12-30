@@ -8,7 +8,7 @@ var awayRacks = 0;
 
 casper.test.begin('Test Result Page', function suite(test) {
     casper.start();
-    casper.thenOpen(testlib.server + '/admin/login', function(){
+    casper.thenOpen(testlib.server + '/app/login', function(){
     });
 
     testlib.login(test,testlib.user,testlib.pass);

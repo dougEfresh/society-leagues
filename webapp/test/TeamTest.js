@@ -5,14 +5,14 @@ var season = null;
 var members = 0;
 casper.test.begin('Test User Page', function suite(test) {
     casper.start();
-    casper.thenOpen(testlib.server + '/admin/login', function(){
+    casper.thenOpen(testlib.server + '/app/login', function(){
     });
 
     testlib.login(test,testlib.user,testlib.pass);
     casper.then(function () {
          test.assertExists("#home-app")
     });
-    casper.thenOpen(testlib.server + '/admin/team', function(){
+    casper.thenOpen(testlib.server + '/app/team', function(){
     });
     casper.then(function () {
          test.assertExists("#team-app")

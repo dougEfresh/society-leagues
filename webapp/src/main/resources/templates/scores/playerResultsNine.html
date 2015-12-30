@@ -6,12 +6,12 @@
 <div th:fragments="playerresults">
     <div th:if="${results ne null}" id="player-results">
         <form id="result-form" th:object="${results}" th:method="post" method="post"
-              th:action="@{/admin/scores/{id}/{matchId}/{date} (id=${season.id},date=${date},matchId=${results.matchId})}">
+              th:action="@{/app/scores/{id}/{matchId}/{date} (id=${season.id},date=${date},matchId=${results.matchId})}">
             <div class="panel panel-default panel-challenge">
                 <div class="panel-heading">
                     <div class="panel-title"><span th:text="${results.getName()}"></span>
                     <span>
-                        <a th:href="@{/admin/scores/{id}/{matchId}/add/{date} (id=${season.id},date=${date},matchId=${results.matchId})}">Add</a>
+                        <a th:href="@{/app/scores/{id}/{matchId}/add/{date} (id=${season.id},date=${date},matchId=${results.matchId})}">Add</a>
                     </span>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                             <tr th:id="${result.getId()}" th:each="result, rowStat: *{playerResults}">
                                 <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
                                 <td th:id="'delete-player-result-' + ${result.getId()}">
-                                    <a th:href="@{/admin/scores/{id}/{matchId}/{resultId}/delete/{date}
+                                    <a th:href="@{/app/scores/{id}/{matchId}/{resultId}/delete/{date}
                                     (id=${season.id},date=${date},matchId=${results.matchId},resultId=${result.id})}">X</a>
                                 </td>
                                 <td>

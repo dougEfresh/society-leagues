@@ -19,7 +19,7 @@
             <tr th:id="'team-standing-' + ${stat.getUser().getId()}" th:each="stat : ${displayMemberStats}">
                 <td th:text="${stat.getRank()}"></td>
                 <td>
-                    <a th:href="@{/admin/display/{id}/{teamId}/{userId}
+                    <a th:href="@{/app/display/{id}/{teamId}/{userId}
                     (id=${season.getId()},teamId=${team.getId()},userId=${stat.getUser().getId()})}"
                        th:text="${stat.getUser().getName()}"></a>
                 </td>

@@ -9,7 +9,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/admin/home">Society</a>
+        <a class="navbar-brand" href="/app/home">Society</a>
     </div>
     <!-- /.navbar-header -->
 
@@ -47,16 +47,16 @@
                     </div>
                 </li>
                 <li>
-                    <a href="/admin/home"><i class="fa fa-dashboard fa-fw"></i> Home</a>
+                    <a href="/app/home"><i class="fa fa-dashboard fa-fw"></i> Home</a>
                 </li>
                 <li th:if="${user ne null && user.isAdmin()}">
                     <a href="/admin" aria-expanded="false" ><i class="fa fa-gears fa-fw"></i> Admin <span class="fa arrow"></span></a>
                     <ul  aria-expanded="false" class="nav nav-second-level">
                         <li>
-                            <a href="/admin/user"><i class="fa fa-user fa-fw"></i> Users</a>
+                            <a href="/app/user"><i class="fa fa-user fa-fw"></i> Users</a>
                         </li>
                         <li>
-                            <a href="/admin/team"><i class="fa fa-users fa-fw"></i> Teams</a>
+                            <a href="/app/team"><i class="fa fa-users fa-fw"></i> Teams</a>
                         </li>
                         <li>
                             <a  aria-expanded="false" href="#">
@@ -66,8 +66,8 @@
                             <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
                             <ul  aria-expanded="false" th:if="${activeSeasons ne null}" class="nav nav-third-level">
                                 <li th:each="season : ${activeSeasons}">
-                                    <a aria-expanded="false" th:id="${season.getShortName().replaceAll(' ','')}"
-                                       th:href="@{/admin/scores/{id}(id=${season.getId()})}"
+                                    <a aria-expanded="false" th:id="${season.getShortName().replaceAll(' ','') + '-scores'}"
+                                       th:href="@{/app/scores/{id}(id=${season.getId()})}"
                                        th:text="${season.getShortName()}"></a>
                                 </li>
                             </ul>
@@ -76,8 +76,8 @@
                             <a  aria-expanded="false" href="#"><i class="fa fa-trophy fa-fw"></i> Standings <span class="fa arrow"></span></a>
                             <ul aria-expanded="false" th:if="${activeSeasons ne null}" class="nav nav-third-level">
                                 <li th:each="season : ${activeSeasons}">
-                                    <a th:id="${season.getShortName().replaceAll(' ','')}"
-                                       th:href="@{/admin/display/{id} (id=${season.getId()})}"
+                                    <a th:id="${season.getShortName().replaceAll(' ','') + '-standings'}"
+                                       th:href="@{/app/display/{id} (id=${season.getId()})}"
                                        th:text="${season.getShortName()}"></a>
                                 </li>
                             </ul>
@@ -91,13 +91,13 @@
                     <ul th:if="${userTeams ne null}" class="nav nav-second-level">
                         <li th:if="${not team.isChallenge()}" th:each="team : ${userTeams}">
                             <a th:id="'team-display-link-' + ${team.getId()}"
-                               th:href="@{/admin/display/{id}/{teamId} (id=${team.getSeason().getId()},teamId=${team.getId()})}"
+                               th:href="@{/app/display/{id}/{teamId} (id=${team.getSeason().getId()},teamId=${team.getId()})}"
                                th:text="${team.getName()}"></a>
                         </li>
                     </ul>
                 </li>
                 <li th:if="${user ne null}">
-                    <a th:href="@{/admin/stats/{id} (id=${user.getId()})}">
+                    <a th:href="@{/app/stats/{id} (id=${user.getId()})}">
                         <i class="fa fa-bar-chart"></i> Stats</a>
                 </li>
             </ul>

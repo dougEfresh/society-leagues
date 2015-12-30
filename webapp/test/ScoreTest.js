@@ -10,7 +10,7 @@ var awayForfeits = 0;
 
 casper.test.begin('Test Scores Page', function suite(test) {
     casper.start();
-    casper.thenOpen(testlib.server + '/admin/login', function(){
+    casper.thenOpen(testlib.server + '/app/login', function(){
     });
 
     testlib.login(test,testlib.user,testlib.pass);
@@ -20,26 +20,26 @@ casper.test.begin('Test Scores Page', function suite(test) {
     });
 
     casper.then(function () {
-         test.assertExists("#TopGun")
+         test.assertExists("#TopGun-scores")
     });
 
     casper.then(function () {
-        test.assertExists("#Thurs8Ball")
+        test.assertExists("#Thurs8Ball-scores")
     });
     casper.then(function () {
-        test.assertExists("#Weds8Ball")
-    });
-
-    casper.then(function () {
-        test.assertExists("#Tues9Ball")
+        test.assertExists("#Weds8Ball-scores")
     });
 
     casper.then(function () {
-        test.assertExists("#Scramble")
+        test.assertExists("#Tues9Ball-scores")
     });
 
     casper.then(function () {
-        this.click("#TopGun")
+        test.assertExists("#Scramble-scores")
+    });
+
+    casper.then(function () {
+        this.click("#TopGun-scores")
     });
     casper.then(function () {
         test.assertExists("#score-app")
@@ -48,60 +48,60 @@ casper.test.begin('Test Scores Page', function suite(test) {
     testlib.scoreSeasonTest(test);
 
     casper.then(function () {
-        this.click("#Thurs8Ball")
+        this.click("#Thurs8Ball-scores")
     });
 
     testlib.scoreSeasonTest(test);
 
     casper.then(function () {
-        this.click("#Weds8Ball")
+        this.click("#Weds8Ball-scores")
     });
 
     testlib.scoreSeasonTest(test);
 
     casper.then(function () {
-        this.click("#Tues9Ball")
+        this.click("#Tues9Ball-scores")
     });
 
     testlib.scoreSeasonTest(test);
 
     casper.then(function () {
-        this.click("#Weds8Ball")
+        this.click("#Weds8Ball-scores")
     });
 
     testlib.scoreSeasonTest(test);
 
     casper.then(function () {
         this.echo('Submit test Weds');
-        this.click("#Weds8Ball")
+        this.click("#Weds8Ball-scores")
     });
 
     testlib.scoreSubmitTest(test);
 
     casper.then(function () {
         this.echo('Submit test Thurs');
-        this.click("#Thurs8Ball")
+        this.click("#Thurs8Ball-scores")
     });
 
     testlib.scoreSubmitTest(test);
 
     casper.then(function () {
         this.echo('Submit test Tues');
-        this.click("#Tues9Ball")
+        this.click("#Tues9Ball-scores")
     });
 
     testlib.scoreSubmitTest(test);
 
     casper.then(function () {
         this.echo('Submit test Top Gun');
-        this.click("#TopGun")
+        this.click("#TopGun-scores")
     });
 
     testlib.scoreSubmitTest(test);
 
     casper.then(function () {
         this.echo('Submit test scramble');
-        this.click("#Scramble")
+        this.click("#Scramble-scores")
     });
 
     testlib.scoreSubmitTest(test);

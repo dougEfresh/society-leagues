@@ -54,7 +54,7 @@ public class LoginResource  {
             response.addHeader("Set-Cookie",s);
         }
         logger.info("Got back "  + u.getName());
-        return "redirect:/admin/home";
+        return "redirect:/app/home";
     }
 
 }
