@@ -6,12 +6,12 @@ function selectDate(e,s) {
 
 function searchUser(e) {
     var id = $('#users-search').val();
-    window.location = '/admin/user/' + id;
+    window.location = '/app/user/' + id;
 }
 
 function searchUserStats(e) {
     var id = $('#users-stats-search').val();
-    window.location = '/admin/stats/' + id;
+    window.location = '/app/stats/' + id;
 }
 
  $(document).ready(function() {

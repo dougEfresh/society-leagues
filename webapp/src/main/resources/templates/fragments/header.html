@@ -50,7 +50,7 @@
                     <a href="/app/home"><i class="fa fa-dashboard fa-fw"></i> Home</a>
                 </li>
                 <li th:if="${user ne null && user.isAdmin()}">
-                    <a href="/admin" aria-expanded="false" ><i class="fa fa-gears fa-fw"></i> Admin <span class="fa arrow"></span></a>
+                    <a href="#" aria-expanded="false" ><i class="fa fa-gears fa-fw"></i> Admin <span class="fa arrow"></span></a>
                     <ul  aria-expanded="false" class="nav nav-second-level">
                         <li>
                             <a href="/app/user"><i class="fa fa-user fa-fw"></i> Users</a>
@@ -87,10 +87,10 @@
                             <ul aria-expanded="false" th:if="${activeSeasons ne null}" class="nav nav-third-level">
                                 <li th:each="season : ${activeSeasons}">
                                     <a th:id="${season.getShortName().replaceAll(' ','')}"
-                                       th:href="@{/admin/schedule/{id} (id=${season.getId()})}"
+                                       th:href="@{/app/schedule/{id} (id=${season.getId()})}"
                                        th:text="${season.getShortName()}"></a>
                                 </li>
-                            </ul>
+                           </ul>
                         </li>
 
                     </ul>

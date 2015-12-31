@@ -299,6 +299,13 @@ public class TeamMatch extends LeagueObject {
         return awayRacks > homeRacks ? home : away;
     }
 
+    public String getScore() {
+        if (!isChallenge()) {
+            return null;
+        }
+        return getWinnerRacks() == null ? null : getWinnerRacks() + "-" + getLoserRacks();
+    }
+
     public String getRace() {
         if (isChallenge()) {
             if (getHome() == null || getHome().getChallengeUser() == null)
