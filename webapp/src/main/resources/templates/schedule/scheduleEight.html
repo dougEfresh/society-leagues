@@ -25,7 +25,7 @@
                            <a th:href="@{/app/results/{matchId} (matchId=${match.getId()})}" th:text="${match.getWinner().getName()}"></a>
                        </td>
 
-                       <td class="racks"  th:text="${match.getLoserRacks()}"></td>
+                       <td class="racks"  th:text="${match.getWinnerRacks()}"></td>
                        <td th:class="${team.getId().equals(match.getLoser().getId()) ? 'active team-name' : 'not-active team-name'}" >
                            <a th:href="@{/app/results/{matchId} (matchId=${match.getId()})}" th:text="${match.getLoser().getName()}"></a>
                        </td>

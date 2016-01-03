@@ -1,0 +1,20 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org"  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout"  >
+    <div layout:fragment="content">
+    <div id="team-match-results"  th:if="${not #lists.isEmpty(results)}" class="panel panel-default">
+            <div class="panel-heading">
+                <div class="row">
+                    <!--/*@thymesVar id="teamMatch" type="com.society.leagues.client.api.domain.TeamMatch"*/-->
+                    <div class="results-season-name col-xs-12 col-md-3 col-lg-4" th:text="${teamMatch.getWinner().getName()}" > </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+                <div class="user-results" th:if="${season.isScramble()}" th:include="results/userResultsScramble"> </div>
+                <div class="user-results" th:if="${season.isTuesdayNine()}" th:include="results/teamMatchResultsNine"> </div>
+                <div class="user-results" th:if="${season.isChallenge()}" th:include="results/userResultsTopgun"> </div>
+                <div class="user-results" th:if="${season.isEight()}" th:include="results/teamMatchResultsEight"> </div>
+            </div>
+        </div>
+    </div>
+</div>

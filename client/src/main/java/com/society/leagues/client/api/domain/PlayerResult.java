@@ -36,6 +36,8 @@ public class PlayerResult  extends LeagueObject {
     @JsonIgnore @Transient boolean forfeit = false;
     @JsonIgnore @Transient Boolean homeWinner = null;
     @JsonIgnore @Transient Boolean awayWinner = null;
+    @JsonIgnore @Transient int homePoints = 0;
+    @JsonIgnore @Transient int awayPoints = 0;
 
     public static  PlayerResult addForfeit(int matchNumber,TeamMatch tm) {
         PlayerResult result = new PlayerResult();
@@ -73,6 +75,44 @@ public class PlayerResult  extends LeagueObject {
         this.matchNumber = matchNumber;
         this.playerHomeHandicap = playerHomeHandicap;
         this.playerAwayHandicap = playerAwayHandicap;
+    }
+
+
+    public int getWinnerTeamPoints() {
+        if (!hasResults())
+            return 0;
+        if (referenceTeam == null)
+            return 0;
+
+
+        if (referenceTeam.equals(getTeamMatch().getHome()) && homeRacks > awayRacks) {
+            return homePoints;
+        }
+
+
+        if (referenceTeam.equals(getTeamMatch().getAway()) && homeRacks > awayRacks) {
+            return homePoints;
+        }
+
+        if (referenceTeam.equals(getTeamMatch().getHome()) && homeRacks < awayRacks) {
+            return awayPoints;
+        }
+    }
+
+    public int getHomePoints() {
+        return homePoints;
+    }
+
+    public void setHomePoints(int homePoints) {
+        this.homePoints = homePoints;
+    }
+
+    public int getAwayPoints() {
+        return awayPoints;
+    }
+
+    public void setAwayPoints(int awayPoints) {
+        this.awayPoints = awayPoints;
     }
 
     public boolean isForfeit() {
