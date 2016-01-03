@@ -97,6 +97,7 @@ public class PlayerResult  extends LeagueObject {
         if (referenceTeam.equals(getTeamMatch().getHome()) && homeRacks < awayRacks) {
             return awayPoints;
         }
+        return 0;
     }
 
     public int getHomePoints() {
