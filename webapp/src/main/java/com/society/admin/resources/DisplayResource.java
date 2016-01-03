@@ -63,10 +63,12 @@ public class DisplayResource extends BaseController {
                     List<Stat> scrambleStats = statApi.getUserStatsActive(u.getId())
                             .stream().filter(st->st.getSeason() != null).filter(st->st.getSeason().isActive()).collect(Collectors.toList()
                             );
+                    Stat newStat = new Stat();
+                    newStat.setUser(User.defaultUser());
                     scrambleStatModelList.add(new ScrambleStatModel(
-                            scrambleStats.stream().filter(st->st.getType() == StatType.MIXED_EIGHT).findFirst().orElse(new Stat()),
-                            scrambleStats.stream().filter(st->st.getType() == StatType.MIXED_NINE).findFirst().orElse(new Stat()),
-                            scrambleStats.stream().filter(st->st.getType() == StatType.MIXED_SCOTCH).findFirst().orElse(new Stat())
+                            scrambleStats.stream().filter(st->st.getType() == StatType.MIXED_EIGHT).findFirst().orElse(newStat),
+                            scrambleStats.stream().filter(st->st.getType() == StatType.MIXED_NINE).findFirst().orElse(newStat),
+                            scrambleStats.stream().filter(st->st.getType() == StatType.MIXED_SCOTCH).findFirst().orElse(newStat)
                     ));
                 }
                 model.addAttribute("displayMemberStats", scrambleStatModelList);
