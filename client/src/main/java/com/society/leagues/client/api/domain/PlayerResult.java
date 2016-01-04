@@ -29,7 +29,7 @@ public class PlayerResult  extends LeagueObject {
     User playerAwayPartner;
     Handicap playerHomeHandicapPartner;
     Handicap playerAwayHandicapPartner;
-    MatchPoints matchPoints;
+    @Transient MatchPoints matchPoints;
     Team referenceTeam = null;
     User referenceUser = null;
     Boolean scotch = false;
@@ -559,6 +559,9 @@ public class PlayerResult  extends LeagueObject {
     }
 
     public MatchPoints getMatchPoints() {
+        if (matchPoints == null)
+            return new MatchPoints();
+
         return matchPoints;
     }
 

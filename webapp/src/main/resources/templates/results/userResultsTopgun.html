@@ -6,6 +6,7 @@
             <tr>
                 <th>Date</th>
                 <th>W/L</th>
+                <th>Points</th>
                 <th>Score</th>
                 <th>Race</th>
                 <th>Opponent</th>
@@ -18,6 +19,8 @@
             <tr th:class="${result.isWin() ? 'win' : 'lost'}" th:id="'result-' + ${result.getId()}" th:each="result : ${results}">
                 <td class="date" th:text="${#temporals.format(result.getMatchDate(), 'MM/dd')}"></td>
                 <td class="wl" th:text="${result.isWin() ? 'W' : 'L'}"></td>
+                <td class="points" th:text="${#numbers.formatDecimal(result.getMatchPoints().getWeightedAvg(),1,3)}"></td>
+                <td class="points" th:text="${result.getMatchPoints().getCalculation()}"></td>
                 <td class="score" th:text="${result.getScore()}"></td>
                 <td class="race" th:text="${result.getRace()}"></td>
                 <td class="opponent" >
