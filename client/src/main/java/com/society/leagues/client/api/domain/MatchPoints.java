@@ -12,10 +12,6 @@ public class MatchPoints {
     String calculation = "";
     User user;
 
-    public MatchPoints(PlayerResult playerResult) {
-        this.playerResult = playerResult;
-    }
-
     public MatchPoints() {
     }
 
@@ -40,10 +36,6 @@ public class MatchPoints {
         return playerResult;
     }
 
-    public String getPlayerResultId() {
-        return playerResult.getId();
-    }
-
     public void setPlayerResult(PlayerResult playerResult) {
         this.playerResult = playerResult;
     }
@@ -60,13 +52,8 @@ public class MatchPoints {
         this.matchNum = matchNum;
     }
 
-
     public void setCalculation(String calculation) {
         this.calculation = calculation;
-    }
-
-    public boolean equals(Object o) {
-        return playerResult.equals(o);
     }
 
     public User getUser() {
@@ -75,11 +62,6 @@ public class MatchPoints {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    @Override
-    public int hashCode() {
-        return playerResult.hashCode();
     }
 
 }

@@ -27,7 +27,7 @@
              <td class="partner" >
                  <a th:if="${result.getPartner() != null}"
                     th:href="@{/app/stats/{id}/{sId} (id=${result.getPartner().getId()},sId=${result.getSeason().id})}"
-                    th:text="${result.getOpponent().getName()}">
+                    th:text="${result.getPartner().getName()}">
                  </a>
              </td>
              <td class="opponent" >
@@ -40,7 +40,7 @@
              <td class="op-partner">
                   <a th:if="${result.getOpponentPartner() != null}"
                     th:href="@{/app/stats/{id}/{sId} (id=${result.getOpponentPartner().getId()},sId=${result.getSeason().id})}"
-                    th:text="${result.getOpponent().getName()}">
+                    th:text="${result.getOpponentPartner().getName()}">
                  </a>
              </td>
              <td class="op-partner-handicap" th:text="${result.getOpponentPartner() != null ? result.getOpponentPartnerHandicap().getDisplayName() : ''}"></td>
