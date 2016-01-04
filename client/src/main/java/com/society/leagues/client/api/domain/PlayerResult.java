@@ -360,8 +360,9 @@ public class PlayerResult  extends LeagueObject {
         if (referenceTeam != null)
             return referenceTeam.equals(teamMatch.getHome()) ? playerAway : playerHome;
 
-        if (referenceUser != null)
-            return referenceUser.equals(playerHome) ? playerAway : playerHome;
+        if (referenceUser != null) {
+            return referenceUser.equals(playerHome) || referenceUser.equals(playerHomePartner) ? playerAway : playerHome;
+        }
 
         return null;
     }
@@ -382,7 +383,7 @@ public class PlayerResult  extends LeagueObject {
             return referenceTeam.equals(teamMatch.getHome()) ? playerAwayPartner : playerHomePartner;
 
         if (referenceUser != null)
-            return referenceUser.equals(playerHome) ? playerAwayPartner : playerHomePartner;
+            return referenceUser.equals(playerHome) || referenceUser.equals(playerHomePartner) ? playerAwayPartner : playerHomePartner;
 
         return null;
     }
@@ -453,13 +454,22 @@ public class PlayerResult  extends LeagueObject {
             return referenceTeam.equals(teamMatch.getHome()) ? Handicap.format(playerHomeHandicap) : Handicap.format(playerAwayHandicap);
 
         if (referenceUser != null) {
-            if (referenceUser.equals(playerHomePartner) || referenceUser.equals(playerAwayPartner)) {
-                return referenceUser.equals(playerHomePartner) ? Handicap.format(playerHomeHandicapPartner) : Handicap.format(playerAwayHandicapPartner);
+            if (referenceUser.equals(playerHomePartner)) {
+                if (playerHomeHandicapPartner == null || playerHomeHandicapPartner == Handicap.UNKNOWN)
+                    return Handicap.format(playerHomePartner.getHandicap(getSeason()));
+
+                return Handicap.format(playerHomeHandicapPartner);
+            }
+            if (referenceUser.equals(playerAwayPartner)) {
+                if (playerAwayHandicapPartner == null || playerAwayHandicapPartner == Handicap.UNKNOWN)
+                    return Handicap.format(playerAwayPartner.getHandicap(getSeason()));
+
+                return Handicap.format(playerAwayHandicapPartner);
             }
             return referenceUser.equals(playerHome) ? Handicap.format(playerHomeHandicap) : Handicap.format(playerAwayHandicap);
         }
 
-        return   Handicap.format(Handicap.UNKNOWN);
+        return  Handicap.format(Handicap.UNKNOWN);
     }
 
     public Team getOpponentTeam() {

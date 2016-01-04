@@ -34,7 +34,10 @@
                  <a th:if="${display ne null}" th:href="@{/app/display/{sId}/{tId}/{uId}
                  (sId=${result.getSeason().getId()},tId=${result.getOpponentTeam().getId()},uId=${result.getOpponent().getId()})}"
                     th:text="${result.getOpponent().getName()}"></a>
-                 <a th:if="${display eq null}" th:href="@{/app/stats/{id}/{sId} (id=${result.getOpponent().getId()},sId=${result.getSeason().id})}" th:text="${result.getOpponent().getName()}"></a>
+                 <a th:if="${display eq null}"
+                    th:href="@{/app/stats/{id}/{sId} (id=${result.getOpponent().getId()},sId=${result.getSeason().id})}"
+                    th:text="${result.getOpponent().getName()}">
+                 </a>
              </td>
              <td class="op-hc" th:text="${result.getOpponentHandicap()}"></td>
              <td class="op-partner">

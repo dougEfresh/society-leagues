@@ -1,9 +1,7 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
-<html xmlns:th="http://www.thymeleaf.org" >
-<head>
-</head>
-<body>
+<div xmlns:th="http://www.thymeleaf.org" >
 <div th:fragments="playerresults">
+    <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
     <div th:if="${results ne null}" id="player-results">
     <script>
         function handleCheckbox(e) {
@@ -16,6 +14,7 @@
             other.checked = !e.checked;
         }
     </script>
+
     <form id="result-form" th:object="${results}" th:method="post" method="post"
           th:action="@{/app/scores/{id}/{matchId}/{date} (id=${season.id},date=${date},matchId=${results.matchId})}" >
 
@@ -72,7 +71,6 @@
                                 </select>
                             </td>
                             <td>
-
                                 <input th:id="${'homeWinner' + result.getId()}" onchange="handleCheckbox(this)" th:id="'home-' +  ${result.id}" th:value="${result.homeWinner}"
                                        th:field="*{playerResults[__${rowStat.index}__].homeWinner}" type="checkbox"
                                 />
@@ -118,5 +116,4 @@
     </form>
 </div>
 </div>
-</body>
-</html>
+    </div>
