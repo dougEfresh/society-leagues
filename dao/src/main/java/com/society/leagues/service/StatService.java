@@ -185,7 +185,7 @@ public class StatService {
                 collect(Collectors.toList());
 
         Map<User, List<PlayerResult>> all = new HashMap<>();
-        List<User> users = leagueService.findAll(User.class);
+        List<User> users = leagueService.findAll(User.class).stream().filter(u->u.isReal()).collect(Collectors.toList());
 
         for (User user : users) {
             List<PlayerResult> userResults = results.parallelStream().filter(p->p.hasUser(user)).collect(Collectors.toList());
@@ -255,7 +255,8 @@ public class StatService {
              }).collect(Collectors.toList()));
             int rank = 0;
             for (Stat stat : userSeasonStats.get(season)) {
-                stat.setRank(++rank);
+                if (stat.getUser().isReal())
+                    stat.setRank(++rank);
             }
         }
         if (active)

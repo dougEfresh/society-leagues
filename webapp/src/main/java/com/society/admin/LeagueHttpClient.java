@@ -58,7 +58,8 @@ public class LeagueHttpClient extends Client.Default {
     @PostConstruct
     public void init() {
          cachedResponse = CacheBuilder.newBuilder()
-                 .maximumSize(5000)
+                 .maximumSize(1000)
+                 .initialCapacity(100)
                  .expireAfterAccess(5, TimeUnit.MINUTES).build();
     }
 
@@ -66,7 +67,7 @@ public class LeagueHttpClient extends Client.Default {
     public Response execute(Request request, Request.Options options) throws IOException {
         if (request.method().equals(RequestMethod.GET.name()) && cachedResponse.getIfPresent(request.url()) != null) {
             logger.info("serving cache");
-            logger.info("hits " + cachedResponse.stats().toString());
+            //logger.info("hits " + cachedResponse.stats().toString());
             return Response.create(200, "", Collections.emptyMap() , cachedResponse.getIfPresent(request.url()).getBytes());
         }
         if (!request.method().equals(RequestMethod.GET.name())) {

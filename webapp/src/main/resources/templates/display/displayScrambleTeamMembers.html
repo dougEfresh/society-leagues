@@ -17,7 +17,7 @@
         </thead>
         <tbody>
         <!--/*@thymesVar id="stat" type="com.society.admin.model.ScrambleStatModel"*/-->
-        <tr th:id="'team-standing-' + ${stat.getUser().getId()}" th:each="stat : ${displayMemberStats}">
+        <tr th:id="'team-member-' + ${stat.getUser().getId()}" th:each="stat : ${displayMemberStats}">
             <td>
                 <a href="#"
                    th:href="@{/app/display/{id}/{teamId}/{userId} (id=${season.getId()},teamId=${team.getId()},userId=${stat.getUser().getId()})}"

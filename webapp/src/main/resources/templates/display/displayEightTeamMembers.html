@@ -16,7 +16,7 @@
             <!--/*@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"*/-->
             <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
             <!--/*@thymesVar id="team" type="com.society.leagues.client.api.domain.Team"*/-->
-            <tr th:id="'team-standing-' + ${stat.getUser().getId()}" th:each="stat : ${displayMemberStats}">
+            <tr th:id="'team-member-' + ${stat.getUser().getId()}" th:each="stat : ${displayMemberStats}">
                 <td th:text="${stat.getRank()}"></td>
                 <td>
                     <a th:href="@{/app/display/{id}/{teamId}/{userId}
