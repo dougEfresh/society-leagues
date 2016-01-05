@@ -299,7 +299,7 @@ var scoreSubmitTest = function(test) {
         test.assertExists("#form-select-date");
     });
     casper.then(function () {
-        this.fill('form#form-select-date', {
+        this.fill('#form-select-date', {
             'select-date' : teamMatchDate
         });
     });

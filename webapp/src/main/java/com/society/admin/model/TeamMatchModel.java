@@ -13,13 +13,15 @@ public class TeamMatchModel {
     List<TeamMatch> matches = new ArrayList<>();
 
     public TeamMatchModel(List<TeamMatch> matches) {
-        matches.sort(new Comparator<TeamMatch>() {
-            @Override
-            public int compare(TeamMatch o1, TeamMatch o2) {
-                return o1.getMatchDate().compareTo(o2.getMatchDate());
-            }
-        });
-        this.matches = matches;
+        if (matches != null) {
+            matches.sort(new Comparator<TeamMatch>() {
+                @Override
+                public int compare(TeamMatch o1, TeamMatch o2) {
+                    return o1.getMatchDate().compareTo(o2.getMatchDate());
+                }
+            });
+            this.matches = matches;
+        }
     }
 
     public TeamMatchModel() {

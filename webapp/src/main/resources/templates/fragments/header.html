@@ -49,6 +49,10 @@
                 <li>
                     <a href="/app/home"><i class="fa fa-dashboard fa-fw"></i> Home</a>
                 </li>
+                 <li th:if="${user ne null && user.isChallenge()}">
+                    <a href="/app/challenge"><i class="fa fa-dashboard fa-fw"></i> Challenge</a>
+                </li>
+
                 <li th:if="${user ne null && user.isAdmin()}">
                     <a href="#" ><i class="fa fa-gears fa-fw"></i> Admin <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
