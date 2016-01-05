@@ -255,7 +255,7 @@ public class StatService {
              }).collect(Collectors.toList()));
             int rank = 0;
             for (Stat stat : userSeasonStats.get(season)) {
-                if (stat.getUser().isReal())
+                if (stat.getUser().isReal() && stat.getType() == StatType.USER_SEASON)
                     stat.setRank(++rank);
             }
         }

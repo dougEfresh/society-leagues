@@ -18,7 +18,7 @@ function searchUserStats(e) {
      $.dynatableSetup({
            dataset: {
                perPageDefault: 20,
-               perPageOptions: [10,20,50]
+               perPageOptions: [10,20,50,100]
            }
      });
      $('.match-date').datetimepicker({
