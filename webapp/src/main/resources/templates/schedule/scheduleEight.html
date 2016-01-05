@@ -1,18 +1,11 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org">
-       <div class="panel panel-default">
-           <div class="panel-heading">
-               <span class="match-date" th:text="${date}"></span>
-               <span th:class="${'match-game-type-' + teamMatches.get(date).get(0).getGameType()}"
-                     th:text="${teamMatches.get(date).get(0).getGameType() + ' Ball'}"></span>
-           </div>
-           <div class="panel-body">
-               <div class="table-responsive">
+    <div class="table-responsive">
                <table th:id="'table-team-schedule-' + ${date}"
                       class="table table-bordered table-striped table-condensed">
                    <thead>
                    <tr>
-                       <th></th>
+                       <th th:text="${date}"></th>
                        <th>R</th>
                        <th></th>
                        <th>R</th>
@@ -34,7 +27,5 @@
                    </tr>
                    </tbody>
                </table>
-               </div>
-           </div>
-       </div>
-   </div>
+    </div>
+</div>

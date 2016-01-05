@@ -10,7 +10,8 @@
                 <!-- <div class="leaders" th:if="${season.isScramble()}" th:include="results/teamMatchResultsScramble"> </div>-->
                 <div class="leaders" th:if="${season.isTuesdayNine()}" th:include="leaders/leadersNine"> </div>
                 <!-- <div class="leaders" th:if="${season.isChallenge()}" th:include="leaders/leadersTopgun"> </div>-->
-                <!-- <div class="leaders" th:if="${season.isEight()}" th:include="results/teamMatchResultsEight"> </div>-->
+                <div class="leaders" th:if="${season.isEight()}" th:include="leaders/leadersEight"> </div>
+                <div class="leaders" th:if="${season.isScramble()}" th:include="leaders/leadersScramble"> </div>
             </div>
         </div>
     </div>

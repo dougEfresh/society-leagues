@@ -10,10 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -22,6 +20,11 @@ public class ScheduleResource extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/schedule/{seasonId}")
     public String getSchedule(@PathVariable String seasonId, Model model) {
         Map<String,List<TeamMatch>> matches = teamMatchApi.matchesBySeason(seasonId);
+        Map<String,List<TeamMatch>> sortedMatches = new TreeMap<>();
+        for (String s : matches.keySet()) {
+            sortedMatches.put(s,matches.get(s));
+        }
+        matches = sortedMatches;
         int maxGames = 0;
         for (String s : matches.keySet()) {
             if (maxGames < matches.get(s).size()) {
@@ -35,20 +38,18 @@ public class ScheduleResource extends BaseController {
                 .filter(t->t.hasUser(u)).findFirst().orElse(new Team("-1"));
         Season season = seasonApi.get(seasonId);
         if (season.isChallenge()) {
-            Map<String,List<TeamMatch>> challenges = new HashMap<>();
-            List<String> dates  =  matches.keySet().stream().sorted(new Comparator<String>() {
+            sortedMatches = new TreeMap<String,List<TeamMatch>>(new Comparator() {
                 @Override
-                public int compare(String o1, String o2) {
-                    return o2.compareTo(o1);
+                public int compare(Object o1, Object o2) {
+                    return o2.toString().compareTo(o1.toString());
                 }
-            }).collect(Collectors.toList());
-
-            for (String date : dates) {
-                challenges.put(date,matches.get(date));
+            });
+            for (String s : matches.keySet()) {
+                sortedMatches.put(s,matches.get(s));
             }
-            matches = challenges;
+            matches = sortedMatches;
         }
-        model.addAttribute("maxHeight",maxGames*65);
+        model.addAttribute("maxHeight",maxGames*45);
         model.addAttribute("team",team);
         model.addAttribute("season",seasonApi.get(seasonId));
         model.addAttribute("teamMatches", matches);

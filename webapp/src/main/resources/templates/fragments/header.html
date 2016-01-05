@@ -108,6 +108,24 @@
                                 </li>
                            </ul>
                         </li>
+                          <li>
+                            <a href="#">
+                                <span class="glyphicon glyphicon-th-list"></span> Leaders<span class="fa arrow"></span>
+                            </a>
+                            <!--/*@thymesVar id="seasons" type="List<com.society.leagues.client.api.domain.Season>"*/-->
+                            <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+                            <ul  th:if="${activeSeasons ne null}" class="nav nav-third-level">
+                                <li  th:each="season : ${activeSeasons}">
+                                    <a th:if="${not season.isChallenge()}" th:id="${season.getShortName().replaceAll(' ','') + '-leaders'}"
+                                       th:href="@{/app/leaders/{id}(id=${season.getId()})}"
+                                       th:text="${season.getShortName()}"></a>
+                                    <a th:if="${season.isChallenge()}"
+                                       th:id="${season.getShortName().replaceAll(' ','') + '-leaders'}"
+                                       th:href="@{/app/display/{id}(id=${season.getId()})}"
+                                       th:text="${season.getShortName()}"></a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
                 <li th:if="${userTeams ne null}">

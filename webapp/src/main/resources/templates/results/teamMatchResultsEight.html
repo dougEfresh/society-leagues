@@ -12,7 +12,7 @@
             </thead>
             <tbody>
             <!--/*@thymesVar id="result" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
-            <tr th:id="${result.getId()}" th:each="result, rowStat: *{results}">
+            <tr th:class="${results.getRowClass(rowStat.index)}" th:id="${result.getId()}" th:each="result, rowStat: *{results.getPlayerResults()}">
                 <td th:text="${result.getMatchNumber()}">
                 </td>
                 <td>

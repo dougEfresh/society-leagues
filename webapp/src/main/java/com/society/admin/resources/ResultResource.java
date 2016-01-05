@@ -1,5 +1,6 @@
 package com.society.admin.resources;
 
+import com.society.admin.model.PlayerResultModel;
 import com.society.leagues.client.api.domain.PlayerResult;
 import com.society.leagues.client.api.domain.TeamMatch;
 import org.springframework.stereotype.Controller;
@@ -27,8 +28,9 @@ public class ResultResource extends BaseController {
             result.setAwayPoints(awayPoints);
             result.setReferenceTeam(result.getTeamMatch().getWinner());
         }
+        PlayerResultModel playerResultModel = new PlayerResultModel(results,matchId);
         model.addAttribute("teamMatch",tm);
-        model.addAttribute("results",results);
+        model.addAttribute("results", playerResultModel);
         model.addAttribute("season",tm.getSeason());
 
         return "results/teamMatchResults";
