@@ -8,7 +8,7 @@
                     <div class="results-stats col-xs-12 col-md-3 col-lg-4" th:text="${stats.getWins() + '-' + stats.getLoses()}"> </div>
                 </div>
             </div>
-            <div class="panel-body">
+            <div th:id="${'user-results-' + resultUser.getId()}" class="panel-body">
                 <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
                 <div class="user-results" th:if="${season.isScramble()}" th:include="results/userResultsScramble"> </div>
                 <div class="user-results" th:if="${season.isTuesdayNine()}" th:include="results/userResultsNine"> </div>
