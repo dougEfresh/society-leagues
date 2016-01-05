@@ -15,7 +15,7 @@ public class Stat {
     User user;
     Season season;
     Handicap handicap;
-    Double points;
+    Double points = 0d;
     Integer rank = 0;
     Team team;
 
@@ -251,7 +251,6 @@ public class Stat {
     public void setRank(Integer rank) {
         this.rank = rank;
     }
-
 
     public Team getTeam() {
         return team;

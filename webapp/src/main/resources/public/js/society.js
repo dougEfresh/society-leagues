@@ -51,7 +51,12 @@ function searchUserStats(e) {
      $("#team-members").select2({ width: 600 });
      $("#users-search").select2();
      $("#users-stats-search").select2();
-     $('#table-player-results').dynatable();
+     $('#table-player-results').dynatable( {
+         dataset : {
+              perPageDefault: 10
+         }
+     });
+     $('#table-leaders').dynatable();
      $('#table-teams').dynatable();
      $('#table-users').dynatable();
      $('#table-team-members').dynatable(

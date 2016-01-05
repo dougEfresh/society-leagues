@@ -50,7 +50,19 @@
                     <a href="/app/home"><i class="fa fa-dashboard fa-fw"></i> Home</a>
                 </li>
                  <li th:if="${user ne null && user.isChallenge()}">
-                    <a href="/app/challenge"><i class="fa fa-dashboard fa-fw"></i> Challenge</a>
+                      <a href="#">
+                        <i class="fa fa-users fa-fw"></i>Challenge<span class="fa arrow"></span>
+                      </a>
+                     <ul  class="nav nav-second-level">
+                         <li>
+                             <a th:id="'challenge-display-link-' + ${challengeSeason.getId()}"
+                                th:href="@{/app/display/{id} (id=${challengeSeason.getId()})}"
+                                     >Standings</a>
+                         </li>
+                         <li>
+                             <a th:href="@{/app/schedule/{id} (id=${challengeSeason.getId()})}">Schedule</a>
+                         </li>
+                     </ul>
                 </li>
 
                 <li th:if="${user ne null && user.isAdmin()}">
@@ -116,8 +128,8 @@
                                 <li >
                                     <a th:href="@{/app/schedule/{id} (id=${team.getSeason().getId()})}">Schedule</a>
                                 </li>
-                                <li >
-                                    <a th:href="leaders">Leaders</a>
+                                <li>
+                                    <a th:href="@{/app/leaders/{id} (id=${team.getSeason().getId()})}">Leaders</a>
                                 </li>
                             </ul>
                         </li>
