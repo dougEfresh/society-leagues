@@ -48,85 +48,36 @@ function verifyStat(stat,rank,test) {
 }
 
 
+function processSeason(season,test) {
+    casper.then(function() {
+        test.assertExists('#' + season + '-leaders');
+        this.click('#' + season + '-leaders');
+    });
+
+    casper.then(function() {
+        test.assertExists('#table-leaders','table-leaders');
+    });
+
+    casper.then(function () {
+        stats  = this.evaluate(getStats);
+        test.assert(stats != null && stats.length > 0, 'Found leaders');
+    });
+
+    casper.then(function () {
+        processStats(test);
+    });
+}
+
 casper.test.begin('Test Home Page', function suite(test) {
     casper.start();
     casper.thenOpen(testlib.server + '/app/home', function(){
     });
     testlib.login(test,testlib.user,testlib.pass);
 
-    casper.then(function() {
-        test.assertExists('#Tues9Ball-leaders');
-        this.click('#Tues9Ball-leaders');
-    });
-
-    casper.then(function() {
-        test.assertExists('#table-leaders','table-leaders');
-    });
-
-    casper.then(function () {
-        stats  = this.evaluate(getStats);
-        test.assert(stats != null && stats.length > 0, 'Found leaders');
-    });
-
-    casper.then(function () {
-        processStats(test);
-    });
-
-
-    casper.then(function() {
-        test.assertExists('#Weds8Ball-leaders');
-        this.click('#Weds8Ball-leaders');
-    });
-
-    casper.then(function() {
-        test.assertExists('#table-leaders','table-leaders');
-    });
-
-    casper.then(function () {
-        stats  = this.evaluate(getStats);
-        test.assert(stats != null && stats.length > 0, 'Found leaders');
-    });
-
-    casper.then(function () {
-        processStats(test);
-    });
-
-    casper.then(function() {
-        test.assertExists('#Thurs8Ball-leaders');
-        this.click('#Thurs8Ball-leaders');
-    });
-
-    casper.then(function() {
-        test.assertExists('#table-leaders','table-leaders');
-    });
-
-    casper.then(function () {
-        stats  = this.evaluate(getStats);
-        test.assert(stats != null && stats.length > 0, 'Found leaders');
-    });
-
-    casper.then(function () {
-        processStats(test);
-    });
-
-    casper.then(function() {
-        test.assertExists('#Scramble-leaders');
-        this.click('#Scramble-leaders');
-    });
-
-    casper.then(function() {
-        test.assertExists('#table-leaders','table-leaders');
-    });
-
-    casper.then(function () {
-        stats  = this.evaluate(getStats);
-        test.assert(stats != null && stats.length > 0, 'Found leaders');
-    });
-
-    casper.then(function () {
-        processStats(test);
-    });
-
+    processSeason('Scramble',test);
+    processSeason('Tues9Ball',test);
+    processSeason('Weds8Ball',test);
+    processSeason('Thurs8Ball',test);
 
     casper.run(function(){
         test.done();

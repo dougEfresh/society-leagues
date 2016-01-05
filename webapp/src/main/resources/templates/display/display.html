@@ -23,7 +23,7 @@
                     <div class="panel-body">
                         <div id="display-eight-members" th:if="${season.isEight()}"
                              th:include="display/displayEightTeamMembers"></div>
-                        <div id="display-scramble-members" th:if="${season.isScramble()}"
+                        <div th:id="${'display-scramble-members-'}" th:if="${season.isScramble()}"
                              th:include="display/displayScrambleTeamMembers"></div>
                         <div id="display-nine-members" th:if="${season.isTuesdayNine()}"
                              th:include="display/displayNineTeamMembers"></div>

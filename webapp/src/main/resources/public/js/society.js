@@ -56,6 +56,7 @@ function searchUserStats(e) {
               perPageDefault: 10
          }
      });
+      $('.table-top-gun-standings').dynatable();
      $('#table-leaders').dynatable();
      $('#table-teams').dynatable();
      $('#table-users').dynatable();

@@ -1,7 +1,7 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org">
     <div class="table-responsive">
-        <table id="table-team-standings" class="table table-bordered table-striped table-condensed">
+        <table id="table-team-standings" class="table table-bordered table-striped table-condensed table-top-gun-standings">
             <thead>
             <tr>
                 <th>#</th>
@@ -20,7 +20,7 @@
                 <!--/*@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"*/-->
                 <td th:text="${stat.getRank()}"></td>
                 <td>
-                    <a href="#"
+                    <a th:id="'team-standing-link-' + ${stat.getUser().getId()}"
                        th:href="@{/app/display/{id}/topgun/{userId} (id=${stat.getSeason().getId()},userId=${stat.getUser().getId()})}"
                        th:text="${stat.getUser().getName()}"></a>
                 </td>
