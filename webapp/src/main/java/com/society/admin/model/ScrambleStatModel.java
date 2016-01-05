@@ -3,21 +3,22 @@ package com.society.admin.model;
 
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Stat;
+import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.User;
 
 public class ScrambleStatModel {
 
     Stat mixedEight;
     Stat mixedNine;
-    Stat mixedScotch;
+    Stat seasonStats;
 
     public ScrambleStatModel() {
     }
 
-    public ScrambleStatModel(Stat mixedEight, Stat mixedNine, Stat mixedScotch) {
+    public ScrambleStatModel(Stat mixedEight, Stat mixedNine, Stat seasonStats) {
         this.mixedEight = mixedEight;
         this.mixedNine = mixedNine;
-        this.mixedScotch = mixedScotch;
+        this.seasonStats = seasonStats;
     }
 
     public Stat getMixedEight() {
@@ -36,12 +37,12 @@ public class ScrambleStatModel {
         this.mixedNine = mixedNine;
     }
 
-    public Stat getMixedScotch() {
-        return mixedScotch;
+    public Stat getSeasonStats() {
+        return seasonStats;
     }
 
-    public void setMixedScotch(Stat mixedScotch) {
-        this.mixedScotch = mixedScotch;
+    public void setSeasonStats(Stat seasonStats) {
+        this.seasonStats = seasonStats;
     }
 
     public int getEightWins() {
@@ -64,19 +65,23 @@ public class ScrambleStatModel {
         return mixedNine.getLoses();
     }
 
+    public User getUser() {
+        return  seasonStats.getUser();
+    }
+
+    public Team getTeam() {
+        return  seasonStats.getTeam();
+    }
+
     public int getRank() {
-        return 0;
+        return seasonStats.getRank();
     }
 
     public String getHandicapDisplay() {
-        return mixedEight.getHandicapDisplay();
-    }
-
-    public User getUser() {
-        return mixedEight.getUser();
+        return seasonStats.getHandicapDisplay();
     }
 
     public Season getSeason() {
-        return mixedEight.getSeason();
+        return seasonStats.getSeason();
     }
 }

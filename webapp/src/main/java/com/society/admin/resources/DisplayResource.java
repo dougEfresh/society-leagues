@@ -68,7 +68,7 @@ public class DisplayResource extends BaseController {
                     scrambleStatModelList.add(new ScrambleStatModel(
                             scrambleStats.stream().filter(st->st.getType() == StatType.MIXED_EIGHT).findFirst().orElse(newStat),
                             scrambleStats.stream().filter(st->st.getType() == StatType.MIXED_NINE).findFirst().orElse(newStat),
-                            scrambleStats.stream().filter(st->st.getType() == StatType.MIXED_SCOTCH).findFirst().orElse(newStat)
+                            scrambleStats.stream().filter(st->st.getType() == StatType.USER_SEASON).findFirst().orElse(newStat)
                     ));
                 }
                 model.addAttribute("displayMemberStats", scrambleStatModelList);

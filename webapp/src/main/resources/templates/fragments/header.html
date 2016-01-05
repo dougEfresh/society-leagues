@@ -51,7 +51,7 @@
                 </li>
                  <li th:if="${user ne null && user.isChallenge()}">
                       <a href="#">
-                        <i class="fa fa-users fa-fw"></i>Challenge<span class="fa arrow"></span>
+                        <i class="fa fa-trophy fa-fw"></i> Top Gun<span class="fa arrow"></span>
                       </a>
                      <ul  class="nav nav-second-level">
                          <li>
@@ -64,7 +64,35 @@
                          </li>
                      </ul>
                 </li>
-
+                <li th:if="${userTeams ne null}">
+                    <a href="#">
+                        <i class="fa fa-users fa-fw"></i> My Teams<span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li th:if="${not team.isChallenge()}" th:each="team : ${userTeams}">
+                             <a href="#">
+                                 <i class="fa fa-users fa-fw"></i><span th:text="${team.getName()}"></span><span class="fa arrow"></span>
+                             </a>
+                            <ul  class="nav nav-third-level">
+                                <li>
+                                    <a th:id="'team-display-link-' + ${team.getId()}"
+                                       th:href="@{/app/display/{id}/{teamId} (id=${team.getSeason().getId()},teamId=${team.getId()})}"
+                                       >Standings</a>
+                                </li>
+                                <li >
+                                    <a th:href="@{/app/schedule/{id} (id=${team.getSeason().getId()})}">Schedule</a>
+                                </li>
+                                <li>
+                                    <a th:href="@{/app/leaders/{id} (id=${team.getSeason().getId()})}">Leaders</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li th:if="${user ne null}">
+                    <a th:href="@{/app/stats/{id} (id=${user.getId()})}">
+                        <i class="fa fa-bar-chart"></i> My Stats</a>
+                </li>
                 <li th:if="${user ne null && user.isAdmin()}">
                     <a href="#" ><i class="fa fa-gears fa-fw"></i> Admin <span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
@@ -127,35 +155,6 @@
                             </ul>
                         </li>
                     </ul>
-                </li>
-                <li th:if="${userTeams ne null}">
-                    <a href="#">
-                        <i class="fa fa-users fa-fw"></i>My Teams<span class="fa arrow"></span>
-                    </a>
-                    <ul class="nav nav-second-level">
-                        <li th:if="${not team.isChallenge()}" th:each="team : ${userTeams}">
-                             <a href="#">
-                                 <i class="fa fa-users fa-fw"></i><span th:text="${team.getName()}"></span><span class="fa arrow"></span>
-                             </a>
-                            <ul  class="nav nav-third-level">
-                                <li>
-                                    <a th:id="'team-display-link-' + ${team.getId()}"
-                                       th:href="@{/app/display/{id}/{teamId} (id=${team.getSeason().getId()},teamId=${team.getId()})}"
-                                       >Standings</a>
-                                </li>
-                                <li >
-                                    <a th:href="@{/app/schedule/{id} (id=${team.getSeason().getId()})}">Schedule</a>
-                                </li>
-                                <li>
-                                    <a th:href="@{/app/leaders/{id} (id=${team.getSeason().getId()})}">Leaders</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li th:if="${user ne null}">
-                    <a th:href="@{/app/stats/{id} (id=${user.getId()})}">
-                        <i class="fa fa-bar-chart"></i> Stats</a>
                 </li>
             </ul>
         </nav>
