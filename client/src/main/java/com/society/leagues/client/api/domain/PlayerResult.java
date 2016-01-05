@@ -36,8 +36,8 @@ public class PlayerResult  extends LeagueObject {
     @JsonIgnore @Transient boolean forfeit = false;
     @JsonIgnore @Transient Boolean homeWinner = null;
     @JsonIgnore @Transient Boolean awayWinner = null;
-    @JsonIgnore @Transient int homePoints = 0;
-    @JsonIgnore @Transient int awayPoints = 0;
+    int homePoints = 0;
+    int awayPoints = 0;
 
     public static  PlayerResult addForfeit(int matchNumber,TeamMatch tm) {
         PlayerResult result = new PlayerResult();
@@ -77,28 +77,6 @@ public class PlayerResult  extends LeagueObject {
         this.playerAwayHandicap = playerAwayHandicap;
     }
 
-
-    public int getWinnerTeamPoints() {
-        if (!hasResults())
-            return 0;
-        if (referenceTeam == null)
-            return 0;
-
-
-        if (referenceTeam.equals(getTeamMatch().getHome()) && homeRacks > awayRacks) {
-            return homePoints;
-        }
-
-
-        if (referenceTeam.equals(getTeamMatch().getAway()) && homeRacks > awayRacks) {
-            return homePoints;
-        }
-
-        if (referenceTeam.equals(getTeamMatch().getHome()) && homeRacks < awayRacks) {
-            return awayPoints;
-        }
-        return 0;
-    }
 
     public int getHomePoints() {
         return homePoints;
@@ -534,6 +512,34 @@ public class PlayerResult  extends LeagueObject {
         return teamMatch.getWinner().hasUser(playerHome) ? playerHome : playerAway;
     }
 
+
+    public User getWinnerTeamPlayerPartner() {
+        if (teamMatch.getWinner() == null)
+            return null;
+
+        if (playerHomePartner != null)
+            return teamMatch.getWinner().hasUser(playerHomePartner) ? playerHomePartner : playerAwayPartner;
+
+        if (playerAwayPartner != null)
+            return teamMatch.getWinner().hasUser(playerAwayPartner) ? playerAwayPartner : playerHomePartner;
+
+        return null;
+    }
+
+
+    public User getLoserTeamPlayerPartner() {
+        if (teamMatch.getWinner() == null)
+            return null;
+
+        if (playerHomePartner != null)
+            return teamMatch.getLoser().hasUser(playerHomePartner) ? playerHomePartner : playerAwayPartner;
+
+        if (playerAwayPartner != null)
+            return teamMatch.getLoser().hasUser(playerAwayPartner) ? playerAwayPartner : playerHomePartner;
+
+        return null;
+    }
+
     public User getLoserTeamPlayer() {
         if (teamMatch.getWinner() == null)
             return null;
@@ -660,6 +666,26 @@ public class PlayerResult  extends LeagueObject {
             return 6;
 
         return 7;
+    }
+
+    public int getWinnerPoints() {
+        if (referenceTeam == null)
+            return homePoints;
+
+        if (getWinnerType().equals("home")) {
+            return homePoints;
+        }
+        return awayPoints;
+    }
+
+    public int getLoserPoints() {
+        if (referenceTeam == null)
+            return awayPoints;
+
+        if (getWinnerType().equals("home")) {
+            return awayPoints;
+        }
+        return homePoints;
     }
 
     @Override

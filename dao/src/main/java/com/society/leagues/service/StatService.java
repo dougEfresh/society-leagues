@@ -496,6 +496,11 @@ public class StatService {
         */
     }
 
+    public void refreshTeamPoints(PlayerResult playerResult) {
+
+
+    }
+
     public void refreshTeamStats(Team team) {
         final Set<TeamMatch>  teamMatches = leagueService.findCurrent(TeamMatch.class);
         Stat stat =  Stat.buildTeamStats(team,

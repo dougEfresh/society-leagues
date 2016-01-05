@@ -6,8 +6,10 @@
             <th>#</th>
             <th>Home</th>
             <th>R</th>
+            <th>MP</th>
             <th>Away</th>
-            <th >R</th>
+            <th>R</th>
+            <th>MP</th>
             </thead>
             <tbody>
             <!--/*@thymesVar id="result" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
@@ -20,7 +22,9 @@
                         th:text="${result.getWinnerTeamPlayer().getName()}">
                     </a>
                 </td>
-                <td th:text="${result.homeRacks}">
+                <td th:text="${result.getWinnerTeamRacks()}">
+                </td>
+                <td th:text="${result.getWinnerPoints()}">
                 </td>
                 <td>
                     <a  th:href="@{/app/display/{sId}/{tId}/{uId}
@@ -28,7 +32,9 @@
                         th:text="${result.getLoserTeamPlayer().getName()}">
                     </a>
                 </td>
-                <td th:text="${result.awayRacks}">
+                <td th:text="${result.getLoserTeamRacks()}">
+                </td>
+                <td th:text="${result.getLoserPoints()}">
                 </td>
             </tr>
             </tbody>

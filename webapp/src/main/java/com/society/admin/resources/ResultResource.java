@@ -18,7 +18,13 @@ public class ResultResource extends BaseController {
     public String editResults(@PathVariable String matchId, Model model) {
         TeamMatch tm = teamMatchApi.get(matchId);
         List<PlayerResult> results = playerResultApi.getPlayerResultByTeamMatch(matchId);
+        int homePoints = 0;
+        int awayPoints = 0;
         for (PlayerResult result : results) {
+            homePoints += result.getHomeRacks();
+            awayPoints += result.getAwayRacks();
+            result.setHomePoints(homePoints);
+            result.setAwayPoints(awayPoints);
             result.setReferenceTeam(result.getTeamMatch().getWinner());
         }
         model.addAttribute("teamMatch",tm);
