@@ -195,14 +195,22 @@ public class ScoreResource extends BaseController {
         List<User> away = new ArrayList<>();
         away.add(User.defaultUser());
 
-        home.addAll(members.get("home").stream().filter(User::isReal).collect(Collectors.toList()));
-        away.addAll(members.get("away").stream().filter(User::isReal).collect(Collectors.toList()));
+        home.addAll(members.get("home")); //.stream().filter(User::isReal).collect(Collectors.toList()));
+        away.addAll(members.get("away")); //.stream().filter(User::isReal).collect(Collectors.toList()));
         int homeWins = 0;
         int awayWins = 0;
+        int homePoints = 0;
+        int awayPoints = 0;
+
         for (PlayerResult result : results.getPlayerResults()) {
             homeWins += result.getHomeRacks();
             awayWins += result.getAwayRacks();
+            homePoints += result.getHomeRacks();
+            awayPoints += result.getAwayRacks();
+            result.setHomePoints(homePoints);
+            result.setAwayPoints(awayPoints);
         }
+
         TeamMatch m = results.getPlayerResults().iterator().next().getTeamMatch();
 
         //homeWins += m.getHomeForfeits();

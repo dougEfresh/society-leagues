@@ -51,9 +51,12 @@ public class DisplayResource extends BaseController {
         List<Team> teams = statApi.getSeasonStats(s.getId());
         model.addAttribute("season",s);
         model.addAttribute("displayTeams", teams);
-
+        Team team = teamApi.get(teamId);
+        int totalWins = 0;
+        int totalLost = 0;
         if (teamId != null) {
-            List<Stat> stats = statApi.getTeamMemberStats(teamId).stream().filter(st->st.getUser().isReal()).collect(Collectors.toList());
+            List<Stat> stats = statApi.getTeamMemberStats(teamId);
+            //List<Stat> stats = statApi.getTeamMemberStats(teamId).stream().filter(st->st.getUser().isReal()).collect(Collectors.toList());
             if (s.isScramble()) {
                 TeamMembers members  = teamApi.members(teamId);
                 List<ScrambleStatModel> scrambleStatModelList = new ArrayList<>();
@@ -71,11 +74,22 @@ public class DisplayResource extends BaseController {
                             scrambleStats.stream().filter(st->st.getType() == StatType.USER_SEASON).findFirst().orElse(newStat)
                     ));
                 }
+
+                model.addAttribute("totalWin",totalWins);
+                model.addAttribute("totalLost",totalLost);
                 model.addAttribute("displayMemberStats", scrambleStatModelList);
             } else {
+                for (Stat stat : stats) {
+                    totalWins += stat.getWins();
+                    totalLost += stat.getLoses();
+                }
+                model.addAttribute("totalWin",totalWins);
+                model.addAttribute("totalLost", totalLost);
+                model.addAttribute("handicapReceived", team.getStats().getRacksWon()-totalWins);
+                model.addAttribute("handicapGiven", team.getStats().getRacksLost()-totalLost);
                 model.addAttribute("displayMemberStats", stats);
             }
-            model.addAttribute("team", teamApi.get(teamId));
+            model.addAttribute("team", team);
         }
 
         if (s.isChallenge()) {

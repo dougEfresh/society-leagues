@@ -35,9 +35,11 @@
                         <th>Home</th>
                         <th th:class="${season.isScramble()}? 'show' : 'hide'">Partner</th>
                         <th th:text="'Wins( R+F+H ='  + ${homeWins} + '+' + ${homeForfeits} + '+' + ${homeHandicap} +' = ' + ${homeTotal} + ' )'"  >Win</th>
+                        <th>MP</th>
                         <th>Away</th>
                         <th th:class="${season.isScramble()}? 'show' : 'hide'">Partner</th>
                         <th th:text="'Wins( R+F+H =' + ${awayWins} + '+' + ${awayForfeits} + '+' + ${awayHandicap} +' = ' + ${awayTotal} + ' )'" >Win</th>
+                        <th>MP</th>
                         </thead>
                         <tbody>
                         <!--/*@thymesVar id="result" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
@@ -76,6 +78,9 @@
                                 />
 
                             </td>
+                            <td th:text="${result.getHomePoints()}">
+
+                            </td>
                             <td th:if="${!result.isForfeit()}">
                                 <select th:id="${'away-member' + result.getId()}" th:field="*{playerResults[__${rowStat.index}__].playerAway.id}" class="form-control" >
                                     <option th:each="user: ${awayMembers}"
@@ -100,6 +105,9 @@
                                         th:id="'away-' + ${result.id}" th:value="${result.awayWinner}"
                                         th:field="*{playerResults[__${rowStat.index}__].awayWinner}" type="checkbox"
                                 />
+                            </td>
+                            <td th:text="${result.getAwayPoints()}">
+
                             </td>
                         </tr>
                         </tbody>

@@ -15,6 +15,15 @@
             <th>9 PCT</th>
         </tr>
         </thead>
+            <tfoot>
+            <tr>
+            <th></th>
+            <th></th>
+            <th th:text="${handicaps}"></th>
+            <th th:text="${totalWin}"></th>
+            <th th:text="${totalLost}"></th>
+            </tr>
+            </tfoot>
         <tbody>
         <!--/*@thymesVar id="stat" type="com.society.admin.model.ScrambleStatModel"*/-->
         <tr th:id="'team-member-' + ${stat.getUser().getId()}" th:each="stat : ${displayMemberStats}">

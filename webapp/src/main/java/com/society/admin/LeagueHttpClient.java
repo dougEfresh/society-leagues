@@ -11,6 +11,7 @@ import feign.Response;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -197,7 +198,10 @@ public class LeagueHttpClient extends Client.Default {
         } else {
             stream = connection.getInputStream();
         }
-        if (request.headers().containsKey("X-Cache") && !Boolean.valueOf(request.headers().get("X-Cache").iterator().next())) {
+        if (request.headers().containsKey("X-Cache")
+                && !Boolean.valueOf(request.headers().get("X-Cache").iterator().next())
+                && !request.method().equals(HttpMethod.GET.name())
+                ) {
             // Don't cache this response
             return Response.create(status, reason, headers, new GZIPInputStream(stream), length);
         }
@@ -229,84 +233,4 @@ public class LeagueHttpClient extends Client.Default {
         gzip.close();
         return obj.toByteArray();
     }
-
-    /*
-    HttpURLConnection convertAndSend(Request request, Options options) throws IOException {
-        final HttpURLConnection connection = (HttpURLConnection) new URL(request.url()).openConnection();
-        if (connection instanceof HttpsURLConnection) {
-            HttpsURLConnection sslCon = (HttpsURLConnection) connection;
-            //sslCon.setSSLSocketFactory(sslContextFactory.get());
-            //sslCon.setHostnameVerifier(hostnameVerifier.get());
-        }
-        connection.setConnectTimeout(options.connectTimeoutMillis());
-        connection.setReadTimeout(options.readTimeoutMillis());
-        connection.setAllowUserInteraction(false);
-        connection.setInstanceFollowRedirects(true);
-        connection.setRequestMethod(request.method());
-
-        boolean gzipEncodedRequest =
-                request.headers().containsKey(CONTENT_ENCODING) &&
-                        request.headers().get(CONTENT_ENCODING).contains(GZIP_ENCODING);
-
-        Integer contentLength = null;
-        for (String field : request.headers().keySet()) {
-            for (String value : request.headers().get(field)) {
-                if (field.equals(CONTENT_LENGTH)) {
-                    if (!gzipEncodedRequest) {
-                        contentLength = Integer.valueOf(value);
-                        connection.addRequestProperty(field, value);
-                    }
-                } else {
-                    connection.addRequestProperty(field, value);
-                }
-            }
-        }
-
-        if (request.body() != null) {
-            if (contentLength != null) {
-                connection.setFixedLengthStreamingMode(contentLength);
-            } else {
-                connection.setChunkedStreamingMode(8196);
-            }
-            connection.setDoOutput(true);
-            OutputStream out = connection.getOutputStream();
-            try {
-                if (gzipEncodedRequest) {
-                    out = new GZIPOutputStream(out);
-                }
-                out.write(request.body());
-            } finally {
-                try {
-                    out.close();
-                } catch (IOException suppressed) { // NOPMD
-                }
-            }
-        }
-        return connection;
-    }
-
-    Response convertResponse(HttpURLConnection connection) throws IOException {
-        int status = connection.getResponseCode();
-        String reason = connection.getResponseMessage();
-
-        Map<String, Collection<String>> headers = new LinkedHashMap<String, Collection<String>>();
-        for (Map.Entry<String, List<String>> field : connection.getHeaderFields().entrySet()) {
-            // response message
-            if (field.getKey() != null)
-                headers.put(field.getKey(), field.getValue());
-        }
-
-        Integer length = connection.getContentLength();
-        if (length == -1 || length == 0)
-            length = null;
-        InputStream stream;
-        if (status >= 400) {
-            stream = connection.getErrorStream();
-        } else {
-            stream = connection.getInputStream();
-        }
-
-        return Response.create(status, reason, headers, status != 200 ? stream : new GZIPInputStream(stream), length);
-    }
-    */
 }
