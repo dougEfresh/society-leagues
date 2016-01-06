@@ -1,18 +1,18 @@
 package com.society.leagues.client.api;
 
 import com.society.leagues.client.api.domain.User;
-import feign.Body;
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
 
 import java.util.List;
 
-//@Headers({"Accept: application/json, */*","Content-Type: application/json","Accept-Encoding: gzip, deflate, sdch" })
-@Headers({"Accept: application/json, */*","Content-Type: application/json"})
+@Headers({"Accept: application/json, */*","Content-Type: application/json","Accept-Encoding: gzip, deflate, sdch" })
+//@Headers({"Accept: application/json, */*","Content-Type: application/json"})
 public interface UserApi {
 
     @RequestLine("GET /api/user")
+    @Headers("X-Cache: false")
     User get();
 
     @RequestLine("GET /api/user/active")

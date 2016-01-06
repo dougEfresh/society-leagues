@@ -159,6 +159,9 @@ public class StatResource {
         userStats.sort(new Comparator<Stat>() {
             @Override
             public int compare(Stat o1, Stat o2) {
+                if (o1.getSeason() == null ||  o2.getSeason() == null ) {
+                    return -1;
+                }
                 if (o1.getSeason().isChallenge()) {
                     return -1;
                 }
@@ -188,6 +191,9 @@ public class StatResource {
         userStats.sort(new Comparator<Stat>() {
             @Override
             public int compare(Stat o1, Stat o2) {
+                if (o1.getSeason() == null ||  o2.getSeason() == null ) {
+                    return -1;
+                }
                 if (o1.getSeason().isChallenge()) {
                     return -1;
                 }

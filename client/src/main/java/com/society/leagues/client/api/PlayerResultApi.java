@@ -2,14 +2,11 @@
 package com.society.leagues.client.api;
 
 import com.society.leagues.client.api.domain.PlayerResult;
-import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
 
 import java.util.List;
 
-//@Headers({"Accept: application/json, */*;","Content-Type: application/json", "Accept-Encoding: gzip, deflate, sdch"})
-@Headers({"Accept: application/json, */*","Content-Type: application/json"})
 public interface PlayerResultApi {
 
     @RequestLine("GET /api/playerresult/{userId}/{seasonId}")

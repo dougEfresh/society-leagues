@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -43,6 +44,11 @@ public class ClientApiConfig {
             SecurityContext context = SecurityContextHolder.getContext();
             if (context instanceof CookieContext && context.getAuthentication().getCredentials() != null)
                 template.header("Cookie", context.getAuthentication().getCredentials().toString());
+
+            // "Accept: application/json, */* ","Content-Type: application/json", "Accept-Encoding: gzip, deflate, sdch"}
+            template.header("Accept", MediaType.APPLICATION_JSON_VALUE, MediaType.ALL_VALUE);
+            template.header("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+            template.header("Accept-Encoding", "gzip", "deflate", "sdch");
         }
     }
 
@@ -76,32 +82,32 @@ public class ClientApiConfig {
     }
     @Bean
     public StatApi statApi() {
-       return getApi(StatApi.class);
+       return getApi(StatApi.class, clientApiProperties.getStat());
     }
 
     @Bean
     public UserApi userApi() {
-       return getApi(UserApi.class);
+       return getApi(UserApi.class, clientApiProperties.getUser());
     }
 
     @Bean
     public SeasonApi seasonApi() {
-        return getApi(SeasonApi.class);
+        return getApi(SeasonApi.class, clientApiProperties.getSeason());
     }
 
     @Bean
     public TeamApi teamApi() {
-        return getApi(TeamApi.class, (clientApiProperties.getTeam()));
+        return getApi(TeamApi.class, clientApiProperties.getTeam());
     }
 
     @Bean
     public TeamMatchApi teamMatchApi() {
-        return getApi(TeamMatchApi.class);
+        return getApi(TeamMatchApi.class, clientApiProperties.getTeamMatch());
     }
 
     @Bean
     public PlayerResultApi playerResultApi() {
-        return getApi(PlayerResultApi.class);
+        return getApi(PlayerResultApi.class, clientApiProperties.getPlayerResult());
     }
 
 }

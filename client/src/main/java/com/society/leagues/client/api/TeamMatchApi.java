@@ -2,15 +2,12 @@ package com.society.leagues.client.api;
 
 import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.client.api.domain.User;
-import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
 
 import java.util.List;
 import java.util.Map;
 
-//@Headers({"Accept: application/json, */* ","Content-Type: application/json", "Accept-Encoding: gzip, deflate, sdch"})
-@Headers({"Accept: application/json, */*","Content-Type: application/json"})
 public interface TeamMatchApi {
     @RequestLine("GET /api/teammatch/{id}")
     TeamMatch get(@Param("id") String id);

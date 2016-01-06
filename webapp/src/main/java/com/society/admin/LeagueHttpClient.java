@@ -17,7 +17,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import javax.annotation.PostConstruct;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSocketFactory;
-import java.io.IOException;
+import java.io.*;
+
 import feign.Request;
 import feign.Request.Options;
 import feign.Response;
@@ -28,10 +29,6 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
@@ -48,15 +45,17 @@ import static feign.Util.ENCODING_GZIP;
 public class LeagueHttpClient extends Client.Default {
     static final String CONTENT_ENCODING = "Content-Encoding";
     static final String GZIP_ENCODING = "gzip";
+    static final String DEFLATE = "deflate";
     static Logger logger = LoggerFactory.getLogger(LeagueHttpClient.class);
 
     private  SSLSocketFactory sslContextFactory = null;
     private  HostnameVerifier hostnameVerifier = null;
 
+    Cache<String,CachedResponse> cachedResponse;
+
     public LeagueHttpClient() {
         super(null,null);
     }
-    Cache<String,String> cachedResponse;
 
     public LeagueHttpClient(SSLSocketFactory sslContextFactory, HostnameVerifier hostnameVerifier) {
         super(sslContextFactory, hostnameVerifier);
@@ -65,25 +64,27 @@ public class LeagueHttpClient extends Client.Default {
     @PostConstruct
     public void init() {
          cachedResponse = CacheBuilder.newBuilder()
-                 .maximumSize(1000)
+                 .maximumSize(500)
                  .initialCapacity(500)
                  .expireAfterAccess(5, TimeUnit.MINUTES).build();
     }
 
     @Override
     public Response execute(Request request, Request.Options options) throws IOException {
-        /*
         if (request.method().equals(RequestMethod.GET.name()) && cachedResponse.getIfPresent(request.url()) != null) {
             logger.info("serving cache");
-            //logger.info("hits " + cachedResponse.stats().toString());
-            return Response.create(200, "", Collections.emptyMap() , cachedResponse.getIfPresent(request.url()).getBytes());
+            CachedResponse cached = cachedResponse.getIfPresent(request.url());
+            if (cached != null) {
+                ByteArrayInputStream in = new ByteArrayInputStream(cached.response);
+                return Response.create(200, "", Collections.emptyMap(), new GZIPInputStream(in), cached.length);
+            }
         }
         if (!request.method().equals(RequestMethod.GET.name())) {
             cachedResponse.invalidateAll();
         }
-         */
+
         HttpURLConnection connection = convertAndSend(request, options);
-        Response response = convertResponse(connection);
+        Response response = convertResponse(connection,request);
         if (response.headers().containsKey("Set-Cookie")) {
             SecurityContext context = SecurityContextHolder.getContext();
             if (context instanceof CookieContext) {
@@ -94,16 +95,6 @@ public class LeagueHttpClient extends Client.Default {
                 }
             }
         }
-        if (response.status() == 200 && request.method().equals(RequestMethod.GET.name()) && (!request.url().endsWith("/api/user"))) {
-            //logger.info("storing cache");
-            //String resp = IOUtils.toString(response.body().asInputStream());
-            //response.body().close();
-            //cachedResponse.put(request.url(),resp);
-            //response.body().close();
-            return response;
-            //return Response.create(200, response.reason(), response.headers(), response);
-        }
-
         if (response.status() != 200)  {
             cachedResponse.invalidateAll();
         }
@@ -135,7 +126,7 @@ public class LeagueHttpClient extends Client.Default {
                 contentEncodingValues != null && contentEncodingValues.contains(ENCODING_GZIP);
         boolean
                 deflateEncodedRequest =
-                contentEncodingValues != null && contentEncodingValues.contains("deflate");
+                contentEncodingValues != null && contentEncodingValues.contains(DEFLATE);
 
         boolean hasAcceptHeader = false;
         Integer contentLength = null;
@@ -184,7 +175,7 @@ public class LeagueHttpClient extends Client.Default {
         return connection;
     }
 
-    Response convertResponse(HttpURLConnection connection) throws IOException {
+    Response convertResponse(HttpURLConnection connection, Request request) throws IOException {
         int status = connection.getResponseCode();
         String reason = connection.getResponseMessage();
 
@@ -206,8 +197,37 @@ public class LeagueHttpClient extends Client.Default {
         } else {
             stream = connection.getInputStream();
         }
+        if (request.headers().containsKey("X-Cache") && !Boolean.valueOf(request.headers().get("X-Cache").iterator().next())) {
+            // Don't cache this response
+            return Response.create(status, reason, headers, new GZIPInputStream(stream), length);
+        }
+        if (status == 200) {
+            byte[] resp = compress(IOUtils.toByteArray(new GZIPInputStream(stream)));
+            cachedResponse.put(request.url(), new CachedResponse(resp,length));
+            stream = new ByteArrayInputStream(resp);
+        }
+        return Response.create(status, reason, headers, new GZIPInputStream(stream), length);
+    }
 
-        return Response.create(status, reason, headers, stream, length);
+    static class CachedResponse  {
+        final byte[] response;
+        final Integer length;
+
+        public CachedResponse(byte[] response, Integer length) {
+            this.response = response;
+            this.length = length;
+        }
+    }
+
+    public static byte[] compress(final byte[] str) throws IOException {
+        if ((str == null) || (str.length == 0)) {
+            return null;
+        }
+        ByteArrayOutputStream obj = new ByteArrayOutputStream();
+        GZIPOutputStream gzip = new GZIPOutputStream(obj);
+        gzip.write(str);
+        gzip.close();
+        return obj.toByteArray();
     }
 
     /*
