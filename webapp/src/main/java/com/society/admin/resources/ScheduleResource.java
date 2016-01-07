@@ -33,10 +33,11 @@ public class ScheduleResource extends BaseController {
             }
         }
         final User u = model.containsAttribute("user") ? (User) model.asMap().get("user") : userApi.get();
-
+        Team blank = new Team("-1");
+        blank.setName("No Filter");
         Team team = teamApi.userTeams(u.getId()).stream()
                 .filter(t->t.getSeason().getId().equals(seasonId))
-                .filter(t->t.hasUser(u)).findFirst().orElse(new Team("-1"));
+                .filter(t->t.hasUser(u)).findFirst().orElse(blank);
         Season season = seasonApi.get(seasonId);
         if (season.isChallenge()) {
             sortedMatches = new TreeMap<String,List<TeamMatch>>(new Comparator() {
@@ -51,15 +52,21 @@ public class ScheduleResource extends BaseController {
             matches = sortedMatches;
         }
         model.addAttribute("maxHeight",maxGames*45);
-        if (teamId == null)
-            model.addAttribute("team", team);
-        else
-            model.addAttribute("team", teamApi.get(teamId));
 
-        model.addAttribute("teams",teamApi.getBySeason(seasonId));
+        if (teamId == null  || teamId.equals("-1")) {
+            model.addAttribute("team", team);
+        }
+        else {
+            team = teamApi.get(teamId);
+            model.addAttribute(team);
+        }
+        List<Team> teams = new ArrayList<>();
+        teams.add(team);
+        teams.addAll(teamApi.getBySeason(seasonId));
+        model.addAttribute("teams",teams);
         model.addAttribute("season",seasonApi.get(seasonId));
 
-        if (teamId == null) {
+        if (teamId == null || teamId.equals("-1")) {
             model.addAttribute("teamMatches", matches);
             return "schedule/schedule";
         }
@@ -70,10 +77,30 @@ public class ScheduleResource extends BaseController {
                 return o1.getMatchDate().compareTo(o2.getMatchDate());
             }
         }).collect(Collectors.toList()));
-
+        int hcGiven = 0;
+        int hcRecv = 0;
         for (MatchModel teamMatch : teamMatches) {
             teamMatch.setPlayerResults(playerResultApi.getPlayerResultsSummary(teamMatch.getId()));
+            if (!teamMatch.hasPlayerResults())
+                continue;
+
+            int homeHc = teamMatch.getHomeCumulativeHC();
+            int awayHc = teamMatch.getAwayCumulativeHC();
+            if (teamMatch.getHome().equals(team))  {
+                if (homeHc - awayHc > 0)
+                    hcGiven += homeHc - awayHc;
+                else
+                    hcRecv += awayHc - homeHc;
+
+            } else {
+                if (awayHc - homeHc > 0)
+                    hcGiven += awayHc - homeHc;
+                else
+                    hcRecv += homeHc - awayHc;
+            }
         }
+        model.addAttribute("hcGiven",hcGiven);
+        model.addAttribute("hcRecv",hcRecv);
         model.addAttribute("teamMatches", teamMatches);
         return "schedule/scheduleTeam";
     }

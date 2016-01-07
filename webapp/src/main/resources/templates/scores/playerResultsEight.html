@@ -66,6 +66,7 @@
                             </td>
                             <td th:if="${!result.isForfeit()}" th:text="${result.getPlayerHomeHandicap().getDisplayName()}"></td>
                             <td class="forfeit" th:if="${result.isForfeit()}">Forfeit</td>
+                            <td th:if="${result.isForfeit()}"></td>
                             <td th:class="${season.isScramble()}? 'show' : 'hide'">
                                 <select th:id="${'homeMember-partner' + result.getId()}" th:field="*{playerResults[__${rowStat.index}__].playerHomePartner.id}" class="form-control" >
                                     <option th:each="user: ${homeMembers}"
@@ -95,6 +96,7 @@
                             </td>
                             <td th:if="${!result.isForfeit()}" th:text="${result.getPlayerAwayHandicap().getDisplayName()}"></td>
                             <td class="forfeit" th:if="${result.isForfeit()}">Forfeit</td>
+                            <td th:if="${result.isForfeit()}"></td>
                             <td th:class="${season.isScramble()}? 'show' : 'hide'">
                                 <select th:id="${'awayMember-partner' + result.getId()}" th:field="*{playerResults[__${rowStat.index}__].playerAwayPartner.id}" class="form-control" >
                                     <option th:each="user: ${awayMembers}"
