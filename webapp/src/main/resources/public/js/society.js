@@ -9,6 +9,12 @@ function searchUser(e) {
     window.location = '/app/user/' + id;
 }
 
+function searchChallengeUser(e) {
+    var id = $('#challenge-users').val();
+    window.location = '/app/challenge?userId=' + id;
+}
+
+
 function searchUserStats(e) {
     var id = $('#users-stats-search').val();
     window.location = '/app/stats/' + id;

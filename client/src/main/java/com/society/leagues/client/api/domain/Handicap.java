@@ -89,9 +89,9 @@ public enum Handicap {
         return name();
     }
 
-    static String[][] raceChart = new String[Handicap.values().length+1][Handicap.values().length+1];
+    public static String[][] raceChart = new String[Handicap.values().length+1][Handicap.values().length+1];
 
-    static String race(Handicap hc1, Handicap hc2) {
+    public static String race(Handicap hc1, Handicap hc2) {
         if (hc1 == null || hc1 == UNKNOWN || hc2 == null || hc2 == UNKNOWN)
             return "";
 

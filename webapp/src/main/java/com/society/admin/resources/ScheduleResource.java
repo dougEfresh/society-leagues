@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 public class ScheduleResource extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/schedule/{seasonId}")
-    public String getSchedule(@PathVariable String seasonId, Model model) {
+    public String getSchedule(@PathVariable String seasonId, @RequestParam(required = false) String teamId, Model model) {
         Map<String,List<TeamMatch>> matches = teamMatchApi.matchesBySeason(seasonId);
         Map<String,List<TeamMatch>> sortedMatches = new TreeMap<>();
         for (String s : matches.keySet()) {
@@ -52,6 +53,9 @@ public class ScheduleResource extends BaseController {
         model.addAttribute("maxHeight",maxGames*45);
         model.addAttribute("team",team);
         model.addAttribute("season",seasonApi.get(seasonId));
+        if (teamId != null) {
+            teamMatchApi.
+        }
         model.addAttribute("teamMatches", matches);
         return "schedule/schedule";
     }
