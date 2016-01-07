@@ -15,7 +15,7 @@ public interface PlayerResultApi {
     @RequestLine("GET /api/playerresult/teammatch/{teamId}")
     List<PlayerResult> getPlayerResultByTeamMatch(@Param("teamId") String teamId);
 
-    @RequestLine("GET /api/playerresult/teammatch/{id}/all")
+    @RequestLine("GET /api/playerresult/teammatch/{teamId}/all")
     List<PlayerResult> getPlayerResults(@Param("teamId") String teamId);
 
     @RequestLine("POST /api/playerresult/admin/modify")

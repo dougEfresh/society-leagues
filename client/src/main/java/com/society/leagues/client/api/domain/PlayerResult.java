@@ -4,6 +4,7 @@ package com.society.leagues.client.api.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.society.leagues.client.views.PlayerResultSummary;
 import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.client.views.PlayerResultView;
 import org.springframework.data.annotation.Transient;
@@ -18,21 +19,21 @@ import java.time.format.DateTimeFormatter;
 public class PlayerResult  extends LeagueObject {
 
     @NotNull @DBRef TeamMatch teamMatch;
-    @NotNull @DBRef User playerHome;
-    @DBRef User playerAway;
-    @NotNull Integer homeRacks = 0;
-    @NotNull Integer awayRacks = 0;
-    @NotNull Integer matchNumber = 0;
-    @NotNull Handicap playerHomeHandicap = Handicap.UNKNOWN;
-    @NotNull Handicap playerAwayHandicap = Handicap.UNKNOWN;
-    User playerHomePartner;
-    User playerAwayPartner;
-    Handicap playerHomeHandicapPartner;
-    Handicap playerAwayHandicapPartner;
+    @JsonView(PlayerResultSummary.class) @NotNull @DBRef User playerHome;
+    @JsonView(PlayerResultSummary.class) @DBRef User playerAway;
+    @JsonView(PlayerResultSummary.class) @NotNull Integer homeRacks = 0;
+    @JsonView(PlayerResultSummary.class) @NotNull Integer awayRacks = 0;
+    @JsonView(PlayerResultSummary.class)  @NotNull Integer matchNumber = 0;
+    @JsonView(PlayerResultSummary.class)  @NotNull Handicap playerHomeHandicap = Handicap.UNKNOWN;
+    @JsonView(PlayerResultSummary.class)  @NotNull Handicap playerAwayHandicap = Handicap.UNKNOWN;
+    @JsonView(PlayerResultSummary.class)  User playerHomePartner;
+    @JsonView(PlayerResultSummary.class)  User playerAwayPartner;
+    @JsonView(PlayerResultSummary.class)  Handicap playerHomeHandicapPartner;
+    @JsonView(PlayerResultSummary.class)  Handicap playerAwayHandicapPartner;
     @Transient MatchPoints matchPoints;
     Team referenceTeam = null;
     User referenceUser = null;
-    Boolean scotch = false;
+    @JsonView(PlayerResultSummary.class)  Boolean scotch = false;
     @JsonIgnore @Transient boolean forfeit = false;
     @JsonIgnore @Transient Boolean homeWinner = null;
     @JsonIgnore @Transient Boolean awayWinner = null;
@@ -172,7 +173,6 @@ public class PlayerResult  extends LeagueObject {
         this.matchNumber = matchNumber;
     }
 
-    @JsonView(PlayerResultView.class)
     public Season getSeason() {
         return teamMatch.getSeason();
     }

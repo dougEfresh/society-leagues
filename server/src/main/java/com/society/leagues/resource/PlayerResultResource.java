@@ -4,6 +4,7 @@ package com.society.leagues.resource;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.society.leagues.client.views.PlayerResultSummary;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.ResultService;
 import com.society.leagues.client.api.domain.*;
@@ -91,8 +92,8 @@ public class PlayerResultResource {
         return copy;
     }
 
-    @RequestMapping(value = "/teammatch/{id}/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @JsonView(PlayerResultView.class)
+    @RequestMapping(value = "/teammatch/{id}/summary", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @JsonView(PlayerResultSummary.class)
     public Collection<PlayerResult> getPlayerResults(Principal principal, @PathVariable String id) {
         TeamMatch tm = leagueService.findOne(new TeamMatch(id));
         if (tm == null) {
