@@ -31,6 +31,9 @@ public class MatchModel extends TeamMatch {
     }
 
     public int getHomeCumulativeHC() {
+        if (!hasPlayerResults())
+            return 0;
+
         HashSet<Player> handicaps = new HashSet<>();
         playerResults.stream().forEach(p->handicaps.add(new Player(p.getPlayerHome().getId(),p.getPlayerHomeHandicap())));
         List<Player> players = new ArrayList<>();
@@ -42,7 +45,7 @@ public class MatchModel extends TeamMatch {
         }).limit(4).forEach(players::add);
 
         if (players.size() < 4) {
-            logger.error("Found less than 4 players");
+            logger.error(String.format("Found less than 4 players %s %s",getSeason().getId(), getId()));
         }
         int hc = 0;
         for (Player player : players) {
@@ -52,7 +55,11 @@ public class MatchModel extends TeamMatch {
     }
 
     public int getAwayCumulativeHC() {
+        if (!hasPlayerResults())
+            return 0;
+
         HashSet<Player> handicaps = new HashSet<>();
+
         playerResults.stream().forEach(p->handicaps.add(new Player(p.getPlayerAway().getId(),p.getPlayerAwayHandicap())));
         List<Player> players = new ArrayList<>();
         handicaps.stream().sorted(new Comparator<Player>() {
@@ -63,7 +70,7 @@ public class MatchModel extends TeamMatch {
         }).limit(4).forEach(players::add);
 
         if (players.size() < 4) {
-            logger.error("Found less than 4 players");
+            logger.error(String.format("Found less than 4 players %s %s",getSeason().getId(), getId()));
         }
         int hc = 0;
         for (Player player : players) {
@@ -74,6 +81,10 @@ public class MatchModel extends TeamMatch {
 
     public boolean isWin(Team team) {
         return getWinner().equals(team);
+    }
+
+    public boolean hasPlayerResults() {
+        return playerResults.stream().filter(p->p.hasResults()).count() > 0;
     }
 
     static class Player {
