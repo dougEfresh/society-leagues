@@ -29,6 +29,9 @@ public class ResultService {
         for(int i = 0 ; i<4; i++) {
             PlayerResult r = new PlayerResult(homeMembers[i % 4],awayMembers[i % 4],teamMatch);
             r.setMatchNumber(i+1);
+            if (teamMatch.getSeason().isScramble() && i == 3) {
+                r.setMatchNumber(5);
+            }
             playerResults.add(r);
         }
         if (playerResults.isEmpty())
