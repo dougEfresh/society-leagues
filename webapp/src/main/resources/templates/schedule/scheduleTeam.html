@@ -16,6 +16,7 @@
                        <th>Cumulative HC</th>
                        <th>R</th>
                        <th>Away</th>
+                       <th>Cumulative HC</th>
                        <th>R</th>
                    </tr>
                    </thead>
@@ -31,7 +32,7 @@
                        <td th:class="${team.getId().equals(match.getAway().getId()) ? 'active team-name' : 'not-active team-name'}" >
                            <a th:href="@{/app/results/{matchId} (matchId=${match.getId()})}" th:text="${match.getAway().getName()}"></a>
                        </td>
-
+                       <td th:text="${match.getAwayCumulativeHC()}"></td>
                        <td class="racks"  th:text="${match.getAwayRacks()}"></td>
                    </tr>
                    </tbody>

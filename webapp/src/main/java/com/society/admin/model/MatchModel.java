@@ -30,7 +30,7 @@ public class MatchModel extends TeamMatch {
     }
 
     public int getHomeCumulativeHC() {
-        HashSet<Handicap> homeHandicaps = new HashSet<>();
+        List<Handicap> homeHandicaps = new ArrayList<>();
         List<PlayerResult> results = playerResults.stream().sorted(new Comparator<PlayerResult>() {
             @Override
             public int compare(PlayerResult o1, PlayerResult o2) {
@@ -50,6 +50,31 @@ public class MatchModel extends TeamMatch {
 
         int hc = 0;
         for (Handicap homeHandicap : homeHandicaps) {
+            hc += new Integer(homeHandicap.getDisplayName());
+        }
+        return hc;
+    }
+      public int getAwayCumulativeHC() {
+        List<Handicap> awayHandicaps = new ArrayList<>();
+        List<PlayerResult> results = playerResults.stream().sorted(new Comparator<PlayerResult>() {
+            @Override
+            public int compare(PlayerResult o1, PlayerResult o2) {
+                try {
+                    Integer.parseInt(o1.getPlayerAwayHandicap().getDisplayName());
+                    Integer.parseInt(o2.getPlayerAwayHandicap().getDisplayName());
+                } catch (NumberFormatException e) {
+                    logger.warn(e.getMessage());
+                    return -1;
+                }
+                return new Integer(o2.getPlayerAwayHandicap().getDisplayName()).compareTo(new Integer(o1.getPlayerAwayHandicap().getDisplayName()));
+            }
+        }).limit(4).collect(Collectors.toList());
+        for (PlayerResult result : results) {
+            awayHandicaps.add(result.getPlayerHomeHandicap());
+        }
+
+        int hc = 0;
+        for (Handicap homeHandicap : awayHandicaps) {
             hc += new Integer(homeHandicap.getDisplayName());
         }
         return hc;

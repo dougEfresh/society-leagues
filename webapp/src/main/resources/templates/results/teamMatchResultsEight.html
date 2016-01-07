@@ -4,10 +4,10 @@
         <table id="table-player-results-admin" class="table table-stripped table-bordered table-condensed table">
             <thead>
             <th>#</th>
-            <th>Home</th>
+            <th>Winner</th>
             <th>MP</th>
             <th>W/L</th>
-            <th>Away</th>
+            <th></th>
             <th>MP</th>
             </thead>
             <tbody>
@@ -21,6 +21,7 @@
                         th:text="${result.getWinnerTeamPlayer().getName()}">
                     </a>
                 </td>
+                <td th:text="${result.getWinnerTeamHandicap()}"></td>
                 <td th:text="${result.getWinnerPoints()}"></td>
                 <td th:text="${result.isWin() ? 'W' : 'L'}">
                 </td>
@@ -30,6 +31,7 @@
                         th:text="${result.getLoserTeamPlayer().getName()}">
                     </a>
                 </td>
+                <td th:text="${result.getLoserTeamHandicap()}"></td>
                 <td th:text="${result.getLoserPoints()}"></td>
             </tr>
             </tbody>
