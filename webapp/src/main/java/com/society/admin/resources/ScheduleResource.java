@@ -1,5 +1,6 @@
 package com.society.admin.resources;
 
+import com.society.admin.model.MatchModel;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.TeamMatch;
@@ -53,11 +54,22 @@ public class ScheduleResource extends BaseController {
         model.addAttribute("maxHeight",maxGames*45);
         model.addAttribute("team",team);
         model.addAttribute("season",seasonApi.get(seasonId));
-        if (teamId != null) {
-            teamMatchApi.
+        if (teamId == null) {
+            model.addAttribute("teamMatches", matches);
+            return "schedule/schedule";
         }
-        model.addAttribute("teamMatches", matches);
-        return "schedule/schedule";
+
+        List<MatchModel> teamMatches = MatchModel.fromTeam(teamMatchApi.getTeamMatchByTeam(teamId).stream().sorted(new Comparator<TeamMatch>() {
+            @Override
+            public int compare(TeamMatch o1, TeamMatch o2) {
+                return o1.getMatchDate().compareTo(o2.getMatchDate());
+            }
+        }).collect(Collectors.toList()));
+        for (MatchModel teamMatch : teamMatches) {
+            teamMatch.setPlayerResults(playerResultApi.getPlayerResults(teamMatch.getId()));
+        }
+        model.addAttribute("teamMatches", teamMatches);
+        return "schedule/scheduleTeam";
     }
 
 }

@@ -24,6 +24,9 @@ public interface TeamMatchApi {
     @RequestLine("GET /api/teammatch/members/{id}")
     Map<String,List<User>> teamMembers(@Param("id") String id);
 
+    @RequestLine("GET /api/teammatch/team/{teamId}")
+    List<TeamMatch> getTeamMatchByTeam(@Param("teamId") String teamId);
+
     @RequestLine("POST /api/teammatch/admin/modify/list")
     List<TeamMatch> save(List<TeamMatch> matches);
 }

@@ -12,8 +12,11 @@ public interface PlayerResultApi {
     @RequestLine("GET /api/playerresult/{userId}/{seasonId}")
     List<PlayerResult> getResults(@Param("userId") String userId, @Param("seasonId") String seasonId);
 
-    @RequestLine("GET /api/playerresult/teammatch/{id}")
-    List<PlayerResult> getPlayerResultByTeamMatch(@Param("id") String id);
+    @RequestLine("GET /api/playerresult/teammatch/{teamId}")
+    List<PlayerResult> getPlayerResultByTeamMatch(@Param("teamId") String teamId);
+
+    @RequestLine("GET /api/playerresult/teammatch/{id}/all")
+    List<PlayerResult> getPlayerResults(@Param("teamId") String teamId);
 
     @RequestLine("POST /api/playerresult/admin/modify")
     List<PlayerResult> save(List<PlayerResult> results);

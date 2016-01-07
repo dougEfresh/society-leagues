@@ -11,9 +11,10 @@
                         <table  class="table table-bordered table-striped table-condensed">
                    <thead>
                    <tr>
-                       <th ></th>
-                       <th>R</th>
                        <th></th>
+                       <th>Home</th>
+                       <th>R</th>
+                       <th>Away</th>
                        <th>R</th>
                    </tr>
                    </thead>
@@ -21,16 +22,16 @@
                    <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.TeamMatch"*/-->
                    <tr th:class="${match.isHasResults() ? 'results' : 'no-results'}" th:each="match: ${teamMatches}">
                        <td th:text="${match.getMatchDate()}"></td>
-                       <td th:class="${team.getId().equals(match.getWinner().getId()) ? 'active team-name' : 'not-active team-name'}" >
-                           <a th:href="@{/app/results/{matchId} (matchId=${match.getId()})}" th:text="${match.getWinner().getName()}"></a>
+                       <td th:class="${team.getId().equals(match.getHome().getId()) ? 'active team-name' : 'not-active team-name'}" >
+                           <a th:href="@{/app/results/{matchId} (matchId=${match.getId()})}" th:text="${match.getHome().getName()}"></a>
                        </td>
 
-                       <td class="racks"  th:text="${match.getWinnerRacks()}"></td>
-                       <td th:class="${team.getId().equals(match.getLoser().getId()) ? 'active team-name' : 'not-active team-name'}" >
-                           <a th:href="@{/app/results/{matchId} (matchId=${match.getId()})}" th:text="${match.getLoser().getName()}"></a>
+                       <td class="racks"  th:text="${match.getHomeRacks()}"></td>
+                       <td th:class="${team.getId().equals(match.getAway().getId()) ? 'active team-name' : 'not-active team-name'}" >
+                           <a th:href="@{/app/results/{matchId} (matchId=${match.getId()})}" th:text="${match.getAway().getName()}"></a>
                        </td>
 
-                       <td class="racks"  th:text="${match.getLoserRacks()}"></td>
+                       <td class="racks"  th:text="${match.getAwayRacks()}"></td>
                    </tr>
                    </tbody>
                         </table>

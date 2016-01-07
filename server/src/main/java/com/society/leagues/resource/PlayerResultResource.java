@@ -91,6 +91,23 @@ public class PlayerResultResource {
         return copy;
     }
 
+    @RequestMapping(value = "/teammatch/{id}/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @JsonView(PlayerResultView.class)
+    public Collection<PlayerResult> getPlayerResults(Principal principal, @PathVariable String id) {
+        TeamMatch tm = leagueService.findOne(new TeamMatch(id));
+        if (tm == null) {
+            return Collections.emptyList();
+        }
+        Collection<PlayerResult> results = new ArrayList<>();
+        if (tm.getSeason().isActive()) {
+            results = leagueService.findCurrent(PlayerResult.class);
+        }  else {
+            results = leagueService.findAll(PlayerResult.class);
+        }
+
+        return results;
+    }
+
     @RequestMapping(value = "/get/season/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @JsonView(PlayerResultView.class)
     public List<PlayerResult> getPlayerResultSeason(Principal principal, @PathVariable String id) {
