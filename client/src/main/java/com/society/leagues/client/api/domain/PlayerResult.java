@@ -23,22 +23,22 @@ public class PlayerResult  extends LeagueObject {
     @JsonView(PlayerResultSummary.class) @DBRef User playerAway;
     @JsonView(PlayerResultSummary.class) @NotNull Integer homeRacks = 0;
     @JsonView(PlayerResultSummary.class) @NotNull Integer awayRacks = 0;
-    @JsonView(PlayerResultSummary.class)  @NotNull Integer matchNumber = 0;
-    @JsonView(PlayerResultSummary.class)  @NotNull Handicap playerHomeHandicap = Handicap.UNKNOWN;
-    @JsonView(PlayerResultSummary.class)  @NotNull Handicap playerAwayHandicap = Handicap.UNKNOWN;
-    @JsonView(PlayerResultSummary.class)  User playerHomePartner;
-    @JsonView(PlayerResultSummary.class)  User playerAwayPartner;
-    @JsonView(PlayerResultSummary.class)  Handicap playerHomeHandicapPartner;
-    @JsonView(PlayerResultSummary.class)  Handicap playerAwayHandicapPartner;
+    @JsonView(PlayerResultSummary.class) @NotNull Integer matchNumber = 0;
+    @JsonView(PlayerResultSummary.class) @NotNull Handicap playerHomeHandicap = Handicap.UNKNOWN;
+    @JsonView(PlayerResultSummary.class) @NotNull Handicap playerAwayHandicap = Handicap.UNKNOWN;
+    @JsonView(PlayerResultSummary.class) User playerHomePartner;
+    @JsonView(PlayerResultSummary.class) User playerAwayPartner;
+    @JsonView(PlayerResultSummary.class) Handicap playerHomeHandicapPartner;
+    @JsonView(PlayerResultSummary.class) Handicap playerAwayHandicapPartner;
     @Transient MatchPoints matchPoints;
-    Team referenceTeam = null;
-    User referenceUser = null;
     @JsonView(PlayerResultSummary.class)  Boolean scotch = false;
     @JsonIgnore @Transient boolean forfeit = false;
     @JsonIgnore @Transient Boolean homeWinner = null;
     @JsonIgnore @Transient Boolean awayWinner = null;
     int homePoints = 0;
     int awayPoints = 0;
+    Team referenceTeam = null;
+    User referenceUser = null;
 
     public static  PlayerResult addForfeit(int matchNumber,TeamMatch tm) {
         PlayerResult result = new PlayerResult();
@@ -127,6 +127,7 @@ public class PlayerResult  extends LeagueObject {
         this.teamMatch = teamMatch;
     }
 
+    @JsonView(PlayerResultSummary.class)
     public User getPlayerHome() {
         return playerHome;
     }

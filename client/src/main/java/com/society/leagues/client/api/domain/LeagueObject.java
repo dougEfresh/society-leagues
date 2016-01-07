@@ -3,6 +3,7 @@ package com.society.leagues.client.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.society.leagues.client.views.IdView;
+import com.society.leagues.client.views.PlayerResultSummary;
 import org.springframework.data.annotation.Id;
 import org.springframework.util.ReflectionUtils;
 

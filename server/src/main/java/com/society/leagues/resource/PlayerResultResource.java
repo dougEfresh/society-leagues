@@ -92,8 +92,8 @@ public class PlayerResultResource {
         return copy;
     }
 
-    @RequestMapping(value = "/teammatch/{id}/summary", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @JsonView(PlayerResultSummary.class)
+    @RequestMapping(value = "/teammatch/{id}/summary", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Collection<PlayerResult> getPlayerResults(Principal principal, @PathVariable String id) {
         TeamMatch tm = leagueService.findOne(new TeamMatch(id));
         if (tm == null) {
