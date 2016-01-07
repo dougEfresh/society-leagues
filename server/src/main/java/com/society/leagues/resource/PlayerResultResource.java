@@ -100,9 +100,9 @@ public class PlayerResultResource {
         }
         Collection<PlayerResult> results = new ArrayList<>();
         if (tm.getSeason().isActive()) {
-            results = leagueService.findCurrent(PlayerResult.class);
+            results = leagueService.findCurrent(PlayerResult.class).parallelStream().filter(r->r.getTeamMatch().equals(tm)).collect(Collectors.toList());
         }  else {
-            results = leagueService.findAll(PlayerResult.class);
+            results = leagueService.findAll(PlayerResult.class).parallelStream().filter(r->r.getTeamMatch().equals(tm)).collect(Collectors.toList());
         }
 
         return results;

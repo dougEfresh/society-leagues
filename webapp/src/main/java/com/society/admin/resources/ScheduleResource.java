@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -65,8 +64,9 @@ public class ScheduleResource extends BaseController {
                 return o1.getMatchDate().compareTo(o2.getMatchDate());
             }
         }).collect(Collectors.toList()));
+
         for (MatchModel teamMatch : teamMatches) {
-            teamMatch.setPlayerResults(playerResultApi.getPlayerResults(teamMatch.getId()));
+            teamMatch.setPlayerResults(playerResultApi.getPlayerResultsSummary(teamMatch.getId()));
         }
         model.addAttribute("teamMatches", teamMatches);
         return "schedule/scheduleTeam";
