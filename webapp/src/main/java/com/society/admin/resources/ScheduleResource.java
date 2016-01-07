@@ -51,8 +51,14 @@ public class ScheduleResource extends BaseController {
             matches = sortedMatches;
         }
         model.addAttribute("maxHeight",maxGames*45);
-        model.addAttribute("team",team);
+        if (teamId == null)
+            model.addAttribute("team", team);
+        else
+            model.addAttribute("team", teamApi.get(teamId));
+
+        model.addAttribute("teams",teamApi.getBySeason(seasonId));
         model.addAttribute("season",seasonApi.get(seasonId));
+
         if (teamId == null) {
             model.addAttribute("teamMatches", matches);
             return "schedule/schedule";

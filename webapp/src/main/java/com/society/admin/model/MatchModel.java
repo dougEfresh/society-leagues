@@ -2,6 +2,7 @@ package com.society.admin.model;
 
 import com.society.leagues.client.api.domain.Handicap;
 import com.society.leagues.client.api.domain.PlayerResult;
+import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.TeamMatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,56 +31,77 @@ public class MatchModel extends TeamMatch {
     }
 
     public int getHomeCumulativeHC() {
-        List<Handicap> homeHandicaps = new ArrayList<>();
-        List<PlayerResult> results = playerResults.stream().sorted(new Comparator<PlayerResult>() {
+        HashSet<Player> handicaps = new HashSet<>();
+        playerResults.stream().forEach(p->handicaps.add(new Player(p.getPlayerHome().getId(),p.getPlayerHomeHandicap())));
+        List<Player> players = new ArrayList<>();
+        handicaps.stream().sorted(new Comparator<Player>() {
             @Override
-            public int compare(PlayerResult o1, PlayerResult o2) {
-                try {
-                    Integer.parseInt(o1.getPlayerHomeHandicap().getDisplayName());
-                    Integer.parseInt(o2.getPlayerHomeHandicap().getDisplayName());
-                } catch (NumberFormatException e) {
-                    logger.warn(e.getMessage());
-                    return -1;
-                }
-                return new Integer(o2.getPlayerHomeHandicap().getDisplayName()).compareTo(new Integer(o1.getPlayerHomeHandicap().getDisplayName()));
+            public int compare(Player o1, Player o2) {
+                return new Integer(o2.handicap.ordinal()).compareTo(new Integer(o1.handicap.ordinal()));
             }
-        }).limit(4).collect(Collectors.toList());
-        for (PlayerResult result : results) {
-            homeHandicaps.add(result.getPlayerHomeHandicap());
-        }
+        }).limit(4).forEach(players::add);
 
-        int hc = 0;
-        for (Handicap homeHandicap : homeHandicaps) {
-            hc += new Integer(homeHandicap.getDisplayName());
+        if (players.size() < 4) {
+            logger.error("Found less than 4 players");
         }
-        return hc;
-    }
-      public int getAwayCumulativeHC() {
-        List<Handicap> awayHandicaps = new ArrayList<>();
-        List<PlayerResult> results = playerResults.stream().sorted(new Comparator<PlayerResult>() {
-            @Override
-            public int compare(PlayerResult o1, PlayerResult o2) {
-                try {
-                    Integer.parseInt(o1.getPlayerAwayHandicap().getDisplayName());
-                    Integer.parseInt(o2.getPlayerAwayHandicap().getDisplayName());
-                } catch (NumberFormatException e) {
-                    logger.warn(e.getMessage());
-                    return -1;
-                }
-                return new Integer(o2.getPlayerAwayHandicap().getDisplayName()).compareTo(new Integer(o1.getPlayerAwayHandicap().getDisplayName()));
-            }
-        }).limit(4).collect(Collectors.toList());
-        for (PlayerResult result : results) {
-            awayHandicaps.add(result.getPlayerHomeHandicap());
-        }
-
         int hc = 0;
-        for (Handicap homeHandicap : awayHandicaps) {
-            hc += new Integer(homeHandicap.getDisplayName());
+        for (Player player : players) {
+            hc += new Integer(player.handicap.getDisplayName());
         }
         return hc;
     }
 
+    public int getAwayCumulativeHC() {
+        HashSet<Player> handicaps = new HashSet<>();
+        playerResults.stream().forEach(p->handicaps.add(new Player(p.getPlayerAway().getId(),p.getPlayerAwayHandicap())));
+        List<Player> players = new ArrayList<>();
+        handicaps.stream().sorted(new Comparator<Player>() {
+            @Override
+            public int compare(Player o1, Player o2) {
+                return new Integer(o2.handicap.ordinal()).compareTo(new Integer(o1.handicap.ordinal()));
+            }
+        }).limit(4).forEach(players::add);
+
+        if (players.size() < 4) {
+            logger.error("Found less than 4 players");
+        }
+        int hc = 0;
+        for (Player player : players) {
+            hc += new Integer(player.handicap.getDisplayName());
+        }
+        return hc;
+    }
+
+    public boolean isWin(Team team) {
+        return getWinner().equals(team);
+    }
+
+    static class Player {
+        final String id;
+        final Handicap handicap;
+
+        public Player(String id, Handicap handicap) {
+            this.handicap = handicap;
+            this.id = id;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Player)) return false;
+
+            Player player = (Player) o;
+
+            if (!id.equals(player.id)) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return id.hashCode();
+        }
+    }
 
     public List<PlayerResult> getPlayerResults() {
         return playerResults;

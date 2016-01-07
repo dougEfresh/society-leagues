@@ -80,7 +80,10 @@ public class ScoreResource extends BaseController {
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{matchId}"}, method = RequestMethod.GET)
-    public String editResults(@PathVariable String seasonId, @RequestParam String date, @PathVariable String matchId, Model model) {
+    public String editResults(@PathVariable String seasonId, @RequestParam(required = false) String date, @PathVariable String matchId, Model model) {
+        if (date == null) {
+            date = teamMatchApi.get(matchId).getMatchDate().toLocalDate().toString();
+        }
         return processScoreView(seasonId,date,matchId,model);
     }
 

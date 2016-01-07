@@ -33,10 +33,12 @@
                         <th></th>
                         <th>#</th>
                         <th>Home</th>
+                        <th>HC</th>
                         <th th:class="${season.isScramble()}? 'show' : 'hide'">Partner</th>
                         <th th:text="'Wins( R+F+H ='  + ${homeWins} + '+' + ${homeForfeits} + '+' + ${homeHandicap} +' = ' + ${homeTotal} + ' )'"  >Win</th>
                         <th>MP</th>
                         <th>Away</th>
+                        <th>HC</th>
                         <th th:class="${season.isScramble()}? 'show' : 'hide'">Partner</th>
                         <th th:text="'Wins( R+F+H =' + ${awayWins} + '+' + ${awayForfeits} + '+' + ${awayHandicap} +' = ' + ${awayTotal} + ' )'" >Win</th>
                         <th>MP</th>
@@ -62,6 +64,7 @@
                                     ></option>
                                 </select>
                             </td>
+                            <td th:if="${!result.isForfeit()}" th:text="${result.getPlayerHomeHandicap().getDisplayName()}"></td>
                             <td class="forfeit" th:if="${result.isForfeit()}">Forfeit</td>
                             <td th:class="${season.isScramble()}? 'show' : 'hide'">
                                 <select th:id="${'homeMember-partner' + result.getId()}" th:field="*{playerResults[__${rowStat.index}__].playerHomePartner.id}" class="form-control" >
@@ -90,6 +93,7 @@
                                     ></option>
                                 </select>
                             </td>
+                            <td th:if="${!result.isForfeit()}" th:text="${result.getPlayerAwayHandicap().getDisplayName()}"></td>
                             <td class="forfeit" th:if="${result.isForfeit()}">Forfeit</td>
                             <td th:class="${season.isScramble()}? 'show' : 'hide'">
                                 <select th:id="${'awayMember-partner' + result.getId()}" th:field="*{playerResults[__${rowStat.index}__].playerAwayPartner.id}" class="form-control" >

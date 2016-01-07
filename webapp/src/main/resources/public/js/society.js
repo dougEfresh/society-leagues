@@ -14,6 +14,10 @@ function searchChallengeUser(e) {
     window.location = '/app/challenge?userId=' + id;
 }
 
+function selectTeam(e) {
+    var id = $('#teams-select').val();
+    window.location = window.location.pathname + '?teamId=' + id;
+}
 
 function searchUserStats(e) {
     var id = $('#users-stats-search').val();
