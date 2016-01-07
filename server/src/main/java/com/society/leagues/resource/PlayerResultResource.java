@@ -53,7 +53,6 @@ public class PlayerResultResource {
     }
 
     @RequestMapping(value = "/teammatch/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @JsonView(PlayerResultView.class)
     public List<PlayerResult> getPlayerResultTeamMatch(Principal principal, @PathVariable String id) {
         TeamMatch tm = leagueService.findOne(new TeamMatch(id));
         if (tm == null) {
@@ -110,7 +109,6 @@ public class PlayerResultResource {
     }
 
     @RequestMapping(value = "/get/season/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @JsonView(PlayerResultView.class)
     public List<PlayerResult> getPlayerResultSeason(Principal principal, @PathVariable String id) {
         Season s = leagueService.findOne(new Season(id));
         if (s.isActive()) {
@@ -124,7 +122,6 @@ public class PlayerResultResource {
 
 
     @RequestMapping(value = "/season/{id}/date", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @JsonView(PlayerResultView.class)
     public Map<String,List<PlayerResult>> getPlayerResultSeasonByDate(Principal principal, @PathVariable String id) {
         Season s = leagueService.findOne(new Season(id));
         List<PlayerResult> results = new ArrayList<>();
@@ -140,7 +137,6 @@ public class PlayerResultResource {
     }
 
     @RequestMapping(value = {"/team/{id}","/get/team/{id}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @JsonView(PlayerResultView.class)
     public List<PlayerResult> getPlayerResultTeam(Principal principal, @PathVariable String id) {
         Team t  = leagueService.findOne(new Team(id));
         List<PlayerResult> results;
@@ -163,7 +159,6 @@ public class PlayerResultResource {
     }
 
     @RequestMapping(value = "/get/user/{id}/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @JsonView(value = {PlayerResultView.class})
     public Map<String,List<PlayerResult>> getPlayerResultByUser(Principal principal, @PathVariable String id, @PathVariable String type) {
         User u = leagueService.findOne(new User(id));
         List<PlayerResult> results = new ArrayList<>(500);

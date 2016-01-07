@@ -127,7 +127,6 @@ public class PlayerResult  extends LeagueObject {
         this.teamMatch = teamMatch;
     }
 
-    @JsonView(PlayerResultSummary.class)
     public User getPlayerHome() {
         return playerHome;
     }

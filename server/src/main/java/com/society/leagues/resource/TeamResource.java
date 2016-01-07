@@ -30,7 +30,6 @@ public class TeamResource {
 
     @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @JsonView(PlayerResultView.class)
     public Team modify(@RequestBody Team body) {
         Team existingTeam = leagueService.findOne(new Team(body.getId()));
         if (existingTeam == null) {
@@ -64,7 +63,6 @@ public class TeamResource {
         return leagueService.save(existingTeam);
     }
 
-    @JsonView(TeamSummary.class)
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Team get(Principal principal, @PathVariable String id) {
         Team existingTeam = leagueService.findOne(new Team(id));
@@ -74,7 +72,6 @@ public class TeamResource {
         return existingTeam;
     }
 
-    @JsonView(TeamSummary.class)
     @RequestMapping(value = "/user/{id}/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Team getTeamForUserSeason(Principal principal, @PathVariable String id, @PathVariable String seasonId) {
         User u = leagueService.findOne(new User(id));
@@ -82,7 +79,6 @@ public class TeamResource {
         return leagueService.findAll(Team.class).parallelStream().filter(t->t.getSeason().equals(s) && t.hasUser(u)).findFirst().orElse(null);
     }
 
-    @JsonView(TeamSummary.class)
     @RequestMapping(value = "/get/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Collection<Team> getTeamSeason(Principal principal, @PathVariable String id) {
          User u = leagueService.findOne(new User(id));
@@ -96,7 +92,6 @@ public class TeamResource {
                  );
     }
 
-    @JsonView(TeamSummary.class)
     @RequestMapping(value = "/get/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Collection<Team> getUsersTeams(Principal principal) {
          User u = leagueService.findByLogin(principal.getName());
@@ -137,13 +132,11 @@ public class TeamResource {
     }
 
 
-    @JsonView(TeamSummary.class)
     @RequestMapping(value = "/active", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Collection<Team> getTeamSeason(Principal principal) {
          return leagueService.findCurrent(Team.class);
     }
 
-    @JsonView(TeamSummary.class)
     @RequestMapping(value = "/get/{id}/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Collection<Team> getTeamSeason(Principal principal, @PathVariable String id, @PathVariable String type) {
         User u = leagueService.findOne(new User(id));

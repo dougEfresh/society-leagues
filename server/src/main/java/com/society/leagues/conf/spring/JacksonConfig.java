@@ -27,7 +27,7 @@ public class JacksonConfig {
     public Jackson2ObjectMapperBuilder jacksonBuilder() {
         Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
         return builder.indentOutput(prettyPrint).dateFormat(new SimpleDateFormat("yyyy-MM-dd")).
-                defaultViewInclusion(true).
+                defaultViewInclusion(false).
                 serializers(dateSerializer).
                 deserializerByType(LocalDateTime.class, dateTimeDeSerializer).
                 deserializerByType(LocalDate.class,dateDeSerializer);

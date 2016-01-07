@@ -9,11 +9,10 @@ import org.springframework.util.ReflectionUtils;
 
 public class LeagueObject implements Comparable<LeagueObject>{
 
-    @Id String id;
+    @JsonView(PlayerResultSummary.class) @Id String id;
     Integer legacyId;
     Boolean deleted = false;
 
-    @JsonView(IdView.class)
     public String getId() {
         return id;
     }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.society.leagues.client.views.PlayerResultSummary;
 import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.converters.DateTimeSerializer;
 import com.society.leagues.client.views.PlayerResultView;
@@ -16,8 +17,8 @@ import java.util.stream.Collectors;
 
 public class User extends LeagueObject {
 
-    @NotNull String firstName = "";
-    @NotNull String lastName = "";
+    @JsonView(PlayerResultSummary.class) @NotNull String firstName = "";
+    @JsonView(PlayerResultSummary.class) @NotNull String lastName = "";
     @NotNull String email;
     String password;
     @NotNull String login;
@@ -62,7 +63,6 @@ public class User extends LeagueObject {
         return firstName + " " + lastName.substring(0,1) + ".";
     }
 
-    @JsonView(PlayerResultView.class)
     public String getFirstName() {
         return firstName;
     }
@@ -71,7 +71,6 @@ public class User extends LeagueObject {
         this.firstName = firstName;
     }
 
-    @JsonView(PlayerResultView.class)
     public String getLastName() {
         return lastName;
     }
@@ -106,7 +105,6 @@ public class User extends LeagueObject {
         this.login = login;
     }
 
-    @JsonView(PlayerResultView.class)
     public Role getRole() {
         return role == null ? Role.PLAYER : role;
     }
@@ -119,7 +117,6 @@ public class User extends LeagueObject {
         return Role.isAdmin(role);
     }
 
-    @JsonView(PlayerResultView.class)
     public String getName() {
         if (firstName == null || lastName == null)
         return "";
@@ -127,7 +124,6 @@ public class User extends LeagueObject {
         return firstName + " " + lastName;
     }
 
-    @JsonView(PlayerResultView.class)
     public Status getStatus() {
         return status;
     }
@@ -136,7 +132,6 @@ public class User extends LeagueObject {
         this.status = status;
     }
 
-    @JsonView(PlayerResultView.class)
     public List<HandicapSeason> getHandicapSeasons() {
         return handicapSeasons;
     }
@@ -202,7 +197,6 @@ public class User extends LeagueObject {
         this.created = created;
     }
 
-    @JsonView(PlayerResultView.class)
     public boolean isChallenge() {
         if (status != Status.ACTIVE)
             return false;
