@@ -65,7 +65,7 @@ function pocessSeason(season,test) {
 
 casper.test.begin('Test Display', function suite(test) {
     casper.start();
-    casper.thenOpen(testlib.server + '/app/home', function(){
+    casper.thenOpen(testlib.server + '/app/login', function(){
     });
     testlib.login(test,testlib.user,testlib.pass);
 

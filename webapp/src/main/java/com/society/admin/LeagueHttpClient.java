@@ -65,7 +65,7 @@ public class LeagueHttpClient extends Client.Default {
     @PostConstruct
     public void init() {
          cachedResponse = CacheBuilder.newBuilder()
-                 .maximumSize(500)
+                 .maximumSize(1000)
                  .initialCapacity(500)
                  .expireAfterAccess(5, TimeUnit.MINUTES).build();
     }
