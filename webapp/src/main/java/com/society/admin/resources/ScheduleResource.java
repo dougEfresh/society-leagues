@@ -34,7 +34,7 @@ public class ScheduleResource extends BaseController {
         }
         final User u = model.containsAttribute("user") ? (User) model.asMap().get("user") : userApi.get();
         Team blank = new Team("-1");
-        blank.setName("No Filter");
+        blank.setName("...Choose a team");
         Team team = teamApi.userTeams(u.getId()).stream()
                 .filter(t->t.getSeason().getId().equals(seasonId))
                 .filter(t->t.hasUser(u)).findFirst().orElse(blank);

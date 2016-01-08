@@ -113,7 +113,6 @@
                                 />
                             </td>
                             <td th:text="${result.getAwayPoints()}">
-
                             </td>
                         </tr>
                         </tbody>
@@ -123,11 +122,11 @@
             <div class="panel-footer">
                 <input id="player-results-submit" type="submit" value="submit" />
                   <span>
-                        <a th:href="@{/app/scores/{id}/{matchId}/add/{date} (id=${season.id},date=${date},matchId=${results.matchId})}"> Add</a>
+                        <a th:href="@{/app/scores/{id}/{matchId}/add/{date} (id=${season.id},date=${date},matchId=${results.matchId})}"> Add One</a>
                   </span>
                 <span>
-                        <a th:href="@{/app/scores/{id}/{matchId}/add/{date} (id=${season.id},date=${date},matchId=${results.matchId})}"> Add 4</a>
-                  </span>
+                        <a th:href="@{/app/scores/{id}/{matchId}/add/{date}/four (id=${season.id},date=${date},matchId=${results.matchId})}"> Add Four</a>
+                </span>
             </div>
         </div>
     </form>

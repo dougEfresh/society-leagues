@@ -71,7 +71,13 @@ public class ScoreResource extends BaseController {
          playerResultApi.add(matchId);
         response.sendRedirect("/app/scores/" + seasonId + "/" + matchId + "?date=" + date);
     }
-
+    @RequestMapping(value = {"/scores/{seasonId}/{matchId}/add/{date}/four"}, method = RequestMethod.GET)
+     public void addFourPlayerMatches(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId, Model model, HttpServletResponse response) throws IOException {
+         for(int i =1 ; i <= 4; i++ ) {
+             playerResultApi.add(matchId);
+         }
+        response.sendRedirect("/app/scores/" + seasonId + "/" + matchId + "?date=" + date);
+    }
      @RequestMapping(value = {"/scores/{seasonId}/{matchId}/{resultId}/delete/{date}"}, method = RequestMethod.GET)
      public void deletePlayerMatch(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId,
                                    @PathVariable String resultId, Model model, HttpServletResponse response) throws IOException {
