@@ -4,48 +4,48 @@
         <table id="table-player-results-admin" class="table table-stripped table-bordered table-condensed table">
             <thead>
             <th>#</th>
-            <th></th>
+            <th>Home</th>
             <th>Partner</th>
             <th>MP</th>
             <th>W/L</th>
-            <th></th>
+            <th>Away</th>
             <th>Partner</th>
             <th>MP</th>
             </thead>
             <tbody>
             <!--/*@thymesVar id="result" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
-            <tr th:id="${result.getId()}" th:each="result, rowStat: *{results}">
+            <tr th:id="${result.getId()}" th:each="result, rowStat: *{results.getPlayerResults()}">
                 <td th:text="${result.getMatchNumber()}">
                 </td>
                 <td>
                     <a  th:href="@{/app/display/{sId}/{tId}/{uId}
-                 (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getWinner().getId()},uId=${result.getWinnerTeamPlayer().getId()})}"
-                        th:text="${result.getWinnerTeamPlayer().getName()}">
+                 (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getHome().getId()},uId=${result.getPlayerHome().getId()})}"
+                        th:text="${result.getPlayerHome().getName()}">
                     </a>
                 </td>
                  <td>
-                    <a th:if="${result.getWinnerTeamPlayerPartner() ne null}"  th:href="@{/app/display/{sId}/{tId}/{uId}
-                 (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getWinner().getId()},uId=${result.getWinnerTeamPlayerPartner().getId()})}"
-                        th:text="${result.getWinnerTeamPlayerPartner().getName()}">
+                    <a th:if="${result.getPlayerHomePartner() ne null}"  th:href="@{/app/display/{sId}/{tId}/{uId}
+                 (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getWinner().getId()},uId=${result.getPlayerHomePartner().getId()})}"
+                        th:text="${result.getPlayerHomePartner().getName()}">
                     </a>
                 </td>
 
-                <td th:text="${result.getWinnerPoints()}"></td>
-                <td th:text="${result.isWin() ? 'W' : 'L'}">
+                <td th:text="${result.getHomePoints()}"></td>
+                <td th:text="${result.getHomeRacks() > result.getAwayRacks() ? 'W' : 'L'}">
                 </td>
                 <td>
                     <a  th:href="@{/app/display/{sId}/{tId}/{uId}
-                 (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getLoser().getId()},uId=${result.getLoserTeamPlayer().getId()})}"
-                        th:text="${result.getLoserTeamPlayer().getName()}">
+                 (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getAway().getId()},uId=${result.getPlayerAway().getId()})}"
+                        th:text="${result.getPlayerAway().getName()}">
                     </a>
                 </td>
                  <td>
-                    <a th:if="${result.getLoserTeamPlayerPartner() ne null}"  th:href="@{/app/display/{sId}/{tId}/{uId}
-                 (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getWinner().getId()},uId=${result.getLoserTeamPlayerPartner().getId()})}"
-                        th:text="${result.getLoserTeamPlayerPartner().getName()}">
+                    <a th:if="${result.getPlayerAwayPartner() ne null}"  th:href="@{/app/display/{sId}/{tId}/{uId}
+                 (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getAway().getId()},uId=${result.getPlayerAwayPartner().getId()})}"
+                        th:text="${result.getPlayerAwayPartner().getName()}">
                     </a>
                 </td>
-                <td th:text="${result.getLoserPoints()}"></td>
+                <td th:text="${result.getAwayPoints()}"></td>
             </tr>
             </tbody>
         </table>

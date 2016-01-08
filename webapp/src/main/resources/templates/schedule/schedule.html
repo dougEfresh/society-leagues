@@ -8,6 +8,7 @@
                 <option th:each="t : ${teams}"
                         th:value="${t.getId()}"
                         th:text="${t.getName()}"
+                        th:selected="${t.getId() == team.getId()}"
                         >
                 </option>
             </select>

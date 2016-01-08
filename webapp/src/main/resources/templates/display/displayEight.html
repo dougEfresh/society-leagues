@@ -12,6 +12,7 @@
             <th>RW</th>
             <th>RL</th>
             <th>PCT</th>
+            <th>F</th>
         </tr>
         </thead>
         <tbody>
@@ -32,6 +33,7 @@
             <td th:text="${team.getStats().getRacksWon()}"></td>
             <td th:text="${team.getStats().getRacksLost()}"></td>
             <td th:text="${#numbers.formatDecimal(team.getStats().getWinPct(),2,3)}"></td>
+            <td th:text="${team.getStats().getForfeits()}"></td>
         </tr>
         </tbody>
     </table>

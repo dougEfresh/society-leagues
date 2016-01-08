@@ -6,7 +6,10 @@ function getStats() {
     var stats = [];
 
     for (var i = 0, row; row = rows[i]; i++) {
-        var a = row.cells[1].querySelector('a[href*="app"]');
+        var a = row.cells[2].querySelector('a[href*="app"]');
+        if (a == undefined || a == null)
+           a = row.cells[1].querySelector('a[href*="app"]');
+        var id = a.id.replace('team-standing-link-','');
         //var l = row.cells[2].querySelector('span');
         var stat = {};
         stat['rank'] = row.cells[0].textContent;

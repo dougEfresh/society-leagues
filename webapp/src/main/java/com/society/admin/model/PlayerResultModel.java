@@ -18,6 +18,10 @@ public class PlayerResultModel {
         this.matchId = matchId;
     }
 
+    public String getId() {
+        return matchId;
+    }
+
     public String getMatchId() {
         return matchId;
     }

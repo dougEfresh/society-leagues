@@ -30,8 +30,24 @@ public class MatchModel extends TeamMatch {
         return matchModels;
     }
 
+    public int getHc(Team t) {
+        return getHome().equals(t) ? getHomeCumulativeHC() : getAwayCumulativeHC();
+    }
+
+    public int getOpponentHc(Team t) {
+        return getHome().equals(t) ? getAwayCumulativeHC() : getHomeCumulativeHC();
+    }
+
+    public int racks(Team t) {
+        return getHome().equals(t) ? getHomeRacks() : getAwayRacks();
+    }
+
+   public int forfeits(Team t) {
+       return getHome().equals(t) ? getHomeForfeits() : getAwayForfeits();
+   }
+
     public int getHomeCumulativeHC() {
-        if (!hasPlayerResults())
+        if (!hasPlayerResults() || getSeason().isNine() || getSeason().isChallenge())
             return 0;
 
         HashSet<Player> handicaps = new HashSet<>();
@@ -55,7 +71,7 @@ public class MatchModel extends TeamMatch {
     }
 
     public int getAwayCumulativeHC() {
-        if (!hasPlayerResults())
+        if (!hasPlayerResults() || getSeason().isNine() || getSeason().isChallenge())
             return 0;
 
         HashSet<Player> handicaps = new HashSet<>();
@@ -112,6 +128,14 @@ public class MatchModel extends TeamMatch {
         public int hashCode() {
             return id.hashCode();
         }
+    }
+
+    public String homeOrAway(Team team) {
+        return getHome().equals(team) ? "H" : "A";
+    }
+
+    public Team getOpponent(Team team) {
+        return getHome().equals(team) ? getAway() : getHome();
     }
 
     public List<PlayerResult> getPlayerResults() {

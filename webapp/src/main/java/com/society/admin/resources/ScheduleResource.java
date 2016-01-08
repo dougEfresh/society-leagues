@@ -33,11 +33,11 @@ public class ScheduleResource extends BaseController {
             }
         }
         final User u = model.containsAttribute("user") ? (User) model.asMap().get("user") : userApi.get();
-        Team blank = new Team("-1");
-        blank.setName("...Choose a team");
-        Team team = teamApi.userTeams(u.getId()).stream()
+        Team team = new Team("-1");
+        team.setName("...Choose a team...");
+        model.addAttribute("userTeam",teamApi.userTeams(u.getId()).stream()
                 .filter(t->t.getSeason().getId().equals(seasonId))
-                .filter(t->t.hasUser(u)).findFirst().orElse(blank);
+                .filter(t->t.hasUser(u)).findFirst().orElse(team));
         Season season = seasonApi.get(seasonId);
         if (season.isChallenge()) {
             sortedMatches = new TreeMap<String,List<TeamMatch>>(new Comparator() {
@@ -64,6 +64,7 @@ public class ScheduleResource extends BaseController {
         teams.add(team);
         teams.addAll(teamApi.getBySeason(seasonId));
         model.addAttribute("teams",teams);
+        model.addAttribute("team",team);
         model.addAttribute("season",seasonApi.get(seasonId));
 
         if (teamId == null || teamId.equals("-1")) {

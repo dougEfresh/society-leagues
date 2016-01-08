@@ -4,10 +4,10 @@
         <table id="table-player-results-admin" class="table table-stripped table-bordered table-condensed table">
             <thead>
             <th>#</th>
-            <th>Home</th>
+            <th th:text="${teamMatch.getHome().getName()}">Home</th>
             <th>R</th>
             <th>MP</th>
-            <th>Away</th>
+            <th th:text="${teamMatch.getAway().getName()}">Home</th>
             <th>R</th>
             <th>MP</th>
             </thead>
@@ -18,23 +18,23 @@
                 </td>
                 <td>
                     <a  th:href="@{/app/display/{sId}/{tId}/{uId}
-                 (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getWinner().getId()},uId=${result.getWinnerTeamPlayer().getId()})}"
-                        th:text="${result.getWinnerTeamPlayer().getName()}">
+                 (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getHome().getId()},uId=${result.getPlayerHome().getId()})}"
+                        th:text="${result.getPlayerHome().getName()}">
                     </a>
                 </td>
-                <td th:text="${result.getWinnerTeamRacks()}">
+                <td th:text="${result.getHomeRacks()}">
                 </td>
-                <td th:text="${result.getWinnerPoints()}">
+                <td th:text="${result.getHomePoints()}">
                 </td>
                 <td>
                     <a  th:href="@{/app/display/{sId}/{tId}/{uId}
-                 (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getLoser().getId()},uId=${result.getLoserTeamPlayer().getId()})}"
-                        th:text="${result.getLoserTeamPlayer().getName()}">
+                 (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getAway().getId()},uId=${result.getPlayerAway().getId()})}"
+                        th:text="${result.getPlayerAway().getName()}">
                     </a>
                 </td>
-                <td th:text="${result.getLoserTeamRacks()}">
+                <td th:text="${result.getAwayRacks()}">
                 </td>
-                <td th:text="${result.getLoserPoints()}">
+                <td th:text="${result.getAwayPoints()}">
                 </td>
             </tr>
             </tbody>

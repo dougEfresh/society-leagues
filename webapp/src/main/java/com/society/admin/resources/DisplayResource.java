@@ -77,21 +77,21 @@ public class DisplayResource extends BaseController {
                             scrambleStats.stream().filter(st->st.getType() == StatType.USER_SEASON).findFirst().orElse(newStat)
                     ));
                 }
-
-                model.addAttribute("totalWin",totalWins);
-                model.addAttribute("totalLost",totalLost);
                 model.addAttribute("displayMemberStats", scrambleStatModelList);
             } else {
-                for (Stat stat : stats) {
-                    totalWins += stat.getWins();
-                    totalLost += stat.getLoses();
-                }
-                model.addAttribute("totalWin",totalWins);
-                model.addAttribute("totalLost", totalLost);
-                model.addAttribute("handicapReceived", team.getStats().getRacksWon()-totalWins);
-                model.addAttribute("handicapGiven", team.getStats().getRacksLost()-totalLost);
                 model.addAttribute("displayMemberStats", stats);
             }
+
+            for (Stat stat : stats) {
+                totalWins += stat.getWins();
+                totalLost += stat.getLoses();
+            }
+            model.addAttribute("totalWin",totalWins);
+            model.addAttribute("totalLost", totalLost);
+            model.addAttribute("handicapReceived", team.getStats().getRacksWon()-totalWins-team.getStats().getForfeits());
+            model.addAttribute("handicapGiven", team.getStats().getRacksLost()-totalLost);
+            model.addAttribute("totalWin",totalWins);
+            model.addAttribute("totalLost",totalLost);
             model.addAttribute("team", team);
         }
 

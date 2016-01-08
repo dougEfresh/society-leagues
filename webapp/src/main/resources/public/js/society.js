@@ -25,12 +25,14 @@ function searchUserStats(e) {
 }
 
  $(document).ready(function() {
+ /*
      $.dynatableSetup({
            dataset: {
                perPageDefault: 20,
                perPageOptions: [10,20,50,100]
            }
      });
+     */
      $('.match-date').datetimepicker({
          dateFormat: 'Y-m-d',
          format: 'Y-m-d',
@@ -66,7 +68,20 @@ function searchUserStats(e) {
               perPageDefault: 10
          }
      });
-      $('.table-top-gun-standings').dynatable();
+     $('.table-top-gun-standings').dynatable();
+     $('#table-team-schedule').dynatable( {
+     dataset: {
+               perPageDefault: 20,
+               perPageOptions: [10,20,50,100]
+
+           },
+           features: {
+           paginate: false,
+           search: false,
+           sort: true
+           }
+
+           });
      $('#table-leaders').dynatable();
      $('#table-teams').dynatable();
      $('#table-users').dynatable();
