@@ -11,6 +11,7 @@ public class Stat {
     Integer setWins = 0;
     Integer setLoses = 0;
     Integer matches = 0;
+    Integer forfeits = 0;
     StatType type;
     User user;
     Season season;
@@ -42,6 +43,7 @@ public class Stat {
         return s;
     }
 
+
     public static Stat buildTeamStats(final Team team, final List<TeamMatch> matches) {
         Stat s = new Stat();
         s.setSeason(team.getSeason());
@@ -60,6 +62,11 @@ public class Stat {
                 s.setLoses += result.getSetLoses(team);
                 s.racksLost += result.getOpponentRacks(team);
                 s.racksWon += result.getRacks(team);
+            }
+            if (result.getHome().equals(team)) {
+                s.forfeits += result.getHomeForfeits();
+            } else {
+                s.forfeits += result.getAwayForfeits();
             }
         }
         return s;
@@ -101,6 +108,14 @@ public class Stat {
 
     public void setHandicap(Handicap handicap) {
         this.handicap = handicap;
+    }
+
+    public Integer getForfeits() {
+        return forfeits;
+    }
+
+    public void setForfeits(Integer forfeits) {
+        this.forfeits = forfeits;
     }
 
     public Handicap getHandicap() {

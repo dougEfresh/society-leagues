@@ -5,6 +5,7 @@
             <thead>
             <tr>
                 <th>#</th>
+                <th></th>
                 <th>Player</th>
                 <th>HC</th>
                 <th>W</th>
@@ -18,6 +19,12 @@
             <!--/*@thymesVar id="team" type="com.society.leagues.client.api.domain.Team"*/-->
             <tr th:id="'team-member-' + ${stat.getUser().getId()}" th:each="stat : ${displayMemberStats}">
                 <td th:text="${stat.getRank()}"></td>
+                <td class="stats-link">
+                    <a th:id="'player-stats-link-' + ${stat.getUser().getId()}"
+                       th:href="@{/app/stats/{id} (id=${stat.getUser().getId()})}">
+                        <i class="fa fa-bar-chart fa-fw"></i>
+                    </a>
+                </td>
                 <td>
                     <a th:href="@{/app/display/{id}/{teamId}/{userId}
                     (id=${season.getId()},teamId=${team.getId()},userId=${stat.getUser().getId()})}"

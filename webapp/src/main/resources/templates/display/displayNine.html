@@ -5,6 +5,7 @@
             <thead>
             <tr>
                 <th>#</th>
+                <th></th>
                 <th>Team</th>
                 <th>W</th>
                 <th>L</th>
@@ -18,9 +19,16 @@
             <tbody>
             <tr th:each="team : ${displayTeams}">
                 <td th:text="${team.getStats().getRank()}"></td>
+                 <td>
+                <a th:id="'team-schedule-link-' + ${team.getId()}"
+                       th:href="@{/app/schedule/{id} (id=${team.getSeason().getId()},teamId=${team.getId()})}">
+                   <i class="fa fa-calendar fa-fw"></i>
+                </a>
+                 </td>
                 <td><a th:id="'team-standing-link-' + ${team.getId()}"
                        th:href="@{/app/display/{id}/{teamId}(id=${team.getSeason().getId()},teamId=${team.getId()})}"
                        th:text="${team.getName()}"></a></td>
+
                 <td th:text="${team.getStats().getWins()}"></td>
                 <td th:text="${team.getStats().getLoses()}"></td>
                 <td th:text="${team.getStats().getSetWins()}"></td>
