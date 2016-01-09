@@ -3,6 +3,7 @@ package com.society.leagues.resource;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.ResultService;
+import com.society.leagues.service.StatService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ public class TeamMatchResource {
     static Logger logger = LoggerFactory.getLogger(TeamMatchResource.class);
     @Autowired LeagueService leagueService;
     @Autowired ResultService resultService;
+    @Autowired StatService statService;
 
     @RequestMapping(value = "/admin/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -95,13 +97,20 @@ public class TeamMatchResource {
     public List<TeamMatch> modify(@RequestBody List<TeamMatch> teamMatch) {
         List<TeamMatch> processed = new ArrayList<>(teamMatch.size());
         processed.addAll(teamMatch.stream().map(this::modify).collect(Collectors.toList()));
-        leagueService.save(processed);
-
+        //leagueService.save(processed);
+        statService.refresh();
         return processed;
     }
 
+    @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public TeamMatch modify(@RequestBody TeamMatch teamMatch) {
+        TeamMatch t = modifyNoSave(teamMatch);
+        return leagueService.save(t);
+    }
+
     private TeamMatch modifyNoSave(TeamMatch teamMatch) {
-         final  TeamMatch existing;
+        final  TeamMatch existing;
         if  (leagueService.findOne(teamMatch) == null)
             existing = new TeamMatch();
         else
@@ -142,20 +151,12 @@ public class TeamMatchResource {
             leagueService.save(result);
         }
         LocalDateTime now = LocalDateTime.now().minusDays(1);
-        boolean hasPlayerResults = leagueService.findCurrent(PlayerResult.class).parallelStream().filter(r->r.getTeamMatch().equals(existing)).count() > 0;
+        boolean hasPlayerResults = leagueService.findCurrent(PlayerResult.class).parallelStream().filter(r->r.hasResults()).filter(r->r.getTeamMatch().equals(existing)).count() > 0;
         existing.setHasPlayerResults(hasPlayerResults);
         existing.setHomeForfeits(teamMatch.getHomeForfeits());
         existing.setAwayForfeits(teamMatch.getAwayForfeits());
         return existing;
     }
-
-    @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public TeamMatch modify(@RequestBody TeamMatch teamMatch) {
-        TeamMatch t = modifyNoSave(teamMatch);
-        return leagueService.save(t);
-    }
-
 
     @RequestMapping(value = "/admin/add/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -173,91 +174,10 @@ public class TeamMatchResource {
         return leagueService.save(tm);
     }
 
-    @RequestMapping(value = "/admin/change/home/{teamMatchId}/{teamId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public TeamMatch changeHomeTeam(@PathVariable String teamMatchId,  @PathVariable String teamId) {
-        TeamMatch tm = leagueService.findOne(new TeamMatch(teamMatchId));
-        if (tm == null){
-            return null;
-        }
-        Team t = leagueService.findOne(new Team(teamId));
-        tm.setHome(t);
-        leagueService.findAll(PlayerResult.class).stream().filter(p->p.getTeamMatch().equals(tm)).forEach(leagueService::purge);
-        return leagueService.save(tm);
-    }
-
-    @RequestMapping(value = "/admin/change/away/{teamMatchId}/{teamId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public TeamMatch changeAwayTeam(@PathVariable String teamMatchId,  @PathVariable String teamId) {
-        TeamMatch tm = leagueService.findOne(new TeamMatch(teamMatchId));
-        if (tm == null){
-            return null;
-        }
-        Team t = leagueService.findOne(new Team(teamId));
-        tm.setAway(t);
-        leagueService.findAll(PlayerResult.class).stream().filter(p->p.getTeamMatch().equals(tm)).forEach(leagueService::purge);
-        return leagueService.save(tm);
-    }
-
-    @RequestMapping(value = "/admin/change/date/{teamMatchId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public TeamMatch changeDate(@RequestParam String date  , @PathVariable String teamMatchId) {
-        TeamMatch tm = leagueService.findOne(new TeamMatch(teamMatchId));
-        if (tm == null){
-            return null;
-        }
-        LocalDateTime dt = LocalDateTime.parse(date);
-        tm.setMatchDate(dt);
-        return leagueService.save(tm);
-    }
-
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public TeamMatch get(Principal principal, @PathVariable String id) {
         return leagueService.findOne(new TeamMatch(id));
-    }
-
-    @RequestMapping(value = "/racks/{teamMatchId}/{teamId}/{racks}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public TeamMatch updateRacks(Principal principal, @PathVariable String teamMatchId, @PathVariable String teamId, @PathVariable Integer racks) {
-        TeamMatch  teamMatch = leagueService.findOne(new TeamMatch(teamMatchId));
-        Team team = leagueService.findOne(new Team(teamId));
-        PlayerResult result = leagueService.findAll(PlayerResult.class).stream().parallel().filter(p -> p.getTeamMatch().equals(teamMatch)).findFirst().orElse(null);
-
-        if (teamMatch.getSeason().isChallenge()) {
-            if (result == null) {
-                result = new PlayerResult();
-                result.setTeamMatch(teamMatch);
-                result.setPlayerHome(team.getChallengeUser());
-                result.setPlayerHomeHandicap(team.getChallengeUser().getHandicap(team.getSeason()));
-                result.setPlayerAway(teamMatch.getAway().getChallengeUser());
-                result.setPlayerAwayHandicap(teamMatch.getAway().getChallengeUser().getHandicap(team.getSeason()));
-            }
-        }
-        if (teamMatch.getHome().equals(team)) {
-            teamMatch.setHomeRacks(racks);
-            result.setHomeRacks(racks);
-        } else {
-            teamMatch.setAwayRacks(racks);
-            result.setAwayRacks(racks);
-        }
-        if (teamMatch.isChallenge())
-            leagueService.save(result);
-
-        return leagueService.save(teamMatch);
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value = "/wins/{teamMatchId}/{teamId}/{wins}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public TeamMatch updateWins(Principal principal, @PathVariable String teamMatchId, @PathVariable String teamId, @PathVariable Integer wins) {
-        TeamMatch  teamMatch = leagueService.findOne(new TeamMatch(teamMatchId));
-        Team team = leagueService.findOne(new Team(teamId));
-        if (teamMatch.getHome().equals(team)) {
-            teamMatch.setSetHomeWins(wins);
-        } else {
-            teamMatch.setSetAwayWins(wins);
-        }
-        return leagueService.save(teamMatch);
     }
 
     @RequestMapping(value = "/members/{id}",

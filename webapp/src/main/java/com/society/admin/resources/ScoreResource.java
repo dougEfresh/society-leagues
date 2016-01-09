@@ -95,9 +95,9 @@ public class ScoreResource extends BaseController {
 
     @RequestMapping(value = {"/scores/{seasonId}/{date}"}, method = RequestMethod.POST)
     public void save(@PathVariable String seasonId,
-                       @PathVariable String date,
-                       @ModelAttribute TeamMatchModel teamMatchModel, Model model,
-                       HttpServletResponse response) throws IOException {
+                     @PathVariable String date,
+                     @ModelAttribute TeamMatchModel teamMatchModel, Model model,
+                     HttpServletResponse response) throws IOException {
         response.sendRedirect("/app/scores/" +seasonId +  "?date=" + date);
         save(seasonId,date,null,teamMatchModel,null,model);
     }
