@@ -97,8 +97,12 @@ public class TeamMatchResource {
     public List<TeamMatch> modify(@RequestBody List<TeamMatch> teamMatch) {
         List<TeamMatch> processed = new ArrayList<>(teamMatch.size());
         processed.addAll(teamMatch.stream().map(this::modify).collect(Collectors.toList()));
-        //leagueService.save(processed);
-        statService.refresh();
+        logger.info("Refreshing team stats");
+        for (TeamMatch match : processed) {
+            statService.refreshTeamStats(match.getHome());
+            statService.refreshTeamStats(match.getAway());
+        }
+        statService.refreshTeamRank();
         return processed;
     }
 

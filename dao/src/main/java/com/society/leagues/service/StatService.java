@@ -49,7 +49,6 @@ public class StatService {
                     refreshTeamMatchStats((TeamMatch) object);
 
                 if (object instanceof PlayerResult) {
-                    refreshTeamMatch(((PlayerResult) object).getTeamMatch());
                     refresh();
                 }
             }
@@ -104,7 +103,7 @@ public class StatService {
         //leagueService.findCurrent(TeamMatch.class).parallelStream().forEach(StatService.this::refreshTeamMatch);
         //logger.info("RefreshTeamMatch " + (System.currentTimeMillis() - startTime));
 
-        //logger.info("RefreshTeam TeamRank ");
+        logger.info("Refresh Team TeamRank ");
         for (Team team : teams) {
             refreshTeamStats(team);
         }
@@ -311,51 +310,9 @@ public class StatService {
         handicapStats.lazySet(stats);
     }
 
-    public void refreshUserHandicapStats(final User user) {
-         Map<User,List<PlayerResult>> winners = leagueService.findCurrent(PlayerResult.class).stream().filter(pr -> pr.hasUser(user)).
-                collect(Collectors.groupingBy(PlayerResult::getWinner));
-        Map<User,List<PlayerResult>> loser = leagueService.findCurrent(PlayerResult.class).stream().filter(pr -> pr.hasUser(user)).
-                collect(Collectors.groupingBy(PlayerResult::getLoser));
-
-        List<Stat> stats = new ArrayList<>(100);
-
-        for (Handicap handicap : Handicap.values()) {
-            List<PlayerResult> w = winners.get(user).stream().filter(p->p.getLoserHandicap() == handicap).collect(Collectors.toList());
-            if (w.isEmpty()) {
-                continue;
-            }
-            stats.add(Stat.buildHandicapStats(w,StatType.HANDICAP_WINS,user,handicap));
-        }
-        for (Handicap handicap : Handicap.values()) {
-            List<PlayerResult> l = loser.get(user).stream()
-                    .filter(p -> p.getWinnerHandicap() == handicap)
-                    .collect(Collectors.toList());
-            if (l.isEmpty()) {
-                continue;
-            }
-            stats.add(Stat.buildHandicapStats(l, StatType.HANDICAP_LOSES, user, handicap));
-        }
-        for (Stat stat : handicapStats.get()) {
-            for (Stat hcStats : stats) {
-                if (stat.getUser().equals(hcStats.getUser())
-                        && stat.getType() == hcStats.getType()
-                        && stat.getHandicap().equals(hcStats.getHandicap())
-                        ) {
-                    stat.setWins(hcStats.getWins());
-                    stat.setLoses(hcStats.getLoses());
-                    stat.setRacksWon(hcStats.getRacksWon());
-                    stat.setRacksLost(hcStats.getRacksLost());
-                } else {
-                    handicapStats.get().add(hcStats);
-                }
-            }
-        }
-    }
-
     public void refreshTeamMatchStats(final TeamMatch tm) {
         refreshTeamStats(tm.getHome());
         refreshTeamStats(tm.getAway());
-        refreshTeamMatch(tm);
         refreshTeamRank();
     }
 
@@ -387,12 +344,8 @@ public class StatService {
             }).collect(Collectors.toList());
             int rank = 0;
             for (Team t : rankings) {
-                Integer old = t.getRank();
                 t.setRank(++rank);
                 t.getStats().setRank(t.getRank());
-                if (!old.equals(t.getRank())) {
-                    //leagueService.save(t);
-                }
             }
         }
     }
@@ -443,65 +396,6 @@ public class StatService {
 
     }
 
-    public void refreshPlayerResult(final PlayerResult pr) {
-        if (threadPoolTaskExecutor.getActiveCount() > 1) {
-            logger.info("Skipping player refresh");
-            return;
-        }
-        logger.info("Submitting to task for player refresh");
-         threadPoolTaskExecutor.submit(new Runnable() {
-             @Override
-             public void run() {
-                 refreshTeamMatch(pr.getTeamMatch());
-                 refreshUserHandicapStats(pr.getPlayerHome());
-                 refreshUserHandicapStats(pr.getPlayerAway());
-                 refreshUserSeasonStats(pr.getPlayerHome());
-                 refreshUserSeasonStats(pr.getPlayerAway());
-             }
-         });
-    }
-
-    public void refreshTeamMatch(TeamMatch tm) {
-        /*
-        if (tm.isChallenge() || tm.isNine()) {
-            return ;
-        }
-        long start = System.currentTimeMillis();
-        logger.info("Starting Time Refresh Match ");
-        List<PlayerResult> results = leagueService.findCurrent(PlayerResult.class).parallelStream().filter(p->p.getTeamMatch().equals(tm)).collect(Collectors.toList());
-        if (results.isEmpty())
-            return;
-        int homeWins = 0;
-        int awayWins = 0;
-
-        for(int i = 0 ; i < results.size(); i++) {
-            PlayerResult result = results.get(i);
-            if (result.getHomeRacks() > result.getAwayRacks()) {
-                homeWins++;
-            }
-            if (result.getHomeRacks() < result.getAwayRacks()) {
-                awayWins++;
-            }
-        }
-
-        if (tm.getHomeRacks() > tm.getAwayRacks()) {
-            if (tm.getHomeRacks()  != homeWins + tm.getHomeForfeits()) {
-                tm.setHandicapRacks(tm.getHomeRacks() - homeWins - tm.getHomeForfeits());
-            }
-        } else {
-            if (tm.getAwayRacks()  != awayWins + tm.getAwayForfeits()) {
-                tm.setHandicapRacks(tm.getAwayRacks() - awayWins - tm.getAwayForfeits());
-            }
-        }
-        logger.info("End TeamMatch Refresh "  + (System.currentTimeMillis() - start));
-        */
-    }
-
-    public void refreshTeamPoints(PlayerResult playerResult) {
-
-
-    }
-
     public void refreshTeamStats(Team team) {
         final Set<TeamMatch>  teamMatches = leagueService.findCurrent(TeamMatch.class);
         Stat stat =  Stat.buildTeamStats(team,
@@ -510,12 +404,7 @@ public class StatService {
                         .filter(TeamMatch::isHasResults)
                         .collect(Collectors.toList())
         );
-
-        if (Stat.isDifferent(stat, team.getStats())) {
-            team.setStats(stat);
-            //leagueService.save(team);
-        }
-
+        team.setStats(stat);
     }
 
     public void setEnableRefresh(boolean enableRefresh) {
