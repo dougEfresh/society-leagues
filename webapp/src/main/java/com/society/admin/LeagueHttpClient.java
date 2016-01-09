@@ -198,10 +198,7 @@ public class LeagueHttpClient extends Client.Default {
         } else {
             stream = connection.getInputStream();
         }
-        if (request.headers().containsKey("X-Cache")
-                && !Boolean.valueOf(request.headers().get("X-Cache").iterator().next())
-                && !request.method().equals(HttpMethod.GET.name())
-                ) {
+        if (request.headers().containsKey("X-Cache") || !request.method().equals(HttpMethod.GET.name())) {
             // Don't cache this response
             return Response.create(status, reason, headers, new GZIPInputStream(stream), length);
         }

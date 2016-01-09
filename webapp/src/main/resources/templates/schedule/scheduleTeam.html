@@ -24,8 +24,8 @@
                    <tr>
                        <th>Date</th>
                        <th th:if="${!season.isNine()}">H/A</th>
-                       <th>W/L</th>
                        <th th:if="${!season.isNine()}">HC</th>
+                       <th>W/L</th>
                        <th>R</th>
                        <th>Forfeits</th>
                        <th>Opponent</th>
@@ -43,9 +43,10 @@
                        </td>
                        <td th:if="${!user.isAdmin()}" th:text="${#temporals.format(match.getMatchDate(),'yyyy-MM-dd')}"></td>
                        <td th:if="${!season.isNine()}" th:text="${match.homeOrAway(team)}" ></td>
+                       <td th:if="${!season.isNine()}" th:text="${match.getHc(team)}"></td>
                        <td th:if="${not match.isHasResults()}"></td>
                        <td th:if="${match.isHasResults()}" th:text="${match.isWin(team) ? 'W' : 'L'}"></td>
-                       <td th:if="${!season.isNine()}" th:text="${match.getHc(team)}"></td>
+
                        <td class="racks"  th:text="${match.racks(team)}"></td>
                        <td class="racks"  th:text="${match.forfeits(team)}"></td>
                        <td >
