@@ -217,6 +217,39 @@ public class StatResource {
         userStats.addAll(statService.getLifetimeDivisionStats().stream().filter(s->s.getUser().equals(u)).collect(Collectors.toList()));
         return userStats;
     }
+
+    //@JsonView()
+    @RequestMapping(value = "/team/{seasonId}",
+                method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.ALL_VALUE)
+    public List<Team> getUserStatsSeason(@PathVariable String seasonId) {
+        Season s = leagueService.findOne(new Season(seasonId));
+        List<Team> teams = leagueService.findAll(Team.class).parallelStream().filter(t->t.getSeason().equals(s)).collect(Collectors.toList());
+        for (Team team : teams) {
+            statService.refreshTeamStats(team);
+        }
+        statService.refreshTeamRank();
+        if (!s.isChallenge())
+            return teams;
+
+         List<MatchPoints> points = resultService.matchPoints();
+         if (points == null) {
+             return teams;
+         }
+        //TODO move to stat service
+        for (Team team: teams) {
+            double totalPoints = 0d;
+            User u =  team.getChallengeUser();
+            List<MatchPoints> pointsList = points.stream().parallel().filter(p->p.getUser().equals(u)).collect(Collectors.toList());
+            for (MatchPoints matchPoints : pointsList) {
+                totalPoints += matchPoints.getWeightedAvg();
+            }
+            team.getStats().setPoints(totalPoints);
+        }
+        return teams;
+    }
+
     @RequestMapping(value = "/user/{id}/{seasonId}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE,

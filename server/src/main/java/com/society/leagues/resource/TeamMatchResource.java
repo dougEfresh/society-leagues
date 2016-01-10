@@ -66,32 +66,6 @@ public class TeamMatchResource {
         return getTeamMatchSeason(principal, s.getId(), "upcoming");
     }
 
-    @RequestMapping(value = "/admin/modify/{teamMatchId}/team/{type}/{teamId}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.ALL_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public TeamMatch modifyTeam(Principal principal,
-                                @PathVariable String teamMatchId,
-                                @PathVariable String type,
-                                @PathVariable String teamId) {
-        TeamMatch teamMatch = leagueService.findOne(new TeamMatch(teamId));
-        Team team = leagueService.findOne(new Team(teamId));
-        if (type.equals("winner")) {
-            if (teamMatch.getWinner().equals(teamMatch.getHome())) {
-                teamMatch.setHome(team);
-            } else {
-                teamMatch.setAway(team);
-            }
-        } else {
-            if (teamMatch.getLoser().equals(teamMatch.getHome())) {
-                teamMatch.setHome(team);
-            } else {
-                teamMatch.setAway(team);
-            }
-        }
-        return leagueService.save(teamMatch);
-    }
     @RequestMapping(value = "/admin/modify/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<TeamMatch> modify(@RequestBody List<TeamMatch> teamMatch) {
@@ -103,7 +77,6 @@ public class TeamMatchResource {
             statService.refreshTeamStats(match.getAway());
         }
         if (processed.get(0).getSeason().isChallenge()) {
-            resultService.refresh();
             statService.refresh();
         }
         statService.refreshTeamRank();

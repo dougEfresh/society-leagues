@@ -110,9 +110,8 @@ public class StatService {
         refreshTeamRank();
         //logger.info("RefreshTeam TeamRank " + (System.currentTimeMillis() - startTime));
         startTime = System.currentTimeMillis();
-        logger.info("UserSesonStats  ");
         refreshUserSeasonStats(true);
-        logger.info("UserSesonStats  " + (System.currentTimeMillis() - startTime));
+        logger.info("UserSeasonStats  " + (System.currentTimeMillis() - startTime));
         //refreshUserLifetimeStats();
         //rereshUserHandicapStats();
         //logger.info("RefreshTeam Stats ");
@@ -231,7 +230,7 @@ public class StatService {
         if (active)
             seasons = seasons.stream().filter(Season::isActive).collect(Collectors.toList());
         Map<Season,List<Stat>> userSeasonStats = new HashMap<>(1000);
-        seasons.forEach(s-> refreshUserSeasonStats(s,userSeasonStats));
+        seasons.forEach(s -> refreshUserSeasonStats(s,userSeasonStats));
 
         for (Season season : userSeasonStats.keySet()) {
             List<Stat> stats = userSeasonStats.get(season);
