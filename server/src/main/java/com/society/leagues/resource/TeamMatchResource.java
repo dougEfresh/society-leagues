@@ -102,6 +102,9 @@ public class TeamMatchResource {
             statService.refreshTeamStats(match.getHome());
             statService.refreshTeamStats(match.getAway());
         }
+        if (teamMatch.get(0).getSeason().isChallenge()) {
+            statService.refresh();
+        }
         statService.refreshTeamRank();
         return processed;
     }
