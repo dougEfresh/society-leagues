@@ -103,6 +103,7 @@ public class TeamMatchResource {
             statService.refreshTeamStats(match.getAway());
         }
         if (processed.get(0).getSeason().isChallenge()) {
+            resultService.refresh();
             statService.refresh();
         }
         statService.refreshTeamRank();
