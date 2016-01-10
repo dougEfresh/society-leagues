@@ -32,7 +32,7 @@
             <td th:text="${team.getStats().getLoses()}"></td>
             <td th:text="${team.getStats().getRacksWon()}"></td>
             <td th:text="${team.getStats().getRacksLost()}"></td>
-            <td th:text="${#numbers.formatDecimal(team.getStats().getWinPct(),2,3)}"></td>
+            <td th:text="${#numbers.formatDecimal(team.getStats().getWinPct(),0,3)}"></td>
             <td th:text="${team.getStats().getForfeits()}"></td>
         </tr>
         </tbody>

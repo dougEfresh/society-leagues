@@ -291,7 +291,8 @@ var scoreSubmitTest = function(test,season) {
         teamMatchId = rows[0].id;
     });
 
-    casper.then(function () {
+     casper.then(function () {
+
         var month = Math.floor((Math.random() * 10) + 1);
         if (month < 10)
             month = '0' + month;
@@ -344,10 +345,12 @@ var scoreSubmitTest = function(test,season) {
             return $('#'+ id  + ' option:not(:selected)')[2].value;
         },'away-'+ teamMatchId);
 
-        if (season == 'TopGun')
+        if (season == 'TopGun') {
             stats  = this.evaluate(getTopGunStats);
-        else
+            }
+       else {
            stats  = this.evaluate(getStats);
+           }
 
         this.fill('form#team-match-form', {
             'matches[0].date': teamMatchDate,
@@ -416,6 +419,7 @@ var scoreSubmitTest = function(test,season) {
             newStats  = this.evaluate(getTopGunStats);
         else
             newStats  = this.evaluate(getStats);
+
          var homeStat = null;
          var newHomeStat = null;
          this.echo(homeTeam);
@@ -429,9 +433,9 @@ var scoreSubmitTest = function(test,season) {
                  newHomeStat =s;
                   }
                   });
-         this.echo(JSON.stringify(newStats));
-         this.echo(JSON.stringify(homeStat));
-         this.echo(JSON.stringify(newHomeStat));
+         this.echo(JSON.stringify(newStats.length));
+         this.echo(JSON.stringify(homeStat.length));
+         //this.echo(JSON.stringify(newHomeStat));
          test.assert(homeStat  != null, 'HomeStat  != null');
          test.assert(newHomeStat  != null, 'awayStat  != null');
          test.assert(homeStat.forfeits != newHomeStat.forfeits, 'Forfeits !=');

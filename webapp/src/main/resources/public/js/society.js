@@ -68,7 +68,11 @@ function searchUserStats(e) {
               perPageDefault: 10
          }
      });
-     $('.table-top-gun-standings').dynatable();
+     $('.table-top-gun-standings').dynatable( {
+      dataset : {
+              perPageDefault: 50
+         }
+     });
      $('#table-team-schedule').dynatable( {
      dataset: {
                perPageDefault: 20,

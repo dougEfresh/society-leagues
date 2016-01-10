@@ -35,7 +35,7 @@ function processSeason(season,test) {
    casper.then(function () {
          test.assertExists("#" + season + "-scores")
     });
-       casper.then(function () {
+    casper.then(function () {
         this.click("#" + season +  "-scores")
     });
 
