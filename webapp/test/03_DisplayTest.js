@@ -14,10 +14,16 @@ function getStats() {
         var stat = {};
         stat['rank'] = row.cells[0].textContent;
         stat['teamId'] = a.id.replace('team-standing-link-','');
+        stat['wins'] = row.cells[3].textContent;
+        stat['lost'] = row.cells[4].textContent;
+        stat['rw'] = row.cells[5].textContent;
+        stat['rl'] = row.cells[6].textContent;
+        stat['forfeits'] = row.cells[8].textContent;
         stats.push(stat);
     }
     return stats;
 }
+
 function processStats(test,season) {
     for(var i = 0; i< stats.length; i++) {
         verifyStat(stats[i],(i+1),test,season);

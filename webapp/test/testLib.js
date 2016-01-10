@@ -21,6 +21,54 @@ var homeTeam = null;
 var awayTeam = null;
 var homeState = null;
 var awayState = null;
+var homeWin = false;
+var stats = [];
+
+function getTopGunStats() {
+ var rows = document.querySelectorAll('#table-team-standings > tbody > tr');
+    var stats = [];
+
+    for (var i = 0, row; row = rows[i]; i++) {
+        var a = row.cells[2].querySelector('a[href*="app"]');
+        if (a == undefined || a == null)
+           a = row.cells[1].querySelector('a[href*="app"]');
+        var id = a.id.replace('team-standing-link-','');
+        //var l = row.cells[2].querySelector('span');
+        var stat = {};
+        stat['rank'] = row.cells[0].textContent;
+        stat['teamId'] = a.id.replace('team-standing-link-','');
+        stat['points'] = row.cells[3].textContent;
+        stat['wins'] = row.cells[4].textContent;
+        stat['lost'] = row.cells[5].textContent;
+        stat['rw'] = row.cells[6].textContent;
+        stat['rl'] = row.cells[7].textContent;
+        stat['forfeits'] = row.cells[8].textContent;
+        stats.push(stat);
+    }
+    return stats;
+}
+function getStats() {
+    var rows = document.querySelectorAll('#table-team-standings > tbody > tr');
+    var stats = [];
+
+    for (var i = 0, row; row = rows[i]; i++) {
+        var a = row.cells[2].querySelector('a[href*="app"]');
+        if (a == undefined || a == null)
+           a = row.cells[1].querySelector('a[href*="app"]');
+        var id = a.id.replace('team-standing-link-','');
+        //var l = row.cells[2].querySelector('span');
+        var stat = {};
+        stat['rank'] = row.cells[0].textContent;
+        stat['teamId'] = id;
+        stat['wins'] = row.cells[3].textContent;
+        stat['lost'] = row.cells[4].textContent;
+        stat['rw'] = row.cells[5].textContent;
+        stat['rl'] = row.cells[6].textContent;
+        stat['forfeits'] = row.cells[8].textContent;
+        stats.push(stat);
+    }
+    return stats;
+}
 
 var login = function (test,username,password) {
     casper.then(function(){
@@ -235,7 +283,7 @@ var scoreSeasonTest = function(test) {
     });
 };
 
-var scoreSubmitTest = function(test) {
+var scoreSubmitTest = function(test,season) {
     casper.then(function () {
         var rows  = this.evaluate(function() {
             return __utils__.findAll("#team-match-results > tbody > tr")
@@ -270,16 +318,36 @@ var scoreSubmitTest = function(test) {
             return parseInt(document.getElementById(id).value);
         },'awayForfeits-'+teamMatchId);
 
-        awayRacks++;
-        homeRacks++;
+        //awayRacks++;
+        //homeRacks++;
+        if (homeRacks == 0) {
+           homeRacks = 5
+        }
+        if (awayRacks == 0)
+           awayRacks = 5;
+
         homeForfeits++;
         awayForfeits++;
+
+        if (homeRacks >= awayRacks) {
+               homeRacks = awayRacks-1;
+               homeWin = false;
+        } else {
+               homeWin = true;
+               homeRacks = awayRacks+1;
+        }
+
         homeTeam = this.evaluate(function(id) {
             return $('#'+ id  + ' option:not(:selected)')[0].value;
         },'home-'+ teamMatchId);
         awayTeam = this.evaluate(function(id) {
             return $('#'+ id  + ' option:not(:selected)')[2].value;
         },'away-'+ teamMatchId);
+
+        if (season == 'TopGun')
+            stats  = this.evaluate(getTopGunStats);
+        else
+           stats  = this.evaluate(getStats);
 
         this.fill('form#team-match-form', {
             'matches[0].date': teamMatchDate,
@@ -341,6 +409,42 @@ var scoreSubmitTest = function(test) {
             return document.getElementById(id).value;
         },'away-'+teamMatchId);
         test.assert(at == awayTeam, 'awayTeam eq');
+    });
+
+  casper.then(function () {
+         if (season == 'TopGun')
+            newStats  = this.evaluate(getTopGunStats);
+        else
+            newStats  = this.evaluate(getStats);
+         var homeStat = null;
+         var newHomeStat = null;
+         this.echo(homeTeam);
+         stats.forEach(function(s) {
+                  if (s.teamId  == homeTeam) {
+                  homeStat = s;
+                  }
+                  });
+         newStats.forEach(function(s) {
+                  if (s.teamId  == homeTeam) {
+                 newHomeStat =s;
+                  }
+                  });
+         this.echo(JSON.stringify(newStats));
+         this.echo(JSON.stringify(homeStat));
+         this.echo(JSON.stringify(newHomeStat));
+         test.assert(homeStat  != null, 'HomeStat  != null');
+         test.assert(newHomeStat  != null, 'awayStat  != null');
+         test.assert(homeStat.forfeits != newHomeStat.forfeits, 'Forfeits !=');
+
+
+         if (homeWin) {
+             test.assert(homeStat.rw != newHomeStat.rw, 'rw !=');
+             test.assert(homeStat.wins != newHomeStat.wins, 'wins !=');
+             }
+         else {
+             test.assert(homeStat.rl != newHomeStat.rl, 'rl !=');
+             test.assert(homeStat.lost != newHomeStat.lost, 'lost !=');
+             }
     });
 
 };

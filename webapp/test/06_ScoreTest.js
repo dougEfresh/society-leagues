@@ -8,6 +8,29 @@ var awayRacks = 0;
 var homeForfeits = 0;
 var awayForfeits = 0;
 
+function getStats() {
+    var rows = document.querySelectorAll('#table-team-standings > tbody > tr');
+    var stats = [];
+
+    for (var i = 0, row; row = rows[i]; i++) {
+        var a = row.cells[2].querySelector('a[href*="app"]');
+        if (a == undefined || a == null)
+           a = row.cells[1].querySelector('a[href*="app"]');
+        var id = a.id.replace('team-standing-link-','');
+        //var l = row.cells[2].querySelector('span');
+        var stat = {};
+        stat['rank'] = row.cells[0].textContent;
+        stat['teamId'] = a.id.replace('team-standing-link-','');
+        stat['wins'] = row.cells[3].textContent;
+        stat['lost'] = row.cells[4].textContent;
+        stat['rw'] = row.cells[5].textContent;
+        stat['rl'] = row.cells[6].textContent;
+        stat['forfeits'] = row.cells[8].textContent;
+        stats.push(stat);
+    }
+    return stats;
+}
+
 casper.test.begin('Test Scores Page', function suite(test) {
     casper.start();
     casper.thenOpen(testlib.server + '/app/login', function(){
