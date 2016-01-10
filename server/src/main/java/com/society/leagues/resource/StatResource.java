@@ -219,7 +219,7 @@ public class StatResource {
     }
 
     //@JsonView()
-    @RequestMapping(value = "/team/{seasonId}",
+    @RequestMapping(value = "/team/{seasonId}/summary",
                 method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.ALL_VALUE)

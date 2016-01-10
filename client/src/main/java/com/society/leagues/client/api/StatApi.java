@@ -15,6 +15,9 @@ public interface StatApi {
     @RequestLine("GET /api/stat/season/{seasonId}")
     List<Team> getSeasonStats(@Param("seasonId") String seasonId);
 
+    @RequestLine("GET /api/stat/team/{seasonId}")
+    List<Team> getTeamSeasonStats(@Param("seasonId") String seasonId);
+
     @RequestLine("GET /api/stat/season/players/{seasonId}")
     List<Stat> getUsersSeasonStats(@Param("seasonId") String seasonId);
 
