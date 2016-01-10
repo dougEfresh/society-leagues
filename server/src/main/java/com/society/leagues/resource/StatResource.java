@@ -104,6 +104,17 @@ public class StatResource {
         return hashMap;
     }
 
+    @RequestMapping(value = "/season/users/{id}/summary",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.ALL_VALUE)
+  public List<Stat> getSeasonUserStats(@PathVariable String id) {
+        final Season season = leagueService.findOne(new Season(id));
+        if (season == null)
+            return Collections.emptyList();
+        return statService.getSeasonStats(season);
+        //statService.refresh();
+  }
      @RequestMapping(value = "/season/players/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE,

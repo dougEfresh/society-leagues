@@ -91,7 +91,7 @@ public class TeamMatchResource {
     }
 
     private TeamMatch modifyNoSave(TeamMatch teamMatch) {
-        final  TeamMatch existing;
+        TeamMatch existing;
         if  (leagueService.findOne(teamMatch) == null)
             existing = new TeamMatch();
         else
@@ -111,7 +111,7 @@ public class TeamMatchResource {
         }
 
         if (existing.getId() == null){
-            leagueService.save(existing);
+            existing = leagueService.save(existing);
         }
 
         if (existing.getSeason().isChallenge()) {
@@ -132,7 +132,10 @@ public class TeamMatchResource {
             leagueService.save(result);
         }
         LocalDateTime now = LocalDateTime.now().minusDays(1);
-        boolean hasPlayerResults = leagueService.findCurrent(PlayerResult.class).parallelStream().filter(r->r.hasResults()).filter(r->r.getTeamMatch().equals(existing)).count() > 0;
+        final String existingId = existing.getId();
+        boolean hasPlayerResults = leagueService.findCurrent(PlayerResult.class).parallelStream()
+                .filter(r->r.hasResults())
+                .filter(r->r.getTeamMatch().getId().equals(existingId)).count() > 0;
         existing.setHasPlayerResults(hasPlayerResults);
         existing.setHomeForfeits(teamMatch.getHomeForfeits());
         existing.setAwayForfeits(teamMatch.getAwayForfeits());

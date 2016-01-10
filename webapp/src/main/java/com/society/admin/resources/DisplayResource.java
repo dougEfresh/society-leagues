@@ -96,7 +96,7 @@ public class DisplayResource extends BaseController {
         }
 
         if (s.isChallenge()) {
-            List<Stat> stats = statApi.getUsersSeasonStats(s.getId());
+            List<Stat> stats = statApi.getUserSeasonStats(s.getId());
             stats.sort(new Comparator<Stat>() {
                            @Override
                            public int compare(Stat o1, Stat o2) {

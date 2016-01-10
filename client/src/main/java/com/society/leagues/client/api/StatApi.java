@@ -15,10 +15,14 @@ public interface StatApi {
     @RequestLine("GET /api/stat/season/{seasonId}")
     List<Team> getSeasonStats(@Param("seasonId") String seasonId);
 
-    @RequestLine("GET /api/stat/team/{seasonId}")
+    @RequestLine("GET /api/stat/team/{seasonId}/summary")
     List<Team> getTeamSeasonStats(@Param("seasonId") String seasonId);
 
+    @RequestLine("GET /api/stat/season/users/{seasonId}/summary")
+    List<Stat> getUserSeasonStats(@Param("seasonId") String seasonId);
+
     @RequestLine("GET /api/stat/season/players/{seasonId}")
+    @Deprecated
     List<Stat> getUsersSeasonStats(@Param("seasonId") String seasonId);
 
     @RequestLine("GET /api/stat/user/{userId}/all")

@@ -177,7 +177,11 @@ public class StatService {
         lifetimeDivisionStats.lazySet(lifeDivisionStats);
     }
 
-    private void refreshUserSeasonStats(Season season, Map<Season,List<Stat>> userSeasonStats) {
+    public void refreshUserSeasonStats(Season season, Map<Season,List<Stat>> userSeasonStats) {
+        userSeasonStats.put(season,getSeasonStats(season));
+    }
+
+    public List<Stat> getSeasonStats(final Season season) {
         List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().
                 filter(pr -> pr.getSeason().equals(season)).filter(PlayerResult::hasResults).
                 collect(Collectors.toList());
@@ -206,9 +210,25 @@ public class StatService {
             } else {
                 stats.add(buildSeasonStats(user,teams,season,all.get(user),null));
             }
-
         }
-        userSeasonStats.put(season,stats);
+        List<MatchPoints> points = resultService.matchPoints();
+        if (points == null || !season.isChallenge()) {
+             return stats;
+         }
+        for (User user: users.stream().filter(u->u.hasSeason(season)).collect(Collectors.toList())) {
+            double totalPoints = 0d;
+            List<MatchPoints> pointsList = points.stream()
+                    .parallel()
+                    .filter(p->p.getUser().equals(user))
+                    .collect(Collectors.toList());
+            for (MatchPoints matchPoints : pointsList) {
+                totalPoints += matchPoints.getWeightedAvg();
+            }
+            for (Stat st : stats.parallelStream().filter(s->s.getUser().equals(user)).collect(Collectors.toList())) {
+                st.setPoints(totalPoints);
+            }
+        }
+        return stats;
     }
 
     private Stat buildSeasonStats(User user, List<Team> teams, Season season, List<PlayerResult> results, StatType statType) {
@@ -397,7 +417,7 @@ public class StatService {
 
     public void refreshTeamStats(Team team) {
         final Set<TeamMatch>  teamMatches = leagueService.findCurrent(TeamMatch.class);
-        Stat stat =  Stat.buildTeamStats(team,
+        Stat stat = Stat.buildTeamStats(team,
                 teamMatches.parallelStream()
                         .filter(tm -> tm.hasTeam(team))
                         .filter(TeamMatch::isHasResults)
