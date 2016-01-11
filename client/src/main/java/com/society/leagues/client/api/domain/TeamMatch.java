@@ -2,8 +2,10 @@ package com.society.leagues.client.api.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.society.leagues.client.views.PlayerResultSummary;
 import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.converters.DateTimeSerializer;
 import org.omg.CORBA.UNKNOWN;
@@ -18,8 +20,8 @@ import java.util.Objects;
 @SuppressWarnings("unused")
 public class TeamMatch extends LeagueObject {
 
-    @NotNull @DBRef Team home;
-    @NotNull @DBRef Team away;
+    @JsonView(PlayerResultSummary.class) @NotNull @DBRef Team home;
+    @JsonView(PlayerResultSummary.class) @NotNull @DBRef Team away;
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     @NotNull LocalDateTime matchDate;

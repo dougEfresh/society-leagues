@@ -3,6 +3,7 @@ package com.society.leagues.client.api.domain;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.society.leagues.client.views.PlayerResultSummary;
 import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.converters.DateTimeSerializer;
 import com.society.leagues.client.views.PlayerResultView;
@@ -16,7 +17,7 @@ import java.util.List;
 public class Team extends LeagueObject {
 
     @NotNull @DBRef Season season;
-    @NotNull String name;
+    @JsonView(PlayerResultSummary.class) @NotNull String name;
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime created;
