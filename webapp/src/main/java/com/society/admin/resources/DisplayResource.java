@@ -59,6 +59,12 @@ public class DisplayResource extends BaseController {
         int totalLost = 0;
         if (teamId != null) {
             List<Stat> stats = statApi.getTeamMemberStats(teamId);
+            stats.sort(new Comparator<Stat>() {
+                @Override
+                public int compare(Stat o1, Stat o2) {
+                    return o1.getRank().compareTo(o2.getRank());
+                }
+            });
             //List<Stat> stats = statApi.getTeamMemberStats(teamId).stream().filter(st->st.getUser().isReal()).collect(Collectors.toList());
             if (s.isScramble()) {
                 TeamMembers members  = teamApi.members(teamId);
