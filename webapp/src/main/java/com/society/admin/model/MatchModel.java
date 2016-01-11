@@ -50,6 +50,8 @@ public class MatchModel extends TeamMatch {
         if (!hasPlayerResults() || getSeason().isNine() || getSeason().isChallenge())
             return 0;
 
+        return 0;
+        /*
         HashSet<Player> handicaps = new HashSet<>();
         playerResults.stream().forEach(p->handicaps.add(new Player(p.getPlayerHome().getId(),p.getPlayerHomeHandicap())));
         List<Player> players = new ArrayList<>();
@@ -67,12 +69,17 @@ public class MatchModel extends TeamMatch {
         for (Player player : players) {
             hc += new Integer(player.handicap.getDisplayName());
         }
+
         return hc;
+        */
     }
 
     public int getAwayCumulativeHC() {
         if (!hasPlayerResults() || getSeason().isNine() || getSeason().isChallenge())
             return 0;
+
+        return 0;
+        /*
 
         HashSet<Player> handicaps = new HashSet<>();
 
@@ -93,6 +100,7 @@ public class MatchModel extends TeamMatch {
             hc += new Integer(player.handicap.getDisplayName());
         }
         return hc;
+        */
     }
 
     public boolean isWin(Team team) {
