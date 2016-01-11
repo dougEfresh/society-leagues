@@ -111,6 +111,13 @@ public class ScoreResource extends BaseController {
         save(seasonId,date,matchId,teamMatchModel,playerResultModel,model);
     }
 
+    @RequestMapping(value = {"/scores/{seasonId}/{matchId}/delete"}, method = RequestMethod.GET)
+    public void deleteAll(@PathVariable String seasonId, @PathVariable String matchId, Model model,
+                              HttpServletResponse response) throws IOException {
+        response.sendRedirect("/app/scores/" +seasonId + "/" + matchId);
+        playerResultApi.getPlayerResultsSummary(matchId).forEach(p->playerResultApi.delete(p.getId()));
+    }
+
     private String save(String seasonId, String date, String matchId, TeamMatchModel teamMatchModel, PlayerResultModel playerResultModel, Model model) {
         try {
             teamMatchApi.save(teamMatchModel.getMatches());
@@ -172,7 +179,14 @@ public class ScoreResource extends BaseController {
         if (members.isEmpty()) {
             return "scores/index";
         }
-        List<PlayerResult> realResults =  playerResultApi.getPlayerResultByTeamMatch(matchId);
+        //List<PlayerResult> realResults =  playerResultApi.getPlayerResultByTeamMatch(matchId);
+        List<PlayerResult> realResults =  playerResultApi.getPlayerResultsSummary(matchId);
+        realResults.sort(new Comparator<PlayerResult>() {
+            @Override
+            public int compare(PlayerResult o1, PlayerResult o2) {
+                return o1.getMatchNumber().compareTo(o2.getMatchNumber());
+            }
+        });
         HashSet<PlayerResult> resultsWithForfeits = new HashSet<>();
         int matchNum = 0;
         Iterator<PlayerResult> iterator = realResults.iterator();
@@ -220,7 +234,8 @@ public class ScoreResource extends BaseController {
             result.setAwayPoints(awayPoints);
         }
 
-        TeamMatch m = results.getPlayerResults().iterator().next().getTeamMatch();
+
+        TeamMatch m = teamMatchApi.get(matchId);
 
         //homeWins += m.getHomeForfeits();
         //awayWins += m.getAwayForfeits();
@@ -245,7 +260,7 @@ public class ScoreResource extends BaseController {
         model.addAttribute("homeTotal", homeWins + m.getHomeForfeits() + homeHandicap);
         model.addAttribute("awayTotal", awayWins + m.getAwayForfeits() + awayHandicap);
 
-        model.addAttribute("teamMatch", results.getPlayerResults().iterator().next().getTeamMatch());
+        model.addAttribute("teamMatch", m);
         model.addAttribute("homeMembers", home);
         model.addAttribute("awayMembers", away);
         return "scores/index";

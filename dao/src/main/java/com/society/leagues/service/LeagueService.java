@@ -153,6 +153,7 @@ public class LeagueService {
         }
     }
 
+
     public <T extends LeagueObject> T purge(T entity) {
         if (entity == null) {
             return null;

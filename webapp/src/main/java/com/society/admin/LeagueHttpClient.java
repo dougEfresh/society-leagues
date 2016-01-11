@@ -11,7 +11,10 @@ import feign.Response;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -67,7 +70,13 @@ public class LeagueHttpClient extends Client.Default {
          cachedResponse = CacheBuilder.newBuilder()
                  .maximumSize(1000)
                  .initialCapacity(500)
-                 .expireAfterAccess(5, TimeUnit.MINUTES).build();
+                 .expireAfterAccess(10, TimeUnit.MINUTES).build();
+
+    }
+
+    @Scheduled(fixedRate = 1000*60*2)
+    public void stats() {
+        logger.info("Cache Size " +  cachedResponse.size());
     }
 
     @Override

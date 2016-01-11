@@ -83,6 +83,21 @@ public class TeamMatchResource {
         return processed;
     }
 
+    @RequestMapping(value = "/admin/delete/playerMatches/{teamMatchId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public TeamMatch deletePlayerMatches(@PathVariable String teamMatchId) {
+        TeamMatch teamMatch = leagueService.findOne(new TeamMatch(teamMatchId));
+        if (teamMatch == null)
+            return new TeamMatch(teamMatchId);
+
+        leagueService.findAll(PlayerResult.class).parallelStream().filter(p->p.getTeamMatch().equals(teamMatch)).forEach( p->
+                leagueService.purge(p)
+        );
+
+        return teamMatch;
+    }
+
+
     @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public TeamMatch modify(@RequestBody TeamMatch teamMatch) {

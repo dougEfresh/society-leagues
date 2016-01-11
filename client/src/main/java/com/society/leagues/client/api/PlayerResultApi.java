@@ -17,6 +17,7 @@ public interface PlayerResultApi {
 
 
     @RequestLine("GET /api/playerresult/teammatch/{teamId}")
+    @Deprecated
     List<PlayerResult> getPlayerResultByTeamMatch(@Param("teamId") String teamId);
 
     @RequestLine("GET /api/playerresult/teammatch/{teamId}/summary")

@@ -24,6 +24,9 @@
                     <span>
                         <a th:href="@{/app/scores/{id}/{matchId}/add/{date} (id=${season.id},date=${date},matchId=${results.matchId})}">Add</a>
                     </span>
+                    <div class="pull-right">
+                        <a th:href="@{/app/scores/{id}/{matchId}/delete (id=${season.id},matchId=${results.matchId})}">Delete All</a>
+                    </div>
                 </div>
             </div>
             <div class="panel-body">
