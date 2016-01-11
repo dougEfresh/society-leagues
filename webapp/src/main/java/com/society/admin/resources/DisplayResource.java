@@ -49,6 +49,12 @@ public class DisplayResource extends BaseController {
         Season s = seasonApi.get(seasonId);
 
         List<Team> teams = statApi.getTeamSeasonStats(s.getId());
+        teams.sort(new Comparator<Team>() {
+            @Override
+            public int compare(Team o1, Team o2) {
+                return o1.getRank().compareTo(o2.getRank());
+            }
+        });
         model.addAttribute("season",s);
         model.addAttribute("displayTeams", teams);
         Team team =  null ;
