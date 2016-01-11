@@ -115,7 +115,7 @@ public class DisplayResource extends BaseController {
 
         if (userId != null) {
             User u = userApi.get(userId);
-            List<PlayerResult> results = playerResultApi.getResults(userId, seasonId);
+            List<PlayerResult> results = playerResultApi.getResultsSummary(userId, seasonId);
             results.forEach(r->r.setReferenceUser(u));
             model.addAttribute("results", results);
             model.addAttribute("resultUser", userApi.get(userId));

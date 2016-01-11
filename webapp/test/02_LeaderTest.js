@@ -51,7 +51,7 @@ function verifyStat(stat,rank,test) {
 function processSeason(season,test) {
     casper.then(function() {
         test.assertExists('#' + season + '-leaders');
-        this.click('#' + season + '-leaders');
+        this.click('#' + season + '-leaders-all');
     });
 
     casper.then(function() {

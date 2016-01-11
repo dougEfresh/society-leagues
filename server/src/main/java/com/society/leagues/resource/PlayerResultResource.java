@@ -285,6 +285,41 @@ public class PlayerResultResource {
         return copyResults;
     }
 
+    @JsonView(PlayerResultSummary.class)
+    @RequestMapping(value = "/{userId}/{seasonId}/summary", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public List<PlayerResult> getUserResultsBySeasonSummary(Principal principal, @PathVariable String userId, @PathVariable String seasonId) {
+        User u = leagueService.findOne(new User(userId));
+        Season s = leagueService.findOne(new Season(seasonId));
+
+        if (s == null || u == null) {
+            return Collections.emptyList();
+        }
+
+        List<PlayerResult> results = leagueService.findAll(PlayerResult.class)
+                .stream()
+                .parallel()
+                .filter(pr -> pr.hasUser(u))
+                .filter(pr->pr.getSeason().equals(s))
+                .filter(PlayerResult::hasResults)
+                .collect(Collectors.toList());
+
+        if (s.isChallenge()) {
+            List<MatchPoints> matchPointsList = resultService.matchPoints();
+            for (PlayerResult challengeResult : results) {
+                challengeResult.setMatchPoints(
+                        matchPointsList.parallelStream()
+                                .filter(
+                                        mp -> mp.getPlayerResult().getId().equals(challengeResult.getId()) &&
+                                                mp.getUser().equals(u)
+                                )
+                                .findFirst().orElse(null));
+            }
+        }
+        return results;
+    }
+
+
+
     @RequestMapping(value = "/racks/{matchId}/{type}/{racks}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public PlayerResult updateRacks(Principal principal, @PathVariable String matchId, @PathVariable String type, @PathVariable Integer racks) {

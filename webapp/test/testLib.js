@@ -47,7 +47,8 @@ function getTopGunStats() {
     }
     return stats;
 }
-function getStats() {
+function getStats(season) {
+return function(season) {
     var rows = document.querySelectorAll('#table-team-standings > tbody > tr');
     var stats = [];
 
@@ -65,9 +66,19 @@ function getStats() {
         stat['rw'] = row.cells[5].textContent;
         stat['rl'] = row.cells[6].textContent;
         stat['forfeits'] = row.cells[8].textContent;
+
+        if (season == 'Tues9Ball') {
+        stat['wins'] = row.cells[3].textContent;
+        stat['lost'] = row.cells[4].textContent;
+        stat['rw'] = row.cells[7].textContent;
+        stat['rl'] = row.cells[8].textContent;
+        stat['forfeits'] = row.cells[9].textContent;
+        }
+
         stats.push(stat);
     }
     return stats;
+    }
 }
 
 var login = function (test,username,password) {
@@ -349,7 +360,7 @@ var scoreSubmitTest = function(test,season) {
             stats  = this.evaluate(getTopGunStats);
             }
        else {
-           stats  = this.evaluate(getStats);
+           stats  = this.evaluate(getStats(season));
            }
 
         this.fill('form#team-match-form', {
@@ -418,11 +429,11 @@ var scoreSubmitTest = function(test,season) {
          if (season == 'TopGun')
             newStats  = this.evaluate(getTopGunStats);
         else
-            newStats  = this.evaluate(getStats);
+            newStats  = this.evaluate(getStats(season));
 
          var homeStat = null;
          var newHomeStat = null;
-         this.echo(homeTeam);
+
          stats.forEach(function(s) {
                   if (s.teamId  == homeTeam) {
                   homeStat = s;

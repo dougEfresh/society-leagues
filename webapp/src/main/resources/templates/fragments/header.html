@@ -141,6 +141,11 @@
                             <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
                             <ul  th:if="${activeSeasons ne null}" class="nav nav-third-level">
                                 <li  th:each="season : ${activeSeasons}">
+                                    <div class="hide" >
+                                        <a th:if="${not season.isChallenge()}" th:id="${season.getShortName().replaceAll(' ','') + '-leaders-all'}"
+                                           th:href="@{/app/leaders/{id}?perPage=100 (id=${season.getId()})}"
+                                           th:text="${season.getShortName()}"></a>
+                                    </div>
                                     <a th:if="${not season.isChallenge()}" th:id="${season.getShortName().replaceAll(' ','') + '-leaders'}"
                                        th:href="@{/app/leaders/{id}(id=${season.getId()})}"
                                        th:text="${season.getShortName()}"></a>
