@@ -78,6 +78,7 @@ casper.test.begin('Test Home Page', function suite(test) {
     processSeason('Tues9Ball',test);
     processSeason('Weds8Ball',test);
     processSeason('Thurs8Ball',test);
+    processSeason('TopGun',test);
 
     casper.run(function(){
         test.done();
