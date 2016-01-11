@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 @SuppressWarnings("unused")
 public class PlayerResult  extends LeagueObject {
 
-    @NotNull @DBRef TeamMatch teamMatch;
+    @JsonView(PlayerResultSummary.class) @NotNull @DBRef TeamMatch teamMatch;
     @JsonView(PlayerResultSummary.class) @NotNull @DBRef User playerHome;
     @JsonView(PlayerResultSummary.class) @DBRef User playerAway;
     @JsonView(PlayerResultSummary.class) @NotNull Integer homeRacks = 0;
