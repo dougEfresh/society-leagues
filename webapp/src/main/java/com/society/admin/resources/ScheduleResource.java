@@ -52,7 +52,6 @@ public class ScheduleResource extends BaseController {
             matches = sortedMatches;
         }
         model.addAttribute("maxHeight",maxGames*45);
-
         if (teamId == null  || teamId.equals("-1")) {
             model.addAttribute("team", team);
         }
@@ -68,7 +67,18 @@ public class ScheduleResource extends BaseController {
         model.addAttribute("season",seasonApi.get(seasonId));
 
         if (teamId == null || teamId.equals("-1")) {
-            model.addAttribute("teamMatches", matches);
+            Map<String,List<MatchModel>> sorted = new TreeMap<>();
+            sorted.clear();
+            for (String s : matches.keySet()) {
+                List<MatchModel> teamMatches = new ArrayList<>();
+                for (TeamMatch teamMatch : matches.get(s)) {
+                    MatchModel matchModel = MatchModel.fromTeam(Arrays.asList(teamMatch)).iterator().next();
+                    matchModel.setPlayerResults(playerResultApi.getPlayerResultsSummary(matchModel.getId()));
+                    teamMatches.add(matchModel);
+                }
+                sorted.put(s,teamMatches);
+            }
+            model.addAttribute("teamMatches", sorted);
             return "schedule/schedule";
         }
 
@@ -78,30 +88,10 @@ public class ScheduleResource extends BaseController {
                 return o1.getMatchDate().compareTo(o2.getMatchDate());
             }
         }).collect(Collectors.toList()));
-        int hcGiven = 0;
-        int hcRecv = 0;
+
         for (MatchModel teamMatch : teamMatches) {
             teamMatch.setPlayerResults(playerResultApi.getPlayerResultsSummary(teamMatch.getId()));
-            if (!teamMatch.hasPlayerResults())
-                continue;
-
-            int homeHc = teamMatch.getHomeCumulativeHC();
-            int awayHc = teamMatch.getAwayCumulativeHC();
-            if (teamMatch.getHome().equals(team))  {
-                if (homeHc - awayHc > 0)
-                    hcGiven += homeHc - awayHc;
-                else
-                    hcRecv += awayHc - homeHc;
-
-            } else {
-                if (awayHc - homeHc > 0)
-                    hcGiven += awayHc - homeHc;
-                else
-                    hcRecv += homeHc - awayHc;
-            }
         }
-        model.addAttribute("hcGiven",hcGiven);
-        model.addAttribute("hcRecv",hcRecv);
         model.addAttribute("teamMatches", teamMatches);
         return "schedule/scheduleTeam";
     }

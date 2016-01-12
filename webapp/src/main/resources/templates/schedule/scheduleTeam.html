@@ -24,12 +24,10 @@
                    <tr>
                        <th>Date</th>
                        <th th:if="${!season.isNine()}">H/A</th>
-                       <th th:if="${!season.isNine()}">HC</th>
                        <th>W/L</th>
                        <th>R</th>
                        <th>Forfeits</th>
                        <th>Opponent</th>
-                       <th th:if="${!season.isNine()}" >Op. Hc</th>
                        <th>Op. R</th>
                        <th>Op. Forfeits</th>
                    </tr>
@@ -43,7 +41,6 @@
                        </td>
                        <td th:if="${!user.isAdmin()}" th:text="${#temporals.format(match.getMatchDate(),'yyyy-MM-dd')}"></td>
                        <td th:if="${!season.isNine()}" th:text="${match.homeOrAway(team)}" ></td>
-                       <td th:if="${!season.isNine()}" th:text="${match.getHc(team)}"></td>
                        <td th:if="${not match.isHasResults()}"></td>
                        <td th:if="${match.isHasResults()}" th:text="${match.isWin(team) ? 'W' : 'L'}"></td>
 
@@ -52,26 +49,11 @@
                        <td >
                            <a th:href="@{/app/results/{matchId} (matchId=${match.getId()})}" th:text="${match.getOpponent(team).getName()}"></a>
                        </td>
-                       <td th:if="${!season.isNine()}" th:text="${match.getOpponentHc(team)}"></td>
                        <td class="racks"  th:text="${match.racks(match.getOpponent(team))}"></td>
                        <td class="racks"  th:text="${match.forfeits(match.getOpponent(team))}"></td>
                    </tr>
                    </tbody>
                         </table>
-                    </div>
-                    <div th:if="${!season.isNine()}" class="table-responsive">
-                        <table  class="table table-bordered table-condensed">
-                            <thead>
-                            <th>Handicaps Given</th>
-                            <th>Handicaps Recv</th>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td th:text="${hcGiven}"></td>
-                                <td th:text="${hcRecv}"></td>
-                            </tr>
-                            </tbody>
-                            </table>
                     </div>
                 </div>
             </div>

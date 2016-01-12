@@ -38,8 +38,25 @@ public class MatchModel extends TeamMatch {
         return getHome().equals(t) ? getAwayCumulativeHC() : getHomeCumulativeHC();
     }
 
+
+    @Override
+    public Integer getWinnerRacks() {
+        return racks(getWinner());
+    }
+
+    @Override
+    public Integer getLoserRacks() {
+        return racks(getLoser());
+    }
+
     public int racks(Team t) {
-        return getHome().equals(t) ? getHomeRacks() : getAwayRacks();
+        int racks = getHome().equals(t) ? getHomeForfeits() : getAwayForfeits();
+        boolean isHome = getHome().equals(t);
+
+        for (PlayerResult playerResult : playerResults) {
+            racks += isHome ? playerResult.getHomeRacks() : playerResult.getAwayRacks();
+        }
+        return racks;
     }
 
    public int forfeits(Team t) {

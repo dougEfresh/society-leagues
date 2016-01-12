@@ -29,5 +29,9 @@ public interface StatApi {
     List<Stat> getUserStats(@Param("userId") String userId);
 
     @RequestLine("GET /api/stat/user/{userId}")
+    @Deprecated
     List<Stat> getUserStatsActive(@Param("userId") String userId);
+
+    @RequestLine("GET /api/stat/user/{userId}/summary")
+    List<Stat> getUserStatsSummary(@Param("userId") String userId);
 }

@@ -74,9 +74,9 @@ casper.test.begin('Test Home Page', function suite(test) {
     });
     testlib.login(test,testlib.user,testlib.pass);
 
+    processSeason('Weds8Ball',test);
     processSeason('Scramble',test);
     processSeason('Tues9Ball',test);
-    processSeason('Weds8Ball',test);
     processSeason('Thurs8Ball',test);
     processSeason('TopGun',test);
 

@@ -20,8 +20,8 @@ public interface PlayerResultApi {
     @Deprecated
     List<PlayerResult> getPlayerResultByTeamMatch(@Param("teamId") String teamId);
 
-    @RequestLine("GET /api/playerresult/teammatch/{teamId}/summary")
-    List<PlayerResult> getPlayerResultsSummary(@Param("teamId") String teamId);
+    @RequestLine("GET /api/playerresult/teammatch/{teamMatchId}/summary")
+    List<PlayerResult> getPlayerResultsSummary(@Param("teamMatchId") String teamMatchId);
 
     @RequestLine("POST /api/playerresult/admin/modify")
     List<PlayerResult> save(List<PlayerResult> results);

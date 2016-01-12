@@ -78,7 +78,7 @@ public class DisplayResource extends BaseController {
                 for (User u : members.getMembers()) {
                     if (!u.isReal())
                         continue;
-                    List<Stat> scrambleStats = statApi.getUserStatsActive(u.getId())
+                    List<Stat> scrambleStats = statApi.getUserStatsSummary(u.getId())
                             .stream().filter(st->st.getSeason() != null).filter(st->st.getSeason().isActive()).collect(Collectors.toList()
                             );
                     Stat newStat = new Stat();
