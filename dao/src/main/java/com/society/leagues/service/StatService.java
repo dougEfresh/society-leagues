@@ -228,6 +228,27 @@ public class StatService {
                 st.setPoints(totalPoints);
             }
         }
+        stats.sort(new Comparator<Stat>() {
+                 @Override
+                 public int compare(Stat stat, Stat t1) {
+                     if (!t1.getWins().equals(stat.getWins())) {
+                         return t1.getWins().compareTo(stat.getWins());
+                     }
+                     if (!t1.getLoses().equals(stat.getLoses())) {
+                         return stat.getLoses().compareTo(t1.getLoses());
+                     }
+
+                     if (!t1.getRacksLost().equals(stat.getRacksLost())) {
+                         return stat.getRacksLost().compareTo(t1.getRacksLost());
+                     }
+                     return t1.getWinPct().compareTo(stat.getWinPct());
+                 }
+             });
+        int rank = 0;
+        for (Stat stat : stats) {
+            if (stat.getUser().isReal() && stat.getType() == StatType.USER_SEASON)
+                stat.setRank(++rank);
+        }
         return stats;
     }
 
