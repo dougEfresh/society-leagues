@@ -158,6 +158,16 @@ public class StatResource {
          return playerStats;
     }
 
+
+    @JsonView(PlayerResultSummary.class)
+    @RequestMapping(value = "/user/{id}/summary",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.ALL_VALUE)
+    public List<Stat> getActiveUserStatsSummary(@PathVariable String id) {
+          return getActiveUserStats(id);
+      }
+
     @RequestMapping(value = "/user/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE,

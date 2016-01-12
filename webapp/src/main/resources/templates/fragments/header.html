@@ -143,7 +143,7 @@
                                 <li  th:each="season : ${activeSeasons}">
                                     <div class="hide" >
                                         <a th:if="${not season.isChallenge()}" th:id="${season.getShortName().replaceAll(' ','') + '-leaders-all'}"
-                                           th:href="@{/app/leaders/{id}?perPage=100 (id=${season.getId()})}"
+                                           th:href="@{/app/leaders/{id}?perPage=200 (id=${season.getId()})}"
                                            th:text="${season.getShortName()}"></a>
                                     </div>
                                     <a th:if="${not season.isChallenge()}" th:id="${season.getShortName().replaceAll(' ','') + '-leaders'}"
