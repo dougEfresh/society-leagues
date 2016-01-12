@@ -1,24 +1,29 @@
 package com.society.leagues.client.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.society.leagues.client.views.PlayerResultSummary;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Stat {
+
+    @JsonView(PlayerResultSummary.class)
     Integer wins = 0;
-    Integer loses = 0;
-    Integer racksWon = 0;
-    Integer racksLost = 0;
-    Integer setWins = 0;
-    Integer setLoses = 0;
-    Integer matches = 0;
-    Integer forfeits = 0;
-    StatType type;
-    User user;
-    Season season;
-    Handicap handicap;
-    Double points = 0d;
-    Integer rank = 0;
-    Team team;
+    @JsonView(PlayerResultSummary.class) Integer loses = 0;
+    @JsonView(PlayerResultSummary.class) Integer racksWon = 0;
+    @JsonView(PlayerResultSummary.class) Integer racksLost = 0;
+    @JsonView(PlayerResultSummary.class) Integer setWins = 0;
+    @JsonView(PlayerResultSummary.class) Integer setLoses = 0;
+    @JsonView(PlayerResultSummary.class) Integer matches = 0;
+    @JsonView(PlayerResultSummary.class) Integer forfeits = 0;
+    @JsonView(PlayerResultSummary.class) StatType type;
+    @JsonView(PlayerResultSummary.class) User user;
+    @JsonView(PlayerResultSummary.class) Season season;
+    @JsonView(PlayerResultSummary.class) Handicap handicap;
+    @JsonView(PlayerResultSummary.class) Double points = 0d;
+    @JsonView(PlayerResultSummary.class) Integer rank = 0;
+    @JsonView(PlayerResultSummary.class) Team team;
 
     public Stat() {
     }
@@ -28,9 +33,11 @@ public class Stat {
         this.type = type;
     }
 
+    @JsonView(PlayerResultSummary.class)
     public String getGame() {
         return getType() == StatType.MIXED_EIGHT ? "8" : "9";
     }
+
     public static Stat buildHandicapStats(final List<PlayerResult> results, StatType statType, User user, Handicap handicap) {
         Stat s= new Stat();
         if (results == null || results.isEmpty())
@@ -118,6 +125,7 @@ public class Stat {
         this.forfeits = forfeits;
     }
 
+    @JsonView(PlayerResultSummary.class)
     public Handicap getHandicap() {
         if (handicap == null) {
             return Handicap.NA;
@@ -125,9 +133,12 @@ public class Stat {
         return handicap;
     }
 
+    @JsonView(PlayerResultSummary.class)
     public boolean isLifeTime() {
         return getType().isLifetime();
     }
+
+    @JsonView(PlayerResultSummary.class)
     public String getHandicapDisplay() {
         if (getType().isLifetime())
             return "";
@@ -150,6 +161,7 @@ public class Stat {
         return s;
     }
 
+    @JsonView(PlayerResultSummary.class)
     public StatType getType() {
         if (type != null) {
             return type;
@@ -232,6 +244,7 @@ public class Stat {
         this.setWins = setWins;
     }
 
+    @JsonView(PlayerResultSummary.class)
     public Double getRackPct() {
         if (matches == 0) {
             return 0d;
@@ -251,6 +264,7 @@ public class Stat {
         this.points = points;
     }
 
+    @JsonView(PlayerResultSummary.class)
     public Double getWinPct() {
         if (matches == 0) {
             return 0d;
