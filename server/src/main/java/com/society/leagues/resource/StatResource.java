@@ -1,5 +1,7 @@
 package com.society.leagues.resource;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.society.leagues.client.views.PlayerResultSummary;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.ResultService;
 import com.society.leagues.service.StatService;
@@ -104,6 +106,9 @@ public class StatResource {
         return hashMap;
     }
 
+
+
+    @JsonView(PlayerResultSummary.class)
     @RequestMapping(value = "/season/users/{id}/summary",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE,
