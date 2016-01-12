@@ -5,9 +5,12 @@
                       class="table table-bordered table-striped table-condensed">
                    <thead>
                    <tr>
-                       <th th:text="${date}"></th>
+                       <th>
+                           <span  th:text="${date}"></span>
+                           <span class="badge">Winner</span>
+                       </th>
                        <th>R</th>
-                       <th></th>
+                       <th>Loser</th>
                        <th>R</th>
                    </tr>
                    </thead>
@@ -17,7 +20,6 @@
                        <td th:class="${team.getId().equals(match.getWinner().getId()) ? 'active team-name' : 'not-active team-name'}" >
                            <a th:href="@{/app/results/{matchId} (matchId=${match.getId()})}" th:text="${match.getWinner().getName()}"></a>
                        </td>
-
                        <td class="racks"  th:text="${match.getWinnerRacks()}"></td>
                        <td th:class="${team.getId().equals(match.getLoser().getId()) ? 'active team-name' : 'not-active team-name'}" >
                            <a th:href="@{/app/results/{matchId} (matchId=${match.getId()})}" th:text="${match.getLoser().getName()}"></a>
