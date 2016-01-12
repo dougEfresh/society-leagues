@@ -100,10 +100,6 @@ public class DisplayResource extends BaseController {
             }
             model.addAttribute("totalWin",totalWins);
             model.addAttribute("totalLost", totalLost);
-            model.addAttribute("handicapReceived", team.getStats().getRacksWon()-totalWins-team.getStats().getForfeits());
-            model.addAttribute("handicapGiven", team.getStats().getRacksLost()-totalLost);
-            model.addAttribute("totalWin",totalWins);
-            model.addAttribute("totalLost",totalLost);
             model.addAttribute("team", team);
         }
 

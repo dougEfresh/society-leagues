@@ -12,9 +12,8 @@ public interface PlayerResultApi {
     @RequestLine("GET /api/playerresult/{userId}/{seasonId}")
     List<PlayerResult> getResults(@Param("userId") String userId, @Param("seasonId") String seasonId);
 
-    @RequestLine("GET /api/playerresult/{userId}/{seasonId}")
+    @RequestLine("GET /api/playerresult/{userId}/{seasonId}/summary")
     List<PlayerResult> getResultsSummary(@Param("userId") String userId, @Param("seasonId") String seasonId);
-
 
     @RequestLine("GET /api/playerresult/teammatch/{teamId}")
     @Deprecated

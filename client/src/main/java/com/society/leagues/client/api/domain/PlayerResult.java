@@ -290,7 +290,7 @@ public class PlayerResult  extends LeagueObject {
     }
 
     @JsonDeserialize(using = DateTimeDeSerializer.class)
-    @JsonIgnore
+    @JsonView(PlayerResult.class)
     public LocalDateTime getMatchDate() {
         if (getTeamMatch() == null)
             return null;
