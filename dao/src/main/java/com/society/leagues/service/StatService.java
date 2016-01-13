@@ -229,7 +229,7 @@ public class StatService {
         });
         int rank = 0;
         for (Stat stat : stats) {
-            if (stat.getUser().isReal() && stat.getType() == StatType.USER_SEASON) {
+            if (stat.getUser().isReal() && stat.getTeam() != null && stat.getType() == StatType.USER_SEASON) {
                 stat.setRank(++rank);
             }
         }
@@ -371,6 +371,8 @@ public class StatService {
                     if (!Objects.equals(t1.getStats().getWins(), t.getStats().getWins())) {
                         return t1.getStats().getWins().compareTo(t.getStats().getWins());
                     }
+                    return t1.getStats().getRackPct().compareTo(t.getStats().getRackPct());
+                    /*
                     if (!Objects.equals(t1.getStats().getLoses(), t.getStats().getLoses())) {
                         return t1.getStats().getLoses().compareTo(t1.getStats().getLoses());
                     }
@@ -383,6 +385,7 @@ public class StatService {
                         return t1.getStats().getRacksWon().compareTo(t.getStats().getRacksWon());
                     }
                     return t.getStats().getRacksLost().compareTo(t1.getStats().getRacksLost());
+                    */
                 }
             }).collect(Collectors.toList());
             int rank = 0;
