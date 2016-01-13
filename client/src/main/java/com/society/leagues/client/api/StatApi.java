@@ -26,7 +26,11 @@ public interface StatApi {
     List<Stat> getUsersSeasonStats(@Param("seasonId") String seasonId);
 
     @RequestLine("GET /api/stat/user/{userId}/all")
+    @Deprecated
     List<Stat> getUserStats(@Param("userId") String userId);
+
+    @RequestLine("GET /api/stat/user/{userId}/{seasonId}/summary")
+    List<Stat> getUserSeasonStats(@Param("userId") String userId, @Param("seasonId") String seasonId);
 
     @RequestLine("GET /api/stat/user/{userId}")
     @Deprecated
