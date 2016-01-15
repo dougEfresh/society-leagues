@@ -112,15 +112,18 @@ public class ScoreResource extends BaseController {
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{matchId}/delete"}, method = RequestMethod.GET)
-    public void deleteAll(@PathVariable String seasonId, @PathVariable String matchId, Model model,
-                              HttpServletResponse response) throws IOException {
+    public void deleteAll(@PathVariable String seasonId, @PathVariable String matchId,
+                          Model model,
+                          HttpServletResponse response) throws IOException {
         response.sendRedirect("/app/scores/" +seasonId + "/" + matchId);
         playerResultApi.getPlayerResultsSummary(matchId).forEach(p->playerResultApi.delete(p.getId()));
     }
 
     private String save(String seasonId, String date, String matchId, TeamMatchModel teamMatchModel, PlayerResultModel playerResultModel, Model model) {
         try {
-            teamMatchApi.save(teamMatchModel.getMatches());
+            if (teamMatchModel != null && teamMatchModel.getMatches() != null && !teamMatchModel.getMatches().isEmpty()) {
+                teamMatchApi.save(teamMatchModel.getMatches());
+            }
             if (playerResultModel != null) {
                 playerResultModel.getPlayerResults().forEach(
                         r->{
