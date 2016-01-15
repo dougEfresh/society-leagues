@@ -64,6 +64,7 @@ public class DisplayResource extends BaseController {
                     return o1.getRank().compareTo(o2.getRank());
                 }
             });
+            model.addAttribute("displayMemberStats", stats);
             //List<Stat> stats = statApi.getTeamMemberStats(teamId).stream().filter(st->st.getUser().isReal()).collect(Collectors.toList());
             if (s.isScramble()) {
                 TeamMembers members  = teamApi.members(teamId);
@@ -72,8 +73,10 @@ public class DisplayResource extends BaseController {
                     if (!u.isReal())
                         continue;
                     List<Stat> scrambleStats = statApi.getUserStatsSummary(u.getId())
-                            .stream().filter(st->st.getSeason() != null).filter(st->st.getSeason().isActive()).collect(Collectors.toList()
-                            );
+                            .stream()
+                            .filter(st->st.getSeason() != null)
+                            .filter(st->st.getSeason().getId().equals(seasonId)
+                            ).collect(Collectors.toList());
                     Stat newStat = new Stat();
                     newStat.setUser(User.defaultUser());
                     scrambleStatModelList.add(new ScrambleStatModel(
@@ -83,8 +86,6 @@ public class DisplayResource extends BaseController {
                     ));
                 }
                 model.addAttribute("displayMemberStats", scrambleStatModelList);
-            } else {
-                model.addAttribute("displayMemberStats", stats);
             }
 
             for (Stat stat : stats) {
