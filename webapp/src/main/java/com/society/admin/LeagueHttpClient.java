@@ -74,7 +74,7 @@ public class LeagueHttpClient extends Client.Default {
 
     }
 
-    @Scheduled(fixedRate = 1000*60*2)
+    @Scheduled(fixedRate = 1000*60*1)
     public void stats() {
         logger.info("Cache Size " +  cachedResponse.size());
     }

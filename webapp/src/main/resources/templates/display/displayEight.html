@@ -12,7 +12,7 @@
             <th>RW</th>
             <th>RL</th>
             <th>PCT</th>
-            <th>F</th>
+            <!--<th th:if="${user.isAdmin()}" >F</th>-->
         </tr>
         </thead>
         <tbody>
@@ -33,7 +33,7 @@
             <td th:text="${team.getStats().getRacksWon()}"></td>
             <td th:text="${team.getStats().getRacksLost()}"></td>
             <td th:text="${#numbers.formatDecimal(team.getStats().getWinPct(),0,3)}"></td>
-            <td th:text="${team.getStats().getForfeits()}"></td>
+            <!--<td th:if="${user.isAdmin()}" th:text="${team.getStats().getForfeits()}"></td>-->
         </tr>
         </tbody>
     </table>

@@ -26,10 +26,10 @@
                        <th th:if="${!season.isNine()}">H/A</th>
                        <th>W/L</th>
                        <th>R</th>
-                       <th>Forfeits</th>
+                       <!--<th>Forfeits</th>-->
                        <th>Opponent</th>
                        <th>Op. R</th>
-                       <th>Op. Forfeits</th>
+                       <!--<th>Op. Forfeits</th>-->
                    </tr>
                    </thead>
                    <tbody>
@@ -45,12 +45,12 @@
                        <td th:if="${match.isHasResults()}" th:text="${match.isWin(team) ? 'W' : 'L'}"></td>
 
                        <td class="racks"  th:text="${match.racks(team)}"></td>
-                       <td class="racks"  th:text="${match.forfeits(team)}"></td>
+                       <!--<td class="racks"  th:text="${match.forfeits(team)}"></td>-->
                        <td >
                            <a th:href="@{/app/results/{matchId} (matchId=${match.getId()})}" th:text="${match.getOpponent(team).getName()}"></a>
                        </td>
                        <td class="racks"  th:text="${match.racks(match.getOpponent(team))}"></td>
-                       <td class="racks"  th:text="${match.forfeits(match.getOpponent(team))}"></td>
+                       <!--<td class="racks"  th:text="${match.forfeits(match.getOpponent(team))}"></td>-->
                    </tr>
                    </tbody>
                         </table>

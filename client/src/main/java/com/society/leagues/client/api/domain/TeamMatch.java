@@ -24,7 +24,7 @@ public class TeamMatch extends LeagueObject {
     @JsonView(PlayerResultSummary.class) @NotNull @DBRef Team away;
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
-    @NotNull LocalDateTime matchDate;
+    @JsonView(PlayerResultSummary.class) @NotNull LocalDateTime matchDate;
 
     Division division = null;
     Integer homeRacks = 0;
@@ -40,8 +40,8 @@ public class TeamMatch extends LeagueObject {
     Integer awayForfeits = 0;
     Integer handicapRacks = 0;
 
-    @JsonIgnore  @Transient String date;
-    @JsonIgnore  @Transient String time;
+    @JsonIgnore @Transient String date;
+    @JsonIgnore @Transient String time;
     @Transient String race = "";
 
     public TeamMatch(Team home, Team away, LocalDateTime matchDate) {
@@ -331,7 +331,6 @@ public class TeamMatch extends LeagueObject {
         }
         return null;
     }
-
 
     public User getOpponent() {
         if (isChallenge()) {

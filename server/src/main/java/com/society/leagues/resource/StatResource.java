@@ -120,6 +120,7 @@ public class StatResource {
         return statService.getSeasonStats(season);
         //statService.refresh();
   }
+
      @RequestMapping(value = "/season/players/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE,
@@ -200,6 +201,16 @@ public class StatResource {
         userStats.add(Stat.buildLifeTimeStats(u, userStats));
         return userStats;
     }
+
+    @JsonView(PlayerResultSummary.class)
+    @RequestMapping(value = "/user/{id}/{seasonId}/summary",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.ALL_VALUE)
+    public List<Stat> getUserSeasonStats(@PathVariable String id, @PathVariable String seasonId) {
+         final Season s = leagueService.findOne(new Season(seasonId));
+         return getAllUserStats(id).stream().filter(st->st.getSeason().equals(s)).collect(Collectors.toList());
+     }
 
     @RequestMapping(value = "/user/{id}/all",
             method = RequestMethod.GET,

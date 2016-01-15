@@ -100,10 +100,6 @@ public class DisplayResource extends BaseController {
             }
             model.addAttribute("totalWin",totalWins);
             model.addAttribute("totalLost", totalLost);
-            model.addAttribute("handicapReceived", team.getStats().getRacksWon()-totalWins-team.getStats().getForfeits());
-            model.addAttribute("handicapGiven", team.getStats().getRacksLost()-totalLost);
-            model.addAttribute("totalWin",totalWins);
-            model.addAttribute("totalLost",totalLost);
             model.addAttribute("team", team);
         }
 
@@ -131,7 +127,7 @@ public class DisplayResource extends BaseController {
             results.forEach(r->r.setReferenceUser(u));
             model.addAttribute("results", results);
             model.addAttribute("resultUser", userApi.get(userId));
-            model.addAttribute("stats", statApi.getUserStats(userId).stream()
+            model.addAttribute("stats", statApi.getUserStatsSummary(userId).stream()
                     .filter(st -> s.equals(st.getSeason()))
                     .filter(st -> st.getType() == StatType.USER_SEASON)
                     .findFirst().orElse(new Stat()));
