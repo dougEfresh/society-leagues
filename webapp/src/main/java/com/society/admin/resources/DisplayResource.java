@@ -47,14 +47,7 @@ public class DisplayResource extends BaseController {
 
     public String processDisplay(@NotNull String seasonId, @NotNull Model model, String teamId, String userId) {
         Season s = seasonApi.get(seasonId);
-
-        List<Team> teams = statApi.getTeamSeasonStats(s.getId());
-        teams.sort(new Comparator<Team>() {
-            @Override
-            public int compare(Team o1, Team o2) {
-                return o1.getRank().compareTo(o2.getRank());
-            }
-        });
+        List<Team> teams = Stat.sortTeamStats(statApi.getTeamSeasonStats(s.getId()));
         model.addAttribute("season",s);
         model.addAttribute("displayTeams", teams);
         Team team =  null ;

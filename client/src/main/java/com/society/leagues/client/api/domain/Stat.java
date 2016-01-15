@@ -3,6 +3,7 @@ package com.society.leagues.client.api.domain;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.society.leagues.client.views.PlayerResultSummary;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -289,15 +290,20 @@ public class Stat {
         this.team = team;
     }
 
-    public static boolean isDifferent(Stat s1, Stat s2) {
-        if (s1 == null || s2 == null)
-            return true;
-
-        return !(s1.getLoses().equals(s2.getLoses()) &&
-                        s1.getWins().equals(s2.getWins()) &&
-                        s1.getRacksLost().equals(s2.getRacksLost()) &&
-                        s1.getRacksWon().equals(s2.getRacksWon()) &&
-                        s1.getSetLoses().equals(s2.getSetLoses()) &&
-                        s1.getSetWins().equals(s2.getSetWins()));
+    public static List<Team> sortTeamStats(List<Team> stats) {
+        stats.sort(new Comparator<Team>() {
+            @Override
+            public int compare(Team o1, Team o2) {
+                if (!o1.getStats().getWins().equals(o2.getStats().getWins())) {
+                    return o2.getStats().getWins().compareTo(o1.getStats().getWins());
+                }
+                return o2.getStats().getRackPct().compareTo(o1.getStats().getRackPct());
+            }
+        });
+        int rank = 0;
+        for (Team stat : stats) {
+            stat.setRank(++rank);
+        }
+        return stats;
     }
 }

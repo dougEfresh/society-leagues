@@ -1,3 +1,7 @@
+th a, th a:visited , th a:active, th a:hover {
+￼    color: #fff;
+}
+
 .racks, .racks > input {
     width: 65px;
     min-width: 65px;

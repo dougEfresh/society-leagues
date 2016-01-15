@@ -86,6 +86,21 @@ function searchUserStats(e) {
            }
 
            });
+
+          $('#table-team-standings').dynatable( {
+     dataset: {
+               perPageDefault: 50,
+               perPageOptions: [10,20,50,100]
+
+           },
+           features: {
+           paginate: false,
+           search: false,
+           sort: true
+           }
+
+           });
+
      $('#table-leaders').dynatable();
      $('#table-teams').dynatable();
      $('#table-users').dynatable();
