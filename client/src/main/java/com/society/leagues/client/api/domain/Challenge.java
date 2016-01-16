@@ -1,6 +1,7 @@
 package com.society.leagues.client.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;
@@ -10,7 +11,7 @@ import java.util.List;
 public class Challenge extends LeagueObject {
     @NotNull Status status;
     @NotNull @DBRef Team challenger;
-    @NotNull @DBRef Team opponent;
+    @DBRef Team opponent;
     @NotNull @DBRef List<Slot> slots;
     @DBRef Slot acceptedSlot;
     @DBRef TeamMatch teamMatch;
@@ -74,12 +75,14 @@ public class Challenge extends LeagueObject {
         this.status = status;
     }
 
+    @JsonIgnore
     public Season getSeason() {
         return challenger.getSeason();
     }
 
+    @JsonIgnore
     public boolean isCancelled() {
-        return  status == Status.CANCELLED;
+        return status == Status.CANCELLED;
     }
 
     @JsonIgnore
@@ -90,16 +93,19 @@ public class Challenge extends LeagueObject {
         return slots.get(0).getLocalDateTime().toLocalDate();
     }
 
+    @JsonIgnore
     public String getDate() {
         return slots.get(0).getLocalDateTime().toString();
     }
 
+    @JsonIgnore
     public User getUserChallenger() {
         if (challenger == null || challenger.getMembers() == null || challenger.getMembers().getMembers().isEmpty())
             return null;
         return challenger.getMembers().getMembers().iterator().next();
     }
 
+    @JsonIgnore
     public User getUserOpponent() {
         if (opponent == null || opponent.getMembers() == null || opponent.getMembers().getMembers().isEmpty())
             return null;
@@ -114,6 +120,14 @@ public class Challenge extends LeagueObject {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    @JsonIgnore
+    public boolean isBroadcast() {
+        if (opponent == null || opponent.getId().equals("-1")) {
+            return true;
+        }
+        return false;
     }
 
     @Override

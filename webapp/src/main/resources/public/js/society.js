@@ -1,7 +1,32 @@
+var qs = (function(a) {
+    if (a == "") return {};
+    var b = {};
+    for (var i = 0; i < a.length; ++i)
+    {
+        var p=a[i].split('=', 2);
+        if (p.length == 1)
+            b[p[0]] = "";
+        else
+            b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+    }
+    return b;
+})(window.location.search.substr(1).split('&'));
+
 function selectDate(e,s) {
     var myselect = document.getElementById("select-date");
     console.log(myselect.options[myselect.selectedIndex].value);
     window.location = window.location.pathname + '?date=' + myselect.options[myselect.selectedIndex].value;
+}
+
+function challengeChange() {
+ var date = $('#challenge-date').val();
+ var userId = $('#challenge-users').val();
+ if (userId == null || userId == undefined)
+     window.location = '/app/challenge?date=' + date ;
+ else
+     window.location = '/app/challenge?date=' + date + '&userId=' + userId;
+
+
 }
 
 function searchUser(e) {
@@ -9,7 +34,13 @@ function searchUser(e) {
     window.location = '/app/user/' + id;
 }
 
-function searchChallengeUser(e) {
+function changeChallengeDate(e) {
+    var id = $('#challenge-date').val();
+    window.location = '/app/challenge?date=' + id;
+}
+
+
+function changeChallengeUser(e) {
     var id = $('#challenge-users').val();
     window.location = '/app/challenge?userId=' + id;
 }

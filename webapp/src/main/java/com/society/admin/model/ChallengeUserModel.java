@@ -11,9 +11,9 @@ import java.util.List;
 
 public class ChallengeUserModel extends Team {
 
-    public static List<ChallengeUserModel> fromUsers(List<Team> users) {
+    public static List<ChallengeUserModel> fromTeams(List<Team> teams) {
         List<ChallengeUserModel> cu = new ArrayList<>();
-        for (Team user : users) {
+        for (Team user : teams) {
             ChallengeUserModel cum = new ChallengeUserModel();
             ReflectionUtils.shallowCopyFieldState(user,cum);
             cu.add(cum);
@@ -23,6 +23,9 @@ public class ChallengeUserModel extends Team {
     }
 
     public String display(User user) {
+        if (getChallengeUser()  == null) {
+            return getName();
+        }
         return String.format("%s - %s - %s",
                 getChallengeUser().getName(),
                 getChallengeUser().getHandicap(getSeason()).getDisplayName(),

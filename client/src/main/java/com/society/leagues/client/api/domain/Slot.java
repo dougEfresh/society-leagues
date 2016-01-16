@@ -47,6 +47,7 @@ public class Slot extends LeagueObject {
         return timeStamp;
     }
 
+    @JsonIgnore
     public String getTime() {
         return timeStamp.toString().split("T")[1].substring(0,5);
     }
@@ -72,7 +73,7 @@ public class Slot extends LeagueObject {
     public String toString() {
         return "Slot{" +
                 "id=" + getId() +
-                "timeStamp=" + timeStamp +
+                " timeStamp=" + timeStamp +
                 '}';
     }
 }

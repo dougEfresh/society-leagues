@@ -3,36 +3,26 @@ package com.society.admin;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.society.admin.security.CookieAuth;
 import com.society.admin.security.CookieContext;
 import feign.Client;
 import feign.Request;
+import feign.Request.Options;
 import feign.Response;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import javax.annotation.PostConstruct;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSocketFactory;
-import java.io.*;
-
-import feign.Request;
-import feign.Request.Options;
-import feign.Response;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.annotation.PostConstruct;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSocketFactory;
-import java.io.IOException;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
@@ -41,7 +31,6 @@ import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import static feign.Util.CONTENT_ENCODING;
 import static feign.Util.CONTENT_LENGTH;
 import static feign.Util.ENCODING_GZIP;
 
@@ -52,13 +41,13 @@ public class LeagueHttpClient extends Client.Default {
     static final String DEFLATE = "deflate";
     static Logger logger = LoggerFactory.getLogger(LeagueHttpClient.class);
 
-    private  SSLSocketFactory sslContextFactory = null;
-    private  HostnameVerifier hostnameVerifier = null;
+    private SSLSocketFactory sslContextFactory = null;
+    private HostnameVerifier hostnameVerifier = null;
 
-    Cache<String,CachedResponse> cachedResponse;
+    Cache<String, CachedResponse> cachedResponse;
 
     public LeagueHttpClient() {
-        super(null,null);
+        super(null, null);
     }
 
     public LeagueHttpClient(SSLSocketFactory sslContextFactory, HostnameVerifier hostnameVerifier) {
@@ -67,24 +56,24 @@ public class LeagueHttpClient extends Client.Default {
 
     @PostConstruct
     public void init() {
-         cachedResponse = CacheBuilder.newBuilder()
-                 .maximumSize(1000)
-                 .initialCapacity(500)
-                 .expireAfterAccess(30, TimeUnit.MINUTES).build();
+        cachedResponse = CacheBuilder.newBuilder()
+                .maximumSize(1000)
+                .initialCapacity(500)
+                .expireAfterAccess(30, TimeUnit.MINUTES).build();
 
     }
 
-    @Scheduled(fixedRate = 1000*60*1)
+    @Scheduled(fixedRate = 1000 * 60 * 1)
     public void stats() {
-        logger.info("Cache Size " +  cachedResponse.size());
+        logger.info("Cache Stat Entries " + cachedResponse.size());
     }
 
-    @Scheduled(fixedRate = 1000*60*5)
+    @Scheduled(fixedRate = 1000 * 60 * 5)
     public void statsSize() {
-        logger.info("Cache Size " +  cachedResponse.size());
-        Map<String,CachedResponse> cache = cachedResponse.asMap();
+        logger.info("Cache Stat Size " + cachedResponse.size());
+        Map<String, CachedResponse> cache = cachedResponse.asMap();
         for (String s : cache.keySet()) {
-            logger.info(String.format("%s %s"),cache.get(s).length, s);
+            logger.info(String.format("%s\t%s", cache.get(s).response.length + "", s));
         }
     }
 
@@ -104,7 +93,7 @@ public class LeagueHttpClient extends Client.Default {
         }
 
         HttpURLConnection connection = convertAndSend(request, options);
-        Response response = convertResponse(connection,request);
+        Response response = convertResponse(connection, request);
         if (response.headers().containsKey("Set-Cookie")) {
             SecurityContext context = SecurityContextHolder.getContext();
             if (context instanceof CookieContext) {
@@ -115,7 +104,7 @@ public class LeagueHttpClient extends Client.Default {
                 }
             }
         }
-        if (response.status() != 200)  {
+        if (response.status() != 200) {
             cachedResponse.invalidateAll();
         }
         return response;
@@ -223,13 +212,17 @@ public class LeagueHttpClient extends Client.Default {
         }
         if (status == 200) {
             byte[] resp = compress(IOUtils.toByteArray(new GZIPInputStream(stream)));
-            cachedResponse.put(request.url(), new CachedResponse(resp,length));
+            cachedResponse.put(request.url(), new CachedResponse(resp, length));
             stream = new ByteArrayInputStream(resp);
+            return Response.create(status, reason, headers, new GZIPInputStream(stream), length);
         }
-        return Response.create(status, reason, headers, new GZIPInputStream(stream), length);
+        if (status == 404) {
+            return Response.create(status, "Not Found: " + request.method(), headers, null, 0);
+        }
+        return Response.create(status, reason, headers, stream, length);
     }
 
-    static class CachedResponse  {
+    static class CachedResponse {
         final byte[] response;
         final Integer length;
 

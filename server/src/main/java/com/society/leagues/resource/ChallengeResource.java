@@ -37,7 +37,9 @@ public class ChallengeResource {
         User u = leagueService.findByLogin(principal.getName());
         Team challenger = leagueService.findOne(challenge.getChallenger());
         Team opponent = leagueService.findOne(challenge.getOpponent());
-
+        if (challenge.isBroadcast()) {
+            return leagueService.save(challenge);
+        }
         if (challenger.getChallengeUser().equals(u) || opponent.getChallengeUser().equals(u) || u.isAdmin()) {
             Challenge c = leagueService.save(challenge);
             sendEmail(c.getUserOpponent(),c.getUserChallenger(),Status.NOTIFY,c,null);
@@ -152,8 +154,8 @@ public class ChallengeResource {
                 }
             }
             return available.stream().sorted((o1, o2) -> o1.getName().compareTo(o2.getName())).collect(Collectors.toList());
-        } catch (Throwable t) {
-
+        } catch (Exception t) {
+            logger.error(t.getMessage(),t);
         }
         return Collections.emptyList();
     }
@@ -165,8 +167,8 @@ public class ChallengeResource {
             List<Slot> slots = leagueService.findAll(Slot.class).parallelStream().filter(s->s.getLocalDateTime().toLocalDate().isEqual(dt)).collect(Collectors.toList());
             slots.sort((o1, o2) -> o1.getLocalDateTime().compareTo(o2.getLocalDateTime()));
             return slots;
-        } catch (Throwable t) {
-
+        } catch (Exception t) {
+            logger.error(t.getMessage(),t);
         }
         return Collections.emptyList();
     }

@@ -1,17 +1,44 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
     <div id="challenge-app"  layout:fragment="content">
-          <form id="form-select-challenger">
-              <select id="challenge-users" th:onChange="'searchChallengeUser()'" class="form-control" >
+        <!--       th:action="@{/app/challenge} (userId=${opponent.getId()},date=${date})}" -->
+        <label >
+              <select id="challenge-date" onChange="challengeChange()" class="form-control" >
                   <!--/*@thymesVar id="u" type="com.society.admin.model.ChallengeUserModel"*/-->
+                  <option th:each="d : ${dates}"
+                          th:text="${#temporals.format(d, 'MM/dd')}"
+                          th:value="${d.toString()}"
+                          th:selected="${d.toString() == date}">
+
+                  </option>
+              </select>
+        </label>
+        <label th:if="${opponent ne null}">
+              <select th:if="${challengers ne null} " id="challenge-users" onChange="challengeChange()" class="form-control" >
                   <option th:each="u : ${challengers}"
                           th:value="${u.getId()}"
                           th:text="${u.display(user)}"
                           th:selected="${opponent.getId() == u.getId()}"
                   >
-
                   </option>
               </select>
+        </label>
+        <form th:if="${opponent ne null}" id="form-select-challenger" th:action="@{/app/challenge (userId=${opponent.getId()},date=${date})}"
+              th:object="${challenge}" th:method="post">
+              <div th:each="slot: ${challenge.getSlots()}" class="ck-button">
+                  <label >
+              <input th:type="checkbox"
+                     th:checked="${'false' == 'true'}"
+                     th:name="slots"
+                     th:value="${slot.getId()}">
+                  <span th:text="${slot.getTime()}" ></span>
+                  </label>
+
+              </label>
+              </div>
+            <label>
+              <input type="submit" value="submit">
+            </label>
           </form>
     </div>
 </div>
