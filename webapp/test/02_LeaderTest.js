@@ -74,11 +74,11 @@ casper.test.begin('Test Home Page', function suite(test) {
     });
     testlib.login(test,testlib.user,testlib.pass);
 
-    processSeason('Thurs8Ball',test);
-    processSeason('Weds8Ball',test);
-    processSeason('Scramble',test);
-    processSeason('Tues9Ball',test);
-    processSeason('TopGun',test);
+    processSeason('thursday',test);
+    processSeason('wednesday',test);
+    processSeason('tuesday',test);
+    processSeason('monday',test);
+    processSeason('sunday',test);
 
     casper.run(function(){
         test.done();

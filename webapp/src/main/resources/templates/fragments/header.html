@@ -51,6 +51,9 @@
                         <i class="fa fa-trophy fa-fw"></i> Top Gun<span class="fa arrow"></span>
                       </a>
                      <ul  class="nav nav-second-level">
+                          <li>
+                             <a id="challenge-link" href="/app/challenge"> Challenge</a>
+                         </li>
                          <li>
                              <a th:id="'challenge-display-link-' + ${challengeSeason.getId()}"
                                 th:href="@{/app/display/{id} (id=${challengeSeason.getId()})}"
@@ -142,15 +145,15 @@
                             <ul  th:if="${activeSeasons ne null}" class="nav nav-third-level">
                                 <li  th:each="season : ${activeSeasons}">
                                     <div class="hide" >
-                                        <a th:if="${not season.isChallenge()}" th:id="${season.getShortName().replaceAll(' ','') + '-leaders-all'}"
+                                        <a th:id="${season.getDay() + '-leaders-all'}"
                                            th:href="@{/app/leaders/{id}?perPage=200 (id=${season.getId()})}"
                                            th:text="${season.getShortName()}"></a>
                                     </div>
-                                    <a th:if="${not season.isChallenge()}" th:id="${season.getShortName().replaceAll(' ','') + '-leaders'}"
+                                    <a th:if="${not season.isChallenge()}" th:id="${season.getDay() + '-leaders'}"
                                        th:href="@{/app/leaders/{id}(id=${season.getId()})}"
                                        th:text="${season.getShortName()}"></a>
                                     <a th:if="${season.isChallenge()}"
-                                       th:id="${season.getShortName().replaceAll(' ','') + '-leaders'}"
+                                       th:id="${season.getDay() + '-leaders'}"
                                        th:href="@{/app/display/{id}(id=${season.getId()})}"
                                        th:text="${season.getShortName()}"></a>
                                 </li>

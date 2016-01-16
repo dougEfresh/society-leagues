@@ -219,6 +219,10 @@ public class Season extends LeagueObject   {
         return division == Division.EIGHT_BALL_THURSDAYS || division == Division.EIGHT_BALL_WEDNESDAYS;
     }
 
+    public String getDay() {
+       return division.day;
+    }
+
     @Override
     public String toString() {
         return "Season{" +

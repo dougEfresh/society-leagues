@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +26,12 @@ public class ChallengeResource extends BaseController {
 
     @RequestMapping(value = {"/challenge"}, method = RequestMethod.GET)
     public String challenge(@RequestParam(required = false) String userId, Model model) throws IOException {
-        List<Team> challengeUsers = challengeApi.challengeUsers().stream().filter(user->user.getChallengeUser() != null).collect(Collectors.toList());
+        List<Team> challengeUsers = new ArrayList<>();
+        Team broadcast = new Team("-1");
+        broadcast.setName("---- Broadcast ---");
+        challengeUsers.add(broadcast);
+        challengeUsers.addAll(challengeApi.challengeUsers().stream().filter(user->user.getChallengeUser() != null).collect(Collectors.toList()));
+
         User u = userApi.get();
         Team challenger = challengeUsers.stream().filter(c->c.hasUser(u)).findFirst().orElse(null);
         model.addAttribute("challenger",challenger);

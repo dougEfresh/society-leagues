@@ -70,7 +70,7 @@ public class LeagueHttpClient extends Client.Default {
          cachedResponse = CacheBuilder.newBuilder()
                  .maximumSize(1000)
                  .initialCapacity(500)
-                 .expireAfterAccess(10, TimeUnit.MINUTES).build();
+                 .expireAfterAccess(30, TimeUnit.MINUTES).build();
 
     }
 
@@ -78,6 +78,16 @@ public class LeagueHttpClient extends Client.Default {
     public void stats() {
         logger.info("Cache Size " +  cachedResponse.size());
     }
+
+    @Scheduled(fixedRate = 1000*60*5)
+    public void statsSize() {
+        logger.info("Cache Size " +  cachedResponse.size());
+        Map<String,CachedResponse> cache = cachedResponse.asMap();
+        for (String s : cache.keySet()) {
+            logger.info(String.format("%s %s"),cache.get(s).length, s);
+        }
+    }
+
 
     @Override
     public Response execute(Request request, Request.Options options) throws IOException {
