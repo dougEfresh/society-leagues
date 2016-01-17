@@ -21,7 +21,7 @@
                                 <span th:text="${challenge.getRace()}"></span>
                             </td>
                             <td class="challenge-actions">
-                                <a href="#">
+                                <a th:href="@{/app/challenge/cancel/{id} (id=${challenge.getId()})}">
                                     <button class="btn btn-sm btn-danger btn-responsive challenge-upcoming-decline-button">
                                         <span class="glyphicon glyphicon-remove"></span>
                                     </button>

@@ -58,6 +58,7 @@ public class ChallengeResource extends BaseController {
 
     @RequestMapping(value = {"/challenge/cancel/{id}"}, method = RequestMethod.GET)
     public String cancel(@PathVariable String id, Model model, HttpServletResponse response) throws IOException {
+        challengeApi.cancel(new Challenge(id));
         return challenge(null,null,model,response);
     }
 
