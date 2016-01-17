@@ -1,6 +1,6 @@
 package com.society.interceptors;
 
-import com.society.admin.security.CookieContext;
+import com.society.leagues.security.CookieContext;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
