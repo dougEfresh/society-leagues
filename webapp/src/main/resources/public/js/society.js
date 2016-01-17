@@ -33,6 +33,11 @@ function searchUser(e) {
     var id = $('#users-search').val();
     window.location = '/app/user/' + id;
 }
+function seasonChange(e) {
+    var id = $('#season-select').val();
+    window.location = '/app/season?seasonId=' + id;
+}
+
 
 function changeChallengeDate(e) {
     var id = $('#challenge-date').val();
@@ -64,6 +69,14 @@ function searchUserStats(e) {
            }
      });
      */
+
+      $('.season-date').datetimepicker({
+         dateFormat: 'Y-m-d',
+         format: "Y-m-d H:i:00",
+         formatDate: 'Y-m-d',
+         timepicker: true
+      });
+
      $('.match-date').datetimepicker({
          dateFormat: 'Y-m-d',
          format: 'Y-m-d',
@@ -117,6 +130,21 @@ function searchUserStats(e) {
            }
 
            });
+
+  $('#table-season').dynatable( {
+     dataset: {
+               perPageDefault: 5,
+               perPageOptions: [10,20,50,100]
+
+           },
+           features: {
+           paginate: true,
+           search: false,
+           sort: true
+           }
+
+           });
+
 
           $('#table-team-standings').dynatable( {
      dataset: {

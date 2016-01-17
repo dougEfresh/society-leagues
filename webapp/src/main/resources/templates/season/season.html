@@ -1,0 +1,54 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+    <div layout:fragment="content">
+        <div id="season-app" >
+            <form id="season-form"
+                  th:if="${season ne null}"
+                  th:action="@{/app/season}"
+                  th:object="${season}" th:method="post">
+                <input type="hidden" field="*{id}" th:value="${season.getId()}">
+
+                <input class="season-date" th:id="${'date-' + season.getId()}" th:field="*{startDate}" type="text"
+                       th:value="${season.startDate}">
+                <label>
+                    <select th:field="*{seasonStatus}" id="season-status" class="form-control" >
+                        <option value="PENDING" th:selected="${'PENDING' == season.seasonStatus}">
+                            Pending
+                        </option>
+                        <option value="ACTIVE" th:selected="${'ACTIVE' == season.seasonStatus}">
+                            Active
+                        </option>
+                        <option value="INACTIVE" th:selected="${'INACTIVE' == season.seasonStatus}">
+                            Not Activeh
+                        </option>
+
+                    </select>
+                </label>
+
+                <label>
+                    <input type="submit" value="submit">
+                </label>
+            </form>
+            <div class="table-responsive">
+                <label><span>Add</span></label>
+            <table id=table-season" class="table table-bordered">
+                <thead>
+                <th>Start Date</th>
+                <th>Division</th>
+                </thead>
+                <tbody>
+                <tr th:each="s : ${seasons}" >
+                    <td>
+                        <a th:href="@{/app/season (seasonId=${s.id})}" >
+                            <span th:text="${#temporals.format(s.getStartDate(),'yyyy-MM-dd')}"></span>
+                        </a>
+                    </td>
+
+                    <td><span th:text="${s.getDivision().getDisplayName()}"></span></td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+</div>

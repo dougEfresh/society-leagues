@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.converters.DateTimeSerializer;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ public class Season extends LeagueObject   {
     @NotNull
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
+    @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss" )
     LocalDateTime startDate;
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
@@ -67,7 +69,7 @@ public class Season extends LeagueObject   {
         if (name != null)
             return name;
 
-        return String.format("%s,%s,%s",year,type,division);
+        return String.format("%s,%s,%s",year,type,division.day);
     }
 
     public String getDisplayName() {

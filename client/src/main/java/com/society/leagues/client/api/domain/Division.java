@@ -29,4 +29,20 @@ public enum Division {
     public String toString() {
         return this.name();
     }
+
+    public LeagueType getLeagueType() {
+        return leagueType;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public String getDay() {
+        return day;
+    }
 }
