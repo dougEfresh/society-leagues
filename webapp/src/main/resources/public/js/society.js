@@ -101,7 +101,7 @@ function searchUserStats(e) {
      });
      $('.table-top-gun-standings').dynatable( {
       dataset : {
-              perPageDefault: 50
+              perPageDefault: 10
          }
      });
      $('#table-team-schedule').dynatable( {

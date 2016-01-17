@@ -10,17 +10,14 @@ import java.util.List;
 
 public interface ChallengeApi {
 
-    @RequestLine("GET /api/challenge/users")
-    List<Team> challengeUsers();
+    @RequestLine("GET /api/challenge/user/{userId}")
+    List<Challenge> challengesForUser(@Param("userId") String userId);
 
     @RequestLine("GET /api/challenge/date/{date}")
-    List<Team> challengeUserOnDate(@Param("date") String date);
+    List<Team> challengeUsersOnDate(@Param("date") String date);
 
     @RequestLine("GET /api/challenge/slots")
     List<Slot> challengeSlots();
-
-    @RequestLine("GET /api/challenge/slots/{date}")
-    List<Slot> getAvailableSlotsOnDate(@Param("date") String date);
 
     @RequestLine("GET /api/challenge/slots/{date}/{userId}")
     List<Slot> getAvailableSlotsForUsers(@Param("userId") String userId, @Param("date") String date);

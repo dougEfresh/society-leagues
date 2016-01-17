@@ -10,5 +10,6 @@ public enum Status {
     SENT,
     COMPLETE,
     UPCOMING,
+    BROADCAST,
     UNKNOWN
 }

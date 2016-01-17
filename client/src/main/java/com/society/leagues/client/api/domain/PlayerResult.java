@@ -30,7 +30,7 @@ public class PlayerResult  extends LeagueObject {
     @JsonView(PlayerResultSummary.class) User playerAwayPartner;
     @JsonView(PlayerResultSummary.class) Handicap playerHomeHandicapPartner;
     @JsonView(PlayerResultSummary.class) Handicap playerAwayHandicapPartner;
-    @Transient MatchPoints matchPoints;
+    @JsonView(PlayerResultSummary.class) @Transient MatchPoints matchPoints;
     @JsonView(PlayerResultSummary.class)  Boolean scotch = false;
     @JsonIgnore @Transient boolean forfeit = false;
     @JsonIgnore @Transient Boolean homeWinner = null;

@@ -1,0 +1,30 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org" >
+    <div th:if="${not #lists.isEmpty(pending)}" class="panel panel-default">
+            <div class="panel-heading">
+                <span>Pending</span>
+            </div>
+            <div id="challenge-sent" class="panel-body">
+                <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead></thead>
+                        <tbody>
+                        <tr th:each="challenge : ${pending}">
+                            <td class="challenge-date" >
+                                <span th:text="${#temporals.format(challenge.getLocalDate(), 'MM/dd')}">
+                                </span>
+                            </td>
+                            <td class="challenge-name">
+                                <span th:text="${challenge.getUserOpponent().getName()}"></span>
+                            </td>
+                            <td class="challenge-race">
+                                <span th:text="${challenge.getRace()}"></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    </div>
+</div>
