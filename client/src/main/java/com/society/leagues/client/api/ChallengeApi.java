@@ -16,6 +16,9 @@ public interface ChallengeApi {
     @RequestLine("DELETE /api/challenge/cancel/{challengeId}")
     Challenge cancel(Challenge challenge);
 
+    @RequestLine("POST /api/challenge/accept")
+    Challenge accept(Challenge challenge);
+
     @RequestLine("GET /api/challenge/date/{date}")
     List<Team> challengeUsersOnDate(@Param("date") String date);
 

@@ -62,6 +62,12 @@ public class ChallengeResource extends BaseController {
         return challenge(null,null,model,response);
     }
 
+    @RequestMapping(value = {"/challenge/accept/{id}/{slotId"}, method = RequestMethod.GET)
+    public String accept(@PathVariable String id, @PathVariable String slotId, Model model, HttpServletResponse response) throws IOException {
+
+        return challenge(null,null,model,response);
+    }
+
     public void processDate(String date, String userId, Model model, HttpServletResponse response) throws IOException {
         List<Slot> slots = challengeApi.challengeSlots();
         Set<LocalDate> dates = slots.stream()
