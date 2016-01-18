@@ -1,15 +1,17 @@
 package com.society.leagues.client.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.society.leagues.client.views.PlayerResultSummary;
 
 import javax.validation.constraints.NotNull;
 
 public class MatchPoints {
     PlayerResult playerResult;
-    Integer points = 0;
-    Double weightedAvg = 0d;
-    Integer matchNum = 0;
-    String calculation = "";
+    @JsonView(PlayerResultSummary.class) Integer points = 0;
+    @JsonView(PlayerResultSummary.class) Double weightedAvg = 0d;
+    @JsonView(PlayerResultSummary.class) Integer matchNum = 0;
+    @JsonView(PlayerResultSummary.class) String calculation = "";
     User user;
 
     public MatchPoints() {
