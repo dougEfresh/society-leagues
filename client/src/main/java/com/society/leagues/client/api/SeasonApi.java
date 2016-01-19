@@ -17,4 +17,10 @@ public interface SeasonApi {
 
     @RequestLine("GET /api/season/{id}")
     Season get(@Param("id") String id);
+
+    @RequestLine("POST /api/season/admin/create")
+    Season create(Season season);
+
+    @RequestLine("POST /api/season/admin/modify")
+    Season modify(Season season);
 }

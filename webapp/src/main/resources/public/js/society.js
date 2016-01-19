@@ -29,6 +29,12 @@ function challengeChange() {
 
 }
 
+
+function changeTeamSeason(e) {
+    var id = $('#team-seasons').val();
+    window.location = '/app/team/season/' + id;
+}
+
 function searchUser(e) {
     var id = $('#users-search').val();
     window.location = '/app/user/' + id;
@@ -72,9 +78,9 @@ function searchUserStats(e) {
 
       $('.season-date').datetimepicker({
          dateFormat: 'Y-m-d',
-         format: "Y-m-d H:i:00",
+         format: "Y-m-d",
          formatDate: 'Y-m-d',
-         timepicker: true
+         timepicker: false
       });
 
      $('.match-date').datetimepicker({

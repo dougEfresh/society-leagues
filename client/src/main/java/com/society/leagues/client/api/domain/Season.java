@@ -1,13 +1,18 @@
 package com.society.leagues.client.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.DateSerializer;
 import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.converters.DateTimeSerializer;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalField;
 import java.util.Comparator;
 
 public class Season extends LeagueObject   {
@@ -16,7 +21,6 @@ public class Season extends LeagueObject   {
     @NotNull
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
-    @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss" )
     LocalDateTime startDate;
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
@@ -26,6 +30,8 @@ public class Season extends LeagueObject   {
     @NotNull Division division;
     String year = LocalDateTime.now().toString().substring(0,4);
     String type;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    LocalDate sDate = LocalDate.now();
 
     public Season(String name, LocalDateTime startDate, Integer rounds, Division division) {
         this.name = name;
@@ -49,8 +55,20 @@ public class Season extends LeagueObject   {
         Season s = new Season();
         s.setSeasonStatus(Status.PENDING);
         s.setDivision(Division.NINE_BALL_TUESDAYS);
-        s.setName("default");
+        s.setName("");
+        s.setId("-1");
         return s;
+    }
+
+    public LocalDate getsDate() {
+        if (sDate == null && startDate != null)
+            return startDate.toLocalDate();
+
+        return sDate;
+    }
+
+    public void setsDate(LocalDate sDate) {
+        this.sDate = sDate;
     }
 
     public Season(String id) {
@@ -63,17 +81,18 @@ public class Season extends LeagueObject   {
 
     public void setSeasonStatus(Status seasonStatus) {
         this.seasonStatus = seasonStatus;
+
     }
 
     public String getName() {
-        if (name != null)
+        if (name != null  && !name.isEmpty())
             return name;
 
         return String.format("%s,%s,%s",year,type,division.day);
     }
 
     public String getDisplayName() {
-        if (this.name != null) {
+        if (this.name != null && !this.name.isEmpty()) {
             return this.name;
         }
         if (division == Division.NINE_BALL_CHALLENGE) {
@@ -96,9 +115,25 @@ public class Season extends LeagueObject   {
             return "";
 
         String name = "'" + year.substring(2,4) + " ";
-        name += type;
+        name += getSeasonType();
         name += " " + division.displayName;
         return name;
+    }
+
+    @JsonIgnore
+    public String getSeasonType() {
+        if (getStartDate() == null)
+            return "";
+        int month = getStartDate().get(ChronoField.MONTH_OF_YEAR);
+        if ( month < 3) {
+            return "Winter";
+        }
+
+        if (month >= 3 && month < 9) {
+            return "Summer";
+        }
+
+        return "Fall";
     }
 
     public boolean isScramble() {
@@ -110,6 +145,9 @@ public class Season extends LeagueObject   {
     }
 
     public LocalDateTime getStartDate() {
+        if (sDate != null)
+            return sDate.atStartOfDay();
+
         return startDate;
     }
 
@@ -183,7 +221,7 @@ public class Season extends LeagueObject   {
 
     }
 
-      public static Comparator<Season> sortOrder = new Comparator<Season>() {
+    public static Comparator<Season> sortOrder = new Comparator<Season>() {
         @Override
         public int compare(Season o1, Season o2) {
             return o1.getDivision().order.compareTo(o2.getDivision().order);

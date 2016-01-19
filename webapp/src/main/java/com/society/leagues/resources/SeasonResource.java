@@ -1,6 +1,5 @@
 package com.society.leagues.resources;
 
-import com.society.leagues.client.api.domain.Division;
 import com.society.leagues.client.api.domain.Season;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,9 +9,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,21 +20,32 @@ public class SeasonResource extends BaseController {
     @RequestMapping(value = {"/season"}, method = RequestMethod.GET)
     public String season(@RequestParam(required = false) String seasonId, Model model, HttpServletResponse response) {
         List<Season> seasons  = new ArrayList<>();
-        /*Season seasonDefault = Season.getDefault();
-        seasonDefault.setName("---- New -----");
-        seasons.add(seasonDefault);
-        */
-        seasons.addAll(seasonApi.get().stream().sorted(Season.sort).collect(Collectors.toList()));
+        seasons.addAll(seasonApi.get().stream().sorted((o1, o2) -> o2.getStartDate().compareTo(o1.getStartDate())).collect(Collectors.toList()));
         model.addAttribute("seasons", seasons);
         if (seasonId != null) {
-            Season season = seasonApi.get(seasonId);
-            model.addAttribute("season",season);
+            if (seasonId.equals("-1") || seasonId.isEmpty()) {
+                model.addAttribute("season", Season.getDefault());
+            } else {
+                Season season = seasonApi.get(seasonId);
+                model.addAttribute("season", season);
+            }
         }
         return "season/season";
     }
 
+    @RequestMapping(value = {"/season/new"}, method = RequestMethod.GET)
+    public String newSeason(Model model, HttpServletResponse response) {
+        return season("-1",model,response);
+    }
+
     @RequestMapping(value = {"/season"}, method = RequestMethod.POST)
     public String save(Model model, @ModelAttribute Season season, HttpServletResponse response) {
+        if (season.getId().equals("-1") || season.getId().isEmpty()) {
+            season.setId(null);
+            seasonApi.create(season);
+        } else {
+            seasonApi.modify(season);
+        }
         return season(null,model,response);
      }
 }

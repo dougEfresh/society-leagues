@@ -1,15 +1,14 @@
 package com.society.leagues.resource;
 
+import com.society.leagues.client.api.domain.*;
 import com.society.leagues.service.LeagueService;
-import com.society.leagues.client.api.domain.Division;
-import com.society.leagues.client.api.domain.Handicap;
-import com.society.leagues.client.api.domain.Season;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -35,7 +34,27 @@ public class SeasonResource {
     @RequestMapping(value = "/admin/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Season create(Principal principal, @RequestBody Season season) {
-        return leagueService.save(season);
+        Season previous = leagueService.findAll(Season.class).stream().filter(s->s.getDivision() == season.getDivision()).max(new Comparator<Season>() {
+            @Override
+            public int compare(Season o1, Season o2) {
+                return o2.getStartDate().compareTo(o2.getStartDate());
+            }
+        }).get();
+        Season newSeason = leagueService.save(season);
+        List<Team> teams = leagueService.findAll(Team.class).parallelStream().filter(t->t.getSeason().equals(previous)).collect(Collectors.toList());
+        List<Team> newTeams =  new ArrayList<>();
+        for (Team team : teams) {
+            Team newTeam = LeagueObject.copy(team);
+            newTeam.setId(null);
+            newTeam.setSeason(newSeason);
+            for( User user : newTeam.getMembers().getMembers()) {
+                Handicap handicap = user.getHandicap(previous);
+                user.addHandicap(new HandicapSeason(handicap,newSeason));
+            }
+            newTeams.add(newTeam);
+        }
+        leagueService.save(newTeams);
+        return season;
     }
 
     @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)

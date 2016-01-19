@@ -9,42 +9,47 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
 public class TeamResource extends BaseController {
 
     @RequestMapping(value = {"/team"}, method = RequestMethod.GET)
-    public String list(@RequestParam(defaultValue = "", required = false) String search , Model model) {
-        model.addAttribute("search", search);
-        if (search.length() > 1) {
-            model.addAttribute("teams", teamApi.active()
-                    .stream()
-                    .filter(u -> u.getName().toLowerCase().contains(search.toLowerCase()))
-                    .filter(t->!t.getSeason().isChallenge())
-                    .sorted(new Comparator<Team>() {
-                        @Override
-                        public int compare(Team o1, Team o2) {
-                            return o1.getName().compareTo(o2.getName());
-                        }
-                    })
-                    .collect(Collectors.toList()));
-        } else {
-            model.addAttribute("teams",  teamApi.active()
-                    .stream()
-                    .filter(u -> u.getName().toLowerCase().contains(search.toLowerCase()))
-                    .filter(t->!t.getSeason().isChallenge())
-                    .sorted(new Comparator<Team>() {
-                        @Override
-                        public int compare(Team o1, Team o2) {
-                            return o1.getName().compareTo(o2.getName());
-                        }
-                    })
-                    .collect(Collectors.toList()));
-        }
-
+    public String list(Model model) {
+        model.addAttribute("teams",  teamApi.active()
+                .stream()
+                .filter(t->!t.getSeason().isChallenge())
+                .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
+                .collect(Collectors.toList()));
+        listSeasons(model);
+        model.addAttribute("season",Season.getDefault());
         return "team/team";
+    }
+
+    @RequestMapping(value = {"/team/season/{id}"}, method = RequestMethod.GET)
+    public String listSeason(@PathVariable String id, Model model) {
+        model.addAttribute("teams",  teamApi.active()
+                .stream()
+                .filter(t->!t.getSeason().isChallenge())
+                .filter(t->t.getSeason().equals(new Season(id)))
+                .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
+                .collect(Collectors.toList()));
+        listSeasons(model);
+        model.addAttribute("season",seasonApi.get(id));
+        return "team/team";
+    }
+
+    private void listSeasons(Model model) {
+        List<Season> seasons = new ArrayList<>();
+        Season defaultSeason = Season.getDefault();
+        defaultSeason.setName("--- Choose ----");
+        seasons.add(defaultSeason);
+        seasons.addAll(seasonApi.get());
+        model.addAttribute("allSeasons", seasons);
+
     }
 
     private String processEditTeam(String id, Model model) {
@@ -53,7 +58,8 @@ public class TeamResource extends BaseController {
         tm.setUsers(members.getMembers().stream().filter(User::isReal).collect(Collectors.toList()));
         tm.setMembersId(members.getId());
         model.addAttribute("team", tm);
-        model.addAttribute("allSeasons", seasonApi.get());
+        listSeasons(model);
+        model.addAttribute("season",tm.getSeason());
         return "team/editTeam";
     }
 
