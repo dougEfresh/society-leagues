@@ -1,5 +1,7 @@
 package com.society.leagues.conf.spring;
 
+import com.society.leagues.converters.DateDeSerializer;
+import com.society.leagues.converters.DateSerializer;
 import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.converters.DateTimeSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +20,10 @@ import java.time.LocalDateTime;
 public class JacksonConfig {
     @Autowired  DateTimeSerializer dateTimeSerializer;
     @Autowired  DateTimeDeSerializer dateTimeDeSerializer;
-    @Autowired  DateSerializer dateSerializer;
-    @Autowired  DateDeSerializer dateDeSerializer;
+    @Autowired
+    DateSerializer dateSerializer;
+    @Autowired
+    DateDeSerializer dateDeSerializer;
     @Value("${pretty-print:false}") boolean prettyPrint = false;
 
     @Bean

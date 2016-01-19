@@ -1,4 +1,4 @@
-package com.society.leagues.conf.spring;
+package com.society.leagues.converters;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
