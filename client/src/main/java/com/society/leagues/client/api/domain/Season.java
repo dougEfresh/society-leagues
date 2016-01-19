@@ -3,7 +3,8 @@ package com.society.leagues.client.api.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.DateSerializer;
+import com.society.leagues.converters.DateDeSerializer;
+import com.society.leagues.converters.DateSerializer;
 import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.converters.DateTimeSerializer;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -31,6 +32,8 @@ public class Season extends LeagueObject   {
     String year = LocalDateTime.now().toString().substring(0,4);
     String type;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @JsonSerialize(using = DateSerializer.class)
+    @JsonDeserialize(using = DateDeSerializer.class)
     LocalDate sDate = LocalDate.now();
 
     public Season(String name, LocalDateTime startDate, Integer rounds, Division division) {
