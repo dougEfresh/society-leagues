@@ -2,6 +2,8 @@ package com.society.leagues.resource;
 
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.service.LeagueService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 public class SeasonResource {
 
     @Autowired LeagueService leagueService;
+    static Logger logger = LoggerFactory.getLogger(SeasonResource.class);
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Season get(Principal principal, @PathVariable String id) {
@@ -41,6 +44,7 @@ public class SeasonResource {
             }
         }).get();
         Season newSeason = leagueService.save(season);
+        logger.info("Saved new season " + season.getId() + " " + season.getDisplayName());
         List<Team> teams = leagueService.findAll(Team.class).parallelStream().filter(t->t.getSeason().equals(previous)).collect(Collectors.toList());
         List<Team> newTeams =  new ArrayList<>();
         for (Team team : teams) {
@@ -52,6 +56,7 @@ public class SeasonResource {
                 user.addHandicap(new HandicapSeason(handicap,newSeason));
                 leagueService.save(user);
             }
+            logger.info("Adding team " + team.getName());
             newTeams.add(newTeam);
         }
         leagueService.save(newTeams);
