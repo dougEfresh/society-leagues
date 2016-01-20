@@ -9,7 +9,10 @@
         <a class="navbar-brand" href="/app/home">Society</a>
     </div>
     <!-- /.navbar-header -->
-
+    <!--/*@thymesVar id="user" type="com.society.leagues.client.api.domain.User"*/-->
+    <!--/*@thymesVar id="u" type="com.society.leagues.client.api.domain.User"*/-->
+    <!--/*@thymesVar id="allUsers" type="com.society.leagues.client.api.domain.User"*/-->
+    <!--/*@thymesVar id="challengeSeason" type="com.society.leagues.client.api.domain.Season"*/-->
     <ul class="nav navbar-top-links navbar-right">
         <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -55,6 +58,7 @@
                              <a id="challenge-link" href="/app/challenge"> Challenge</a>
                          </li>
                          <li>
+
                              <a th:id="'challenge-display-link-' + ${challengeSeason.getId()}"
                                 th:href="@{/app/display/{id} (id=${challengeSeason.getId()})}"
                                      >Standings</a>
@@ -80,7 +84,7 @@
                                        >Standings</a>
                                 </li>
                                 <li >
-                                    <a th:href="@{/app/schedule/{id} (id=${team.getSeason().getId()})}">Schedule</a>
+                                    <a th:href="@{/app/schedule/{id} (id=${team.getSeason().getId()},teamId=${team.getId()})}">Schedule</a>
                                 </li>
                                 <li>
                                     <a th:href="@{/app/leaders/{id} (id=${team.getSeason().getId()})}">Leaders</a>
@@ -90,6 +94,7 @@
                     </ul>
                 </li>
                 <li th:if="${user ne null}">
+
                     <a th:href="@{/app/stats/{id} (id=${user.getId()})}">
                         <i class="fa fa-bar-chart"></i> My Stats</a>
                 </li>

@@ -50,6 +50,7 @@ public class SeasonResource {
             for( User user : newTeam.getMembers().getMembers()) {
                 Handicap handicap = user.getHandicap(previous);
                 user.addHandicap(new HandicapSeason(handicap,newSeason));
+                leagueService.save(user);
             }
             newTeams.add(newTeam);
         }

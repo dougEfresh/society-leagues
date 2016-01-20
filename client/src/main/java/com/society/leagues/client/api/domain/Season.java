@@ -13,7 +13,6 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalField;
 import java.util.Comparator;
 
 public class Season extends LeagueObject   {
@@ -34,7 +33,7 @@ public class Season extends LeagueObject   {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @JsonSerialize(using = DateSerializer.class)
     @JsonDeserialize(using = DateDeSerializer.class)
-    LocalDate sDate = LocalDate.now();
+    LocalDate sDate;
 
     public Season(String name, LocalDateTime startDate, Integer rounds, Division division) {
         this.name = name;
@@ -127,7 +126,7 @@ public class Season extends LeagueObject   {
     public String getSeasonType() {
         if (getStartDate() == null)
             return "";
-        int month = getStartDate().get(ChronoField.MONTH_OF_YEAR);
+        int month = getsDate().get(ChronoField.MONTH_OF_YEAR);
         if ( month < 3) {
             return "Winter";
         }
