@@ -202,7 +202,7 @@ public class LeagueHttpClient extends Client.Default {
         }
         InputStream stream;
         if (status >= 400) {
-            stream = connection.getErrorStream();
+            return Response.create(status, reason, headers, connection.getErrorStream(), length);
         } else {
             stream = connection.getInputStream();
         }

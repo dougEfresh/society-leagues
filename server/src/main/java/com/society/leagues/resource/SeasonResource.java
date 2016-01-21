@@ -34,23 +34,41 @@ public class SeasonResource {
     public List<Season> getActiveSeasons(Principal principal) {
         return leagueService.findAll(Season.class).stream().filter(s->s.isActive()).collect(Collectors.toList());
     }
+
     @RequestMapping(value = "/create/schedule/{seasonId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<TeamMatch> schedule(Principal principal, @PathVariable String seasonId) {
         Season season = leagueService.findOne(new Season(seasonId));
         List<Team> teams = leagueService.findAll(Team.class).stream()
-
-                .filter(t->t.getSeason().equals(season))
+                .filter(t -> t.getSeason().equals(season))
                 .collect(Collectors.toList());
 
         teams.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
-
+        List<TeamMatch> matches = new ArrayList<>();
         for(int i = 0; i< teams.size(); i++) {
             Team team = teams.get(i);
-            LocalDate matchDate = season.getsDate().plusDays(i);
-            TeamMatch tm = new TeamMatch();
-
+            List<Team> opponents = teams.stream().filter(t->!t.equals(team)).collect(Collectors.toList());
+            for (int week = 0; week < season.getRounds(); week++) {
+                Team opponent = opponents.get(week % opponents.size()-1);
+                LocalDate matchDate = season.getsDate().plusDays(week++);
+                if (matches.stream().filter(m -> m.hasTeam(team) && m.getMatchDate().toLocalDate().equals(matchDate)).count() > 0) {
+                    //Already has match for that day
+                    continue;
+                }
+                TeamMatch existing = matches.stream().filter(m->m.hasTeam(team)).sorted(new Comparator<TeamMatch>() {
+                    @Override
+                    public int compare(TeamMatch o1, TeamMatch o2) {
+                        return o2.getMatchDate().compareTo(o1.getMatchDate());
+                    }
+                }).findFirst().orElse(null);
+                if (existing == null || existing.getAway().equals(team)) {
+                    matches.add(new TeamMatch(team,opponent,matchDate.atStartOfDay()));
+                } else {
+                    matches.add(new TeamMatch(opponent,team,matchDate.atStartOfDay()));
+                }
+            }
         }
+        return matches;
     }
 
     @RequestMapping(value = "/admin/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
