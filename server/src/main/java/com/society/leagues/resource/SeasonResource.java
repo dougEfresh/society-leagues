@@ -45,18 +45,16 @@ public class SeasonResource {
                 .collect(Collectors.toList());
 
         teams.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
-        leagueService.findAll(TeamMatch.class).stream().filter(tm->season.equals(tm.getSeason())).forEach(new Consumer<TeamMatch>() {
-            @Override
-            public void accept(TeamMatch teamMatch) {
-                if (teamMatch != null) {
-                    leagueService.findAll(PlayerResult.class).stream()
-                            .filter(pr->pr.getTeamMatch() != null)
-                            .filter(pr -> teamMatch.equals(pr.getTeamMatch()))
-                            .forEach(playerResult -> leagueService.purge(playerResult));
-                    leagueService.purge(teamMatch);
-                }
+        List <TeamMatch> existings = leagueService.findAll(TeamMatch.class).stream().filter(tm->season.equals(tm.getSeason())).collect(Collectors.toList());
+        for (TeamMatch existing : existings) {
+            for( PlayerResult result:  leagueService.findAll(PlayerResult.class).stream()
+                    .filter(pr->pr.getTeamMatch() != null)
+                    .filter(pr -> existing.equals(pr.getTeamMatch())).collect(Collectors.toList())) {
+                leagueService.purge(result);
             }
-        });
+            leagueService.purge(existing);
+        }
+        
         List<TeamMatch> matches = new ArrayList<>();
         for(int i = 0; i< teams.size(); i++) {
             Team team = teams.get(i);
