@@ -54,7 +54,7 @@ public class SeasonResource {
             }
             leagueService.purge(existing);
         }
-        
+
         List<TeamMatch> matches = new ArrayList<>();
         for(int i = 0; i< teams.size(); i++) {
             Team team = teams.get(i);
@@ -62,7 +62,7 @@ public class SeasonResource {
             for (int week = 0; week < season.getRounds(); week++) {
                 Team opponent = opponents.get(week % (opponents.size()-1));
                 logger.info(String.format("%s vs %s", team.getName(), opponent.getName()));
-                LocalDate matchDate = season.getsDate().plusDays(week++);
+                LocalDate matchDate = season.getsDate().plusWeeks(week++);
                 if (matches.stream().filter(m -> m.hasTeam(team) && m.getMatchDate().toLocalDate().equals(matchDate)).count() > 0) {
                     //Already has match for that day
                     logger.info(String.format("Skipping %s vs %s", team.getName(), opponent.getName()));
