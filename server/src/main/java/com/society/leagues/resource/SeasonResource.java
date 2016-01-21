@@ -81,10 +81,17 @@ public class SeasonResource {
                 }
             }
         }
+        matches.sort(new Comparator<TeamMatch>() {
+            @Override
+            public int compare(TeamMatch o1, TeamMatch o2) {
+                return o1.getHome().getName().compareTo(o2.getHome().getName());
+            }
+        });
         for (TeamMatch match : matches) {
             logger.info(String.format("Created %s vs %s (%s)", match.getHome().getName(), match.getAway().getName(), match.getDate()));
+            leagueService.save(match);
         }
-        leagueService.save(matches);
+
         return matches;
     }
 
