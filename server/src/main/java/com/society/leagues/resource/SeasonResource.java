@@ -45,7 +45,7 @@ public class SeasonResource {
                 .collect(Collectors.toList());
 
         teams.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
-        leagueService.findAll(TeamMatch.class).stream().filter(tm->tm.getSeason().equals(season)).forEach(new Consumer<TeamMatch>() {
+        leagueService.findAll(TeamMatch.class).stream().filter(tm->season.equals(tm.getSeason())).forEach(new Consumer<TeamMatch>() {
             @Override
             public void accept(TeamMatch teamMatch) {
                 leagueService.findAll(PlayerResult.class).stream().filter(pr->pr.getTeamMatch().equals(teamMatch)).forEach(new Consumer<PlayerResult>() {
