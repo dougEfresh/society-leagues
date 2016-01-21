@@ -49,7 +49,10 @@ public class SeasonResource {
             @Override
             public void accept(TeamMatch teamMatch) {
                 if (teamMatch != null) {
-                    leagueService.findAll(PlayerResult.class).stream().filter(pr -> teamMatch.equals(pr.getTeamMatch())).forEach(playerResult -> leagueService.purge(playerResult));
+                    leagueService.findAll(PlayerResult.class).stream()
+                            .filter(pr->pr.getTeamMatch() != null)
+                            .filter(pr -> teamMatch.equals(pr.getTeamMatch()))
+                            .forEach(playerResult -> leagueService.purge(playerResult));
                     leagueService.purge(teamMatch);
                 }
             }
