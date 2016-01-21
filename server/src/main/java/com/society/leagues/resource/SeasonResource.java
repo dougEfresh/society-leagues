@@ -86,6 +86,7 @@ public class SeasonResource {
         for (TeamMatch match : matches) {
             logger.info(String.format("Created %s vs %s (%s)", match.getHome().getName(), match.getAway().getName(), match.getDate()));
         }
+        leagueService.save(matches);
         return matches;
     }
 
