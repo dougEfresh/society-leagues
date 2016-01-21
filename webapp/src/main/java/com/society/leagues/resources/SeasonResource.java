@@ -3,10 +3,7 @@ package com.society.leagues.resources;
 import com.society.leagues.client.api.domain.Season;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -36,6 +33,13 @@ public class SeasonResource extends BaseController {
     @RequestMapping(value = {"/season/new"}, method = RequestMethod.GET)
     public String newSeason(Model model, HttpServletResponse response) {
         return season("-1",model,response);
+    }
+
+
+    @RequestMapping(value = {"/season/create/{seasonId}"}, method = RequestMethod.GET)
+    public String newSeason(@PathVariable String seasonId, Model model, HttpServletResponse response) {
+        seasonApi.schedule(seasonId);
+        return season(seasonId,model,response);
     }
 
     @RequestMapping(value = {"/season"}, method = RequestMethod.POST)

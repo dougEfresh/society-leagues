@@ -4,7 +4,13 @@
         <div id="season-app" >
             <div>
               <a href="/app/season/new"><button class="btn btn-primary"><b>Add New</b></button></a>
-          </div>
+            </div>
+
+            <div>
+             <a th:if="${season ne null}"  th:href="@{/app/season/create/{seasonId} (seasonId=${season.id})}" >
+                 <button class="btn btn-warning"><b>Create Schedule</b></button>
+             </a>
+            </div>
 
             <form id="season-form"
                   th:if="${season ne null}"
@@ -61,6 +67,7 @@
                 <th>Start Date</th>
                 <th>Division</th>
                 <th>Season</th>
+                <th>T</th>
                 </thead>
                 <tbody>
                 <!--/*@thymesVar id="seasons" type="com.society.leagues.client.api.domain.Season"*/-->
@@ -77,6 +84,7 @@
                     </td>
                     <td><span th:text="${s.getDivision().getDisplayName()}"></span></td>
                     <td><span th:text="${s.getSeasonType()}"></span></td>
+                    <td> <a th:href="@{/app/team/season/{seasonId} (seasonId=${s.id})}" >Manage Teams</a></td>
                 </tr>
                 </tbody>
             </table>

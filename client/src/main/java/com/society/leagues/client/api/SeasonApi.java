@@ -1,6 +1,7 @@
 package com.society.leagues.client.api;
 
 import com.society.leagues.client.api.domain.Season;
+import com.society.leagues.client.api.domain.TeamMatch;
 import feign.Param;
 import feign.RequestLine;
 
@@ -23,4 +24,8 @@ public interface SeasonApi {
 
     @RequestLine("POST /api/season/admin/modify")
     Season modify(Season season);
+
+    @RequestLine("PUT /api/season/schedule/create/{seasonId}")
+    List<TeamMatch> schedule(String seasonId);
+
 }

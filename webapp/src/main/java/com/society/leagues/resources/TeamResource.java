@@ -31,7 +31,7 @@ public class TeamResource extends BaseController {
 
     @RequestMapping(value = {"/team/season/{id}"}, method = RequestMethod.GET)
     public String listSeason(@PathVariable String id, Model model) {
-        model.addAttribute("teams",  teamApi.active()
+        model.addAttribute("teams",  teamApi.getBySeason(id)
                 .stream()
                 .filter(t->!t.getSeason().isChallenge())
                 .filter(t->t.getSeason().equals(new Season(id)))

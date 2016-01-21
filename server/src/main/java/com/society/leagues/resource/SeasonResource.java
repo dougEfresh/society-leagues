@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -32,6 +33,24 @@ public class SeasonResource {
     @RequestMapping(value = {"/active","/current"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public List<Season> getActiveSeasons(Principal principal) {
         return leagueService.findAll(Season.class).stream().filter(s->s.isActive()).collect(Collectors.toList());
+    }
+    @RequestMapping(value = "/create/schedule/{seasonId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<TeamMatch> schedule(Principal principal, @PathVariable String seasonId) {
+        Season season = leagueService.findOne(new Season(seasonId));
+        List<Team> teams = leagueService.findAll(Team.class).stream()
+
+                .filter(t->t.getSeason().equals(season))
+                .collect(Collectors.toList());
+
+        teams.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
+
+        for(int i = 0; i< teams.size(); i++) {
+            Team team = teams.get(i);
+            LocalDate matchDate = season.getsDate().plusDays(i);
+            TeamMatch tm = new TeamMatch();
+
+        }
     }
 
     @RequestMapping(value = "/admin/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
