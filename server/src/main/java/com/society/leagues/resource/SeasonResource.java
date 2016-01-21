@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @RestController
@@ -44,6 +45,18 @@ public class SeasonResource {
                 .collect(Collectors.toList());
 
         teams.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
+        leagueService.findAll(TeamMatch.class).stream().filter(tm->tm.getSeason().equals(season)).forEach(new Consumer<TeamMatch>() {
+            @Override
+            public void accept(TeamMatch teamMatch) {
+                leagueService.findAll(PlayerResult.class).stream().filter(pr->pr.getTeamMatch().equals(teamMatch)).forEach(new Consumer<PlayerResult>() {
+                    @Override
+                    public void accept(PlayerResult playerResult) {
+                        leagueService.purge(playerResult);
+                    }
+                });
+                leagueService.purge(teamMatch);
+            }
+        });
         List<TeamMatch> matches = new ArrayList<>();
         for(int i = 0; i< teams.size(); i++) {
             Team team = teams.get(i);
