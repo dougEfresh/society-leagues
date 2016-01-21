@@ -25,7 +25,7 @@ public interface SeasonApi {
     @RequestLine("POST /api/season/admin/modify")
     Season modify(Season season);
 
-    @RequestLine("PUT /api/season/schedule/create/{seasonId}")
-    List<TeamMatch> schedule(String seasonId);
+    @RequestLine("PUT /api/season/create/schedule/{seasonId}")
+    List<TeamMatch> schedule(@Param("seasonId") String seasonId);
 
 }

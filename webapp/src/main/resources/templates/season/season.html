@@ -7,7 +7,7 @@
             </div>
 
             <div>
-             <a th:if="${season ne null}"  th:href="@{/app/season/create/{seasonId} (seasonId=${season.id})}" >
+             <a th:if="${season ne null && !season.isActive()}"  th:href="@{/app/season/create/{seasonId} (seasonId=${season.id})}" >
                  <button class="btn btn-warning"><b>Create Schedule</b></button>
              </a>
             </div>

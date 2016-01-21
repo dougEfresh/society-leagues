@@ -62,7 +62,7 @@ public class SeasonResource {
             Team team = teams.get(i);
             List<Team> opponents = teams.stream().filter(t->!t.equals(team)).collect(Collectors.toList());
             for (int week = 0; week < season.getRounds(); week++) {
-                Team opponent = opponents.get(week % opponents.size()-1);
+                Team opponent = opponents.get(week % (opponents.size()-1));
                 LocalDate matchDate = season.getsDate().plusDays(week++);
                 if (matches.stream().filter(m -> m.hasTeam(team) && m.getMatchDate().toLocalDate().equals(matchDate)).count() > 0) {
                     //Already has match for that day
