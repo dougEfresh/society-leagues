@@ -71,7 +71,7 @@ public class SeasonResource {
                         opponent = op;
                     }
                     j++;
-                } while(opponent == null || j <= opponents.size());
+                } while(opponent == null && j <= opponents.size());
                 if (opponent != null) {
                     logger.info(String.format("%s vs %s (%s)", team.getName(), opponent.getName(), matchDate.toString()));
                     if (matches.stream().filter(m -> m.hasTeam(team)
