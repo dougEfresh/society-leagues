@@ -70,14 +70,14 @@ public class SeasonResource {
                 }
                 int j = 0;
                 do {
-                    final Team op  = opponents.get((week + j) % (opponents.size()-1));
+                    final Team op  = opponents.get((week + j) % (opponents.size()));
                     if (matches.stream()
                             .filter(m->m.getMatchDate().toLocalDate().equals(matchDate))
                             .filter(m->m.hasTeam(op)).count() == 0) {
                         opponent = op;
                     }
                     j++;
-                } while(opponent == null && j <= opponents.size());
+                } while(opponent == null && (j+1) <= opponents.size());
                 if (opponent != null) {
                     logger.info(String.format("%s vs %s (%s)", team.getName(), opponent.getName(), matchDate.toString()));
 
