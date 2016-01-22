@@ -71,26 +71,27 @@ public class SeasonResource {
                         opponent = op;
                     }
                     j++;
-                } while(opponent == null);
-
-                logger.info(String.format("%s vs %s (%s)", team.getName(), opponent.getName(), matchDate.toString()));
-                if (matches.stream().filter(m -> m.hasTeam(team)
-                        && m.getMatchDate().toLocalDate().equals(matchDate)).count() > 0) {
-                    //Already has match for that day
-                    logger.info(String.format("Skipping %s vs %s", team.getName(), opponent.getName()));
-                    continue;
-                }
-
-                TeamMatch existing = matches.stream().filter(m->m.hasTeam(team)).sorted(new Comparator<TeamMatch>() {
-                    @Override
-                    public int compare(TeamMatch o1, TeamMatch o2) {
-                        return o2.getMatchDate().compareTo(o1.getMatchDate());
+                } while(opponent == null || j <= opponents.size());
+                if (opponent != null) {
+                    logger.info(String.format("%s vs %s (%s)", team.getName(), opponent.getName(), matchDate.toString()));
+                    if (matches.stream().filter(m -> m.hasTeam(team)
+                            && m.getMatchDate().toLocalDate().equals(matchDate)).count() > 0) {
+                        //Already has match for that day
+                        logger.info(String.format("Skipping %s vs %s", team.getName(), opponent.getName()));
+                        continue;
                     }
-                }).findFirst().orElse(null);
-                if (existing == null || existing.getAway().equals(team)) {
-                    matches.add(new TeamMatch(team,opponent,matchDate.atStartOfDay()));
-                } else {
-                    matches.add(new TeamMatch(opponent,team,matchDate.atStartOfDay()));
+
+                    TeamMatch existing = matches.stream().filter(m -> m.hasTeam(team)).sorted(new Comparator<TeamMatch>() {
+                        @Override
+                        public int compare(TeamMatch o1, TeamMatch o2) {
+                            return o2.getMatchDate().compareTo(o1.getMatchDate());
+                        }
+                    }).findFirst().orElse(null);
+                    if (existing == null || existing.getAway().equals(team)) {
+                        matches.add(new TeamMatch(team, opponent, matchDate.atStartOfDay()));
+                    } else {
+                        matches.add(new TeamMatch(opponent, team, matchDate.atStartOfDay()));
+                    }
                 }
             }
         }

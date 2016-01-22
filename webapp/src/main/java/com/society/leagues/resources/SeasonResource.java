@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -37,19 +38,20 @@ public class SeasonResource extends BaseController {
 
 
     @RequestMapping(value = {"/season/create/{seasonId}"}, method = RequestMethod.GET)
-    public String newSeason(@PathVariable String seasonId, Model model, HttpServletResponse response) {
+    public void newSeason(@PathVariable String seasonId, Model model, HttpServletResponse response) throws IOException {
         seasonApi.schedule(seasonId);
-        return season(seasonId,model,response);
+        response.sendRedirect("/app/season?seasonId=" + seasonId);
     }
 
     @RequestMapping(value = {"/season"}, method = RequestMethod.POST)
-    public String save(Model model, @ModelAttribute Season season, HttpServletResponse response) {
+    public void save(Model model, @ModelAttribute Season season, HttpServletResponse response) throws IOException {
         if (season.getId().equals("-1") || season.getId().isEmpty()) {
             season.setId(null);
-            seasonApi.create(season);
+            Season s = seasonApi.create(season);
+            response.sendRedirect("/app/season?seasonId=" + s.getId());
         } else {
-            seasonApi.modify(season);
+            Season s = seasonApi.modify(season);
+            response.sendRedirect("/app/season?seasonId=" + s.getId());
         }
-        return season(null,model,response);
      }
 }
