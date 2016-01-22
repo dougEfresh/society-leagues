@@ -62,6 +62,12 @@ public class SeasonResource {
             for (int week = 0; week < season.getRounds(); week++) {
                 Team opponent = null;
                 LocalDate matchDate = season.getsDate().plusWeeks(week);
+                if (matches.stream().filter(m -> m.hasTeam(team)
+                        && m.getMatchDate().toLocalDate().equals(matchDate)).count() > 0) {
+                    //Already has match for that day
+                    logger.info(String.format("Skipping %s", team.getName()));
+                    continue;
+                }
                 int j = 0;
                 do {
                     final Team op  = opponents.get((week + j) % (opponents.size()-1));
@@ -74,12 +80,6 @@ public class SeasonResource {
                 } while(opponent == null && j <= opponents.size());
                 if (opponent != null) {
                     logger.info(String.format("%s vs %s (%s)", team.getName(), opponent.getName(), matchDate.toString()));
-                    if (matches.stream().filter(m -> m.hasTeam(team)
-                            && m.getMatchDate().toLocalDate().equals(matchDate)).count() > 0) {
-                        //Already has match for that day
-                        logger.info(String.format("Skipping %s vs %s", team.getName(), opponent.getName()));
-                        continue;
-                    }
 
                     TeamMatch existing = matches.stream().filter(m -> m.hasTeam(team)).sorted(new Comparator<TeamMatch>() {
                         @Override
