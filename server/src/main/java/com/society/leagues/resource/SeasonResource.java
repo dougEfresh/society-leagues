@@ -93,7 +93,9 @@ public class SeasonResource {
                             return o2.getMatchDate().compareTo(o1.getMatchDate());
                         }
                     }).findFirst().orElse(null);
-                    if (existing == null || existing.getAway().equals(team)) {
+                    long homeCnt = matches.stream().filter(m->m.getHome().equals(team)).count();
+                    long awayCnt = matches.stream().filter(m->m.getAway().equals(team)).count();
+                    if (homeCnt <= awayCnt) {
                         matches.add(new TeamMatch(team, opponent, matchDate.atStartOfDay()));
                     } else {
                         matches.add(new TeamMatch(opponent, team, matchDate.atStartOfDay()));
