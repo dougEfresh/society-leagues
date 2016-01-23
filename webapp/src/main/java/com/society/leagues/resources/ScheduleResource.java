@@ -20,7 +20,8 @@ public class ScheduleResource extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/schedule/{seasonId}")
     public String getSchedule(@PathVariable String seasonId, @RequestParam(required = false) String teamId, Model model) {
-        Map<String,List<TeamMatch>> matches = teamMatchApi.matchesBySeason(seasonId);
+        //Map<String,List<TeamMatch>> matches = teamMatchApi.matchesBySeason(seasonId);
+        Map<String,List<TeamMatch>> matches = teamMatchApi.matchesBySeasonSummary(seasonId);
         Map<String,List<TeamMatch>> sortedMatches = new TreeMap<>();
         for (String s : matches.keySet()) {
             sortedMatches.put(s,matches.get(s));

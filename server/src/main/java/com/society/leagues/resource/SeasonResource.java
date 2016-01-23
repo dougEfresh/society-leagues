@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/api/season")
 @SuppressWarnings("unused")
 public class SeasonResource {
-
+    @Autowired CacheResource cacheResource;
     @Autowired LeagueService leagueService;
     static Logger logger = LoggerFactory.getLogger(SeasonResource.class);
 
@@ -111,6 +111,8 @@ public class SeasonResource {
             logger.info(String.format("Created %s vs %s (%s)", match.getHome().getName(), match.getAway().getName(), match.getDate()));
             leagueService.save(match);
         }
+
+        cacheResource.refresh();
 
         return matches;
     }

@@ -26,18 +26,18 @@ public class TeamMatch extends LeagueObject {
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     @JsonView(PlayerResultSummary.class) @NotNull LocalDateTime matchDate;
 
-    Division division = null;
-    Integer homeRacks = 0;
-    Integer awayRacks = 0;
-    Integer setHomeWins = 0;
-    Integer setAwayWins = 0;
-    Integer matchNumber = 0;
+    @JsonView(PlayerResultSummary.class) Division division = null;
+    @JsonView(PlayerResultSummary.class)  Integer homeRacks = 0;
+    @JsonView(PlayerResultSummary.class)  Integer awayRacks = 0;
+    @JsonView(PlayerResultSummary.class)  Integer setHomeWins = 0;
+    @JsonView(PlayerResultSummary.class)  Integer setAwayWins = 0;
+    @JsonView(PlayerResultSummary.class)  Integer matchNumber = 0;
     User referenceUser = null;
     Boolean hasPlayerResults = false;
     Status status = null;
-    Integer forfeits = 0;
-    Integer homeForfeits = 0;
-    Integer awayForfeits = 0;
+    @JsonView(PlayerResultSummary.class)  Integer forfeits = 0;
+    @JsonView(PlayerResultSummary.class)  Integer homeForfeits = 0;
+    @JsonView(PlayerResultSummary.class)  Integer awayForfeits = 0;
     Integer handicapRacks = 0;
 
     @JsonIgnore @Transient String date;

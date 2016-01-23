@@ -34,7 +34,7 @@ public class SheetResource extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET,value = "/sheets/{seasonId}/{date}")
     public String sheets(@PathVariable String seasonId, @PathVariable  String date, Model model) {
-        TeamMatchModel teamMatchModel = new TeamMatchModel(teamMatchApi.matchesBySeason(seasonId).get(date));
+        TeamMatchModel teamMatchModel = new TeamMatchModel(teamMatchApi.matchesBySeasonSummary(seasonId).get(date));
         for (TeamMatch teamMatch : teamMatchModel.getMatches()) {
             Map<String,List<User>> users = teamMatchApi.teamMembers(teamMatch.getId());
             teamMatch.getHome().setMembers(new TeamMembers(users.get("home").stream().filter(User::isReal)

@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 @Controller
 public class SeasonResource extends BaseController {
 
+
+
     @RequestMapping(value = {"/season"}, method = RequestMethod.GET)
     public String season(@RequestParam(required = false) String seasonId, Model model, HttpServletResponse response) {
         List<Season> seasons  = new ArrayList<>();

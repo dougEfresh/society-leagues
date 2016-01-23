@@ -13,7 +13,11 @@ public interface TeamMatchApi {
     TeamMatch get(@Param("id") String id);
 
     @RequestLine("GET /api/teammatch/season/{id}/all")
+    @Deprecated
     Map<String,List<TeamMatch>> matchesBySeason(@Param("id") String id);
+
+    @RequestLine("GET /api/teammatch/season/{id}/summary")
+    Map<String,List<TeamMatch>> matchesBySeasonSummary(@Param("id") String id);
 
     @RequestLine("PUT /api/teammatch/admin/add/{seasonId}/{date}")
     TeamMatch add(@Param("seasonId") String seasonId, @Param("date") String date);
