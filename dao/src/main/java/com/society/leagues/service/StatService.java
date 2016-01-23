@@ -83,19 +83,13 @@ public class StatService {
         return stats;
     }
 
-    public List<Stat> getTeamStats() {
-        List<Stat> teamStats = new ArrayList<>();
-        leagueService.findCurrent(Team.class).parallelStream().forEach(s -> teamStats.add(s.getStats()));
-        return teamStats;
-    }
-
     @Scheduled(fixedRate = 1000*60*5, initialDelay = 1000*60*11)
     public void refresh() {
         if (!enableRefresh)
             return;
         logger.info("Refreshing stats");
         long start = System.currentTimeMillis();
-        final Set<Team> teams = leagueService.findCurrent(Team.class);
+        final Set<Team> teams = leagueService.findAll(Team.class).stream().filter(t->t.getSeason().isActive())
         long startTime = System.currentTimeMillis();
 
         startTime = System.currentTimeMillis();
@@ -322,37 +316,6 @@ public class StatService {
         logger.info("Created " + lifetimeStats.get().size() + " stats for " + users.size() + " users with a total of " + lifeStats.size());
     }
 
-    private void rereshUserHandicapStats() {
-        Map<User,List<PlayerResult>> winners = leagueService.findCurrent(PlayerResult.class).stream().filter(r->r.getWinner() != null)
-                .collect(Collectors.groupingBy(PlayerResult::getWinner));
-        Map<User,List<PlayerResult>> loser =   leagueService.findCurrent(PlayerResult.class).stream().filter(r->r.getLoser() != null)
-                .collect(Collectors.groupingBy(PlayerResult::getLoser));
-
-        List<Stat> stats = new ArrayList<>(1000);
-        for (User user : winners.keySet()) {
-
-            for (Handicap handicap : Handicap.values()) {
-                List<PlayerResult> w = winners.get(user).stream().filter(p->p.getLoserHandicap() == handicap).collect(Collectors.toList());
-                if (w.isEmpty()) {
-                    continue;
-                }
-                stats.add(Stat.buildHandicapStats(w,StatType.HANDICAP_WINS,user,handicap));
-            }
-        }
-        for (User user : loser.keySet()) {
-            for (Handicap handicap : Handicap.values()) {
-                List<PlayerResult> l = loser.get(user).stream()
-                        .filter(p -> p.getWinnerHandicap() == handicap)
-                        .collect(Collectors.toList());
-                if (l.isEmpty()) {
-                    continue;
-                }
-                stats.add(Stat.buildHandicapStats(l, StatType.HANDICAP_LOSES, user, handicap));
-            }
-        }
-        handicapStats.lazySet(stats);
-    }
-
     public void refreshTeamMatchStats(final TeamMatch tm) {
         refreshTeamStats(tm.getHome());
         refreshTeamStats(tm.getAway());
@@ -360,7 +323,8 @@ public class StatService {
     }
 
     public void refreshTeamRank() {
-        Map<Season, List<Team>> active =  leagueService.findCurrent(Team.class).stream()
+        Map<Season, List<Team>> active =  leagueService.findAll(Team.class).stream()
+                .filter(t->t.getSeason().isActive())
                 .collect(Collectors.groupingBy(s -> s.getSeason(), Collectors.toList()));
 
         for (Season season : active.keySet()) {
@@ -443,7 +407,7 @@ public class StatService {
     }
 
     public void refreshTeamStats(Team team) {
-        final Set<TeamMatch>  teamMatches = leagueService.findCurrent(TeamMatch.class);
+        final Set<TeamMatch>  teamMatches = leagueService.findAll(TeamMatch.class).stream().filter(t->t.getSeason().isActive()).collect(Collectors.toSet());
         Stat stat = Stat.buildTeamStats(team,
                 teamMatches.parallelStream()
                         .filter(tm -> tm.hasTeam(team))
