@@ -89,7 +89,7 @@ public class StatService {
             return;
         logger.info("Refreshing stats");
         long start = System.currentTimeMillis();
-        final Set<Team> teams = leagueService.findAll(Team.class).stream().filter(t->t.getSeason().isActive())
+        final Set<Team> teams = leagueService.findAll(Team.class).stream().filter(t->t.getSeason().isActive()).collect(Collectors.toSet());
         long startTime = System.currentTimeMillis();
 
         startTime = System.currentTimeMillis();
