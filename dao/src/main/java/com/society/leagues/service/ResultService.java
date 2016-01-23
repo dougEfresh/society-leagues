@@ -45,7 +45,8 @@ public class ResultService {
         matchPoints().clear();
         LocalDateTime tenWeeks = LocalDateTime.now().plusDays(1).minusWeeks(10);
         List<PlayerResult> challengeResults =
-                leagueService.findCurrent(PlayerResult.class).stream().parallel()
+                leagueService.findAll(PlayerResult.class).stream().parallel()
+                        .filter(r->r.getSeason().isActive())
                         .filter(r -> r.getSeason().isChallenge())
                         .filter(pr -> pr.getMatchDate() != null)
                         .filter(pr -> pr.getMatchDate().isAfter(tenWeeks))
@@ -163,6 +164,7 @@ public class ResultService {
     public PlayerResult add(TeamMatch teamMatch) {
         List<PlayerResult> results = leagueService.findCurrent(PlayerResult.class)
                 .parallelStream()
+                .filter(pr -> pr.getSeason().isActive())
                 .filter(pr -> pr.getTeamMatch().equals(teamMatch))
                 .collect(Collectors.toList());
         int matchNumber = 1;

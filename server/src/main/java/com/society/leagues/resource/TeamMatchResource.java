@@ -227,7 +227,7 @@ public class TeamMatchResource {
         Season s = leagueService.findOne(new Season(id));
         List<TeamMatch> results;
         LocalDateTime  now  = LocalDateTime.now().minusDays(1);
-        results = leagueService.findCurrent(TeamMatch.class).stream().parallel()
+        results = leagueService.findAll(TeamMatch.class).stream().parallel()
                 .filter(tm -> tm.getSeason().equals(s))
                 .sorted(new Comparator<TeamMatch>() {
                     @Override

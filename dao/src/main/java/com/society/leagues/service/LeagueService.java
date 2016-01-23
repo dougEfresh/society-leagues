@@ -133,8 +133,8 @@ public class LeagueService {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends LeagueObject> Set<T> findCurrent(Class<T> clz) {
-        return cacheUtil.getCache(clz).current();
+    public <T extends LeagueObject> List<T> findCurrent(Class<T> clz) {
+        return findAll(clz);
     }
 
     @SuppressWarnings("unchecked")

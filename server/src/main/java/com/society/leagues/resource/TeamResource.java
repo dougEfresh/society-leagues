@@ -134,7 +134,7 @@ public class TeamResource {
 
     @RequestMapping(value = "/active", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Collection<Team> getTeamSeason(Principal principal) {
-         return leagueService.findCurrent(Team.class);
+         return leagueService.findAll(Team.class).stream().filter(t->t.getSeason().isActive()).collect(Collectors.toList());
     }
 
     @RequestMapping(value = "/get/{id}/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
@@ -145,7 +145,7 @@ public class TeamResource {
         }
 
         return leagueService.findCurrent(Team.class).stream().
-                filter(t -> t.getMembers().getMembers().contains(u)).collect(Collectors.toList()
+                filter(t -> t.getSeason().isActive() &&  t.getMembers().getMembers().contains(u)).collect(Collectors.toList()
         );
     }
 

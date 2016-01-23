@@ -186,7 +186,7 @@ public class ChallengeResource {
     @RequestMapping(value = {"/results"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Map<String,List<PlayerResult>> results(Principal principal) {
         List<PlayerResult> results;
-        results = leagueService.findCurrent(PlayerResult.class).stream().parallel()
+        results = leagueService.findAll(PlayerResult.class).stream().parallel()
                 .sorted(new Comparator<PlayerResult>() {
                     @Override
                     public int compare(PlayerResult teamMatch, PlayerResult t1) {

@@ -56,7 +56,9 @@ public class ChallengeService  {
         Team challengerTeam = challenge.getChallenger();
         Team opponentTeam = challenge.getOpponent();
         TeamMatch tm = new TeamMatch(challengerTeam,opponentTeam,challenge.getAcceptedSlot().getLocalDateTime());
-        TeamMatch existing = leagueService.findCurrent(TeamMatch.class).parallelStream().filter(
+        TeamMatch existing = leagueService.findAll(TeamMatch.class).parallelStream()
+                .filter(t->t.getSeason().isActive())
+                .filter(
                 t->t.getHome().equals(challengerTeam) && t.getAway().equals(opponentTeam) && t.getMatchDate().equals(challenge.getAcceptedSlot().getLocalDateTime())
         ).findFirst().orElse(null);
         if (existing != null)
