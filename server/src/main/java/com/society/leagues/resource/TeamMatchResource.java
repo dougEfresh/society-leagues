@@ -1,6 +1,8 @@
 package com.society.leagues.resource;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.society.leagues.client.api.domain.*;
+import com.society.leagues.client.views.PlayerResultSummary;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.ResultService;
 import com.society.leagues.service.StatService;
@@ -244,6 +246,12 @@ public class TeamMatchResource {
         return (Map<String,List<TeamMatch>>) new TreeMap<>(group);
     }
 
+
+    @JsonView(PlayerResultSummary.class)
+    @RequestMapping(value = {"/season/{id}/summary"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public Map<String,List<TeamMatch>> getTeamMatchesSummary(Principal principal, @PathVariable String id) {
+        return getTeamMatches(principal,id);
+    }
 
 
   @RequestMapping(value = {"/team/{teamId}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)

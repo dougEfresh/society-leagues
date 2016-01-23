@@ -73,7 +73,13 @@ public class SeasonResource {
                     final Team op  = opponents.get((week + j) % (opponents.size()));
                     if (matches.stream()
                             .filter(m->m.getMatchDate().toLocalDate().equals(matchDate))
-                            .filter(m->m.hasTeam(op)).count() == 0) {
+                            .filter(m->m.hasTeam(op)).count() == 0
+                            &&
+                            matches.stream()
+                                    .filter(m->m.getMatchDate().toLocalDate().equals(matchDate.minusWeeks(1)))
+                                    .filter(m->m.hasTeam(team) && m.hasTeam(op)).count() == 0
+                            ) {
+
                         opponent = op;
                     }
                     j++;
