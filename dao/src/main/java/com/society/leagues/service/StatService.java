@@ -410,7 +410,9 @@ public class StatService {
     }
 
     public void refreshTeamStats(Team team) {
-        final Set<TeamMatch>  teamMatches = leagueService.findAll(TeamMatch.class).stream().filter(t->t.getSeason().isActive()).collect(Collectors.toSet());
+        final Set<TeamMatch>  teamMatches = leagueService.findAll(TeamMatch.class).stream()
+                .filter(t->t.getHome() != null &&  t.getAway() != null)
+                .filter( t->t.getSeason().isActive()).collect(Collectors.toSet());
         Stat stat = Stat.buildTeamStats(team,
                 teamMatches.parallelStream()
                         .filter(tm -> tm.hasTeam(team))
