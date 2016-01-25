@@ -82,11 +82,10 @@ public class ConvertUtil {
             leagueService.purge(result);
         }
 
-        /*
+
         List<TeamMatch>  badTeam = leagueService.findAll(TeamMatch.class).stream().filter(r->r.getHome() == null || r.getAway() == null).collect(Collectors.toList());
         for (TeamMatch result : badTeam) {
             leagueService.purge(result);
         }
-        */
     }
 }

@@ -27,7 +27,7 @@ public class StatService {
     boolean enableRefresh = true;
     @Autowired ResultService resultService;
 
-    @PostConstruct
+    //@PostConstruct
     public void init() {
 
         threadPoolTaskExecutor.setCorePoolSize(1);
