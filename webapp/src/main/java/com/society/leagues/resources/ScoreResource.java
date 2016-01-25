@@ -168,7 +168,7 @@ public class ScoreResource extends BaseController {
         String d = date == null ? matches.keySet().iterator().next() : date;
         model.addAttribute("dates", matches.keySet());
         model.addAttribute("date", d);
-        model.addAttribute("model", new TeamMatchModel(matches.get(d)));
+        model.addAttribute("model", new TeamMatchModel(seasonApi.get(seasonId),matches.get(d)));
         model.addAttribute("teams", teamApi.getBySeason(seasonId));
         Season s = seasonApi.get(seasonId);
         model.addAttribute("season", s);
