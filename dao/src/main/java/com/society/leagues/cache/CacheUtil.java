@@ -34,11 +34,7 @@ public class CacheUtil {
     public LeagueObject findOne(String id,String collection) {
         for (CachedCollection cachedCollection : cachedCollections) {
             if (cachedCollection.getCollection().equals(collection)) {
-                 LeagueObject found = (LeagueObject) cachedCollection.current().parallelStream().filter(c->((LeagueObject) c).getId().equals(id)).findFirst().orElse(null);
-                if (found == null)
-                    return (LeagueObject) cachedCollection.get().parallelStream().filter(c->((LeagueObject) c).getId().equals(id)).findFirst().orElse(null);
-
-                return found;
+                return (LeagueObject) cachedCollection.get().parallelStream().filter(c->((LeagueObject) c).getId().equals(id)).findFirst().orElse(null);
             }
         }
         return null;

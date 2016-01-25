@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 public class CachedCollection<T extends List<LeagueObject>> implements Comparable<CachedCollection> {
     final AtomicReference<T> entity = new AtomicReference(new CopyOnWriteArrayList<>());
-    final AtomicReference<Set<LeagueObject>> current =  new AtomicReference<>(new CopyOnWriteArraySet<>(new HashSet<>()));
     private static Logger logger = Logger.getLogger(CachedCollection.class);
     final MongoRepository repo;
     final String collectionName;
@@ -64,16 +63,9 @@ public class CachedCollection<T extends List<LeagueObject>> implements Comparabl
         return entity.get();
     }
 
-    public Set<LeagueObject> current() {
-        return current.get();
-    }
-
     public synchronized void add(LeagueObject obj) {
         LeagueObject cached =  this.get().stream().filter(u -> ((LeagueObject) u).getId().equals(obj.getId())).findFirst().orElse(null);
         if (cached == null) {
-            if (isCurrent(obj)) {
-                current.get().add(obj);
-            }
             entity.get().add(obj);
         } else {
             cached.merge(obj);
@@ -81,13 +73,11 @@ public class CachedCollection<T extends List<LeagueObject>> implements Comparabl
     }
 
     public void set(T collection) {
-        this.current.lazySet(collection.stream().parallel().filter(this::isCurrent).collect(Collectors.toSet()));
         this.entity.lazySet(collection);
     }
 
     public synchronized void remove(LeagueObject obj) {
         this.entity.get().remove(obj);
-        this.current.get().remove(obj);
         getRepo().delete(obj);
     }
 
@@ -127,27 +117,5 @@ public class CachedCollection<T extends List<LeagueObject>> implements Comparabl
         return collectionName.hashCode();
     }
 
-    private boolean isCurrent(LeagueObject entity) {
-        if (entity instanceof Team)  {
-            return  ((Team) entity).getSeason().isActive();
-        }
 
-        if (entity instanceof TeamMatch)  {
-            return  ((TeamMatch) entity).getSeason().isActive();
-        }
-
-        if (entity instanceof PlayerResult)  {
-            return  ((PlayerResult) entity).getSeason().isActive();
-        }
-
-        if (entity instanceof Season)  {
-            return  ((Season) entity).isActive();
-        }
-
-        if (entity instanceof User)  {
-            User u  = ((User) entity);
-            return u.getHandicapSeasons().stream().filter(hs->hs.getSeason().isActive()).count() > 0;
-        }
-        return false;
-    }
 }
