@@ -74,8 +74,8 @@ public class ConvertUtil {
             leagueService.save(wrongResult);
         }
 
-        //leagueService.purge(wrongTeam);
-        //leagueService.purge(wrong);
+        leagueService.purge(wrongTeam);
+        leagueService.purge(wrong);
         /*
         List<Challenge> challenges = leagueService.findAll(Challenge.class).stream().filter(c->c.hasTeam(wrongTeam)).collect(Collectors.toList());
         for (Challenge challenge : challenges) {
