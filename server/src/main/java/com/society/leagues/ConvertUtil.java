@@ -76,17 +76,17 @@ public class ConvertUtil {
         leagueService.purge(wrongTeam);
         leagueService.purge(wrong);
 
-
+*/
         List<PlayerResult> bad = leagueService.findAll(PlayerResult.class).stream().filter(p->p.getTeamMatch() == null).collect(Collectors.toList());
         for (PlayerResult result : bad) {
             leagueService.purge(result);
         }
 
+        /*
         List<TeamMatch>  badTeam = leagueService.findAll(TeamMatch.class).stream().filter(r->r.getHome() == null || r.getAway() == null).collect(Collectors.toList());
         for (TeamMatch result : badTeam) {
             leagueService.purge(result);
         }
         */
-
     }
 }

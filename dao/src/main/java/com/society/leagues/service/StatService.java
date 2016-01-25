@@ -178,8 +178,9 @@ public class StatService {
     }
 
     public List<Stat> getSeasonStats(final Season season) {
-        List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().
-                filter(pr -> pr.getSeason().equals(season)).filter(PlayerResult::hasResults).
+        List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel()
+                .filter(pr-> pr.getTeamMatch() != null)
+                .filter(pr -> pr.getSeason().equals(season)).filter(PlayerResult::hasResults).
                 collect(Collectors.toList());
 
         Map<User, List<PlayerResult>> all = new HashMap<>();
