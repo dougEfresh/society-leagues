@@ -81,5 +81,7 @@ public class ConvertUtil {
             leagueService.save(wrongResult.getTeamMatch());
             leagueService.save(wrongResult);
         }
+        leagueService.purge(wrongTeam);
+        leagueService.purge(wrong);
     }
 }
