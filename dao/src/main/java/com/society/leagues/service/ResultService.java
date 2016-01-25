@@ -46,6 +46,8 @@ public class ResultService {
         LocalDateTime tenWeeks = LocalDateTime.now().plusDays(1).minusWeeks(10);
         List<PlayerResult> challengeResults =
                 leagueService.findAll(PlayerResult.class).stream().parallel()
+                        .filter(r->r.getTeamMatch() != null)
+                        .filter(r->r.getSeason() != null)
                         .filter(r->r.getSeason().isActive())
                         .filter(r -> r.getSeason().isChallenge())
                         .filter(pr -> pr.getMatchDate() != null)
