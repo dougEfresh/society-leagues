@@ -50,16 +50,7 @@ public class ConvertUtil {
 
     @PostConstruct
     public void init() {
-        List<User> users = userRepository.findAll();
-        users.parallelStream().filter(u -> u.getEmail() != null && u.getLogin() != null).forEach(u -> {
-            u.setLogin(u.getLogin().toLowerCase());
-            u.setEmail(u.getEmail().toLowerCase());
-        });
-        leagueService.findAll(User.class).parallelStream().filter(u -> u.getEmail() != null && u.getLogin() != null).forEach(u -> {
-            u.setLogin(u.getLogin().toLowerCase());
-            u.setEmail(u.getEmail().toLowerCase());
-        });
-        userRepository.save(users);
+
     }
 
     String defaultPassword = new BCryptPasswordEncoder().encode("abc123");

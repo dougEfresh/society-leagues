@@ -29,6 +29,8 @@ public class StatService {
 
     @PostConstruct
     public void init() {
+        return ;
+        /*
         threadPoolTaskExecutor.setCorePoolSize(1);
         threadPoolTaskExecutor.setMaxPoolSize(2);
         threadPoolTaskExecutor.setQueueCapacity(2);
@@ -66,6 +68,7 @@ public class StatService {
         refresh();
         refreshUserSeasonStats(false);
         refreshLifetime();
+        */
     }
 
     public List<Stat> getLifetimeDivisionStats() {
