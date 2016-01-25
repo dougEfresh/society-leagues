@@ -31,4 +31,7 @@ public interface ChallengeApi {
     @RequestLine("POST /api/challenge/create")
     Challenge challenge(Challenge challenge);
 
+    @RequestLine("GET /api/challenge/get")
+    List<Challenge> challenges();
+
 }

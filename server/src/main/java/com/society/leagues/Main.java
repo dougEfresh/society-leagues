@@ -35,7 +35,7 @@ public class Main implements CommandLineRunner {
             if (arg.toLowerCase().contains("convert")) {
                 statService.setEnableRefresh(false);
                 //convertUtil.updateRacks();
-                convertUtil.scrambleGameHandicap();
+                convertUtil.convertUser();
                 //convertUtil.updateSetWinsLoses();
                 System.exit(0);
             }

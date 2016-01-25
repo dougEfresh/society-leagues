@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class ChallengeResource extends BaseController {
 
     @Autowired ChallengeApi challengeApi;
+
     public static Team broadcast = new Team("-1");
     static {
         broadcast.setName("--- Broadcast ---");
@@ -28,14 +29,15 @@ public class ChallengeResource extends BaseController {
     public String challenge(@RequestParam(required = false) String userId, @RequestParam(required = false) String date, Model  model, HttpServletResponse response) throws IOException {
         processDate(date,userId,model,response);
         Season s =  seasonApi.active().stream().filter(Season::isChallenge).findFirst().get();
-        Team challenger = teamApi.getTeamsByUser(user.getId()).stream().filter(t->t.isChallenge()).findFirst().orElse(null);
+        Team challenger = teamApi.getTeamsByUser(user.getId()).stream().filter(Team::isChallenge).findFirst().orElse(null);
         if (challenger == null) {
             //ERROR
         }
         model.addAttribute("challenger",challenger);
         model.addAttribute("season", s);
         List<Challenge> existingChallenges = challengeApi.challengesForUser(user.getId());
-        model.addAttribute("broadcast",existingChallenges.parallelStream().filter(Challenge::isBroadcast).collect(Collectors.toList()));
+
+        model.addAttribute("broadcast", challengeApi.challenges().stream().filter(Challenge::isBroadcast).collect(Collectors.toList()));
         model.addAttribute("sent",existingChallenges.parallelStream().filter(c->c.getStatus(user) == Status.SENT).collect(Collectors.toList()));
         model.addAttribute("pending",existingChallenges.parallelStream().filter(c->c.getStatus(user) == Status.PENDING).collect(Collectors.toList()));
         model.addAttribute("accepted",existingChallenges.parallelStream().filter(c->c.getStatus(user) == Status.ACCEPTED).collect(Collectors.toList()));
@@ -50,9 +52,14 @@ public class ChallengeResource extends BaseController {
                             @RequestParam(required = true) String date,
                             @ModelAttribute Challenge challenge, Model  model, HttpServletResponse response) throws IOException {
 
+        if (userId.equals("-1")) {
+            challenge.setOpponent(null);
+            challenge.setStatus(Status.BROADCAST);
+            challengeApi.challenge(challenge);
+            return challenge(userId,date,model,response);
+        }
         challenge.setOpponent(new Team(userId));
         challenge.setStatus(Status.SENT);
-        challengeApi.challenge(challenge);
         return challenge(userId,date,model,response);
     }
 

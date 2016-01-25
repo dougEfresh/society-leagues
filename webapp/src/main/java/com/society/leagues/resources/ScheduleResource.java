@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,27 @@ public class ScheduleResource extends BaseController {
     public String getSchedule(@PathVariable String seasonId, @RequestParam(required = false) String teamId, Model model) {
         //Map<String,List<TeamMatch>> matches = teamMatchApi.matchesBySeason(seasonId);
         Map<String,List<TeamMatch>> matches = teamMatchApi.matchesBySeasonSummary(seasonId);
+        Season season = seasonApi.get(seasonId);
+        if (season.isChallenge()) {
+            LocalDateTime tenWeeks = LocalDateTime.now().minusWeeks(11);
+            for (String s : matches.keySet()) {
+                matches.put(s,matches.get(s).stream().filter(m->m.getMatchDate()
+                        .isAfter(tenWeeks)).collect(Collectors.toList()
+                )
+                );
+            }
+            Map<String,List<TeamMatch>> orderMatches = new HashMap<>();
+            for (String s : matches.keySet()) {
+                if (!matches.get(s).isEmpty()) {
+                    orderMatches.put(s,matches.get(s));
+                }
+            }
+             Map<String,List<TeamMatch>> oMatches = new HashMap<>();
+            for (String s : orderMatches.keySet()) {
+                oMatches.put(s,orderMatches.get(s));
+            }
+            matches = oMatches;
+        }
         Map<String,List<TeamMatch>> sortedMatches = new TreeMap<>();
         for (String s : matches.keySet()) {
             sortedMatches.put(s,matches.get(s));
@@ -39,7 +61,7 @@ public class ScheduleResource extends BaseController {
         model.addAttribute("userTeam",teamApi.userTeams(u.getId()).stream()
                 .filter(t->t.getSeason().getId().equals(seasonId))
                 .filter(t->t.hasUser(u)).findFirst().orElse(team));
-        Season season = seasonApi.get(seasonId);
+
         if (season.isChallenge()) {
             sortedMatches = new TreeMap<String,List<TeamMatch>>(new Comparator() {
                 @Override

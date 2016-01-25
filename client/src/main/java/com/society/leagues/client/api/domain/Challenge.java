@@ -111,6 +111,14 @@ public class Challenge extends LeagueObject {
         return challenger.getMembers().getMembers().iterator().next();
     }
 
+    public Handicap getUserChallengerHandicap() {
+        if (getUserChallenger() == null || getSeason() == null) {
+            return Handicap.NA;
+        }
+
+        return getUserChallenger().getHandicap(getSeason());
+    }
+
     //@JsonIgnore
     public User getUserOpponent() {
         if (opponent == null || opponent.getMembers() == null || opponent.getMembers().getMembers().isEmpty())

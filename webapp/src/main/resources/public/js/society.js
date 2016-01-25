@@ -28,6 +28,17 @@ function challengeChange() {
 
 
 }
+function challengeAcceptSlot() {
+ var date = $('#challenge-date').val();
+ var userId = $('#challenge-users').val();
+ var slotId = $('#challenge-slot').val();
+ if (userId == null || userId == undefined)
+     window.location = '/app/challenge?date=' + date + '&slotId=' + slotId;
+ else
+     window.location = '/app/challenge?date=' + date + '&userId=' + userId;
+
+}
+
 
 
 function changeTeamSeason(e) {
