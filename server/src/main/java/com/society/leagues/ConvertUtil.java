@@ -56,7 +56,7 @@ public class ConvertUtil {
     String defaultPassword = new BCryptPasswordEncoder().encode("abc123");
 
     public void convertUser() {
-        /*
+
         User wrong = leagueService.findByLogin("rtepup@gmail.com");
         User correct = leagueService.findByLogin("rtepub@gmail.com");
         Team wrongTeam = leagueService.findAll(Team.class).stream().filter(t->t.hasUser(wrong)).filter(t->t.isChallenge()).findFirst().get();
@@ -73,10 +73,12 @@ public class ConvertUtil {
             leagueService.save(wrongResult.getTeamMatch());
             leagueService.save(wrongResult);
         }
-        leagueService.purge(wrongTeam);
-        leagueService.purge(wrong);
 
-*/
+        leagueService.findAll(Challenge.class).stream().filter(c->c.hasTeam(wrongTeam)).forEach(c->leagueService.purge(c));
+        leagueService.purge(wrongTeam);
+        //leagueService.purge(wrong);
+
+
         List<PlayerResult> bad = leagueService.findAll(PlayerResult.class).stream().filter(p->p.getTeamMatch() == null).collect(Collectors.toList());
         for (PlayerResult result : bad) {
             leagueService.purge(result);
