@@ -34,7 +34,8 @@ public class SheetResource extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET,value = "/sheets/{seasonId}/{date}")
     public String sheets(@PathVariable String seasonId, @PathVariable  String date, Model model) {
-        TeamMatchModel teamMatchModel = new TeamMatchModel(teamMatchApi.matchesBySeasonSummary(seasonId).get(date));
+        Season s = seasonApi.get(seasonId);
+        TeamMatchModel teamMatchModel = new TeamMatchModel(s,teamMatchApi.matchesBySeasonSummary(seasonId).get(date));
         for (TeamMatch teamMatch : teamMatchModel.getMatches()) {
             Map<String,List<User>> users = teamMatchApi.teamMembers(teamMatch.getId());
             teamMatch.getHome().setMembers(new TeamMembers(users.get("home").stream().filter(User::isReal)
@@ -46,7 +47,7 @@ public class SheetResource extends BaseController {
         }
         model.addAttribute("date", date);
         model.addAttribute("matches", teamMatchModel);
-        Season s = seasonApi.get(seasonId);
+
         for (TeamMatch teamMatch : teamMatchModel.getMatches()) {
             teamMatch.getHome().setMembers(teamApi.members(teamMatch.getHome().getId()));
             teamMatch.getAway().setMembers(teamApi.members(teamMatch.getAway().getId()));
@@ -64,7 +65,8 @@ public class SheetResource extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET,value = "/sheets/{teamMatchId}")
     public String sheets(@PathVariable String teamMatchId, Model model) {
-        TeamMatchModel teamMatchModel = new TeamMatchModel(Arrays.asList(teamMatchApi.get(teamMatchId)));
+        List<TeamMatch> matches = Arrays.asList(teamMatchApi.get(teamMatchId));
+        TeamMatchModel teamMatchModel = new TeamMatchModel(matches.iterator().next().getSeason(),Arrays.asList(teamMatchApi.get(teamMatchId)));
         for (TeamMatch teamMatch : teamMatchModel.getMatches()) {
             Map<String,List<User>> users = teamMatchApi.teamMembers(teamMatch.getId());
             teamMatch.getHome().setMembers(new TeamMembers(users.get("home").stream().filter(User::isReal)
@@ -83,8 +85,9 @@ public class SheetResource extends BaseController {
 
         model.addAttribute("date", teamMatchModel.getMatches().iterator().next().getMatchDate().format(builder.toFormatter()));
         model.addAttribute("matches", teamMatchModel);
-        Season s = teamMatchModel.getMatches().iterator().next().getSeason();
-        model.addAttribute("season", s);
+
+        model.addAttribute("season", teamMatchModel.getSeason());
+        Season s = teamMatchModel.getSeason();
         if (s.isScramble())
             return "sheets/scrambleScoreSheets";
         if (s.isChallenge())

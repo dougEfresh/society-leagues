@@ -10,8 +10,9 @@ import java.util.List;
 public class TeamMatchModel {
 
     List<TeamMatch> matches = new ArrayList<>();
+    Season season ;
 
-    public TeamMatchModel(List<TeamMatch> matches) {
+    public TeamMatchModel(Season season, List<TeamMatch> matches) {
         if (matches != null) {
             matches.sort(new Comparator<TeamMatch>() {
                 @Override
@@ -21,6 +22,7 @@ public class TeamMatchModel {
             });
             this.matches = matches;
         }
+        this.season = season;
     }
 
     public TeamMatchModel() {
@@ -36,7 +38,7 @@ public class TeamMatchModel {
     }
 
     public Season getSeason() {
-        return matches.iterator().next().getSeason();
+        return season;
     }
 
     /**
