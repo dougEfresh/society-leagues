@@ -60,6 +60,7 @@ public class ConvertUtil {
         User correct = leagueService.findByLogin("rtepub@gmail.com");
         Team wrongTeam = leagueService.findAll(Team.class).stream().filter(t->t.hasUser(wrong)).filter(t->t.isChallenge()).findFirst().get();
         Team correctTeam = leagueService.findAll(Team.class).stream().filter(t->t.hasUser(correct)).filter(t->t.isChallenge()).findFirst().get();
+        /*
         List<PlayerResult> wrongResults = leagueService.findAll(PlayerResult.class).stream().filter(p->p.hasUser(wrong)).collect(Collectors.toList());
         for (PlayerResult wrongResult : wrongResults) {
             if (wrongResult.getPlayerHome().equals(wrong)) {
@@ -72,9 +73,10 @@ public class ConvertUtil {
             leagueService.save(wrongResult.getTeamMatch());
             leagueService.save(wrongResult);
         }
-//        leagueService.purge(wrongTeam);
-  //      leagueService.purge(wrong);
-
+        */
+        leagueService.purge(wrongTeam);
+        leagueService.purge(wrong);
+        /*
         List<Challenge> challenges = leagueService.findAll(Challenge.class).stream().filter(c->c.hasTeam(wrongTeam)).collect(Collectors.toList());
         for (Challenge challenge : challenges) {
             leagueService.purge(challenge);
@@ -92,5 +94,6 @@ public class ConvertUtil {
         for (TeamMatch result : badTeam) {
             leagueService.purge(result);
         }
+        */
     }
 }
