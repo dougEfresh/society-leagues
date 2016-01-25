@@ -28,6 +28,9 @@ public class TeamService {
         t.setSeason(season);
         t.setName(name);
         TeamMembers m = t.getMembers() ==  null ? new TeamMembers() : t.getMembers();
+        if (season.isChallenge() && t.getMembers() != null) {
+            return t;
+        }
         for (User member : members) {
             m.addMember(member);
         }
