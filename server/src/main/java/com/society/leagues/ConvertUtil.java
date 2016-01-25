@@ -75,7 +75,7 @@ public class ConvertUtil {
         }
         leagueService.purge(wrongTeam);
         leagueService.purge(wrong);
-        */
+
 
         List<PlayerResult> bad = leagueService.findAll(PlayerResult.class).stream().filter(p->p.getTeamMatch() == null).collect(Collectors.toList());
         for (PlayerResult result : bad) {
@@ -86,5 +86,6 @@ public class ConvertUtil {
         for (TeamMatch result : badTeam) {
             leagueService.purge(result);
         }
+        */
     }
 }

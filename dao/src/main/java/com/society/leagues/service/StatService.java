@@ -67,7 +67,7 @@ public class StatService {
         refresh();
         refreshUserSeasonStats(false);
         refreshLifetime();
-        
+
     }
 
     public List<Stat> getLifetimeDivisionStats() {

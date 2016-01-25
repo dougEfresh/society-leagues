@@ -90,8 +90,10 @@ public class ChallengeService  {
             }
             sunday = sunday.plusDays(7);
         }
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
         List<Challenge> accepted = leagueService.findAll(Challenge.class).stream()
                 .filter(ch -> ch.getAcceptedSlot() != null)
+                .filter(ch -> ch.getAcceptedSlot().getLocalDateTime().isAfter(yesterday))
                 .filter(ch -> ch.getTeamMatch() == null)
                 .collect(Collectors.toList());
 
