@@ -122,7 +122,11 @@ public class StatService {
           List<User> users = leagueService.findAll(User.class);
         logger.info("Processing lifetime stats");
         List<Stat> lifeDivisionStats = new ArrayList<>(500);
-        List<PlayerResult> results = leagueService.findAll(PlayerResult.class);
+        List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream()
+                .filter(pr->pr.getTeamMatch() != null)
+                .filter(pr->pr.getTeamMatch().getHome() != null)
+                .filter(pr->pr.getTeamMatch().getAway() != null).collect(Collectors.toList());
+
         for (User user : users) {
             TreeSet<Division> divisions = new TreeSet<>();
             for(Season season: user.getSeasons().stream().filter(hs->!hs.isChallenge()).collect(Collectors.toList())) {
