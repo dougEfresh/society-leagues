@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +30,7 @@ public class TeamResource extends BaseController {
 
     @RequestMapping(value = {"/team/season/{id}"}, method = RequestMethod.GET)
     public String listSeason(@PathVariable String id, Model model) {
-        model.addAttribute("teams",  teamApi.getBySeason(id)
+        model.addAttribute("teams",  teamApi.seasonTeams(id)
                 .stream()
                 .filter(t->!t.getSeason().isChallenge())
                 .filter(t->t.getSeason().equals(new Season(id)))

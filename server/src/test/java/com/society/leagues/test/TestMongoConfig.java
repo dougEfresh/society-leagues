@@ -3,7 +3,6 @@ package com.society.leagues.test;
 import com.mongodb.Mongo;
 import com.mongodb.MongoClientOptions;
 import com.society.leagues.cache.CacheUtil;
-import com.society.leagues.cache.CachedCollection;
 import com.society.leagues.mongo.CustomRefResolver;
 import de.flapdoodle.embed.mongo.*;
 import de.flapdoodle.embed.mongo.config.*;
@@ -11,7 +10,9 @@ import de.flapdoodle.embed.mongo.distribution.Version;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
@@ -19,7 +20,6 @@ import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.List;
 
 @Configuration
 @EnableMongoAuditing
@@ -40,10 +40,11 @@ public class TestMongoConfig extends AbstractMongoConfiguration {
 
     @PostConstruct
     public void init() throws IOException {
-        processImport(seasonImport,"season");
+        /*processImport(seasonImport,"season");
         processImport(userImport,"user");
         processImport(teamMembersImport,"teamMembers");
         processImport(teamImport,"team");
+        */
     }
 
     private void processImport(Resource resource,String collection) throws IOException {
@@ -60,7 +61,7 @@ public class TestMongoConfig extends AbstractMongoConfiguration {
         MongoImportProcess mongoImport = mongoImportExecutable.start();
     }
 
-    //@Override
+    @Override
     protected String getDatabaseName() {
         return properties.getDatabase();
     }

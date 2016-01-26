@@ -36,6 +36,7 @@ public class SeasonResource {
         return leagueService.findAll(Season.class).stream().filter(s->s.isActive()).collect(Collectors.toList());
     }
 
+
     @RequestMapping(value = "/create/schedule/{seasonId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<TeamMatch> schedule(Principal principal, @PathVariable String seasonId) {
@@ -56,13 +57,15 @@ public class SeasonResource {
         }
 
         List<TeamMatch> matches = new ArrayList<>();
-        for(int i = 0; i< teams.size(); i++) {
-            Team team = teams.get(i);
-            List<Team> opponents = teams.stream().filter(t->!t.equals(team)).collect(Collectors.toList());
-            for (int week = 0; week < season.getRounds(); week++) {
+
+            for(int i = 0; i < teams.size(); i++) {
+                Team team = teams.get(i);
+                final Team exclude = team;
+                List<Team> opponents = teams.stream().filter(t->!t.equals(exclude)).collect(Collectors.toList());
                 Team opponent = null;
+                for (int week = 0; week < season.getRounds(); week++) {
                 LocalDate matchDate = season.getsDate().plusWeeks(week);
-                if (matches.stream().filter(m -> m.hasTeam(team)
+                if (matches.stream().filter(m -> m.hasTeam(exclude)
                         && m.getMatchDate().toLocalDate().equals(matchDate)).count() > 0) {
                     //Already has match for that day
                     logger.info(String.format("Skipping %s", team.getName()));
@@ -70,31 +73,41 @@ public class SeasonResource {
                 }
                 int j = 0;
                 do {
-                    final Team op  = opponents.get((week + j) % (opponents.size()));
+                    final Team op;
+                    if (week % 2 == 0)
+                        op = opponents.get((week + j) % (opponents.size()));
+                    else
+                        op = opponents.get(( Math.abs(week - opponents.size())) % (opponents.size()));
+                    j++;
+                    //opponent is already playing this week
                     if (matches.stream()
                             .filter(m->m.getMatchDate().toLocalDate().equals(matchDate))
-                            .filter(m->m.hasTeam(op)).count() == 0
-                            &&
-                            matches.stream()
-                                    .filter(m->m.getMatchDate().toLocalDate().equals(matchDate.minusWeeks(1)))
-                                    .filter(m->m.hasTeam(team) && m.hasTeam(op)).count() == 0
-                            ) {
-
+                            .filter(m->m.hasTeam(op)).count() > 0) {
+                        continue;
+                    }
+                    //They played each other previous week
+                    if (matches.stream()
+                            .filter(m->m.getMatchDate().toLocalDate().equals(matchDate.minusWeeks(1)))
+                            .filter(m->m.hasTeam(exclude) && m.hasTeam(op)).count() == 0) {
                         opponent = op;
                     }
-                    j++;
-                } while(opponent == null && (j+1) <= opponents.size());
+
+                } while(opponent == null && (j+1) <= opponents.size()*2);
+
+                if (opponent == null) {
+                    logger.warn("No match for team:  " + team.getName() + "  "+ week);
+                }
                 if (opponent != null) {
                     logger.info(String.format("%s vs %s (%s)", team.getName(), opponent.getName(), matchDate.toString()));
 
-                    TeamMatch existing = matches.stream().filter(m -> m.hasTeam(team)).sorted(new Comparator<TeamMatch>() {
+                    TeamMatch existing = matches.stream().filter(m -> m.hasTeam(exclude)).sorted(new Comparator<TeamMatch>() {
                         @Override
                         public int compare(TeamMatch o1, TeamMatch o2) {
                             return o2.getMatchDate().compareTo(o1.getMatchDate());
                         }
                     }).findFirst().orElse(null);
-                    long homeCnt = matches.stream().filter(m->m.getHome().equals(team)).count();
-                    long awayCnt = matches.stream().filter(m->m.getAway().equals(team)).count();
+                    long homeCnt = matches.stream().filter(m->m.getHome().equals(exclude)).count();
+                    long awayCnt = matches.stream().filter(m->m.getAway().equals(exclude)).count();
                     if (homeCnt <= awayCnt) {
                         matches.add(new TeamMatch(team, opponent, matchDate.atStartOfDay()));
                     } else {
@@ -136,13 +149,16 @@ public class SeasonResource {
             Team newTeam = LeagueObject.copy(team);
             newTeam.setId(null);
             newTeam.setSeason(newSeason);
-            for( User user : newTeam.getMembers().getMembers()) {
+            newTeams.add(newTeam);
+            if (newTeam.getMembers() == null) {
+                continue;
+            }
+            for(User user : newTeam.getMembers().getMembers()) {
                 Handicap handicap = user.getHandicap(previous);
                 user.addHandicap(new HandicapSeason(handicap,newSeason));
                 leagueService.save(user);
             }
-            logger.info("Adding team " + team.getName());
-            newTeams.add(newTeam);
+            logger.info("Adding team " + newTeam.getName());
         }
         leagueService.save(newTeams);
         return season;

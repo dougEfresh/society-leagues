@@ -84,7 +84,7 @@ public class ScheduleResource extends BaseController {
         }
         List<Team> teams = new ArrayList<>();
         teams.add(team);
-        teams.addAll(teamApi.getBySeason(seasonId));
+        teams.addAll(teamApi.seasonTeams(seasonId));
         model.addAttribute("teams",teams);
         model.addAttribute("team",team);
         model.addAttribute("season",seasonApi.get(seasonId));

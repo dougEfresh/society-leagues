@@ -2,7 +2,6 @@ package com.society.leagues.test;
 
 import com.society.leagues.Main;
 import com.society.leagues.service.LeagueService;
-import com.society.leagues.client.api.domain.*;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,44 +10,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 
-import static org.junit.Assert.*;
-
-
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Main.class})
-@WebIntegrationTest(randomPort = true)
-public class TestStat {
+public class TestStat  extends BaseTest {
 
     private static Logger logger = Logger.getLogger(TestUser.class);
 
-    @Value("${local.server.port}")
-    private int port;
-    private String host = "http://localhost";
-    @Autowired
-    LeagueService leagueService;
-    @Autowired Utils utils;
-    private RestTemplate restTemplate = new RestTemplate();
-    static HttpHeaders requestHeaders = new HttpHeaders();
+    @Test
+    public void testTeamStat() {
 
-    @Before
-    public void setUp() {
-        host += ":" + port;
-        utils.createAdminUser();
-        requestHeaders.add("Cookie", utils.getSessionId(host + "/api/authenticate"));
-        requestHeaders.setContentType(MediaType.APPLICATION_JSON);
-    }
-
+ }
     /*
     @Test
     public void testTeamStat() {

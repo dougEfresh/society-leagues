@@ -29,10 +29,7 @@ public class TeamMembers extends LeagueObject {
     }
 
     public Set<User> getMembers() {
-        if (members == null)
-            return Collections.emptySet();
-
-        return members.stream().filter(User::isReal).collect(Collectors.toSet());
+        return members;
     }
     
     public void addMember(User user) {

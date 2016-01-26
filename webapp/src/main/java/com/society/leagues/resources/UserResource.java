@@ -45,7 +45,7 @@ public class UserResource extends BaseController {
             u.addHandicap(new HandicapSeason(Handicap.NA,s));
         }
         u.setHandicapSeasons(u.getActiveHandicapSeasons());
-        model.addAttribute("editUserTeams", teamApi.getTeamsByUser(u.getId()).stream().filter(t->t.getSeason().isActive()).collect(Collectors.toList()));
+        model.addAttribute("editUserTeams", teamApi.userTeams(u.getId()).stream().filter(t->t.getSeason().isActive()).collect(Collectors.toList()));
         model.addAttribute("editUser", u);
         return "user/editUser";
     }

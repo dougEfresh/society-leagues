@@ -1,66 +1,80 @@
 package com.society.leagues.test;
 
-import com.society.leagues.Main;
-import com.society.leagues.service.LeagueService;
+import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.TeamMatch;
-import com.society.leagues.client.api.domain.User;
-import org.apache.log4j.Logger;
-import org.junit.Before;
+import feign.RetryableException;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Main.class})
-@WebIntegrationTest("server.port=8081")
-public class TestTeamMatch {
 
-    private static Logger logger = Logger.getLogger(TestUser.class);
-/*
-    @Value("${local.server.port}")
-    int port;
-    String host = "http://localhost";
-    @Autowired LeagueService leagueService;
-    @Autowired Utils utils;
-    RestTemplate restTemplate = new RestTemplate();
-    static HttpHeaders requestHeaders = new HttpHeaders();
-
-    @Before
-    public void setUp() {
-        host += ":" + port;
-        utils.createAdminUser();
-        requestHeaders.add("Cookie", utils.getSessionId(host + "/api/authenticate"));
-    }
+public class TestTeamMatch extends BaseTest {
 
     @Test
     public void testCreate() {
-        Team home = utils.createRandomTeam();
-        Team away = utils.createRandomTeam();
-        LocalDateTime now = LocalDateTime.now();
-        TeamMatch tm = new TeamMatch(home,away, now);
-        HttpEntity requestEntity = new HttpEntity(tm, requestHeaders);
-        tm =  restTemplate.postForEntity(host + "/api/teammatch/admin/create",requestEntity,TeamMatch.class).getBody();
-        assertNotNull(tm.getId());
-        assertNotNull(tm.getSeason());
-        assertNotNull(tm.getDivision());
-        assertTrue(tm.getMatchDate().isEqual(now));
+        Season season = seasonApi.active().stream().filter(s->!s.isChallenge()).findAny().get();
+        List<Team> teams = teamApi.seasonTeams(season.getId());
+        TeamMatch tm = new TeamMatch(teams.get(0), teams.get(1), LocalDateTime.now());
+        tm.setHomeRacks(1);
+        List<TeamMatch> matches = teamMatchApi.save(Collections.singletonList(tm));
+        TeamMatch newTm = matches.iterator().next();
+        assertEquals(season,newTm.getSeason());
+        assertEquals(teams.get(0),newTm.getHome());
+        assertEquals(teams.get(1),newTm.getAway());
+        assertTrue(newTm.getHomeRacks() == 1);
+        assertTrue(newTm.getAwayRacks() == 0);
+        assertTrue(newTm.getHomeForfeits() == 0);
+        assertTrue(newTm.getAwayForfeits() == 0);
+        assertTrue(newTm.getSetAwayWins() == 0);
+        assertTrue(newTm.getSetHomeWins() == 0);
+        assertTrue(tm.getMatchDate().isEqual(newTm.getMatchDate()));
+        List<TeamMatch> homeTeamMatches  = teamMatchApi.getTeamMatchByTeam(teams.get(0).getId());
+        assertTrue(homeTeamMatches.stream().filter(m->m.getId().equals(newTm.getId())).count() == 1);
+        teamMatchApi.delete(newTm.getId());
+        boolean error = false;
+        try {
+            teamMatchApi.get(newTm.getId());
+        } catch (RetryableException r) {
+            error = true;
+        }
+        assertTrue(error);
+
     }
 
+    @Test
+    public void testAdd() {
+        Season season = seasonApi.active().stream().filter(s->!s.isChallenge()).findAny().get();
+        TeamMatch tm =  teamMatchApi.add(season.getId(), LocalDate.now().toString());
+        assertNotNull(tm);
+        assertTrue(tm.getMatchDate().toLocalDate().isEqual(LocalDate.now()));
+
+    }
+
+    @Test
+    public void testTeamStats() {
+        Season season = seasonApi.active().stream().filter(s -> !s.isChallenge()).findAny().get();
+        TeamMatch tm = teamMatchApi.add(season.getId(), LocalDate.now().toString());
+        Team home = tm.getHome();
+        Team away = tm.getAway();
+        tm.setHomeRacks(0);
+        tm.setAwayRacks(1);
+        TeamMatch newTm = teamMatchApi.save(Collections.singletonList(tm)).stream().filter(t -> t.equals(tm)).findAny().get();
+        Team h = statApi.teamSeasonStats(season.getId()).stream().filter(st->st.equals(home)).findAny().get();
+        Team a = statApi.teamSeasonStats(season.getId()).stream().filter(st->st.equals(away)).findAny().get();
+        assertTrue(home.getStats().getLoses() + 1 == h.getStats().getLoses());
+       // assertFalse(home.getStats().getRank().equals(newTm.getHome().getStats().getRank()));
+        assertTrue(away.getStats().getWins() + 1 == a.getStats().getWins());
+
+    }
+
+    /*
     @Test
     public void testModify() {
         Team home = utils.createRandomTeam();

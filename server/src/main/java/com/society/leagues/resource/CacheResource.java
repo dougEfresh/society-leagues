@@ -27,6 +27,10 @@ public class CacheResource {
     @RequestMapping(value = "/refresh", method = RequestMethod.GET, consumes = MediaType.ALL_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String refresh() {
+        return refreshNonWeb();
+    }
+
+     public String refreshNonWeb() {
         cacheUtil.refreshAllCache();
         statService.refresh();
         resultService.refresh();

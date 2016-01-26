@@ -29,7 +29,7 @@ public class ChallengeResource extends BaseController {
     public String challenge(@RequestParam(required = false) String userId, @RequestParam(required = false) String date, Model  model, HttpServletResponse response) throws IOException {
         processDate(date,userId,model,response);
         Season s =  seasonApi.active().stream().filter(Season::isChallenge).findFirst().get();
-        Team challenger = teamApi.getTeamsByUser(user.getId()).stream().filter(Team::isChallenge).findFirst().orElse(null);
+        Team challenger = teamApi.userTeams(user.getId()).stream().filter(Team::isChallenge).findFirst().orElse(null);
         if (challenger == null) {
             //ERROR
         }

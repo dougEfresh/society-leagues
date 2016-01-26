@@ -165,14 +165,14 @@ public class UserResource {
     }
 
     @RequestMapping(value = "/reset/request", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public TokenReset reset(@RequestBody Map<String,String> user) {
+    public TokenReset reset(Principal principal, @RequestBody User user) {
          User u = leagueService.findAll(User.class).parallelStream()
                 .filter(us-> us.getLogin() != null)
-                .filter(us -> us.getLogin().toLowerCase().trim().equals(user.get("login").trim())
+                .filter(us -> us.getLogin().toLowerCase().trim().equals(user.getLogin().trim())
                 ).findFirst().orElse(null);
         if (u == null) {
-            logger.error("Could not find user " + user.get("login"));
-            return null;
+            logger.error("Could not find user " + user.getLogin());
+            return new TokenReset("");
         }
         TokenReset reset = userService.resetRequest(u);
         return u.isAdmin() ? reset : new TokenReset("");

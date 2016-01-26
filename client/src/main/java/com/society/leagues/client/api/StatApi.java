@@ -13,10 +13,11 @@ public interface StatApi {
     List<Stat> getTeamMemberStats(@Param("teamId") String teamId);
 
     @RequestLine("GET /api/stat/season/{seasonId}")
+    @Deprecated
     List<Team> getSeasonStats(@Param("seasonId") String seasonId);
 
     @RequestLine("GET /api/stat/team/{seasonId}/summary")
-    List<Team> getTeamSeasonStats(@Param("seasonId") String seasonId);
+    List<Team> teamSeasonStats(@Param("seasonId") String seasonId);
 
     @RequestLine("GET /api/stat/season/users/{seasonId}/summary")
     List<Stat> getUserSeasonStats(@Param("seasonId") String seasonId);

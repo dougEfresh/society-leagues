@@ -42,7 +42,7 @@ public class TeamResource {
 
     @RequestMapping(value = "/admin/modify/members/{teamId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Team modifyMembers(@PathVariable String teamId, @RequestBody TeamMembers teamMembers) {
+    public TeamMembers modifyMembers(@PathVariable String teamId, @RequestBody TeamMembers teamMembers) {
         TeamMembers existingMembers = leagueService.findOne(teamMembers);
         Team existingTeam = leagueService.findOne(new Team(teamId));
         if (existingTeam == null)
@@ -58,9 +58,10 @@ public class TeamResource {
                     new User(user.getId())
             ));
         }
-        leagueService.save(existingMembers);
+        existingMembers = leagueService.save(existingMembers);
         existingTeam.setMembers(existingMembers);
-        return leagueService.save(existingTeam);
+        leagueService.save(existingTeam);
+        return existingMembers;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)

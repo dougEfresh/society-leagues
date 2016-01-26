@@ -1,24 +1,11 @@
 package com.society.leagues.test;
 
-import com.society.leagues.Main;
-import com.society.leagues.service.LeagueService;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Team;
+import com.society.leagues.client.api.domain.TeamMembers;
 import com.society.leagues.client.api.domain.User;
 import org.apache.log4j.Logger;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-
-import org.springframework.http.HttpMethod;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,79 +13,56 @@ import java.util.UUID;
 
 import static org.junit.Assert.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {Main.class})
-@WebIntegrationTest("server.port=8081")
-public class TestTeam {
-    /*
+
+public class TestTeam  extends BaseTest {
+
     private static Logger logger = Logger.getLogger(TestUser.class);
-
-    @Value("${local.server.port}")
-    int port;
-    String host = "http://localhost";
-    @Autowired LeagueService leagueService;
-    @Autowired Utils utils;
-    RestTemplate restTemplate = new RestTemplate();
-    static HttpHeaders requestHeaders = new HttpHeaders();
-
-    @Before
-    public void setUp() {
-        host += ":" + port;
-        utils.createAdminUser();
-        requestHeaders.add("Cookie", utils.getSessionId(host + "/api/authenticate"));
-    }
 
     @Test
     public void testTeam() {
-        Season s = utils.createRandomSeason();
-        Team t = new Team(s,UUID.randomUUID().toString());
-        User u = utils.createRandomUser();
-        t.addMember(u);
-        HttpEntity requestEntity = new HttpEntity(t, requestHeaders);
-        t =  restTemplate.postForEntity(host + "/api/team/admin/create",requestEntity,Team.class).getBody();
-        assertNotNull(t.getId());
-        assertEquals(t.getSeason(),s);
-        assertNotNull(t.getMembers());
-        assertTrue(t.getMembers().size() == 1);
+        assertFalse(teamApi.active().isEmpty());
+        assertTrue(teamApi.active().stream().filter(t->!t.getSeason().isActive()).count() == 0);
+        User u = userApi.active().get(20);
+        List<Team> userTeams = teamApi.userTeams(u.getId());
+        assertNotNull(userTeams);
+        assertFalse(userTeams.isEmpty());
+        assertTrue(userTeams.stream().filter(t->!t.hasUser(u)).count() == 0);
+        for (Season season : seasonApi.active()) {
+            assertFalse(teamApi.seasonTeams(season.getId()).isEmpty());
+        }
+        assertEquals(userTeams.iterator().next(),teamApi.get(userTeams.iterator().next().getId()));
+    }
+
+    @Test
+    public void testCreate() {
+        Season season = seasonApi.active().stream().filter(s->!s.isChallenge()).findAny().get();
+        Team team = new Team();
+        team.setName(UUID.randomUUID().toString());
+        team.setSeason(season);
+        Team newTeam = teamApi.save(team);
+        assertEquals(team.getName(),newTeam.getName());
+        assertNotNull(newTeam.getId());
+        assertEquals(season,newTeam.getSeason());
+
+        User u = userApi.active().stream().filter(user->!user.isChallenge()).findAny().get();
+        TeamMembers tm = new TeamMembers(Arrays.asList(u));
+        TeamMembers newTm = teamApi.saveMembers(newTeam.getId(),tm);
+        assertNotNull(newTm.getId());
+        newTm = teamApi.members(newTeam.getId());
+        assertNotNull(newTm.getId());
+        assertTrue(newTm.getMembers().contains(u));
+        assertTrue(newTm.getMembers().size() == 1);
     }
 
 
     @Test
     public void testTeamModify() {
-        Team t  = utils.createRandomTeam();
-        User u = utils.createRandomUser();
-        t.addMember(u);
-        HttpEntity requestEntity = new HttpEntity(t, requestHeaders);
-        t = restTemplate.postForEntity(host + "/api/team/admin/modify",requestEntity,Team.class).getBody();
-        assertNotNull(t.getId());
-        assertNotNull(t.getMembers());
-        assertFalse(t.getMembers().isEmpty());
-        assertTrue(t.getMembers().contains(u));
+        Team team = teamApi.active().stream().filter(t->!t.getSeason().isChallenge()).findAny().get();
+        team.setName(UUID.randomUUID().toString());
+        teamApi.save(team);
+        Team newTeam = teamApi.get(team.getId());
+        assertEquals(team,newTeam);
+        assertEquals(team.getName(),newTeam.getName());
     }
-
-    @Test
-    public void testTeamGet() {
-        Team t  = utils.createRandomTeam();
-        User u = utils.createRandomUser();
-        t.addMember(u);
-        leagueService.save(t);
-        HttpEntity requestEntity = new HttpEntity(t, requestHeaders);
-        t = restTemplate.exchange(host + "/api/team/get/"  + t.getId(),HttpMethod.GET,requestEntity,Team.class).getBody();
-        assertNotNull(t.getId());
-        assertNotNull(t.getMembers());
-        assertFalse(t.getMembers().isEmpty());
-        assertTrue(t.getMembers().contains(u));
-    }
-
-    @Test
-    public void testTeamGetSeason() {
-        Team t  = utils.createRandomTeam();
-        User u = utils.createRandomUser();
-        HttpEntity requestEntity = new HttpEntity(null, requestHeaders);
-        List<Team> teams = Arrays.asList(restTemplate.exchange(host + "/api/team/get/season/"  + t.getSeason().getId(), HttpMethod.GET,requestEntity,Team[].class).getBody());
-        assertNotNull(teams);
-        assertTrue(teams.size()>0);
-    }
-    */
 
 }
