@@ -49,6 +49,7 @@ public class TestStat {
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);
     }
 
+    /*
     @Test
     public void testTeamStat() {
         Team home = utils.createRandomTeam();
@@ -148,5 +149,6 @@ public class TestStat {
         assertEquals(new Integer(1),s.getSetLoses());
 
     }
+    */
 
 }

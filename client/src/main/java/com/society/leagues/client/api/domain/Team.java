@@ -46,9 +46,6 @@ public class Team extends LeagueObject {
     }
 
     public TeamMembers getMembers() {
-        if (members == null)
-            return new TeamMembers();
-
         return members;
     }
 

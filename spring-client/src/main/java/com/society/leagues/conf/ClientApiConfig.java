@@ -12,6 +12,7 @@ import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 import feign.slf4j.Slf4jLogger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -59,23 +60,30 @@ public class ClientApiConfig {
         }
     }
 
-    private <T> T getApi(Class<T> clzz) {
+    public  <T> T getApi(Class<T> clzz) {
         return getApi(clzz, Logger.Level.BASIC.name());
     }
 
-    private <T> T getApi(Class<T> clzz, String level) {
+    public <T> T getApi(Class<T> clzz, String level) {
+        return  getApi(clzz,level,clientApiProperties.getEndpoint());
+    }
+
+    public  <T> T getApi(Class<T> clzz, String level, String endPoint) {
+
         return Feign.builder().encoder(encoder).decoder(decoder)
                 .logger(new Slf4jLogger())
                 .client(leagueHttpClient)
                 .logLevel( Logger.Level.valueOf(level))
                 .errorDecoder(new CustomErrorDecoder())
                 .requestInterceptor(new HeadersInterceptor())
-                .target(clzz, clientApiProperties.getEndpoint());
+                .target(clzz, endPoint);
     }
+
     @Bean
     public ChallengeApi challengeApiApi() {
        return getApi(ChallengeApi.class);
     }
+
     @Bean
     public StatApi statApi() {
        return getApi(StatApi.class, clientApiProperties.getStat());

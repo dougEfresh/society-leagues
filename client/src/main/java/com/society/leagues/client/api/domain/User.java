@@ -200,7 +200,9 @@ public class User extends LeagueObject {
     public boolean isChallenge() {
         if (status != Status.ACTIVE)
             return false;
-
+        if (handicapSeasons == null || handicapSeasons.isEmpty()) {
+            return false;
+        }
         return handicapSeasons.stream().filter(s->s.getSeason().getDivision().isChallenge()).count() > 0;
     }
 

@@ -29,6 +29,7 @@ bootRun {
 
 dependencies {
     compile project(':client')
+    testCompile project(':spring-client')
     compile project(':dao')
     compile 'org.slf4j:slf4j-api:1.7.7'
 
@@ -62,6 +63,7 @@ dependencies {
 
 
     //Test
+    compile 'io.codearte.jfairy:jfairy:0.5.1'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'org.apache.httpcomponents:httpclient:4.4'
     testCompile 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:1.50.0'

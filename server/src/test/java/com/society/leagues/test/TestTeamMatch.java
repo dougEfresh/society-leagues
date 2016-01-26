@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
 public class TestTeamMatch {
 
     private static Logger logger = Logger.getLogger(TestUser.class);
-
+/*
     @Value("${local.server.port}")
     int port;
     String host = "http://localhost";
@@ -115,4 +115,5 @@ public class TestTeamMatch {
             assertTrue(team.getSeason().isActive());
         }
     }
+    */
 }

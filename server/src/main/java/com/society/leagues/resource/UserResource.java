@@ -81,7 +81,7 @@ public class UserResource {
             return oldUser;
         }
 
-        user.setLogin(user.getEmail());
+        user.setEmail(user.getLogin());
         user = leagueService.save(user);
         if (user.isChallenge()) {
             challengeService.createChallengeUser(user);

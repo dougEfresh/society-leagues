@@ -30,7 +30,7 @@ import static org.junit.Assert.*;
 @SpringApplicationConfiguration(classes = {Main.class})
 @WebIntegrationTest("server.port=8081")
 public class TestTeam {
-
+    /*
     private static Logger logger = Logger.getLogger(TestUser.class);
 
     @Value("${local.server.port}")
@@ -99,5 +99,6 @@ public class TestTeam {
         assertNotNull(teams);
         assertTrue(teams.size()>0);
     }
+    */
 
 }

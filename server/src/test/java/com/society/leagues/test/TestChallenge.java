@@ -44,7 +44,7 @@ public class TestChallenge {
         requestHeaders.add("Cookie", utils.getSessionId(host + "/api/authenticate"));
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);
     }
-
+/*
     @Test
     public void testCreateChallenge() {
         Team ch = new Team(utils.createRandomTeam().getId());
@@ -148,4 +148,5 @@ public class TestChallenge {
         assertTrue(challenges.contains(c));
         assertFalse(challenges.contains(yesterday));
     }
+    */
 }
