@@ -39,6 +39,7 @@ public abstract class BaseTest {
     TeamApi teamApi;
     TeamMatchApi teamMatchApi;
     StatApi statApi;
+    PlayerResultApi playerResultApi;
     RestTemplate restTemplate = new RestTemplate();
     @Autowired ClientApiConfig clientApiConfig;
     @Autowired UserRepository userRepository;
@@ -53,6 +54,7 @@ public abstract class BaseTest {
         teamApi = clientApiConfig.getApi(TeamApi.class,"BASIC",host + ":" + port);
         teamMatchApi = clientApiConfig.getApi(TeamMatchApi.class,"BASIC",host + ":" + port);
         statApi = clientApiConfig.getApi(StatApi.class,"BASIC",host + ":" + port);
+        playerResultApi = clientApiConfig.getApi(PlayerResultApi.class,"BASIC",host + ":" + port);
         login("admin.admin@example.com","abc123");
     }
 

@@ -369,8 +369,31 @@ public class StatService {
         }
     }
 
+    public List<Stat> getUserStats(User user, Season season) {
+        List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().
+                filter(pr->pr.hasUser(user))
+                .filter(pr -> pr.getSeason().equals(season)).
+                        collect(Collectors.toList());
+
+        Stat s = Stat.buildPlayerSeasonStats(user,
+                season,
+                results
+        );
+        if (season.isChallenge()) {
+            resultService.refresh();
+            List<MatchPoints> points = resultService.matchPoints();
+            double totalPoints = 0d;
+            List<MatchPoints> pointsList = points.stream().parallel().filter(p-> p.getUser() != null && p.getUser().equals(user)).collect(Collectors.toList());
+            for (MatchPoints matchPoints : pointsList) {
+                totalPoints += matchPoints.getWeightedAvg();
+            }
+            s.setPoints(totalPoints);
+        }
+        return Arrays.asList(s);
+    }
+
     public void refreshUserSeasonStats(final User user) {
-        for (Season season : user.getSeasons().stream().filter(s -> s.isActive()).collect(Collectors.toList())) {
+        for (Season season : user.getSeasons()) {
             List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel().
                     filter(pr->pr.hasUser(user))
                     .filter(pr -> pr.getSeason().equals(season)).
@@ -411,7 +434,6 @@ public class StatService {
             }
             userSeasonStat.get().put(season,stats);
         }
-
 
     }
 

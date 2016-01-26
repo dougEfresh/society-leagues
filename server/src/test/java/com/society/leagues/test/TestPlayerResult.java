@@ -27,8 +27,9 @@ import static org.junit.Assert.*;
 public class TestPlayerResult  extends BaseTest {
 
     private static Logger logger = Logger.getLogger(TestUser.class);
+
     @Test
-    public void testTeamStat() {
+    public void testPlayerResult() {
 
     }
 

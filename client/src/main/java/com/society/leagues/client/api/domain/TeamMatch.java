@@ -224,14 +224,10 @@ public class TeamMatch extends LeagueObject {
     }
 
     public Integer getSetWins(Team team) {
-        if (!team.isNine()) { return isWinner(team) ? 1 : 0; }
-
         return team.equals(home)? setHomeWins : setAwayWins;
     }
 
     public Integer getSetLoses(Team team) {
-         if (!team.isNine()) { return isWinner(team) ? 1 : 0; }
-
         return team.equals(home)? setAwayWins : setHomeWins;
     }
 

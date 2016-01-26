@@ -1,8 +1,6 @@
 package com.society.leagues.test;
 
-import com.society.leagues.client.api.domain.Season;
-import com.society.leagues.client.api.domain.Team;
-import com.society.leagues.client.api.domain.TeamMatch;
+import com.society.leagues.client.api.domain.*;
 import feign.RetryableException;
 import org.junit.Test;
 
@@ -60,74 +58,85 @@ public class TestTeamMatch extends BaseTest {
     @Test
     public void testTeamStats() {
         Season season = seasonApi.active().stream().filter(s -> !s.isChallenge()).findAny().get();
+        validate(season);
+    }
+
+    private TeamMatch validate(Season season) {
+
         TeamMatch tm = teamMatchApi.add(season.getId(), LocalDate.now().toString());
-        Team home = tm.getHome();
-        Team away = tm.getAway();
+        Team home = statApi.teamSeasonStats(season.getId()).stream().filter(t->t.equals(tm.getHome())).findAny().get();
+        Team away = statApi.teamSeasonStats(season.getId()).stream().filter(t->t.equals(tm.getAway())).findAny().get();
+        Stat challengeHome  = null;
+        Stat challengeAway = null;
+        if (season.isChallenge()) {
+            challengeHome = statApi.getTeamMemberStats(home.getId()).get(0);
+            challengeAway = statApi.getTeamMemberStats(away.getId()).get(0);
+        }
         tm.setHomeRacks(0);
         tm.setAwayRacks(1);
-        TeamMatch newTm = teamMatchApi.save(Collections.singletonList(tm)).stream().filter(t -> t.equals(tm)).findAny().get();
+        tm.setSetAwayWins(3);
+        tm.setSetHomeWins(1);
+        tm.setHomeForfeits(1);
+        tm.setAwayForfeits(2);
+        TeamMatch teamMatch = teamMatchApi.save(Collections.singletonList(tm)).stream().filter(t -> t.equals(tm)).findAny().get();
         Team h = statApi.teamSeasonStats(season.getId()).stream().filter(st->st.equals(home)).findAny().get();
         Team a = statApi.teamSeasonStats(season.getId()).stream().filter(st->st.equals(away)).findAny().get();
+
         assertTrue(home.getStats().getLoses() + 1 == h.getStats().getLoses());
-       // assertFalse(home.getStats().getRank().equals(newTm.getHome().getStats().getRank()));
+        assertTrue(home.getStats().getWins().equals(h.getStats().getWins()));
+        assertTrue(home.getStats().getForfeits() + 1 == h.getStats().getForfeits());
+        assertTrue(home.getStats().getSetWins() + 1 == h.getStats().getSetWins());
+        assertTrue(home.getStats().getSetLoses() + 3 == h.getStats().getSetLoses());
+        assertTrue(home.getStats().getRacksWon().equals(h.getStats().getRacksWon()));
+        assertTrue(home.getStats().getRacksLost() + 1  == h.getStats().getRacksLost());
+
+        assertTrue(away.getStats().getLoses().equals(a.getStats().getLoses()));
         assertTrue(away.getStats().getWins() + 1 == a.getStats().getWins());
+        assertTrue(away.getStats().getForfeits() + 2 == a.getStats().getForfeits());
+        assertTrue(away.getStats().getSetWins() + 3 == a.getStats().getSetWins());
+        assertTrue(away.getStats().getSetLoses() + 1 == a.getStats().getSetLoses());
+        assertTrue(away.getStats().getRacksWon() +1 == a.getStats().getRacksWon());
+        assertTrue(away.getStats().getRacksLost().equals(a.getStats().getRacksLost()));
 
-    }
+        if (season.isChallenge()) {
+            Stat hStat = statApi.getUserSeasonStats(challengeHome.getUser().getId(),season.getId()).get(0);
+            Stat aStat = statApi.getUserSeasonStats(challengeAway.getUser().getId(),season.getId()).get(0);
 
-    /*
-    @Test
-    public void testModify() {
-        Team home = utils.createRandomTeam();
-        Team away = utils.createRandomTeam();
-        TeamMatch tm = leagueService.save(new TeamMatch(home, away, LocalDateTime.now()));
-        User u1 = utils.createRandomUser();
-        User u2 = utils.createRandomUser();
-        home.addMember(u1);
-        away.addMember(u2);
-        leagueService.save(home);
-        leagueService.save(away);
-        tm.setAwayRacks(7);
-        tm.setHomeRacks(6);
-        HttpEntity requestEntity = new HttpEntity(tm, requestHeaders);
-        TeamMatch newTeamMatch  =  restTemplate.postForEntity(host + "/api/teammatch/admin/modify", requestEntity, TeamMatch.class).getBody();
-        assertNotNull(newTeamMatch.getId());
-        assertNotNull(newTeamMatch.getSeason());
-        assertNotNull(newTeamMatch.getDivision());
-        assertTrue(newTeamMatch.getHome().getMembers().contains(u1));
-        assertTrue(newTeamMatch.getAway().getMembers().contains(u2));
-        assertEquals(new Integer(7), newTeamMatch.getAwayRacks());
-        assertEquals(new Integer(6), newTeamMatch.getHomeRacks());
-    }
+            assertTrue(challengeHome.getLoses() + 1 == hStat.getLoses());
+            assertTrue(challengeHome.getWins().equals(hStat.getWins()));
+            assertTrue(challengeHome.getRacksWon().equals(hStat.getRacksWon()));
+            assertTrue(challengeHome.getRacksLost() + 1 == hStat.getRacksLost());
+            assertTrue(hStat.getPoints() > 0);
+            assertTrue(aStat.getPoints() > 0);
+            assertTrue(aStat.getPoints() > hStat.getPoints());
 
-    @Test
-    public void testGet() {
-        Team home = utils.createRandomTeam();
-        Team away = utils.createRandomTeam();
-        TeamMatch tm = leagueService.save(new TeamMatch(home, away, LocalDateTime.now()));
-        HttpEntity requestEntity = new HttpEntity(null, requestHeaders);
-        TeamMatch newTeamMatch  =  restTemplate.exchange(host + "/api/teammatch/get/" + tm.getId(), HttpMethod.GET, requestEntity, TeamMatch.class).getBody();
-        assertEquals(tm.getId(),newTeamMatch.getId());
-        assertEquals(tm.getMatchDate(),newTeamMatch.getMatchDate());
-        assertEquals(tm.getHome(),newTeamMatch.getHome());
-        assertEquals(tm.getAway(),newTeamMatch.getAway());
-    }
+            assertTrue(challengeAway.getLoses().equals(aStat.getLoses()));
+            assertTrue(challengeAway.getWins() + 1 == aStat.getWins());
+            assertTrue(challengeAway.getRacksWon() +1 == aStat.getRacksWon());
+            assertTrue(challengeAway.getRacksLost().equals(aStat.getRacksLost()));
 
-    @Test
-    public void testTeamGetSeason() {
-        Team home = utils.createRandomTeam();
-        Team away = utils.createRandomTeam();
-        User u = utils.createRandomUser();
-        home.addMember(u);
-        home = leagueService.save(home);
-        TeamMatch tm = leagueService.save(new TeamMatch(home, away, LocalDateTime.now()));
-        HttpEntity requestEntity = new HttpEntity(null, requestHeaders);
-        List<TeamMatch> teams = Arrays.asList(restTemplate.exchange(host + "/api/teammatch/get/user/" + u.getId() + "/current", HttpMethod.GET, requestEntity, TeamMatch[].class).getBody());
-        assertNotNull(teams);
-        assertTrue(teams.size() > 0);
-        for (TeamMatch team : teams) {
-            assertTrue(team.hasUser(u));
-            assertTrue(team.getSeason().isActive());
+            List<PlayerResult> hResults = playerResultApi.getResults(challengeHome.getUser().getId(),season.getId());
+            List<PlayerResult> aResults = playerResultApi.getResults(challengeAway.getUser().getId(),season.getId());
+            assertFalse(hResults.isEmpty());
+            assertFalse(aResults.isEmpty());
+            assertTrue(hResults.stream().filter(r->r.getTeamMatch().equals(tm)).count() == 1);
+            PlayerResult hResult = hResults.stream().filter(r->r.getTeamMatch().equals(tm)).findAny().get();
+            PlayerResult aResult = aResults.stream().filter(r->r.getTeamMatch().equals(tm)).findAny().get();
+
+            assertEquals(hResult.getHomeRacks(),teamMatch.getHomeRacks());
+            assertEquals(aResult.getAwayRacks(),teamMatch.getAwayRacks());
+
+            assertTrue(hResult.getMatchPoints().getPoints() > 0);
+            assertTrue(aResult.getMatchPoints().getPoints() > 0);
         }
+
+        return teamMatch;
     }
-    */
+
+    @Test
+    public void testChallenge() {
+        Season season = seasonApi.active().stream().filter(Season::isChallenge).findAny().get();
+        TeamMatch tm = validate(season);
+    }
+
 }

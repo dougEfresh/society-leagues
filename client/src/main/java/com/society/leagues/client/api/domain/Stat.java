@@ -229,6 +229,7 @@ public class Stat {
         this.user = user;
     }
 
+    @JsonView(PlayerResultSummary.class)
     public Integer getSetLoses() {
         return setLoses;
     }
@@ -237,6 +238,7 @@ public class Stat {
         this.setLoses = setLoses;
     }
 
+    @JsonView(PlayerResultSummary.class)
     public Integer getSetWins() {
         return setWins;
     }

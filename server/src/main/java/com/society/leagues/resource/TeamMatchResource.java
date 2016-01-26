@@ -170,8 +170,8 @@ public class TeamMatchResource {
     public TeamMatch add(Principal principal, @PathVariable String seasonId, @PathVariable String date) {
         TeamMatch tm = new TeamMatch();
         tm.setMatchDate(LocalDate.parse(date).atTime(11,0));
-        tm.setHome(leagueService.findAll(Team.class).stream().filter(t -> t.getSeason().getId().equals(seasonId)).findFirst().get());
-        tm.setAway(leagueService.findAll(Team.class).stream().filter(t -> t.getSeason().getId().equals(seasonId)).findFirst().get());
+        tm.setHome(leagueService.findAll(Team.class).stream().filter(t -> t.getSeason().getId().equals(seasonId)).collect(Collectors.toList()).get(0));
+        tm.setAway(leagueService.findAll(Team.class).stream().filter(t -> t.getSeason().getId().equals(seasonId)).collect(Collectors.toList()).get(1));
         return leagueService.save(tm);
     }
 
