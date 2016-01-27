@@ -97,6 +97,4 @@ public class TestChallenge extends  BaseTest {
         assertNull(requested.getOpponent());
 
     }
-
-
 }

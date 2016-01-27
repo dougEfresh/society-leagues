@@ -67,7 +67,7 @@ public class TestSeason extends BaseTest {
         Map<String,List<TeamMatch>> teamMatches = teamMatchApi.matchesBySeasonSummary(season.getId());
         assertNotNull(matches);
         for (String s : teamMatches.keySet()) {
-            assertTrue(teamMatches.get(s).size() == teams.size()/2);
+            assertEquals(teams.size()/2,teamMatches.get(s).size());
         }
     }
 }
