@@ -1,5 +1,6 @@
 package com.society.leagues.resource;
 
+import com.society.leagues.exception.ChallengeException;
 import com.society.leagues.service.ChallengeService;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.client.api.domain.*;
@@ -31,12 +32,10 @@ public class ChallengeResource {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public Challenge create(@RequestBody Challenge challenge, Principal principal, HttpServletRequest request) {
-        if (principal == null) {
-            return new Challenge();
-        }
         User u = leagueService.findByLogin(principal.getName());
         Team challenger = leagueService.findOne(challenge.getChallenger());
         Team opponent = leagueService.findOne(challenge.getOpponent());
+
         if (challenge.isBroadcast()) {
             return leagueService.save(challenge);
         }
@@ -51,12 +50,10 @@ public class ChallengeResource {
     }
 
     @RequestMapping(value = "/accept", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public TeamMatch accept(@RequestBody Challenge challenge, Principal principal, HttpServletRequest request) {
-        if (principal == null) {
-            return null;
-        }
+    public Challenge accept(@RequestBody Challenge challenge, Principal principal, HttpServletRequest request) throws ChallengeException {
+
         if (challenge.getAcceptedSlot() == null) {
-            return null;
+            throw new ChallengeException("Accepted Slot not defined");
         }
         User u = leagueService.findByLogin(principal.getName());
         Slot accepted = leagueService.findOne(challenge.getAcceptedSlot());
@@ -66,18 +63,16 @@ public class ChallengeResource {
         if (u.equals(challenge.getChallenger().getChallengeUser()) || u.equals(challenge.getOpponent().getChallengeUser()) || u.isAdmin()) {
             challenge.setStatus(Status.ACCEPTED);
             challenge.setAcceptedSlot(accepted);
-            leagueService.save(challenge);
-            return challengeService.accept(challenge);
+            challengeService.accept(challenge);
+            return leagueService.findOne(challenge);
         }
         //TODO throw exception
-        return null;
+        throw new ChallengeException("Unknown Challenge error");
     }
 
     @RequestMapping(value = {"/decline", "/cancel"}, method = {RequestMethod.POST, RequestMethod.DELETE}, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public Challenge decline(@RequestBody Challenge challenge, Principal principal, HttpServletRequest request) {
-         if (principal == null) {
-            return null;
-         }
+
         User u = leagueService.findByLogin(principal.getName());
         Challenge c = leagueService.findOne(challenge);
         challengeService.cancel(c);
@@ -98,7 +93,6 @@ public class ChallengeResource {
     @RequestMapping(value = {"/users"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Collection<Team> challengeUsers(Principal principal) {
         User user = leagueService.findByLogin(principal.getName());
-
         return leagueService.findAll(Team.class).parallelStream().filter(Team::isChallenge).collect(Collectors.toList());
     }
 
@@ -136,28 +130,27 @@ public class ChallengeResource {
     }
 
     @RequestMapping(value = {"/date/{date}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public List<Team> getUsersAvailableOnDate(@PathVariable String date, Principal principal) {
+    public List<Team> getUsersAvailableOnDate(@PathVariable String date, Principal principal) throws ChallengeException {
         try {
             LocalDate dt = LocalDate.parse(date);
-            Collection<Team> teams = challengeUsers(principal);
-            User u  = leagueService.findByLogin(principal.getName());
-            List<Challenge> challenges = leagueService.findAll(Challenge.class).stream().parallel().
-                    filter(c -> c.getLocalDate().atStartOfDay().toLocalDate().isEqual(dt)).
-                    filter(c->c.getStatus() == Status.ACCEPTED)
+            User u = leagueService.findByLogin(principal.getName());
+            Collection<Team> teams = challengeUsers(principal).stream().filter(t->!t.hasUser(u)).collect(Collectors.toList());
+            List<Challenge> challenges = leagueService.findAll(Challenge.class).stream().parallel()
+                    .filter(c -> c.getLocalDate().atStartOfDay().toLocalDate().isEqual(dt))
+                    .filter(c->c.getStatus() == Status.ACCEPTED)
                     .filter(c->c.getUserChallenger().equals(u) || c.getUserOpponent().equals(u))
                     .collect(Collectors.toList());
             List<Team> available = new ArrayList<>();
             for (Team team : teams) {
                 if (challenges.stream().filter(c->c.hasTeam(team)).count() == 0) {
-                    if (team.getChallengeUser().hasSeason(team.getSeason()))
                         available.add(team);
                 }
             }
             return available.stream().sorted((o1, o2) -> o1.getName().compareTo(o2.getName())).collect(Collectors.toList());
         } catch (Exception t) {
-            logger.error(t.getMessage(),t);
+            logger.error(t.getLocalizedMessage(),t);
+            throw new ChallengeException(t.getMessage());
         }
-        return Collections.emptyList();
     }
 
     @RequestMapping(value = {"/slots/{date}/{id}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)

@@ -60,14 +60,15 @@ public class TestData {
         u.setPassword(defaultPassword);
         u.setRole(Role.ADMIN);
         u.setStatus(Status.ACTIVE);
-        userRepository.save(u);
 
         Season challenge = getSeason(Division.NINE_BALL_CHALLENGE, DayOfWeek.SUNDAY);
         Season scrmable = getSeason(Division.MIXED_MONDAYS_MIXED, DayOfWeek.MONDAY);
         Season tuesday = getSeason(Division.NINE_BALL_TUESDAYS, DayOfWeek.TUESDAY);
         Season wednesday = getSeason(Division.EIGHT_BALL_WEDNESDAYS, DayOfWeek.WEDNESDAY);
         Season thursday = getSeason(Division.EIGHT_BALL_THURSDAYS, DayOfWeek.THURSDAY);
+        u.addHandicap(new HandicapSeason(Handicap.DPLUS,challenge));
 
+        userRepository.save(u);
         List<User> users = userRepository.findAll();
 
         for(int i = 0 ; i<10; i++) {

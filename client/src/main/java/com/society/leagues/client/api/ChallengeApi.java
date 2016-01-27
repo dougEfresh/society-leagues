@@ -13,7 +13,7 @@ public interface ChallengeApi {
     @RequestLine("GET /api/challenge/user/{userId}")
     List<Challenge> challengesForUser(@Param("userId") String userId);
 
-    @RequestLine("DELETE /api/challenge/cancel/{challengeId}")
+    @RequestLine("DELETE /api/challenge/cancel")
     Challenge cancel(Challenge challenge);
 
     @RequestLine("POST /api/challenge/accept")

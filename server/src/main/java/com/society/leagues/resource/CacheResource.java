@@ -1,10 +1,7 @@
 package com.society.leagues.resource;
 
-import com.society.leagues.service.LeagueService;
-import com.society.leagues.service.ResultService;
-import com.society.leagues.service.StatService;
+import com.society.leagues.service.*;
 import com.society.leagues.cache.CacheUtil;
-import com.society.leagues.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +20,7 @@ public class CacheResource {
     @Autowired CacheUtil cacheUtil;
     @Autowired ResultService resultService;
     @Autowired UserService userService;
+    @Autowired ChallengeService challengeService;
 
     @RequestMapping(value = "/refresh", method = RequestMethod.GET, consumes = MediaType.ALL_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -31,10 +29,11 @@ public class CacheResource {
     }
 
      public String refreshNonWeb() {
-        cacheUtil.refreshAllCache();
-        statService.refresh();
-        resultService.refresh();
-        userService.refresh();
+         cacheUtil.refreshAllCache();
+         statService.refresh();
+         resultService.refresh();
+         userService.refresh();
+         challengeService.refresh();
         return LocalDateTime.now().toString();
     }
 }
