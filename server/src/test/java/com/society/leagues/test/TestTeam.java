@@ -52,6 +52,7 @@ public class TestTeam  extends BaseTest {
         assertNotNull(newTm.getId());
         assertTrue(newTm.getMembers().contains(u));
         assertTrue(newTm.getMembers().size() == 1);
+        teamApi.delete(newTeam.getId());
     }
 
 

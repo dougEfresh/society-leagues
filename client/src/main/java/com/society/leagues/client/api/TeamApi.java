@@ -27,6 +27,9 @@ public interface TeamApi {
     @RequestLine("POST /api/team/admin/modify")
     Team save(Team team);
 
+    @RequestLine("DELETE /api/team/admin/delete/{teamId}")
+    Team delete(@Param("teamId") String teamId);
+
     @RequestLine("POST /api/team/admin/modify/members/{teamId}")
     TeamMembers saveMembers(@Param("teamId") String teamId, TeamMembers members);
 }

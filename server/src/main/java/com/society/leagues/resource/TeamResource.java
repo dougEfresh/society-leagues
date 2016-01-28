@@ -1,11 +1,8 @@
 package com.society.leagues.resource;
 
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.society.leagues.client.api.domain.*;
-import com.society.leagues.client.views.PlayerResultView;
 import com.society.leagues.service.LeagueService;
-import com.society.leagues.client.views.TeamSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,6 +23,14 @@ public class TeamResource {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Team create(@RequestBody Team team) {
         return leagueService.save(team);
+    }
+
+
+    @RequestMapping(value = "/admin/delete/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Team delete(@PathVariable String id) {
+        Team t = leagueService.findOne(new Team(id));
+        return leagueService.purge(t);
     }
 
     @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
