@@ -95,7 +95,6 @@ public class TestData {
             int max = j + 10;
             for (; j < max; j++) {
                 User u =  users.get(j);
-                System.out.println("Adding " + u.getName());
                 u.addHandicap(new HandicapSeason(season.isNine() ? Handicap.DPLUS : Handicap.FOUR,season));
                 userRepository.save(u);
                 tm.addMember(u);
