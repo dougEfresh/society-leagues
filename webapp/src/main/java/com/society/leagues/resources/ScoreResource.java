@@ -25,6 +25,7 @@ public class ScoreResource extends BaseController {
 
     @RequestMapping(value = {"/scores"}, method = RequestMethod.GET)
     public String edit(Model model) {
+
         return "scores/index";
     }
 

@@ -39,11 +39,19 @@ function challengeAcceptSlot() {
 
 }
 
-
-
 function changeTeamSeason(e) {
     var id = $('#team-seasons').val();
     window.location = '/app/team/season/' + id;
+}
+
+function changeAdminSeason(e) {
+    var id = $('#admin-seasons').val();
+    console.log('Changing cookie to '  + id);
+    Cookies.set('admin-season',id);
+    $('#admin-scores').attr("href",'/app/scores/' + id);
+    $('#admin-schedules').attr("href",'/app/schedule/' + id);
+    $('#admin-leaders').attr("href",'/app/leaders/' + id);
+    $('#admin-standings').attr("href",'/app/display/' + id);
 }
 
 function searchUser(e) {
@@ -163,7 +171,7 @@ function searchUserStats(e) {
            });
 
 
-          $('#table-team-standings').dynatable( {
+     $('#table-team-standings').dynatable( {
      dataset: {
                perPageDefault: 50,
                perPageOptions: [10,20,50,100]
