@@ -208,7 +208,6 @@ public class StatResource {
     public List<Stat> getAllUserStats(@PathVariable String id) {
         User u = leagueService.findOne(new User(id));
         final List<Stat> userStats = new ArrayList<>();
-        statService.refreshUserSeasonStats(u);
         for (Season season : u.getSeasons()) {
             List<Stat> stats = statService.getUserSeasonStats().get(season).stream().filter(st->st.getUser().equals(u)).collect(Collectors.toList());
             if (stats.isEmpty()) {
@@ -243,29 +242,11 @@ public class StatResource {
                 method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.ALL_VALUE)
-    public List<Team> getUserStatsSeason(@PathVariable String seasonId) {
+    public List<Team> getTeamStatsSeason(@PathVariable String seasonId) {
         Season s = leagueService.findOne(new Season(seasonId));
         List<Team> teams = leagueService.findAll(Team.class).parallelStream().filter(t->t.getSeason().equals(s)).collect(Collectors.toList());
         for (Team team : teams) {
             statService.refreshTeamStats(team);
-        }
-        statService.refreshTeamRank();
-        if (!s.isChallenge())
-            return teams;
-
-         List<MatchPoints> points = resultService.matchPoints();
-         if (points == null) {
-             return teams;
-         }
-        //TODO move to stat service
-        for (Team team: teams) {
-            double totalPoints = 0d;
-            User u =  team.getChallengeUser();
-            List<MatchPoints> pointsList = points.stream().parallel().filter(p->p.getUser().equals(u)).collect(Collectors.toList());
-            for (MatchPoints matchPoints : pointsList) {
-                totalPoints += matchPoints.getWeightedAvg();
-            }
-            team.getStats().setPoints(totalPoints);
         }
         return teams;
     }

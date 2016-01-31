@@ -16,6 +16,11 @@ public interface StatApi {
     @Deprecated
     List<Team> getSeasonStats(@Param("seasonId") String seasonId);
 
+    /**
+     * @see com.society.leagues  getTeamStatsSeason
+     * @param seasonId
+     * @return
+     */
     @RequestLine("GET /api/stat/team/{seasonId}/summary")
     List<Team> teamSeasonStats(@Param("seasonId") String seasonId);
 

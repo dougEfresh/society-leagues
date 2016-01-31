@@ -29,7 +29,6 @@ public class Stat {
     public Stat() {
     }
 
-
     public void setType(StatType type) {
         this.type = type;
     }
@@ -38,19 +37,6 @@ public class Stat {
     public String getGame() {
         return getType() == StatType.MIXED_EIGHT ? "8" : "9";
     }
-
-    public static Stat buildHandicapStats(final List<PlayerResult> results, StatType statType, User user, Handicap handicap) {
-        Stat s= new Stat();
-        if (results == null || results.isEmpty())
-            return null;
-
-        s.setSeason(results.get(0).getSeason());
-        s.setUser(user);
-        s.setHandicap(handicap);
-        calculate(user,s,results);
-        return s;
-    }
-
 
     public static Stat buildTeamStats(final Team team, final List<TeamMatch> matches) {
         Stat s = new Stat();
@@ -96,14 +82,6 @@ public class Stat {
                 s.racksLost += match.getWinnerRacks();
             }
         }
-    }
-
-    public static Stat buildPlayerTeamStats(final User u, final Team team , final List<PlayerResult> matches) {
-        Stat s = new Stat();
-        s.setUser(u);
-        s.setSeason(team.getSeason());
-        calculate(u,s,matches);
-        return s;
     }
 
     public static Stat buildPlayerSeasonStats(final User u, final Season season , final List<PlayerResult> matches) {
