@@ -61,6 +61,10 @@ public class StatService {
         this.userStats.lazySet(userStats);
     }
 
+    public List<Stat> getSeasonStats(final Season season) {
+        return getSeasonStats(season,true);
+    }
+
     public List<Stat> getSeasonStats(final Season season, boolean cache) {
         List<User> users = leagueService.findAll(User.class).stream().filter(u->u.isReal()).collect(Collectors.toList());
         List<Stat> stats = new ArrayList<>(100);

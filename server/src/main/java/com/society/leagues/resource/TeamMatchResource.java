@@ -81,7 +81,6 @@ public class TeamMatchResource {
         if (processed.get(0).getSeason().isChallenge()) {
             statService.refresh();
         }
-        statService.refreshTeamRank();
         return processed;
     }
 
