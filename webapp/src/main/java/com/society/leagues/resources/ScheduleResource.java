@@ -70,7 +70,7 @@ public class ScheduleResource extends BaseController {
                 }
             });
             for (String s : matches.keySet()) {
-                sortedMatches.put(s,matches.get(s));
+                sortedMatches.put(s,matches.get(s).stream().filter(tm->tm.getHome().getChallengeUser() != null && tm.getAway() != null).collect(Collectors.toList()));
             }
             matches = sortedMatches;
         }
