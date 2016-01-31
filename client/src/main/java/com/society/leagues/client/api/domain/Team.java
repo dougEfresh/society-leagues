@@ -8,6 +8,7 @@ import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.converters.DateTimeSerializer;
 import com.society.leagues.client.views.PlayerResultView;
 import com.society.leagues.client.views.TeamSummary;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;
@@ -27,6 +28,7 @@ public class Team extends LeagueObject {
         this.name = name;
         this.created = LocalDateTime.now();
     }
+
     Stat stats = new Stat();
 
     public Team(String id) {
@@ -101,7 +103,7 @@ public class Team extends LeagueObject {
 
     @JsonView(PlayerResultSummary.class)
     public User getChallengeUser() {
-        if (!isChallenge() || members == null || members.getMembers().isEmpty()) {
+        if (members == null || members.getMembers().isEmpty()) {
             return null;
         }
         return members.getMembers().iterator().next();

@@ -44,7 +44,15 @@ public class ScheduleResource extends BaseController {
             }
             matches = oMatches;
         }
-        Map<String,List<TeamMatch>> sortedMatches = new TreeMap<>();
+        Map<String,List<TeamMatch>> sortedMatches = new TreeMap<>(new Comparator() {
+            @Override
+            public int compare(Object o1, Object o2) {
+                if (season.isChallenge()) {
+                    return o2.toString().compareTo(o1.toString());
+                }
+                return o1.toString().compareTo(o2.toString());
+            }
+        });
         for (String s : matches.keySet()) {
             sortedMatches.put(s,matches.get(s));
         }
@@ -63,18 +71,6 @@ public class ScheduleResource extends BaseController {
                 .filter(t->t.getSeason().getId().equals(seasonId))
                 .filter(t->t.hasUser(u)).findFirst().orElse(team));
 
-        if (season.isChallenge()) {
-            sortedMatches = new TreeMap<>(new Comparator() {
-                @Override
-                public int compare(Object o1, Object o2) {
-                    return o2.toString().compareTo(o1.toString());
-                }
-            });
-            for (String s : matches.keySet()) {
-                sortedMatches.put(s,matches.get(s).stream().filter(tm->tm.getHome().getChallengeUser() != null && tm.getAway().getChallengeUser() != null).collect(Collectors.toList()));
-            }
-            matches = sortedMatches;
-        }
         model.addAttribute("maxHeight",maxGames*45);
         if (teamId == null  || teamId.equals("-1")) {
             model.addAttribute("team", team);
@@ -91,28 +87,53 @@ public class ScheduleResource extends BaseController {
         model.addAttribute("season",seasonApi.get(seasonId));
 
         if (teamId == null || teamId.equals("-1")) {
-            Map<String,List<MatchModel>> sorted = new TreeMap<>();
+            Map<String,List<MatchModel>> sorted = new TreeMap<>(new Comparator() {
+                @Override
+                public int compare(Object o1, Object o2) {
+                    if (season.isChallenge()) {
+                        return o2.toString().compareTo(o1.toString());
+                    }
+                    return o1.toString().compareTo(o2.toString());
+                }
+            });
             sorted.clear();
             for (String s : matches.keySet()) {
                 List<MatchModel> teamMatches = new ArrayList<>();
                 for (TeamMatch teamMatch : matches.get(s)) {
                     MatchModel matchModel = MatchModel.fromTeam(Arrays.asList(teamMatch)).iterator().next();
+                    if (season.isChallenge()) {
+                        teamMatch.getHome().setMembers(teamApi.members(teamMatch.getHome().getId()));
+                        teamMatch.getAway().setMembers(teamApi.members(teamMatch.getAway().getId()));
+                    }
                     matchModel.setPlayerResults(playerResultApi.getPlayerResultsSummary(matchModel.getId()));
                     teamMatches.add(matchModel);
                 }
+                teamMatches.sort(new Comparator<MatchModel>() {
+                    @Override
+                    public int compare(MatchModel o1, MatchModel o2) {
+                        if (season.isChallenge()) {
+                            if (o2.getMatchDate().toLocalDate().isEqual(o1.getMatchDate().toLocalDate())) {
+                                return o1.getMatchDate().compareTo(o2.getMatchDate());
+                            } else {
+                                return o2.getMatchDate().compareTo(o1.getMatchDate());
+                            }
+                        }
+                        return o1.getMatchDate().compareTo(o2.getMatchDate());
+                    }
+                });
                 sorted.put(s,teamMatches);
             }
             model.addAttribute("teamMatches", sorted);
             return "schedule/schedule";
         }
 
-        List<MatchModel> teamMatches = MatchModel.fromTeam(teamMatchApi.getTeamMatchByTeam(teamId).stream().sorted(new Comparator<TeamMatch>() {
+        List<MatchModel> teamMatches = MatchModel.fromTeam(teamMatchApi.getTeamMatchByTeam(teamId));
+        teamMatches.sort(new Comparator<MatchModel>() {
             @Override
-            public int compare(TeamMatch o1, TeamMatch o2) {
+            public int compare(MatchModel o1, MatchModel o2) {
                 return o1.getMatchDate().compareTo(o2.getMatchDate());
             }
-        }).collect(Collectors.toList()));
-
+        });
         for (MatchModel teamMatch : teamMatches) {
             teamMatch.setPlayerResults(playerResultApi.getPlayerResultsSummary(teamMatch.getId()));
         }
