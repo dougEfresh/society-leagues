@@ -56,21 +56,6 @@ public class Team extends LeagueObject {
         this.members.addMember(user);
     }
 
-    public void addMembers(List<User> users) {
-        for (User user : users) {
-            this.members.addMember(user);
-        }
-    }
-
-    public void removeMembers(List<User> users) {
-        if (this.members == null) {
-            return;
-        }
-        for (User user : users) {
-            this.members.removeMember(user);
-        }
-    }
-
     public String getName() {
         return name;
     }
@@ -85,10 +70,6 @@ public class Team extends LeagueObject {
 
     public void setCreated(LocalDateTime created) {
         this.created = created;
-    }
-
-    public User getCaptain() {
-        return this.members == null ? null : this.members.getCaptain();
     }
 
     public boolean isNine() {
@@ -131,7 +112,6 @@ public class Team extends LeagueObject {
     }
 
     public Integer getRank() {
-
         return getStats() == null ? 0 : getStats().getRank();
     }
 
