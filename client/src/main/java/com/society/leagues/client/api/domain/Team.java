@@ -118,6 +118,7 @@ public class Team extends LeagueObject {
         return season != null && season.getDivision().isChallenge();
     }
 
+    @JsonView(PlayerResultSummary.class)
     public User getChallengeUser() {
         if (!isChallenge() || members == null || members.getMembers().isEmpty()) {
             return null;

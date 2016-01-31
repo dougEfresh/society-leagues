@@ -58,12 +58,13 @@ public class ScheduleResource extends BaseController {
         final User u = model.containsAttribute("user") ? (User) model.asMap().get("user") : userApi.get();
         Team team = new Team("-1");
         team.setName("...Choose a team...");
-        model.addAttribute("userTeam",teamApi.userTeams(u.getId()).stream()
+        model.addAttribute("userTeam",
+                teamApi.userTeams(u.getId()).stream()
                 .filter(t->t.getSeason().getId().equals(seasonId))
                 .filter(t->t.hasUser(u)).findFirst().orElse(team));
 
         if (season.isChallenge()) {
-            sortedMatches = new TreeMap<String,List<TeamMatch>>(new Comparator() {
+            sortedMatches = new TreeMap<>(new Comparator() {
                 @Override
                 public int compare(Object o1, Object o2) {
                     return o2.toString().compareTo(o1.toString());
