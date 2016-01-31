@@ -8,6 +8,7 @@ import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.converters.DateTimeSerializer;
 import com.society.leagues.client.views.PlayerResultView;
 import com.society.leagues.client.views.TeamSummary;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import javax.validation.constraints.NotNull;
@@ -28,6 +29,7 @@ public class Team extends LeagueObject {
         this.name = name;
         this.created = LocalDateTime.now();
     }
+
     Stat stats = new Stat();
 
     public Team(String id) {
@@ -54,21 +56,6 @@ public class Team extends LeagueObject {
         this.members.addMember(user);
     }
 
-    public void addMembers(List<User> users) {
-        for (User user : users) {
-            this.members.addMember(user);
-        }
-    }
-
-    public void removeMembers(List<User> users) {
-        if (this.members == null) {
-            return;
-        }
-        for (User user : users) {
-            this.members.removeMember(user);
-        }
-    }
-
     public String getName() {
         return name;
     }
@@ -83,10 +70,6 @@ public class Team extends LeagueObject {
 
     public void setCreated(LocalDateTime created) {
         this.created = created;
-    }
-
-    public User getCaptain() {
-        return this.members == null ? null : this.members.getCaptain();
     }
 
     public boolean isNine() {
@@ -116,8 +99,9 @@ public class Team extends LeagueObject {
         return season != null && season.getDivision().isChallenge();
     }
 
+    @JsonView(PlayerResultSummary.class)
     public User getChallengeUser() {
-        if (!isChallenge() || members == null || members.getMembers().isEmpty()) {
+        if (members == null || members.getMembers().isEmpty()) {
             return null;
         }
         return members.getMembers().iterator().next();
@@ -128,7 +112,6 @@ public class Team extends LeagueObject {
     }
 
     public Integer getRank() {
-
         return getStats() == null ? 0 : getStats().getRank();
     }
 
