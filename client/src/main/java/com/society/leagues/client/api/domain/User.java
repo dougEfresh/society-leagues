@@ -260,6 +260,9 @@ public class User extends LeagueObject {
     }
 
     public boolean hasSeason(Season s) {
+        if (handicapSeasons == null)
+            return false;
+
         for (HandicapSeason handicapSeason : handicapSeasons) {
             if (handicapSeason.getSeason().equals(s))
                 return true;

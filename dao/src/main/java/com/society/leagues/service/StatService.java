@@ -66,7 +66,7 @@ public class StatService {
     }
 
     public List<Stat> getSeasonStats(final Season season, boolean cache) {
-        List<User> users = leagueService.findAll(User.class).stream().filter(u->u.isReal()).collect(Collectors.toList());
+        List<User> users = leagueService.findAll(User.class).stream().filter(u->u.isReal()).filter(u->u.hasSeason(season)).collect(Collectors.toList());
         List<Stat> stats = new ArrayList<>(100);
         for (User user : users) {
             stats.addAll(getUserStats(user,season, cache));

@@ -35,7 +35,7 @@
                     class="caret"></b></a>
         </li>
     </ul>
-    <div class="collapse navbar-collapse navbar-ex1-collapse">
+    <div th:if="${user ne null}" class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav">
             <li th:if="${allUsers ne null}" class="sidebar-search">
                 <div class="input-group custom-search-form">
@@ -43,7 +43,11 @@
                         <option th:each="u : ${allUsers}" th:value="${u.getId()}" th:text="${u.getName()}"></option>
                     </select>
                         <span class="input-group-btn">
-                            <button onclick="searchUser()" class="btn btn-default" type="button">
+                            <button th:if="${user.isAdmin()}" style="height: 28px" onclick="searchAdminUser()" class="btn btn-default" type="button">
+                                <i class="fa fa-search"></i>
+                            </button>
+
+                            <button  th:if="${!user.isAdmin()}" style="height: 28px" onclick="searchUser()" class="btn btn-default" type="button">
                                 <i class="fa fa-search"></i>
                             </button>
                         </span>
@@ -58,7 +62,7 @@
                 <a href="javascript:;" data-toggle="collapse" data-target="#topgun-dropdown">
                     <i class="fa fa-trophy fa-fw"></i> Top Gun <i class="fa fa-fw fa-arrow"></i>
                 </a>
-                <ul id="topgun-dopdown" class="collapse">
+                <ul id="topgun-dropdown" class="collapse">
                     <li>
                         <a id="challenge-link" href="/app/challenge"> Challenge</a>
                     </li>
@@ -104,79 +108,6 @@
                 <a th:href="@{/app/stats/{id} (id=${user.getId()})}">
                     <i class="fa fa-bar-chart"></i> My Stats</a>
             </li>
-            <!--
-            <li th:if="${user ne null && user.isAdmin()}">
-                <a href="#"><i class="fa fa-gears fa-fw"></i> Admin <span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level">
-                    <li>
-                        <a href="/app/season"> <i class="fa fa-sun-o"></i> Season</a>
-                    </li>
-                    <li>
-                        <a href="/app/user"><i class="fa fa-user fa-fw"></i> Users</a>
-                    </li>
-                    <li>
-                        <a href="/app/team"><i class="fa fa-users fa-fw"></i> Teams</a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <span class="glyphicon glyphicon-th-list"></span> Scores<span class="fa arrow"></span>
-                        </a>
-
-                        <ul th:if="${activeSeasons ne null}" class="nav nav-third-level">
-                            <li th:each="season : ${activeSeasons}">
-                                <a th:id="${season.getShortName().replaceAll(' ','') + '-scores'}"
-                                   th:href="@{/app/scores/{id}(id=${season.getId()})}"
-                                   th:text="${season.getShortName()}"></a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-trophy fa-fw"></i> Standings <span class="fa arrow"></span></a>
-                        <ul th:if="${activeSeasons ne null}" class="nav nav-third-level">
-                            <li th:each="season : ${activeSeasons}">
-                                <a th:id="${season.getShortName().replaceAll(' ','') + '-standings'}"
-                                   th:href="@{/app/display/{id} (id=${season.getId()})}"
-                                   th:text="${season.getShortName()}"></a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-calendar fa-fw"></i> Schedule <span class="fa arrow"></span></a>
-                        <ul th:if="${activeSeasons ne null}" class="nav nav-third-level">
-                            <li th:each="season : ${activeSeasons}">
-                                <a th:id="${season.getShortName().replaceAll(' ','')}"
-                                   th:href="@{/app/schedule/{id} (id=${season.getId()})}"
-                                   th:text="${season.getShortName()}"></a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <span class="glyphicon glyphicon-th-list"></span> Leaders<span class="fa arrow"></span>
-                        </a>
-
-                        <ul th:if="${activeSeasons ne null}" class="nav nav-third-level">
-                            <li th:each="season : ${activeSeasons}">
-                                <div class="hide">
-                                    <a th:id="${season.getDay() + '-leaders-all'}"
-                                       th:href="@{/app/leaders/{id}?perPage=200 (id=${season.getId()})}"
-                                       th:text="${season.getShortName()}"></a>
-                                </div>
-                                <a th:if="${not season.isChallenge()}" th:id="${season.getDay() + '-leaders'}"
-                                   th:href="@{/app/leaders/{id}(id=${season.getId()})}"
-                                   th:text="${season.getShortName()}"></a>
-                                <a th:if="${season.isChallenge()}"
-                                   th:id="${season.getDay() + '-leaders'}"
-                                   th:href="@{/app/display/{id}(id=${season.getId()})}"
-                                   th:text="${season.getShortName()}"></a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-
-        </ul>
-        <!-->
         </ul>
     </div>
 </nav>

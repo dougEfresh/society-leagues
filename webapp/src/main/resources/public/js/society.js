@@ -56,8 +56,14 @@ function changeAdminSeason(e) {
 
 function searchUser(e) {
     var id = $('#users-search').val();
+    window.location = '/app/stats/' + id;
+}
+
+function searchAdminUser(e) {
+    var id = $('#users-search').val();
     window.location = '/app/user/' + id;
 }
+
 function seasonChange(e) {
     var id = $('#season-select').val();
     window.location = '/app/season?seasonId=' + id;
