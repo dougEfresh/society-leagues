@@ -64,29 +64,18 @@ public class ScheduleResource extends BaseController {
             }
         }
         final User u = model.containsAttribute("user") ? (User) model.asMap().get("user") : userApi.get();
-        Team team = new Team("-1");
-        team.setName("...Choose a team...");
         model.addAttribute("userTeam",
                 teamApi.userTeams(u.getId()).stream()
                 .filter(t->t.getSeason().getId().equals(seasonId))
-                .filter(t->t.hasUser(u)).findFirst().orElse(team));
+                .filter(t->t.hasUser(u)).findFirst().orElse(new Team("-1")));
 
         model.addAttribute("maxHeight",maxGames*45);
-        if (teamId == null  || teamId.equals("-1")) {
-            model.addAttribute("team", team);
-        }
-        else {
-            team = teamApi.get(teamId);
-            model.addAttribute(team);
-        }
         List<Team> teams = new ArrayList<>();
-        teams.add(team);
         teams.addAll(teamApi.seasonTeams(seasonId));
         model.addAttribute("teams",teams);
-        model.addAttribute("team",team);
         model.addAttribute("season",seasonApi.get(seasonId));
-
-        if (teamId == null || teamId.equals("-1")) {
+        if (teamId == null  || teamId.equals("-1")) {
+            model.addAttribute("team", new Team("-1"));
             Map<String,List<MatchModel>> sorted = new TreeMap<>(new Comparator() {
                 @Override
                 public int compare(Object o1, Object o2) {
@@ -126,7 +115,7 @@ public class ScheduleResource extends BaseController {
             model.addAttribute("teamMatches", sorted);
             return "schedule/schedule";
         }
-
+        model.addAttribute("team", teamApi.get(teamId));
         List<MatchModel> teamMatches = MatchModel.fromTeam(teamMatchApi.getTeamMatchByTeam(teamId));
         teamMatches.sort(new Comparator<MatchModel>() {
             @Override

@@ -1,20 +1,22 @@
 <div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-  <div th:if="${user.isAdmin()}" id="admin-app" >
+  <div  th:if="${user ne null && user.isAdmin()}" id="admin-app" class="panel-group" >
       <div  class="panel panel-default">
           <div class="panel-heading">
-              <span>Admin</span>
-              <select id="admin-seasons" onchange="changeAdminSeason()">
-              <option
-                      th:each="s : ${allSeasons}"
-                      th:value="${s.id}"
-                      th:text="${s.formattedName}"
-                      th:selected="${adminSeason.id eq s.id}">
-              </option>
-          </select>
+              <h4 class="panel-title"><a data-toggle="collapse" href="#collapse1">Admin Menu</a>
+                  <select id="admin-seasons" onchange="changeAdminSeason()">
+                      <option
+                              th:each="s : ${allSeasons}"
+                              th:value="${s.id}"
+                              th:text="${s.formattedName}"
+                              th:selected="${adminSeason.id eq s.id}">
+                      </option>
+                  </select>
+                  <a data-toggle="collapse" href="#collapse1"><button class="btn btn-xs btn-primary" >Toggle</button></a>
+              </h4>
           </div>
-          <div class="panel-body">
+          <div id="collapse1" class="panel-collapse collapse">
               <div class="table-responsive">
-                  <table class="table">
+                  <table class="table table-bordered">
                       <thead>
                       </thead>
                       <tbody>

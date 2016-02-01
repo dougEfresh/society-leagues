@@ -13,8 +13,8 @@
   <body>
   <div id="wrapper">
     <div th:replace="fragments/header"></div>
-    <div th:replace="fragments/admin"></div>
     <div id="page-wrapper" >
+      <div th:replace="fragments/admin"></div>
       <div layout:fragment="content"></div>
     </div>
     <div th:replace="fragments/footer"></div>

@@ -2,22 +2,26 @@
 <div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
      layout:decorator="layout">
     <div id="schedule-app" layout:fragment="content">
-        <form id="form-select-team">
-            <select id="teams-select" th:onChange="'selectTeam()'" class="form-control" >
-                <!--/*@thymesVar id="u" type="com.society.admin.model.ChallengeUserModel"*/-->
-                <option th:each="t : ${teams}"
-                        th:value="${t.getId()}"
-                        th:text="${t.getName()}"
-                        th:selected="${t.getId() == team.getId()}"
-                        >
-                </option>
-            </select>
-        </form>
         <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
         <div class="row">
         <div class="col-xs-12 col-md-12 col-lg-12">
             <div class="panel panel-default">
-                <div th:text="${season.getFormattedName()}" class="panel-heading">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <span  th:text="${season.getFormattedName()}"></span>
+                        <form id="form-select-team">
+                            <select id="teams-select" th:onChange="'selectTeam()'" class="form-control" >
+                                 <option value="-1">...Choose A Team... </option>
+                                <!--/*@thymesVar id="u" type="com.society.admin.model.ChallengeUserModel"*/-->
+                                <option th:each="t : ${teams}"
+                                        th:value="${t.getId()}"
+                                        th:text="${t.getName()}"
+                                        th:selected="${t.getId() == team.getId()}"
+                                >
+                                </option>
+                            </select>
+                        </form>
+                    </h4>
                 </div>
                 <div class="panel-body">
                     <div class="row">

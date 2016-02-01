@@ -164,28 +164,9 @@ public class StatResource {
     public List<Stat> getActiveUserStats(@PathVariable String id) {
         User u = leagueService.findOne(new User(id));
         final List<Stat> userStats = new ArrayList<>();
-
-        statService.getUserSeasonStats().values().stream().parallel().forEach(new Consumer<List<Stat>>() {
-            @Override
-            public void accept(List<Stat> stats) {
-                stats.parallelStream().filter(st->st.getSeason().isActive()).filter(st -> st.getUser().equals(u)).forEach(userStats::add);
-            }
-        });
-        userStats.sort(new Comparator<Stat>() {
-            @Override
-            public int compare(Stat o1, Stat o2) {
-                if (o1.getSeason() == null ||  o2.getSeason() == null ) {
-                    return -1;
-                }
-                if (o1.getSeason().isChallenge()) {
-                    return -1;
-                }
-                if (o2.getSeason().isChallenge()) {
-                    return 1;
-                }
-                return o2.getSeason().getStartDate().compareTo(o1.getSeason().getStartDate());
-            }
-        });
+        for (Season season : u.getSeasons()) {
+            userStats.addAll(statService.getUserStats(u,season));
+        }
         userStats.add(Stat.buildLifeTimeStats(u, userStats));
         return userStats;
     }

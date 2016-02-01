@@ -61,7 +61,8 @@ th a, th a:visited , th a:active, th a:hover {
 }
 
 .ck-button:hover {
-    background: green;
+    background: rgb(51, 122, 183);
+    color: #ffffff;
 }
 
 .ck-button label {
@@ -81,6 +82,10 @@ th a, th a:visited , th a:active, th a:hover {
 }
 
 .ck-button input:checked + span {
-    background-color:#911;
+    background-color: green;
     color:#fff;
+}
+
+#admin-app {
+    max-width: 500px;
 }
