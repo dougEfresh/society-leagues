@@ -128,7 +128,7 @@ public class Stat {
         Stat s = new Stat();
         s.setUser(u);
         s.type = StatType.ALL;
-        for (Stat stat : stats) {
+        for (Stat stat : stats.stream().filter(st->st.getType() == StatType.USER_SEASON).collect(Collectors.toList())) {
             s.racksLost += stat.racksLost;
             s.racksWon += stat.racksWon;
             s.wins += stat.wins;

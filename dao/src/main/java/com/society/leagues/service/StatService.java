@@ -95,6 +95,9 @@ public class StatService {
             stats.add(buildSeasonStats(user,teams,season,
                     results.stream().filter(pr->pr.getTeamMatch().getDivision() == Division.MIXED_NINE).collect(Collectors.toList()),
                     StatType.MIXED_NINE));
+            stats.add(buildSeasonStats(user,teams,season,
+                    results.stream().filter(PlayerResult::isScotch).collect(Collectors.toList()),
+                    StatType.MIXED_SCOTCH));
             stats.add(buildSeasonStats(user,teams,season, results, StatType.USER_SEASON));
         } else {
             stats.add(buildSeasonStats(user,teams,season,results,null));
