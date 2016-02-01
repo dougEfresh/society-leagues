@@ -58,10 +58,29 @@ public class TestStat  extends BaseTest {
         for (User user : userApi.active()) {
             List<Stat> stats = statApi.getUserStatsSummary(user.getId());
             assertTrue(stats.stream().filter(s->s.getUser() == null).count() == 0);
+            assertTrue(stats.stream().filter(s->!s.getUser().equals(user)).count() == 0);
             for (Stat stat : stats) {
                 assertTrue(stat.getMatches() == 0);
             }
         }
+    }
+
+    private void verify(List<Stat> stats, Season season) {
+         if (season.isScramble()) {
+                assertTrue(stats.stream().filter(s->s.getType() == StatType.ALL).count() == 1);
+                assertTrue(stats.stream().filter(s->s.getType() == StatType.USER_SEASON).count() == 1);
+                assertTrue(stats.stream().filter(s->s.getType() == StatType.MIXED_EIGHT).count() == 1);
+                assertTrue(stats.stream().filter(s->s.getType() == StatType.MIXED_NINE).count() == 1);
+                assertTrue(stats.stream().filter(s->s.getType() == StatType.MIXED_SCOTCH).count() == 1);
+            } else {
+                assertTrue(stats.stream().filter(s->s.getType() == StatType.ALL).count() == 1);
+                assertTrue(stats.stream().filter(s->s.getType() == StatType.USER_SEASON).count() == 1);
+                assertTrue(stats.stream().filter(s->s.getType() == StatType.MIXED_EIGHT).count() == 0);
+                assertTrue(stats.stream().filter(s->s.getType() == StatType.MIXED_NINE).count() == 0);
+                assertTrue(stats.stream().filter(s->s.getType() == StatType.MIXED_SCOTCH).count() == 0);
+            }
+
+
     }
 
     @Test
