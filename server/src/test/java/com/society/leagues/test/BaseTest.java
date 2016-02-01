@@ -2,6 +2,8 @@ package com.society.leagues.test;
 
 import com.society.leagues.Main;
 import com.society.leagues.client.api.*;
+import com.society.leagues.client.api.domain.Season;
+import com.society.leagues.client.api.domain.TeamMatch;
 import com.society.leagues.client.api.domain.User;
 import com.society.leagues.conf.ClientApiConfig;
 import com.society.leagues.mongo.UserRepository;
@@ -10,6 +12,7 @@ import com.society.leagues.service.ChallengeService;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.UserService;
 import org.apache.log4j.Logger;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class})
@@ -58,6 +65,18 @@ public abstract class BaseTest {
         playerResultApi = clientApiConfig.getApi(PlayerResultApi.class,"BASIC",host + ":" + port);
         challengeApi = clientApiConfig.getApi(ChallengeApi.class,"BASIC",host + ":" + port);
         login("admin.admin@example.com","abc123");
+        purgeMatches();
+    }
+
+    @After
+    public void purgeMatches() {
+        List<Season> seasons = seasonApi.get();
+        for (Season season : seasons) {
+            List<TeamMatch> matches = teamMatchApi.matchesBySeasonList(season.getId());
+            for (TeamMatch teamMatch : matches) {
+                teamMatchApi.delete(teamMatch.getId());
+            }
+        }
     }
 
     public void login(String user, String pass) {

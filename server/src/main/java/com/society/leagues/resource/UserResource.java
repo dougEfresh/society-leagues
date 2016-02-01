@@ -2,6 +2,7 @@ package com.society.leagues.resource;
 
 import com.society.leagues.client.api.domain.Handicap;
 import com.society.leagues.client.api.domain.HandicapSeason;
+import com.society.leagues.exception.UnauthorizedException;
 import com.society.leagues.service.ChallengeService;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.UserService;
@@ -33,7 +34,7 @@ public class UserResource {
     @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public User get(Principal principal, HttpServletRequest request) {
         if (principal == null) {
-            return User.defaultUser();
+            throw new UnauthorizedException("Unknown user");
         }
         return  get(principal.getName());
     }

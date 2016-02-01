@@ -1,5 +1,8 @@
 package com.society.leagues.resource;
 
+import com.society.leagues.exception.ChallengeException;
+import com.society.leagues.exception.InvalidRequestException;
+import com.society.leagues.exception.UnauthorizedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -53,6 +56,9 @@ public class ErrorResource {
             .put(MethodArgumentNotValidException.class, HttpStatus.BAD_REQUEST)
             .put(MissingServletRequestPartException.class, HttpStatus.BAD_REQUEST)
             .put(BindException.class, HttpStatus.BAD_REQUEST)
+            .put(ChallengeException.class, HttpStatus.BAD_REQUEST)
+            .put(InvalidRequestException.class, HttpStatus.BAD_REQUEST)
+            .put(UnauthorizedException.class, HttpStatus.UNAUTHORIZED)
             .put(NoHandlerFoundException.class, HttpStatus.NOT_FOUND)
             .build();
 

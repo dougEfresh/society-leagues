@@ -15,18 +15,6 @@ public class TestPlayerResult  extends BaseTest {
 
     private static Logger logger = Logger.getLogger(TestUser.class);
 
-    @After
-    public void after() {
-        List<Season> seasons = seasonApi.active().stream().filter(s->!s.isChallenge()).collect(Collectors.toList());
-        for (Season season : seasons) {
-            Map<String,List<TeamMatch>> matches = teamMatchApi.matchesBySeasonSummary(season.getId());
-            for (String s : matches.keySet()) {
-                for (TeamMatch teamMatch : matches.get(s)) {
-                    teamMatchApi.delete(teamMatch.getId());
-                }
-            }
-        }
-    }
 
     @Test
     public void testPlayerResult() {

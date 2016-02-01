@@ -3,6 +3,8 @@ package com.society.leagues.resource;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.views.PlayerResultSummary;
+import com.society.leagues.exception.ChallengeException;
+import com.society.leagues.exception.InvalidRequestException;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.ResultService;
 import com.society.leagues.service.StatService;
@@ -40,8 +42,7 @@ public class TeamMatchResource {
     public Map<String,List<TeamMatch>> delete(Principal principal, @PathVariable String teamMatchId) {
         TeamMatch tm = leagueService.findOne(new TeamMatch(teamMatchId));
         if (tm == null) {
-            logger.error("Could not find team match for " + teamMatchId);
-            return Collections.emptyMap();
+            throw new InvalidRequestException("Could not find team match for " + teamMatchId);
         }
         resultService.removeTeamMatchResult(tm);
         return Collections.emptyMap();

@@ -20,45 +20,47 @@
                 <input type="hidden" th:field="*{id}" th:value="${season.getId()}">
                 <input class="season-date" th:id="${'date-' + season.getId()}" th:field="*{sDate}" type="text"
                        th:value="${season.getsDate()}">
-                <label>
-                    <select th:field="*{seasonStatus}" id="season-status" class="form-control" >
-                        <option value="PENDING" th:selected="${'PENDING' == season.seasonStatus}">
-                            Pending
-                        </option>
-                        <option value="ACTIVE" th:selected="${'ACTIVE' == season.seasonStatus}">
-                            Active
-                        </option>
-                        <option value="INACTIVE" th:selected="${'INACTIVE' == season.seasonStatus}">
-                            Not Active
-                        </option>
+                <label class="col-sm-2 control-label"> >
+                    Status
+                </label>
+                <select th:field="*{seasonStatus}" id="season-status" class="form-control" >
+                <option value="PENDING" th:selected="${'PENDING' == season.seasonStatus}">
+                    Pending
+                </option>
+                <option value="ACTIVE" th:selected="${'ACTIVE' == season.seasonStatus}">
+                    Active
+                </option>
+                <option value="INACTIVE" th:selected="${'INACTIVE' == season.seasonStatus}">
+                    Not Active
+                </option>
 
-                    </select>
+            </select>
+                <label class="col-sm-2 control-label">
+                    Division
                 </label>
-                <label>
-                    <select th:field="*{division}" class="form-control" >
-                        <option value="NINE_BALL_CHALLENGE" th:selected="${'NINE_BALL_CHALLENGE' == season.division}">
-                            Top Gun
-                        </option>
-                        <option value="MIXED_MONDAYS_MIXED" th:selected="${'MIXED_MONDAYS_MIXED' == season.division}">
-                            Scramble
-                        </option>
-                        <option value="NINE_BALL_TUESDAYS" th:selected="${'NINE_BALL_TUESDAYS' == season.division}">
-                            Tuesday
-                        </option>
-                        <option value="EIGHT_BALL_WEDNESDAYS" th:selected="${'EIGHT_BALL_WEDNESDAYS' == season.division}">
-                            Wednesday
-                        </option>
-                        <option value="EIGHT_BALL_THURSDAYS" th:selected="${'EIGHT_BALL_THURSDAYS' == season.division}">
-                            Thursday
-                        </option>
-                    </select>
+                <select th:field="*{division}" class="form-control" >
+                <option value="NINE_BALL_CHALLENGE" th:selected="${'NINE_BALL_CHALLENGE' == season.division}">
+                    Top Gun
+                </option>
+                <option value="MIXED_MONDAYS_MIXED" th:selected="${'MIXED_MONDAYS_MIXED' == season.division}">
+                    Scramble
+                </option>
+                <option value="NINE_BALL_TUESDAYS" th:selected="${'NINE_BALL_TUESDAYS' == season.division}">
+                    Tuesday
+                </option>
+                <option value="EIGHT_BALL_WEDNESDAYS" th:selected="${'EIGHT_BALL_WEDNESDAYS' == season.division}">
+                    Wednesday
+                </option>
+                <option value="EIGHT_BALL_THURSDAYS" th:selected="${'EIGHT_BALL_THURSDAYS' == season.division}">
+                    Thursday
+                </option>
+            </select>
+                <label class="col-sm-2 control-label">
+
                 </label>
-                <label>
-                    <input th:field="*{rounds}" th:type="text" th:value="${season.rounds}">
-                </label>
-                <label>
-                    <input type="submit" value="submit">
-                </label>
+                <input th:field="*{rounds}" th:type="text" th:value="${season.rounds}">
+
+                <input type="submit" value="submit">
             </form>
             <div class="table-responsive">
             <table id=table-season" class="table table-bordered">
