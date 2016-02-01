@@ -4,6 +4,7 @@ package com.society.leagues.test;
 
 import com.society.leagues.client.api.domain.*;
 import org.apache.log4j.Logger;
+import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -11,11 +12,27 @@ import org.junit.runners.MethodSorters;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestChallenge extends  BaseTest {
+
+
+    @After
+    public void after() {
+        List<Season> seasons = seasonApi.active().stream().filter(s->!s.isChallenge()).collect(Collectors.toList());
+        for (Season season : seasons) {
+            Map<String,List<TeamMatch>> matches = teamMatchApi.matchesBySeasonSummary(season.getId());
+            for (String s : matches.keySet()) {
+                for (TeamMatch teamMatch : matches.get(s)) {
+                    teamMatchApi.delete(teamMatch.getId());
+                }
+            }
+        }
+    }
 
     @Test
     public void aCreateChallenge() {
