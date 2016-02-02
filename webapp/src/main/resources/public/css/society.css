@@ -89,3 +89,10 @@ th a, th a:visited , th a:active, th a:hover {
 #admin-app {
     max-width: 500px;
 }
+
+.form-season {
+    max-width: 550px;
+     border: 1px solid black;
+    padding: 8px;
+    margin: 10px;
+}

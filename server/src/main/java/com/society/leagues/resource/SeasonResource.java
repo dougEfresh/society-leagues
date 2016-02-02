@@ -26,16 +26,21 @@ public class SeasonResource {
     @Autowired LeagueService leagueService;
     static Logger logger = LoggerFactory.getLogger(SeasonResource.class);
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public Season get(Principal principal, @PathVariable String id) {
-        return leagueService.findOne(new Season(id));
+    @RequestMapping(value = "/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public Season get(Principal principal, @PathVariable String seasonId) {
+        return leagueService.findOne(new Season(seasonId));
+    }
+
+    @RequestMapping(value = "/{seasonId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Season delete(Principal principal, @PathVariable String seasonId) {
+        return Season.getDefault();
     }
 
     @RequestMapping(value = {"/active","/current"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public List<Season> getActiveSeasons(Principal principal) {
         return leagueService.findAll(Season.class).stream().filter(s->s.isActive()).collect(Collectors.toList());
     }
-
 
     @RequestMapping(value = "/create/schedule/{seasonId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -135,12 +140,11 @@ public class SeasonResource {
     @RequestMapping(value = "/admin/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Season create(Principal principal, @RequestBody Season season) {
-        Season previous = leagueService.findAll(Season.class).stream().filter(s->s.getDivision() == season.getDivision()).max(new Comparator<Season>() {
-            @Override
-            public int compare(Season o1, Season o2) {
-                return o2.getStartDate().compareTo(o2.getStartDate());
-            }
-        }).get();
+        Season previous = leagueService.findAll(Season.class).stream()
+                .filter(Season::isActive)
+                .filter(s->s.getDivision() == season.getDivision())
+                .max((o1, o2) -> o2.getStartDate().compareTo(o2.getStartDate())).get();
+
         Season newSeason = leagueService.save(season);
         logger.info("Saved new season " + season.getId() + " " + season.getDisplayName());
         List<Team> teams = leagueService.findAll(Team.class).parallelStream().filter(t->t.getSeason().equals(previous)).collect(Collectors.toList());

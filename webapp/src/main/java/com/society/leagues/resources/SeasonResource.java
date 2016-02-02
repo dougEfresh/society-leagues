@@ -24,6 +24,7 @@ public class SeasonResource extends BaseController {
         model.addAttribute("seasons", seasons);
         if (seasonId != null) {
             if (seasonId.equals("-1") || seasonId.isEmpty()) {
+
                 model.addAttribute("season", Season.getDefault());
             } else {
                 Season season = seasonApi.get(seasonId);
@@ -35,6 +36,7 @@ public class SeasonResource extends BaseController {
 
     @RequestMapping(value = {"/season/new"}, method = RequestMethod.GET)
     public String newSeason(Model model, HttpServletResponse response) {
+
         return season("-1",model,response);
     }
 

@@ -5,6 +5,7 @@
        -o-background-size: cover;
        background-size: cover;
        min-height: 1200px!important;
+    padding: 10px;
 }
 .welcome h3 {
        color:#fff;

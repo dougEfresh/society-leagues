@@ -59,6 +59,7 @@ public class Season extends LeagueObject   {
         s.setDivision(Division.NINE_BALL_TUESDAYS);
         s.setName("");
         s.setId("-1");
+        s.setRounds(16);
         return s;
     }
 

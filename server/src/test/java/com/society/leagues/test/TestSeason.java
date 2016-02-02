@@ -26,17 +26,27 @@ public class TestSeason extends BaseTest {
     @Test
     public void testCreate() {
         Season s = new Season();
-         s.setsDate(LocalDate.now());
-         s.setDivision(Division.EIGHT_BALL_THURSDAYS);
-         s.setRounds(10);
-         s.setSeasonStatus(Status.PENDING);
-         Season newSeason = seasonApi.create(s);
+        s.setsDate(LocalDate.now());
+        s.setDivision(Division.EIGHT_BALL_THURSDAYS);
+        s.setRounds(10);
+        s.setSeasonStatus(Status.PENDING);
 
-         assertNotNull(newSeason);
-         assertNotNull(newSeason.getId());
-         assertEquals(newSeason.getRounds(),new Integer(10));
-         assertEquals(newSeason.getDivision(), Division.EIGHT_BALL_THURSDAYS);
-         assertEquals(newSeason.getSeasonStatus(), Status.PENDING);
+        Season old = seasonApi.active().stream().filter(sn->sn.getDivision() == Division.EIGHT_BALL_THURSDAYS).findAny().get();
+        Season newSeason = seasonApi.create(s);
+
+        assertNotNull(newSeason);
+        assertNotNull(newSeason.getId());
+        assertEquals(newSeason.getRounds(),new Integer(10));
+        assertEquals(newSeason.getDivision(), Division.EIGHT_BALL_THURSDAYS);
+        assertEquals(newSeason.getSeasonStatus(), Status.PENDING);
+
+        List<Team> oldTeams = teamApi.seasonTeams(old.getId());
+        List<Team> newTeams = teamApi.seasonTeams(newSeason.getId());
+        assertTrue(newTeams.stream().filter(t->t.getSeason().equals(old)).count() == 0);
+
+        for (Team oldTeam : oldTeams) {
+            assertTrue(newTeams.stream().filter(t->t.getName().equals(oldTeam.getName())).count() == 1);
+        }
     }
 
     @Test
@@ -65,6 +75,8 @@ public class TestSeason extends BaseTest {
         List<Team> teams = teamApi.seasonTeams(season.getId());
         List<TeamMatch> matches = seasonApi.schedule(season.getId());
         Map<String,List<TeamMatch>> teamMatches = teamMatchApi.matchesBySeasonSummary(season.getId());
+        List<TeamMatch> matchList = teamMatchApi.matchesBySeasonList(season.getId());
+
         assertNotNull(matches);
         for (String s : teamMatches.keySet()) {
             assertEquals(teams.size()/2,teamMatches.get(s).size());
