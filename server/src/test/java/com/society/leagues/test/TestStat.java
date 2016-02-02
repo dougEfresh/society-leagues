@@ -56,6 +56,7 @@ public class TestStat  extends BaseTest {
     public void bTeamStat() {
         for (Season season : seasonApi.active()) {
             User user = userApi.active().stream().filter(u -> u.hasSeason(season)).findFirst().get();
+            List<Stat> oldStats = statApi.getUserSeasonStats(user.getId(),season.getId());
             Team team = teamApi.seasonTeams(season.getId()).stream().filter(t -> t.hasUser(user)).findFirst().get();
             List<TeamMatch> matches  = new ArrayList<>();
             if (season.isChallenge()) {
@@ -102,23 +103,23 @@ public class TestStat  extends BaseTest {
             }
             playerResultApi.save(Collections.singletonList(result));
 
-            List<Stat> stats = statApi.getUserStatsSummary(user.getId());
+            List<Stat> stats = statApi.getUserSeasonStats(user.getId(),season.getId());
             if (season.isScramble()) {
-                assertTrue(stats.stream().filter(s->s.getType() == StatType.ALL).count() == 1);
+                //assertTrue(stats.stream().filter(s->s.getType() == StatType.ALL).count() == 1);
                 assertTrue(stats.stream().filter(s->s.getType() == StatType.USER_SEASON).count() == 1);
                 assertTrue(stats.stream().filter(s->s.getType() == StatType.MIXED_EIGHT).count() == 1);
                 assertTrue(stats.stream().filter(s->s.getType() == StatType.MIXED_NINE).count() == 1);
                 assertTrue(stats.stream().filter(s->s.getType() == StatType.MIXED_SCOTCH).count() == 1);
             } else {
-                assertTrue(stats.stream().filter(s->s.getType() == StatType.ALL).count() == 1);
-                assertTrue(stats.stream().filter(s->s.getType() == StatType.USER_SEASON).count() >= 1);
+                //assertTrue(stats.stream().filter(s->s.getType() == StatType.ALL).count() == 1);
+                assertTrue(stats.stream().filter(s->s.getType() == StatType.USER_SEASON).count() == 1);
                 assertTrue(stats.stream().filter(s->s.getType() == StatType.MIXED_EIGHT).count() == 0);
                 assertTrue(stats.stream().filter(s->s.getType() == StatType.MIXED_NINE).count() == 0);
                 assertTrue(stats.stream().filter(s->s.getType() == StatType.MIXED_SCOTCH).count() == 0);
             }
 
             for (Stat stat : stats) {
-                if (stat.getType() == StatType.ALL || stat.getType() == StatType.USER_SEASON) {
+                if (stat.getType() == StatType.USER_SEASON) {
                     assertEquals(new Integer(2),stat.getMatches());
                     assertEquals(new Integer(1),stat.getWins());
                     assertEquals(new Integer(1),stat.getLoses());
