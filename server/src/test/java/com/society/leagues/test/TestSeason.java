@@ -47,6 +47,8 @@ public class TestSeason extends BaseTest {
         for (Team oldTeam : oldTeams) {
             assertTrue(newTeams.stream().filter(t->t.getName().equals(oldTeam.getName())).count() == 1);
         }
+
+        seasonApi.delete(newSeason.getId());
     }
 
     @Test

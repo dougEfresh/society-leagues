@@ -13,8 +13,8 @@ public interface SeasonApi {
     @RequestLine("GET /api/season")
     List<Season> get();
 
-    @RequestLine("DELETE /api/season/{id}")
-    Season delete();
+    @RequestLine("DELETE /api/season/{seasonId}")
+    Season delete(@Param("seasonId") String seasonId);
 
     @RequestLine("GET /api/season/active")
     List<Season> active();

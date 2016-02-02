@@ -2,6 +2,7 @@ package com.society.leagues.resource;
 
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.service.LeagueService;
+import com.society.leagues.service.ResultService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class SeasonResource {
     @Autowired CacheResource cacheResource;
     @Autowired LeagueService leagueService;
+    @Autowired ResultService resultService;
     static Logger logger = LoggerFactory.getLogger(SeasonResource.class);
 
     @RequestMapping(value = "/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
@@ -34,7 +36,17 @@ public class SeasonResource {
     @RequestMapping(value = "/{seasonId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Season delete(Principal principal, @PathVariable String seasonId) {
-        return Season.getDefault();
+        Season season = leagueService.findOne(new Season(seasonId));
+        for (TeamMatch teamMatch : leagueService.findAll(TeamMatch.class)
+                .parallelStream().filter(r->r.getSeason().equals(season)).collect(Collectors.toList())) {
+            resultService.removeTeamMatchResult(teamMatch);
+        }
+
+        for (Team team : leagueService.findAll(Team.class)
+                .parallelStream().filter(r->r.getSeason().equals(season)).collect(Collectors.toList())) {
+            leagueService.purge(team);
+        }
+        return season;
     }
 
     @RequestMapping(value = {"/active","/current"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
