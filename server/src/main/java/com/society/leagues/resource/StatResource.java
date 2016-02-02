@@ -295,8 +295,14 @@ public class StatResource {
         User u = leagueService.findOne(new User(id));
         Season s = leagueService.findOne(new Season(seasonId));
         List<Stat> stats = statService.getUserSeasonStats().get(s);
+        if (stats == null) {
+             Stat stat =  new Stat();
+            stat.setUser(u);
+            stat.setSeason(s);
+            return stat;
+        }
         for (Stat stat : stats) {
-            if (stat.getUser() != null && stat.getSeason() != null && stat.getUser().equals(u) && stat.getSeason().equals(s))
+            if (stat != null && stat.getUser() != null && stat.getSeason() != null && stat.getUser().equals(u) && stat.getSeason().equals(s))
                 return stat;
         }
         Stat stat =  new Stat();
