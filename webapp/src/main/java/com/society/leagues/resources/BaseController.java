@@ -1,8 +1,7 @@
 package com.society.leagues.resources;
 
 import com.society.leagues.client.api.*;
-import com.society.leagues.client.api.domain.Season;
-import com.society.leagues.client.api.domain.User;
+import com.society.leagues.client.api.domain.*;
 import org.apache.catalina.connector.RequestFacade;
 import org.apache.catalina.connector.ResponseFacade;
 import org.slf4j.Logger;
@@ -13,7 +12,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 
@@ -28,10 +30,19 @@ public class BaseController {
 
     User user;
     Season adminSeason;
+    List<Team> userTeams;
+    Set<TeamMatch> userMatches =  new TreeSet<>(TeamMatch.sortAcc());
+    List<Stat> userStats;
 
     @ModelAttribute
     public void setModels(Model model, HttpServletRequest request, ResponseFacade response) {
         user = userApi.get();
+        userTeams = teamApi.userTeams(user.getId());
+        userTeams.parallelStream().forEach(tm->userMatches.addAll(teamMatchApi.getTeamMatchByTeam(tm.getId())));
+        userStats = statApi.getUserStatsSummary(user.getId());
+        for (Stat userStat : userStats.stream().filter(u->u.getSeason() != null).collect(Collectors.toList())) {
+            userStat.setSeason(user.getSeasons().parallelStream().filter(s->s.equals(userStat.getSeason())).findFirst().get());
+        }
         List<Season> seasons = seasonApi.get();
         RequestFacade requestFacade = (RequestFacade) request;
         adminSeason = seasons.stream().sorted(Season.sortOrder).findFirst().get();
@@ -44,8 +55,16 @@ public class BaseController {
         model.addAttribute("allSeasons",seasons);
         model.addAttribute("challengeSeason",seasons.stream().filter(Season::isChallenge).findFirst().orElse(null));
         model.addAttribute("user", user);
-        model.addAttribute("userTeams", teamApi.userTeams(user.getId()));
+        model.addAttribute("userTeams", userTeams);
+        model.addAttribute("userStats", userStats);
         model.addAttribute("allUsers", userApi.all().parallelStream().filter(User::isReal).collect(Collectors.toList()));
         model.addAttribute("adminSeason",adminSeason);
+        /**
+         * Cache the users schedule and season stats
+         */
+        for (Season season : user.getSeasons().stream().filter(Season::isActive).collect(Collectors.toList())) {
+            teamMatchApi.matchesBySeasonList(season.getId());
+            statApi.teamSeasonStats(season.getId());
+        }
     }
 }

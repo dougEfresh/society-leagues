@@ -1,0 +1,109 @@
+<!DOCTYPE html  "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+    <!--/*@thymesVar id="user" type="com.society.leagues.client.api.domain.User"*/-->
+  <div id="home-app" layout:fragment="content">
+      <!--/*@thymesVar id="match" type="com.society.leagues.model.MatchModel"*/-->
+      <!--/*@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"*/-->
+      <div  th:if="${upcomingMatches ne null}" class="society-well">
+         <i class="fa fa-bell fa-fw"></i> <span>Upcoming Matches</span>
+           <div class="table-responsive">
+           <table class="table" >
+               <thead>
+               </thead>
+               <tbody>
+               <tr th:each="match : ${upcomingMatches}" >
+                   <td class="name">
+                       <a th:text="${match.getOpponent(user).getName()}" th:href="@{/app/schedule/{seasonId} (seasonId=${match.getSeason().getId()})}"></a>
+                   </td>
+                   <td class="short-date">
+                       <a th:if="${match.getSeason().isChallenge()}" th:text="${#temporals.format(match.getMatchDate(), 'MM/dd')}"
+                          th:href="@{/app/schedule/{seasonId} (seasonId=${match.getSeason().getId()})}"></a>
+                       <a th:if="${!match.getSeason().isChallenge()}" th:text="${#temporals.format(match.getMatchDate(), 'MM/dd')}"
+                          th:href="@{/app/display/{seasonId}/topgun/{userId} (seasonId=${match.getSeason().getId()},userId=match.getChallenger().getId())}"></a>
+                   </td>
+               </tr>
+               </tbody>
+           </table>
+           </div>
+      </div>
+
+      <div th:if="${topPlayers ne null}" th:each="season : ${topPlayers.keySet()}" class="society-well">
+         <i class="fa fa-trophy"></i> <span>Top Players - </span><span th:text="${season.getDayName()}"></span>
+           <div class="table-responsive">
+           <table class="table" >
+               <thead>
+               <tr>
+                   <th>Name</th>
+                   <th>HC</th>
+                   <th>W</th>
+                   <th>L</th>
+                   <th>PCT</th>
+               </tr>
+               </thead>
+               <tbody>
+               <tr th:each="stat : ${topPlayers.get(season)}" >
+                   <td class="name" >
+                       <a th:text="${stat.getUser().getName()}"  href="#">
+                       </a>
+                   </td>
+                   <td class="handicap">
+                       <span th:text="${stat.getHandicap().getDisplayName()}"  href="#"></span>
+                   </td>
+                   <td class="wins">
+                       <span th:text="${stat.getWins()}" href="#"></span>
+                   </td>
+                   <td class="lost">
+                       <span th:text="${stat.getLoses()}" href="#"></span>
+                   </td>
+                   <td class="pct">
+                       <span th:text="${'% ' +  #numbers.formatDecimal(stat.getWinPct()*100,0,2)}"></span>
+                   </td>
+               </tr>
+               </tbody>
+           </table>
+           </div>
+      </div>
+
+      <div th:if="${userStats ne null}" class="society-well">
+          <i class="fa fa-bar-chart"></i> <span>My Stats</span>
+           <div class="table-responsive">
+           <table class="table" >
+               <thead>
+               <tr>
+                   <th>Season</th>
+                   <th>HC</th>
+                   <th>W</th>
+                   <th>L</th>
+                   <th>PCT</th>
+               </tr>
+               </thead>
+               <tbody>
+               <tr th:each="stat : ${userStats}" >
+                   <td class="name" >
+                       <a th:text="${stat.getSeason().getDayName()}"  href="#"></a>
+                   </td>
+                   <td class="handicap">
+                       <span th:text="${stat.getHandicap().getDisplayName()}"  href="#"></span>
+                   </td>
+                   <td class="wins">
+                       <span th:text="${stat.getWins()}" href="#"></span>
+                   </td>
+                   <td class="lost">
+                       <span th:text="${stat.getLoses()}" href="#"></span>
+                   </td>
+                   <td class="pct">
+                       <span th:text="${'% ' +  #numbers.formatDecimal(stat.getWinPct()*100,0,2)}"></span>
+                   </td>
+               </tr>
+               </tbody>
+           </table>
+           </div>
+      </div>
+
+      <!--
+      <div class="society-well welcome-name">
+          <h2 id="name" th:text="${'Welcome! ' + user.getFirstName()}"></h2>
+      </div>
+      -->
+  </div>
+</div>

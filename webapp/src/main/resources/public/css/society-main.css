@@ -1,5 +1,5 @@
 #page-wrapper {
-       /*background: url('/app/img/break2.jpg') no-repeat center center fixed;*/
+       background: url('/app/img/break2.jpg') no-repeat center center fixed;
        -webkit-background-size: cover;
        -moz-background-size: cover;
        -o-background-size: cover;
@@ -36,4 +36,102 @@
 }
 .panel-heading a {
 text-decoration: none!important;
+}
+
+body.login {
+    margin-top: 0px;
+}
+
+#login-app {
+    width: 100%;
+    height: 100%;
+    min-height: 1000px
+}
+#login-app > .well {
+    max-width: 600px;
+}
+
+.well {
+	float: none;
+	margin: 140px auto 0px auto;
+	color: #fff;
+	background-image: -webkit-linear-gradient(top, rgba(70,0,0, .9) 0%, rgba(0,0,0, .9) 100%);
+	background-image: -o-linear-gradient(top, rgba(70,0,0, .9) 0%, rgba(0,0,0, .9) 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(70,0,0, .9)), to(rgba(0,0,0, .9)));
+	background-image: linear-gradient(to bottom, rgba(70,0,0, .9) 0%, rgba(0,0,0, .9) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#460000', endColorstr='#6666666', GradientType=0);
+	background-repeat: repeat-x;
+	background-color: transparent;
+	border: 3px solid #240000;
+	border-radius: 8px;
+	-webkit-box-shadow: 0px 10px 35px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 10px 35px 0px rgba(0,0,0,0.75);
+	box-shadow: 0px 10px 35px 0px rgba(0,0,0,0.75);
+}
+.society-well {
+	float: none;
+    margin-top: 7px;
+    /*margin-right: auto;*/
+    margin-bottom: 0px;
+    /*margin-left: auto;*/
+    color: #fff;
+	background-image: -webkit-linear-gradient(top, rgba(70,0,0, .9) 0%, rgba(0,0,0, .9) 100%);
+	background-image: -o-linear-gradient(top, rgba(70,0,0, .9) 0%, rgba(0,0,0, .9) 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(70,0,0, .9)), to(rgba(0,0,0, .9)));
+	background-image: linear-gradient(to bottom, rgba(70,0,0, .9) 0%, rgba(0,0,0, .9) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#460000', endColorstr='#6666666', GradientType=0);
+	background-repeat: repeat-x;
+	background-color: transparent;
+	border: 3px solid #240000;
+	border-radius: 8px;
+	-webkit-box-shadow: 0px 10px 35px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 10px 35px 0px rgba(0,0,0,0.75);
+	box-shadow: 0px 10px 35px 0px rgba(0,0,0,0.75);
+    max-width: 550px ;
+}
+
+.society-well > select {
+    color: black;
+}
+
+.society-well > .table-responsive > table > tbody > tr > td > a {
+    color: #fff;
+}
+
+.society-well > .table-responsive > table > tbody > tr > td > a:hover {
+    color: #fff;
+}
+
+
+.form-signin-heading {
+    text-align: center;
+}
+
+.btn-facebook {
+    width: 100%;
+}
+
+.btn-responsive {
+	white-space: normal;
+    width: 100%;
+	margin-top: 10px;
+}
+
+.error {
+    max-width: 600px;
+}
+
+/*
+td.name {
+    width: 125px;
+    text-overflow: ellipsis;
+}
+*/
+
+td.racks , td.wins , td.handicap, td.lost {
+    width: 30px;
+}
+
+td.short-date {
+
 }

@@ -1,8 +1,10 @@
 package com.society.leagues.client.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.society.leagues.client.views.PlayerResultSummary;
 import com.society.leagues.converters.DateDeSerializer;
 import com.society.leagues.converters.DateSerializer;
 import com.society.leagues.converters.DateTimeDeSerializer;
@@ -17,22 +19,23 @@ import java.util.Comparator;
 
 public class Season extends LeagueObject   {
 
-    String name;
+    @JsonView(PlayerResultSummary.class) String name;
     @NotNull
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
-    LocalDateTime startDate;
+    @JsonView(PlayerResultSummary.class) LocalDateTime startDate;
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime endDate;
-    @NotNull Integer rounds = -1;
-    @NotNull Status seasonStatus;
-    @NotNull Division division;
+    @JsonView(PlayerResultSummary.class) @NotNull Integer rounds = -1;
+    @JsonView(PlayerResultSummary.class) @NotNull Status seasonStatus;
+    @JsonView(PlayerResultSummary.class) @NotNull Division division;
     String year = LocalDateTime.now().toString().substring(0,4);
     String type;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @JsonSerialize(using = DateSerializer.class)
     @JsonDeserialize(using = DateDeSerializer.class)
+    @JsonView(PlayerResultSummary.class)
     LocalDate sDate;
 
     public Season(String name, LocalDateTime startDate, Integer rounds, Division division) {
@@ -264,6 +267,11 @@ public class Season extends LeagueObject   {
 
     public String getDay() {
        return division.day;
+    }
+
+
+    public String getDayName() {
+       return division.day.substring(0,1).toUpperCase() + division.day.substring(1);
     }
 
     @Override

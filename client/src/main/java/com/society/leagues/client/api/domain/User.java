@@ -208,9 +208,7 @@ public class User extends LeagueObject {
 
     @JsonIgnore
     public List<Season> getSeasons() {
-        List<Season> list =handicapSeasons.stream().map(HandicapSeason::getSeason).collect(Collectors.toList());
-        list.sort(Season.sort);
-        return list;
+        return handicapSeasons.stream().map(HandicapSeason::getSeason).collect(Collectors.toList());
     }
 
     public boolean hasSameSeason(User u) {

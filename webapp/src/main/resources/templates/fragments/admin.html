@@ -1,47 +1,41 @@
 <div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-  <div  th:if="${user ne null && user.isAdmin()}" id="admin-app" class="panel-group" >
-      <div  class="panel panel-default">
-          <div class="panel-heading">
-              <h4 class="panel-title"><a data-toggle="collapse" href="#collapse1">Admin Menu</a>
-                  <select id="admin-seasons" onchange="changeAdminSeason()">
-                      <option
-                              th:each="s : ${allSeasons}"
-                              th:value="${s.id}"
-                              th:text="${s.formattedName}"
-                              th:selected="${adminSeason.id eq s.id}">
-                      </option>
-                  </select>
-                  <a data-toggle="collapse" href="#collapse1"><button class="btn btn-xs btn-primary" >Toggle</button></a>
-              </h4>
-          </div>
-          <div id="collapse1" class="panel-collapse collapse">
-              <div class="table-responsive">
-                  <table class="table table-bordered">
-                      <thead>
-                      </thead>
-                      <tbody>
-                      <tr>
-                          <td><a id="admin-scores" th:href="@{/app/scores/{id} (id=${adminSeason.getId()})}" >
-                              Scores </a>
-                          </td>
+    <div th:if="${user ne null && user.isAdmin()}" id="admin-app" class="society-well">
+            <span>Admin Menu</span>
+                <select style="float: right" id="admin-seasons" onchange="changeAdminSeason()">
+                    <option
+                            th:each="s : ${allSeasons}"
+                            th:value="${s.id}"
+                            th:text="${s.formattedName}"
+                            th:selected="${adminSeason.id eq s.id}">
+                    </option>
+                </select>
+            </h4>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><a id="admin-scores" th:href="@{/app/scores/{id} (id=${adminSeason.getId()})}">
+                            Scores </a>
+                        </td>
 
-                          <td><a id="admin-schedules" th:href="@{/app/schedule/{id} (id=${adminSeason.getId()})}" >
-                              Schedule </a>
-                          </td>
-                          <td><a id="admin-standings" th:href="@{/app/display/{id} (id=${adminSeason.getId()})}" >
-                              Standings </a>
-                          </td>
-                          <td><a id="admin-leaders" th:href="@{/app/leaders/{id} (id=${adminSeason.getId()})}" >
-                              Leaders </a>
-                          </td>
-                          <td><a id="admin-users" href="/app/user">Users</a></td>
-                          <td><a id="admin-teams" href="/app/team">Teams</a></td>
-                          <td><a id="admin-season" href="/app/season">Season</a></td>
-                      </tr>
-                      </tbody>
-                  </table>
-              </div>
-          </div>
-      </div>
-  </div>
+                        <td><a id="admin-schedules" th:href="@{/app/schedule/{id} (id=${adminSeason.getId()})}">
+                            Schedule </a>
+                        </td>
+                        <td><a id="admin-standings" th:href="@{/app/display/{id} (id=${adminSeason.getId()})}">
+                            Standings </a>
+                        </td>
+                        <td><a id="admin-leaders" th:href="@{/app/leaders/{id} (id=${adminSeason.getId()})}">
+                            Leaders </a>
+                        </td>
+                        <td><a id="admin-users" href="/app/user">Users</a></td>
+                        <td><a id="admin-teams" href="/app/team">Teams</a></td>
+                        <td><a id="admin-season" href="/app/season">Season</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>

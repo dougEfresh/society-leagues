@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
@@ -422,5 +423,13 @@ public class TeamMatch extends LeagueObject {
         this.referenceUser = referenceUser;
     }
 
+    public static Comparator<TeamMatch> sortAcc() {
+        return new Comparator<TeamMatch>() {
+            @Override
+            public int compare(TeamMatch o1, TeamMatch o2) {
+                return o1.getMatchDate().compareTo(o2.getMatchDate());
+            }
+        };
+    }
 
 }
