@@ -48,15 +48,7 @@
         </div>
     </div>
 
-    <div th:if="${season.isEight()}">
-        <div th:replace="scores/playerResultsEight"></div>
-    </div>
-    <div th:if="${season.isScramble()}">
-        <div th:replace="scores/playerResultsEight"></div>
-    </div>
-    <div th:if="${season.isNine()}">
-        <div th:replace="scores/playerResultsNine"></div>
-    </div>
+    <div th:replace="scores/playerResults"></div>
 
     </div>
 </div>

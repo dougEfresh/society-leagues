@@ -1,13 +1,7 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org">
-    <div class="society-well society-well-admin society-well-player-scores" th:fragments="playerresults">
-        <div th:if="${results ne null}" id="player-results">
-            <form id="result-form" th:object="${results}" th:method="post" method="post"
-                  th:action="@{/app/scores/{id}/{matchId}/{date} (id=${season.id},date=${date},matchId=${results.matchId})}">
-                <div class="well-title">
-                    <h4 th:text="${results.getName()}"></h4>
-                </div>
-                <div class="table-responsive">
+    <div th:fragments="nineTable">
+                        <div class="table-responsive">
                     <table id="table-player-results-admin" class="table">
                         <thead>
                         <th></th>
@@ -74,20 +68,5 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="footer-submit">
-                    <input id="player-results-submit" class="btn btn-lg btn-success" type="submit" value="Submit"/>
-
-                <a th:href="@{/app/scores/{id}/{matchId}/add/{date} (id=${season.id},date=${date},matchId=${results.matchId})}">
-                    <h4 class="add-one"><span class="label label-primary">Add One</span></h4>
-                </a>
-                <a th:href="@{/app/scores/{id}/{matchId}/add/{date}/four (id=${season.id},date=${date},matchId=${results.matchId})}">
-                    <h4 class="add-four"><span class="label label-primary">Add Four</span></h4>
-                </a>
-                <a th:href="@{/app/scores/{id}/{matchId}/delete (id=${season.id},matchId=${results.matchId})}">
-                    <h4 class="delete-all"><span class="label label-danger">Delete All</span></h4>
-                </a>
-                </div>
-            </form>
-        </div>
     </div>
-</div>
+    </div>
