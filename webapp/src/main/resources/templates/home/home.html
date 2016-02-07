@@ -13,13 +13,19 @@
                <tbody>
                <tr th:each="match : ${upcomingMatches}" >
                    <td class="name">
-                       <a th:text="${match.getOpponent(user).getName()}" th:href="@{/app/schedule/{seasonId} (seasonId=${match.getSeason().getId()})}"></a>
+                       <a th:if="${match.getSeason().isChallenge()}" th:text="${match.getOpponent(user).getName()}"
+                          th:href="@{/app/display/{seasonId}/user/{userId} (seasonId=${match.getSeason().getId()},userId=${match.getChallenger().getId()})}">
+                       </a>
+                       <a th:if="${!match.getSeason().isChallenge()}" th:text="${match.getOpponent(user).getName()}"
+                          th:href="@{/app/display/{seasonId}/{teamId} (seasonId=${match.getSeason().getId()},teamId=${match.getOpponent(user).getId()})}">
+                       </a>
                    </td>
                    <td class="short-date">
-                       <a th:if="${match.getSeason().isChallenge()}" th:text="${#temporals.format(match.getMatchDate(), 'MM/dd')}"
-                          th:href="@{/app/schedule/{seasonId} (seasonId=${match.getSeason().getId()})}"></a>
-                       <a th:if="${!match.getSeason().isChallenge()}" th:text="${#temporals.format(match.getMatchDate(), 'MM/dd')}"
-                          th:href="@{/app/display/{seasonId}/topgun/{userId} (seasonId=${match.getSeason().getId()},userId=match.getChallenger().getId())}"></a>
+                       <a
+                          th:href="@{/app/schedule/{seasonId} (seasonId=${match.getSeason().getId()})}">
+                           <!--<span th:text="${#temporals.format(match.getMatchDate(), 'MMM dd H:mm')}" class="badge badge-date"></span>-->
+                           <span th:text="${#temporals.format(match.getMatchDate(), 'MMM dd H:mm')}" ></span>
+                       </a>
                    </td>
                </tr>
                </tbody>
@@ -30,7 +36,7 @@
       <div th:if="${topPlayers ne null}" th:each="season : ${topPlayers.keySet()}" class="society-well">
          <i class="fa fa-trophy"></i> <span>Top Players - </span><span th:text="${season.getDayName()}"></span>
            <div class="table-responsive">
-           <table class="table" >
+           <table class="table table-stats" >
                <thead>
                <tr>
                    <th>Name</th>
@@ -43,17 +49,18 @@
                <tbody>
                <tr th:each="stat : ${topPlayers.get(season)}" >
                    <td class="name" >
-                       <a th:text="${stat.getUser().getName()}"  href="#">
+                       <a th:text="${stat.getUser().getName()}"
+                          th:href="@{/app/display/{seasonId}/user/{userId} (seasonId=${stat.getSeason().getId()},userId=${stat.getUser().getId()})}">
                        </a>
                    </td>
                    <td class="handicap">
                        <span th:text="${stat.getHandicap().getDisplayName()}"  href="#"></span>
                    </td>
                    <td class="wins">
-                       <span th:text="${stat.getWins()}" href="#"></span>
+                       <span class="badge badge-stat" th:text="${stat.getWins()}" href="#"></span>
                    </td>
                    <td class="lost">
-                       <span th:text="${stat.getLoses()}" href="#"></span>
+                       <span class="badge badge-stat" th:text="${stat.getLoses()}" href="#"></span>
                    </td>
                    <td class="pct">
                        <span th:text="${'% ' +  #numbers.formatDecimal(stat.getWinPct()*100,0,2)}"></span>
@@ -67,7 +74,7 @@
       <div th:if="${userStats ne null}" class="society-well">
           <i class="fa fa-bar-chart"></i> <span>My Stats</span>
            <div class="table-responsive">
-           <table class="table" >
+           <table class="table table-stats" >
                <thead>
                <tr>
                    <th>Season</th>
@@ -86,10 +93,10 @@
                        <span th:text="${stat.getHandicap().getDisplayName()}"  href="#"></span>
                    </td>
                    <td class="wins">
-                       <span th:text="${stat.getWins()}" href="#"></span>
+                       <span class="badge badge-stat" th:text="${stat.getWins()}" href="#"></span>
                    </td>
                    <td class="lost">
-                       <span th:text="${stat.getLoses()}" href="#"></span>
+                       <span class="badge badge-stat" th:text="${stat.getLoses()}" href="#"></span>
                    </td>
                    <td class="pct">
                        <span th:text="${'% ' +  #numbers.formatDecimal(stat.getWinPct()*100,0,2)}"></span>

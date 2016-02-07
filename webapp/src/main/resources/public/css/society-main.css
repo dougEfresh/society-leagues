@@ -135,3 +135,20 @@ td.racks , td.wins , td.handicap, td.lost {
 td.short-date {
 
 }
+
+.badge-date , .label-date, .badge-stat  {
+    background-color: black;
+    border-radius: 0 !important;
+}
+
+.side-nav {
+    background-color: black !important;
+}
+
+td > a {
+    color: whitesmoke;
+}
+
+.table-stats > thead > tr {
+    background-color: black;
+}

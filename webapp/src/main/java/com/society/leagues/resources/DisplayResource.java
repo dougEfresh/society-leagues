@@ -35,8 +35,8 @@ public class DisplayResource extends BaseController {
         return processDisplay(seasonId, model, teamId, userId);
     }
 
-    @RequestMapping(value = {"/display/{seasonId}/topgun/{userId}"}, method = RequestMethod.GET)
-    public String displayTopGunStandings(@PathVariable String seasonId, @PathVariable String userId, Model model, HttpServletResponse response) throws IOException {
+    @RequestMapping(value = {"/display/{seasonId}/user/{userId}"}, method = RequestMethod.GET)
+    public String displaySeasonUserStandings(@PathVariable String seasonId, @PathVariable String userId, Model model, HttpServletResponse response) throws IOException {
         return processDisplay(seasonId, model, null, userId);
     }
 

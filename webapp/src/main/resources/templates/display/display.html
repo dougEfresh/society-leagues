@@ -5,16 +5,14 @@
         <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
         <div class="row">
             <div class="col-xs-12 col-md-8 col-lg-6">
-                <div class="panel panel-default">
-                    <div th:text="${season.getFormattedName()}" class="panel-heading">
+                <div class="society-well">
+                    <div th:text="${season.getFormattedName()}" class="">
                         Standings
                     </div>
-                    <div class="panel-body">
                         <div id="display-eight" th:if="${season.isEight()}" th:include="display/displayEight"></div>
                         <div id="display-scramble" th:if="${season.isScramble()}" th:include="display/displayEight"></div>
                         <div id="display-nine" th:if="${season.isTuesdayNine()}" th:include="display/displayNine"></div>
                         <div id="display-topgun" th:if="${season.isChallenge()}" th:include="display/displayTopgun"></div>
-                    </div>
                 </div>
             </div>
             <div th:if="${not #lists.isEmpty(displayMemberStats)}" class="col-xs-12 col-md-8 col-lg-6">
