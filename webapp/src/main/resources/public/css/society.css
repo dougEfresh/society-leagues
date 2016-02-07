@@ -147,6 +147,8 @@ th a, th a:visited , th a:active, th a:hover {
 
 
 #team-match-results > tbody >tr > td.date > input,
+#team-match-results > tbody >tr > td.match-date > input,
+#team-match-results > tbody >tr > td.match-time > input,
 #team-match-results > tbody >tr > td.name > select,
 #team-match-results > tbody >tr > td.racks > input,
 #table-player-results-admin > tbody >tr > td.date > input,
@@ -163,10 +165,18 @@ th a, th a:visited , th a:active, th a:hover {
 }
 
 #table-player-results-admin  > tbody >tr > td.match-number,
-#table-player-results-admin  > tbody >tr > td.match-number > input
+#team-match-results > tbody >tr > td.match-date ,
+#team-match-results > tbody >tr > td.match-time
 {
-    max-width: 98px;
-    width: 98px;
+    max-width: 110px;
+    width: 110px;
+}
+#table-player-results-admin  > tbody >tr > td.match-number > input,
+#team-match-results > tbody >tr > td.match-date > input,
+#team-match-results > tbody >tr > td.match-time > input
+{
+    max-width: 100px;
+    width: 100px;
 }
 
 #team-match-results > tbody >tr > td.name,  #table-player-results-admin > tbody >tr > td.name {
