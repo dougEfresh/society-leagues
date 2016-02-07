@@ -311,3 +311,7 @@ form.edit-user {
 .form-user-handicap , .form-user-role, .form-user-status {
     max-width: 99px;
 }
+
+.form-season {
+    display: inline-block;
+}

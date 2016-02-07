@@ -3,16 +3,17 @@
      layout:decorator="layout">
     <div layout:fragment="content">
         <div id="season-app">
-            <div>
-                <a th:if="${season ne null &&!season.getId().equals('-1')}" href="/app/season/new">
-                    <button class="btn btn-primary"><b>Add New</b></button>
-                </a>
-                <a th:if="${season ne null && !season.isActive() && !season.getId().equals('-1')}"
-                   th:href="@{/app/season/create/{seasonId} (seasonId=${season.id})}">
-                    <button class="btn btn-warning"><b>Create Schedule</b></button>
-                </a>
-            </div>
-
+            <div class="society-well society-well-form-season">
+                <div class="well-title" style="padding-bottom: 15px">
+                    <h4 th:if="${season ne null && !season.isActive() && !season.getId().equals('-1')}" th:text="${season.getFormattedName()}"></h4>
+                    <a  href="/app/season/new">
+                        <button class="btn btn-primary"><b>Add New Season</b></button>
+                    </a>
+                    <a style="padding-left: 20px" th:if="${season ne null && !season.isActive() && !season.getId().equals('-1')}"
+                       th:href="@{/app/season/create/{seasonId} (seasonId=${season.id})}">
+                        <button class="btn btn-warning"><b>Create Schedule</b></button>
+                    </a>
+                </div>
             <form class="form-horizontal form-season"
                   id="season-form"
                   th:if="${season ne null}"
@@ -87,6 +88,8 @@
                 </div>
 
             </form>
+            </div>
+            <div class="society-well society-well-season">
             <div class="table-responsive">
                 <table id=table-season" class="table table-bordered">
                     <thead>
@@ -115,6 +118,7 @@
                     </tr>
                     </tbody>
                 </table>
+            </div>
             </div>
         </div>
     </div>

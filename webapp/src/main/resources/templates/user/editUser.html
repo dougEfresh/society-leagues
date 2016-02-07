@@ -19,35 +19,35 @@
               method="post">
             <div class="form-group">
                 <input type="hidden" th:value="${editUser.id}" th:field="*{id}"/>
-                <label class="col-sm-2 control-label">First Name</label>
+                <label class="col-sm-3 control-label">First Name</label>
 
-                <div class="col-sm-10">
+                <div class="col-sm-8">
                     <input th:value="*{firstName}" th:field="*{firstName}" id="firstName"
                            type="input" name="firstName"
                            class="form-control form-user "/>
                 </div>
-                <label class="col-sm-2 control-label">Last Name</label>
+                <label class="col-sm-3 control-label">Last Name</label>
 
-                <div class="col-sm-10">
+                <div class="col-sm-8">
                     <input th:value="${editUser.lastName}" name="lastName" th:field="*{lastName}" id="lastName"
                            type="input" class="form-control form-user"/>
                 </div>
-                <label class="col-sm-2 control-label">Email</label>
+                <label class="col-sm-3 control-label">Email</label>
 
-                <div class="col-sm-10">
+                <div class="col-sm-8">
                     <input th:value="${editUser.login}" th:field="*{login}" id="login" class="form-control form-user-email"/>
                 </div>
-                <label class="col-sm-2 control-label">Role</label>
+                <label class="col-sm-3 control-label">Role</label>
 
-                <div class="col-sm-10">
+                <div class="col-sm-8">
                     <select id="role" name="role" class="form-control form-user-role" th:value="${editUser.role}" th:field="*{role}">
                         <option value="PLAYER">Player</option>
                         <option value="ADMIN">Admin</option>
                     </select>
                 </div>
-                <label class="col-sm-2 control-label">status</label>
+                <label class="col-sm-3 control-label">status</label>
 
-                <div class="col-sm-10">
+                <div class="col-sm-8">
                     <select class="form-control form-user-status" th:value=${editUser.status} th:field="*{status}">
                         <option value="ACTIVE">Active</option>
                         <option value="INACTIVE">Disable</option>
@@ -55,7 +55,7 @@
                 </div>
                 <!--/*@thymesVar id="handicapSeasons" type="com.society.leagues.client.api.domain.HandicapSeason"*/-->
                 <div th:each="hs, rowIndex: ${editUser.handicapSeasons}">
-                    <label th:text="${hs.season.getShortName()}" class="col-sm-2 control-label"></label>
+                    <label th:text="${hs.season.getShortName()}" class="col-sm-3 control-label"></label>
                     <input type="hidden" th:value="${hs.season.id}"
                            th:field="${editUser.handicapSeasons[__${rowIndex.index}__].season.id}"/>
                     <input type="hidden" th:value="${hs.season.division}"
@@ -63,11 +63,11 @@
                     <input type="hidden" th:value="${hs.season.seasonStatus}"
                            th:field="${editUser.handicapSeasons[__${rowIndex.index}__].season.seasonStatus}"/>
 
-                    <div class="col-sm-10">
+                    <div class="col-sm-8">
                         <select th:id="${hs.season.getShortName().replaceAll(' ','') + '-hc'}" class="form-control form-user-handicap"
                                 th:field="${editUser.handicapSeasons[__${rowIndex.index}__].handicap}">
                             <option th:each="hc: ${T(com.society.leagues.client.api.domain.Handicap).values()}"
-                                    th:text="${hc.value}"
+                                    th:text="${hc.getDisplayName()}"
                                     th:value="${hc.value}"
                                     th:selected="${hc.value == hs.handicap.value}"
                             ></option>
