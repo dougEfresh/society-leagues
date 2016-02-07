@@ -94,6 +94,10 @@ body.login {
     color: black;
 }
 
+.society-well-leaders {
+    max-width: 650px;
+}
+
 .society-well > .table-responsive > table > tbody > tr > td > a {
     color: #fff;
 }
