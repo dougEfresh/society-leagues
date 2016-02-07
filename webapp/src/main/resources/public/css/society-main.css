@@ -247,3 +247,10 @@ td > a {
 #table-leaders, #table-player-results {
     border-top: 2px solid #ddd;
 }
+
+.society-well-admin {
+    padding-bottom: 15px
+}
+.society-well-scores {
+    max-width: 100%;
+}

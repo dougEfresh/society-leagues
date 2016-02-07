@@ -42,18 +42,6 @@
                   th:object="${challenge}" th:method="post">
                 <input th:if="${challenger ne null}" type="hidden" th:field="*{challenger.id}"
                        th:value="${challenger.getId()}">
-                <!--
-                <div th:each="slot: ${challenge.getSlots()}" class="ck-button">
-                    <label>
-                        <input th:type="checkbox"
-                               th:checked="${'false' == 'true'}"
-                               th:name="slots"
-                               th:value="${slot.getId()}">
-                        <span th:text="${slot.getTime()}"></span>
-                    </label>
-                </div>
-
--->
                 <div class="slot-container" th:each="slot: ${challenge.getSlots()}">
                 <div class="onoffswitch"  >
                     <input th:id="${'slot-' + slot.getId()}"
@@ -62,29 +50,25 @@
                            th:value="${slot.getId()}"
                            name="onoffswitch" class="onoffswitch-checkbox">
                     <label class="onoffswitch-label" th:for="${'slot-' + slot.getId()}">
-                        <span class="onoffswitch-inner"></span>
+                        <!--<span class="onoffswitch-inner"></span>-->
+                        <span th:class="${'onoffswitch-inner-' + slot.getTime().replace(':','')}"></span>
                         <span class="onoffswitch-switch"></span>
                     </label>
                 </div>
                 </div>
-                <!--
-                <div class="settings">
-                    <div class="row">
-                        <div class="switch" th:each="slot: ${challenge.getSlots()}">
-                            <input th:id="${'slot-' + slot.getId()}" class="cmn-toggle cmn-toggle-yes-no" type="checkbox">
-                            <label th:for="${'slot-' + slot.getId()}" th:attr="data-on=${slot.getTime()},data-off=${slot.getTime()}"></label>
-                        </div>
-                    </div>
+                    <div class="onoffswitch"  >
+                    <input id="slot-test"
+                           th:type="checkbox"
+                           th:checked="false"
+                           th:value="slot"
+                           name="onoffswitch"
+                           class="onoffswitch-checkbox">
+                    <label class="onoffswitch-label" for="slot-test">
+                        <span class="onoffswitch-inner"></span>
+                        <span class="onoffswitch-switch"></span>
+                    </label>
                 </div>
 
-                    <input th:each="slot: ${challenge.getSlots()}"
-                           th:type="checkbox"
-                           class="slot"
-
-                           th:name="slots"
-                           th:text="${slot.getTime()}"
-                           th:value="${slot.getId()}">
-                           -->
                 <div class="challenge-submit center">
                     <input class="btn btn-primary" type="submit" value="Submit">
                 </div>

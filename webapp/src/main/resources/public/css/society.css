@@ -144,3 +144,23 @@ th a, th a:visited , th a:active, th a:hover {
     right: 0px;
 }
 
+
+
+#team-match-results > tbody >tr > td.date > input,
+#team-match-results > tbody >tr > td.name > select,
+#team-match-results > tbody >tr > td.racks > input
+
+{
+    background-color: black;
+    color: white;
+
+}
+
+#team-match-results {
+
+}
+
+#team-match-results > tbody >tr > td.name {
+    max-width: 220px;
+    width: 220px;
+}
