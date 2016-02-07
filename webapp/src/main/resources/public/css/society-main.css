@@ -106,6 +106,10 @@ body.login {
     color: #fff;
 }
 
+.well-title {
+    text-align: center;
+}
+
 
 .form-signin-heading {
     text-align: center;
@@ -137,7 +141,7 @@ td.racks , td.wins , td.handicap, td.lost {
 }
 
 td.short-date {
-    width: 33px;
+    /*width: 33px;*/
     max-width: 33px;
 }
 

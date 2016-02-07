@@ -10,7 +10,7 @@
                     <!--/*@thymesVar id="t" type="com.society.leagues.client.api.domain.Team"*/-->
                     <option th:each="t : ${teams}"
                             th:value="${t.getId()}"
-                            th:text="${t.getName() + ' *** ' + t.getStats().getWins() + '-'  + t.getStats().getLoses()}"
+                            th:text="${t.getName() + ' (' + t.getStats().getWins() + '-'  + t.getStats().getLoses() + ')'}"
                             th:selected="${t.getId() == team.getId()}"
                     >
                     </option>

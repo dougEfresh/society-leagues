@@ -5,7 +5,11 @@
       <!--/*@thymesVar id="match" type="com.society.leagues.model.MatchModel"*/-->
       <!--/*@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"*/-->
       <div  th:if="${upcomingMatches ne null}" class="society-well">
-         <i class="fa fa-bell fa-fw"></i> <span>Upcoming Matches</span>
+          <div class="well-title">
+              <h4>
+              <i class="fa fa-bell fa-fw"></i> <span>Upcoming Matches</span>
+              </h4>
+          </div>
            <div class="table-responsive">
            <table class="table" >
                <thead>
@@ -34,7 +38,11 @@
       </div>
 
       <div th:if="${topPlayers ne null}" th:each="season : ${topPlayers.keySet()}" class="society-well">
+          <div class="well-title">
+              <h4>
          <i class="fa fa-trophy"></i> <span>Top Players - </span><span th:text="${season.getDayName()}"></span>
+              </h4>
+          </div>
            <div class="table-responsive">
            <table class="table table-stats" >
                <thead>
@@ -72,7 +80,11 @@
       </div>
 
       <div th:if="${userStats ne null}" class="society-well">
-          <i class="fa fa-bar-chart"></i> <span>My Stats</span>
+          <div class="well-title">
+              <h4>
+              <i class="fa fa-bar-chart"></i> <span>My Stats</span>
+              </h4>
+          </div>
            <div class="table-responsive">
            <table class="table table-stats" >
                <thead>
