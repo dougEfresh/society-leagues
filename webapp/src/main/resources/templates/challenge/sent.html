@@ -1,36 +1,34 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
-<div xmlns:th="http://www.thymeleaf.org" >
-    <div th:if="${not #lists.isEmpty(sent)}" class="panel panel-default">
-            <div class="panel-heading">
-                <span>Sent</span>
-            </div>
-            <div id="challenge-sent" class="panel-body">
-                <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead></thead>
-                        <tbody>
-                        <tr th:each="challenge : ${sent}">
-                            <td class="challenge-date" th:text="${#temporals.format(challenge.getLocalDate(), 'MM/dd')}">
-
-                            </td>
-                            <td class="challenge-name">
-                                <span th:text="${challenge.getUserOpponent().getName()}"></span>
-                            </td>
-                            <td class="challenge-race">
-                                <span th:text="${challenge.getRace()}"></span>
-                            </td>
-                            <td class="challenge-actions">
-                                <a th:href="@{/app/challenge/cancel/{id} (id=${challenge.getId()})}">
-                                    <button class="btn btn-sm btn-danger btn-responsive challenge-upcoming-decline-button">
-                                        <span class="glyphicon glyphicon-remove"></span>
-                                    </button>
-                                </a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+<div xmlns:th="http://www.thymeleaf.org">
+    <div th:if="${not #lists.isEmpty(sent)}" class="society-well society-well-sent">
+        <div class="well-title">
+            <h4>Sent</h4>
         </div>
+        <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+        <div class="table-responsive">
+            <table class="table">
+                <thead></thead>
+                <tbody>
+                <tr th:each="challenge : ${sent}">
+                    <td class="challenge-date" th:text="${#temporals.format(challenge.getLocalDate(), 'MM/dd')}">
+
+                    </td>
+                    <td class="challenge-name">
+                        <span th:text="${challenge.getUserOpponent().getName()}"></span>
+                    </td>
+                    <td class="challenge-race">
+                        <span th:text="${challenge.getRace()}"></span>
+                    </td>
+                    <td class="challenge-actions">
+                        <a th:href="@{/app/challenge/cancel/{id} (id=${challenge.getId()})}">
+                            <button class="btn btn-sm btn-danger btn-responsive challenge-upcoming-decline-button">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

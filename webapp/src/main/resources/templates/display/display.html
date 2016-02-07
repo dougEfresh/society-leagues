@@ -17,7 +17,7 @@
             </div>
             <div th:if="${not #lists.isEmpty(displayMemberStats)}" class="col-xs-12 col-md-8 col-lg-5">
                 <div class="society-well society-well-stats">
-                    <div class="display-team-header">
+                    <div class="well-title">
                     <h4 >
                         <span th:text="${team.getName()}"></span>
                         <span th:text="'(' + ${team.getStats().getWins() + ' -'}"></span>

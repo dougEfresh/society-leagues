@@ -89,7 +89,7 @@
                             <i class="fa fa-users fa-fw"></i><span th:text="${team.getName()}"></span>
                             <span class="fa arrow"></span>
                         </a>
-                        <ul th:id="${'team-menu-' + team.getId()}" class="collapse">
+                        <ul th:id="${'team-menu-' + team.getId()}" class="">
                             <li>
                                 <a th:id="'team-display-link-' + ${team.getId()}"
                                    th:href="@{/app/display/{id}/{teamId} (id=${team.getSeason().getId()},teamId=${team.getId()})}"

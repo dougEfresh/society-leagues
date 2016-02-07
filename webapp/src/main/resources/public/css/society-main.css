@@ -109,8 +109,13 @@ body.login {
 .society-well > .table-responsive > table > tbody > tr > td > a:hover {
     color: #fff;
 }
+.society-well-slots {
+    /*height: 175px*/
+}
 
 .well-title {
+    vertical-align: bottom;
+    border-bottom: 2px solid #ddd;
     text-align: center;
 }
 
@@ -201,4 +206,44 @@ td > a {
 
 .padding-bottom-10 {
     padding-bottom: 10px;
+}
+
+.slot-container {
+    display: inline-block;
+}
+
+.center {
+    /*
+    margin: auto;
+    width: 60%;
+    padding: 1px;
+    */
+}
+
+.challenge-submit {
+
+}
+
+.table-responsive {
+
+}
+.dynatable-search, .dynatable-per-page {
+
+}
+
+.dynatable-per-page {
+
+}
+
+.user-results , .leaders{
+    padding-top: 10px;
+}
+/*
+ vertical-align: bottom;
+    border-bottom: 2px solid #ddd;
+    text-align: center;
+    */
+
+#table-leaders, #table-player-results {
+    border-top: 2px solid #ddd;
 }
