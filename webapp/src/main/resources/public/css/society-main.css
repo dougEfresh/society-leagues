@@ -251,6 +251,22 @@ td > a {
 .society-well-admin {
     padding-bottom: 15px
 }
-.society-well-scores {
+.society-well-scores , .society-well-player-scores {
     max-width: 100%;
+}
+
+
+input.match-number {
+    max-width: 68px;
+    width: 68px;
+}
+
+.footer-submit > input , .footer-submit > a > h4 {
+    display: inline-block;
+}
+.footer-submit > a > h4.add-one {
+    padding-left : 20px;
+}
+.footer-submit > a > h4.delete-all {
+    padding-left : 25px;
 }

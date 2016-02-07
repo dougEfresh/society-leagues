@@ -29,7 +29,7 @@ th a, th a:visited , th a:active, th a:hover {
 
 .odd {
     border-color: black;
-    background-color: #BDBDBD;
+    background-color: #6B6565;
 }
 
 
@@ -148,19 +148,28 @@ th a, th a:visited , th a:active, th a:hover {
 
 #team-match-results > tbody >tr > td.date > input,
 #team-match-results > tbody >tr > td.name > select,
-#team-match-results > tbody >tr > td.racks > input
-
+#team-match-results > tbody >tr > td.racks > input,
+#table-player-results-admin > tbody >tr > td.date > input,
+#table-player-results-admin > tbody >tr > td.name > select,
+#table-player-results-admin > tbody >tr > td.match-number > input,
+#table-player-results-admin > tbody >tr > td.racks > input
 {
     background-color: black;
     color: white;
-
 }
 
 #team-match-results {
 
 }
 
-#team-match-results > tbody >tr > td.name {
+#table-player-results-admin  > tbody >tr > td.match-number,
+#table-player-results-admin  > tbody >tr > td.match-number > input
+{
+    max-width: 98px;
+    width: 98px;
+}
+
+#team-match-results > tbody >tr > td.name,  #table-player-results-admin > tbody >tr > td.name {
     max-width: 220px;
     width: 220px;
 }
