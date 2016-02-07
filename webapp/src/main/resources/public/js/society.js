@@ -176,7 +176,7 @@ function searchUserStats(e) {
 
            });
 
-
+     /*
      $('#table-team-standings').dynatable( {
      dataset: {
                perPageDefault: 50,
@@ -190,6 +190,7 @@ function searchUserStats(e) {
            }
 
            });
+           */
 
      $('#table-leaders').dynatable();
      $('#table-teams').dynatable();

@@ -3,9 +3,10 @@
      layout:decorator="layout">
     <div id="schedule-app" layout:fragment="content">
         <div class="society-well">
-            <div style="display: inline">
-                <div style="padding-bottom: 9px"><h4>Select Team:</h4></div>
-                <select id="teams-select" th:onChange="'selectTeam()'" class="form-control">
+            <h4>
+                <div class="pull-right padding-bottom-10"><a th:href="@{/app/schedule/{seasonId} (seasonId=${season.getId()})} "><span class="label label-black">Season</span></a></div>
+            </h4>
+            <select id="teams-select" th:onChange="'selectTeam()'" class="form-control">
                     <!--/*@thymesVar id="u" type="com.society.admin.model.ChallengeUserModel"*/-->
                     <!--/*@thymesVar id="t" type="com.society.leagues.client.api.domain.Team"*/-->
                     <option th:each="t : ${teams}"
