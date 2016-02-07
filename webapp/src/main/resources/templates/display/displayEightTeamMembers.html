@@ -4,7 +4,6 @@
         <table th:if="${not #lists.isEmpty(displayMemberStats)}" th:id="${'table-team-members-' + team.getId()}" class="table table-stats">
             <thead>
             <tr>
-                <th>#</th>
                 <th></th>
                 <th>Player</th>
                 <th>HC</th>
@@ -18,7 +17,6 @@
             <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
             <!--/*@thymesVar id="team" type="com.society.leagues.client.api.domain.Team"*/-->
             <tr th:id="'team-member-' + ${stat.getUser().getId()}" th:each="stat : ${displayMemberStats}">
-                <td th:text="${stat.getRank()}"></td>
                 <td class="stats-link">
                     <a th:id="'player-stats-link-' + ${stat.getUser().getId()}"
                        th:href="@{/app/stats/{id} (id=${stat.getUser().getId()})}">
