@@ -2,17 +2,13 @@
 <div xmlns:th="http://www.thymeleaf.org"  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout"  >
     <!--@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"-->
     <div layout:fragment="content">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <span th:text="${season.getFormattedName()}"></span>
-            </div>
-            <div class="panel-body">
-                <!-- <div class="leaders" th:if="${season.isScramble()}" th:include="results/teamMatchResultsScramble"> </div>-->
-                <div class="leaders" th:if="${season.isTuesdayNine()}" th:include="leaders/leadersNine"> </div>
-                <!-- <div class="leaders" th:if="${season.isChallenge()}" th:include="leaders/leadersTopgun"> </div>-->
-                <div class="leaders" th:if="${season.isEight()}" th:include="leaders/leadersEight"> </div>
-                <div class="leaders" th:if="${season.isScramble()}" th:include="leaders/leadersScramble"> </div>
-            </div>
+        <div class="society-well">
+            <h4 style="text-align: center"><span th:text="${season.getFormattedName()}"></span></h4>
+            <!-- <div class="leaders" th:if="${season.isScramble()}" th:include="results/teamMatchResultsScramble"> </div>-->
+            <div class="leaders" th:if="${season.isTuesdayNine()}" th:include="leaders/leadersNine"> </div>
+            <!-- <div class="leaders" th:if="${season.isChallenge()}" th:include="leaders/leadersTopgun"> </div>-->
+            <div class="leaders" th:if="${season.isEight()}" th:include="leaders/leadersEight"> </div>
+            <div class="leaders" th:if="${season.isScramble()}" th:include="leaders/leadersScramble"> </div>
         </div>
     </div>
 </div>

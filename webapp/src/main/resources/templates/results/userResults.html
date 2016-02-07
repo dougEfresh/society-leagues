@@ -1,19 +1,14 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org" >
-    <div th:if="${not #lists.isEmpty(results)}" class="panel panel-default">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="results-season-name col-xs-12 col-md-3 col-lg-4" th:text="${season.getFormattedName()}" > </div>
-                    <div class="results-user-name  col-xs-12 col-md-3 col-lg-4 " th:text="${resultUser.getShortName()}" > </div>
-                    <div class="results-stats col-xs-12 col-md-3 col-lg-4" th:text="${stats.getWins() + '-' + stats.getLoses()}"> </div>
-                </div>
-            </div>
-            <div th:id="${'user-results-' + resultUser.getId()}" class="panel-body">
-                <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
-                <div class="user-results" th:if="${season.isScramble()}" th:include="results/userResultsScramble"> </div>
-                <div class="user-results" th:if="${season.isTuesdayNine()}" th:include="results/userResultsNine"> </div>
-                <div class="user-results" th:if="${season.isChallenge()}" th:include="results/userResultsTopgun"> </div>
-                <div class="user-results" th:if="${season.isEight()}" th:include="results/userResultsEight"> </div>
-            </div>
-        </div>
+    <div th:if="${not #lists.isEmpty(results)}" class="society-well">
+            <h4 style="text-align: center">
+                <span th:text="${resultUser.getShortName() + ' (' + stats.getWins() + '-' + stats.getLoses() +')'}">
+                </span>
+            </h4>
+        <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+        <div class="user-results" th:if="${season.isScramble()}" th:include="results/userResultsScramble"> </div>
+        <div class="user-results" th:if="${season.isTuesdayNine()}" th:include="results/userResultsNine"> </div>
+        <div class="user-results" th:if="${season.isChallenge()}" th:include="results/userResultsTopgun"> </div>
+        <div class="user-results" th:if="${season.isEight()}" th:include="results/userResultsEight"> </div>
+    </div>
 </div>

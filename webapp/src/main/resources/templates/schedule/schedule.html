@@ -3,12 +3,9 @@
      layout:decorator="layout">
     <div id="schedule-app" layout:fragment="content">
         <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
-        <div class="row">
-        <div class="col-xs-12 col-md-12 col-lg-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <span  th:text="${season.getFormattedName()}"></span>
+        <div class="society-well">
+                <h4>
+                    <span  th:text="${season.getFormattedName()}"></span>
                         <form id="form-select-team">
                             <select id="teams-select" th:onChange="'selectTeam()'" class="form-control" >
                                  <option value="-1">...Choose A Team... </option>
@@ -21,23 +18,16 @@
                                 </option>
                             </select>
                         </form>
-                    </h4>
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div th:if="${season.isChallenge()}" class="col-xs-12 col-md-12 col-lg-12" th:each="date: ${teamMatches.keySet()}">
-                             <div  th:include="schedule/scheduleTopgun"></div>
-                        </div>
-                        <div th:if="${not season.isChallenge()}" th:style="|height: ${height + 'px'}|"
-                             class="col-xs-12 col-md-12 col-lg-10" th:each="date: ${teamMatches.keySet()}">
-                            <div th:if="${season.isTuesdayNine()}" th:include="schedule/scheduleNine"></div>
-                            <div th:if="${season.isEight()}" th:include="schedule/scheduleEight"></div>
-                            <div th:if="${season.isScramble()}" th:include="schedule/scheduleEight"></div>
-                        </div>
-                    </div>
-                </div>
+                </h4>
+            <div th:if="${season.isChallenge()}" class="col-xs-12 col-md-12 col-lg-12" th:each="date: ${teamMatches.keySet()}">
+                <div  th:include="schedule/scheduleTopgun"></div>
             </div>
-        </div>
+            <div th:if="${not season.isChallenge()}" th:style="|height: ${height + 'px'}|"
+                 class="col-xs-12 col-md-12 col-lg-10" th:each="date: ${teamMatches.keySet()}">
+                <div th:if="${season.isTuesdayNine()}" th:include="schedule/scheduleNine"></div>
+                <div th:if="${season.isEight()}" th:include="schedule/scheduleEight"></div>
+                <div th:if="${season.isScramble()}" th:include="schedule/scheduleEight"></div>
+            </div>
         </div>
     </div>
 </div>

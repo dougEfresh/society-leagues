@@ -35,7 +35,7 @@
             <td th:text="${team.getStats().getLoses()}"></td>
             <td th:text="${team.getStats().getRacksWon()}"></td>
             <td th:text="${team.getStats().getRacksLost()}"></td>
-            <td th:text="${#numbers.formatDecimal(team.getStats().getRackPct(),0,3)}"></td>
+            <td th:text="${'% ' + #numbers.formatDecimal(team.getStats().getRackPct()*100,0,2)}"></td>
             <!--<td th:if="${user.isAdmin()}" th:text="${team.getStats().getForfeits()}"></td>-->
         </tr>
         </tbody>

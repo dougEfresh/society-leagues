@@ -71,7 +71,7 @@ public class ScheduleResource extends BaseController {
 
         model.addAttribute("maxHeight",maxGames*45);
         List<Team> teams = new ArrayList<>();
-        teams.addAll(teamApi.seasonTeams(seasonId));
+        teams.addAll(statApi.teamSeasonStats(seasonId));
         model.addAttribute("teams",teams);
         model.addAttribute("season",seasonApi.get(seasonId));
         if (teamId == null  || teamId.equals("-1")) {

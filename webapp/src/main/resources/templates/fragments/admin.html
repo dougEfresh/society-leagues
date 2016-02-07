@@ -1,7 +1,8 @@
 <div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <div th:if="${user ne null && user.isAdmin()}" id="admin-app" class="society-well">
+        <div style="padding-bottom: 10px">
             <span>Admin Menu</span>
-                <select style="float: right" id="admin-seasons" onchange="changeAdminSeason()">
+                <select style="float: right; background-color: black" id="admin-seasons" onchange="changeAdminSeason()">
                     <option
                             th:each="s : ${allSeasons}"
                             th:value="${s.id}"
@@ -10,8 +11,9 @@
                     </option>
                 </select>
             </h4>
+        </div>
             <div class="table-responsive">
-                <table class="table">
+                <table class="table table-bordered">
                     <thead>
                     </thead>
                     <tbody>

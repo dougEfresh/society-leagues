@@ -133,14 +133,25 @@ td.racks , td.wins , td.handicap, td.lost {
 }
 
 td.short-date {
-
+    width: 33px;
+    max-width: 33px;
 }
 
-.badge-date , .label-date, .badge-stat  {
+td.win-lost {
+    width: 33px;
+    max-width: 33px;
+}
+
+
+
+.badge-date , .label-date, .badge-stat , .badge-win {
     background-color: black;
     border-radius: 0 !important;
 }
 
+.badge-win {
+    background-color: #0b5e27;
+}
 .side-nav {
     background-color: black !important;
 }
@@ -151,4 +162,16 @@ td > a {
 
 .table-stats > thead > tr {
     background-color: black;
+}
+
+.display-team-header {
+    text-align: center;
+}
+
+.dynatable-page-link {
+    color: whitesmoke;
+}
+
+.table-stats >tbody>tr>td {
+    border-top: none;
 }
