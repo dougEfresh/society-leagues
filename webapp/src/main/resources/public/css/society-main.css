@@ -254,8 +254,18 @@ td > a {
 .society-well-scores , .society-well-player-scores {
     max-width: 100%;
 }
+.society-well-users {
+    max-width: 696px;
+    width: 696px;
+}
 
+.society-well-user {
+    /*max-width: 500px;*/
+}
 
+.society-well-team {
+    max-width: 800px;
+}
 input.match-number {
     max-width: 68px;
     width: 68px;
@@ -269,4 +279,35 @@ input.match-number {
 }
 .footer-submit > a > h4.delete-all {
     padding-left : 25px;
+}
+
+select.team-members-select, .select2-selection__choice {
+    background-color: black;
+    color: white;
+}
+
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: black;
+    color: white;
+}
+
+#team-seasons {
+    background-color: black;
+    color: white;
+}
+
+form.edit-user {
+    display: inline-block;
+}
+
+.form-user {
+    max-width: 121px;
+}
+
+.form-user-email {
+    max-width: 270px;
+}
+.form-user-handicap , .form-user-role, .form-user-status {
+    max-width: 99px;
 }
