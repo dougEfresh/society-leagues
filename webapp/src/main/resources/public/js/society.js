@@ -199,8 +199,8 @@ function searchUserStats(e) {
                perPageOptions: [10,20,50,100]
 
            }
-     }
      });
+     
      $('#table-users').dynatable();
      $('#table-team-members').dynatable(
          {
