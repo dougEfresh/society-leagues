@@ -7,10 +7,10 @@
                     <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
                     <h4 style="display: inline-block" th:text="${season.shortName}"></h4>
                     <a th:href="@{/app/scores/{id}/add/{date} (id=${season.id},date=${date})}">
-                      <h3 style="display: inline-block">  <span style="display: inline-block" class="label label-black">Add New</span></h3>
+                      <h3 style="display: inline-block">  <span style="display: inline-block" class="label label-primary">Add New</span></h3>
                     </a>
                     <a th:href="@{/app/sheets/{id}/{date} (id=${season.id},date=${date})}">
-                        <h3 style="display: inline-block"><span  class="label label-black" >Sheets</span></h3>
+                        <h3 style="display: inline-block"><span  class="label label-primary" >Sheets</span></h3>
                     </a>
 
                     <form id="form-select-date">

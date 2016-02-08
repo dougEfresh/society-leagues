@@ -75,8 +75,8 @@
                     <input class="racks" th:id="${'awayForfeits-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].awayForfeits}" type="text"
                            th:value="${match.awayForfeits}"/>
                 </td>
-                <td th:class="${season.isScramble()}? 'show' : 'hide'">
-                      <input class="name" th:id="${'game-' + match.getId()}"
+                <td th:class="${season.isScramble()}? 'show name' : 'hide'">
+                      <input class="game-type" th:id="${'game-' + match.getId()}"
                              th:field="*{matches[__${rowStat.index}__].division}" type="text"
                              th:value="${match.division}"/>
                 </td>

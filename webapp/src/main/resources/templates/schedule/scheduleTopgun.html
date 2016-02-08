@@ -1,8 +1,11 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org">
+     <div class="society-well society-well-schedule">
+        <div class="well-title">
+            <h4 th:text="${date}" ></h4>
+        </div>
     <div class="table-responsive">
-        <table th:id="'table-team-schedule-' + ${date}"
-               class="table table-bordered table-striped table-condensed">
+        <table th:id="'table-team-schedule-' + ${date}" class="table ">
             <thead>
             <tr>
                 <th th:text="${date}"></th>
@@ -41,4 +44,5 @@
             </tbody>
         </table>
     </div>
-</div>
+     </div>
+    </div>

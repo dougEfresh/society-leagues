@@ -9,7 +9,7 @@
                     <a  href="/app/season/new">
                         <button class="btn btn-primary"><b>Add New Season</b></button>
                     </a>
-                    <a style="padding-left: 20px" th:if="${season ne null && !season.isActive() && !season.getId().equals('-1')}"
+                    <a style="padding-left: 20px" th:if="${season ne null  && !season.getId().equals('-1')}"
                        th:href="@{/app/season/create/{seasonId} (seasonId=${season.id})}">
                         <button class="btn btn-warning"><b>Create Schedule</b></button>
                     </a>
@@ -94,6 +94,7 @@
                 <table id=table-season" class="table table-bordered">
                     <thead>
                     <th>Status</th>
+                    <th>Schedule</th>
                     <th>Start Date</th>
                     <th>Division</th>
                     <th>Season</th>
@@ -106,6 +107,12 @@
                         <td><a th:href="@{/app/season (seasonId=${s.id})}">
                             <span th:text="${s.getSeasonStatus()}"></span>
                         </a>
+                        </td>
+                        <td>
+                            <a th:id="'schedule-link-' + ${s.getId()}" th:href="@{/app/schedule/{id} (id=${s.getId()})}">
+                   <i class="fa fa-calendar fa-fw"></i>
+                </a>
+
                         </td>
                         <td>
                             <a th:href="@{/app/season (seasonId=${s.id})}">

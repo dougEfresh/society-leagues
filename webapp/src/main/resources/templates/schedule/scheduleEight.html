@@ -1,17 +1,11 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org">
-    <div class="table-responsive">
-               <table th:id="'table-team-schedule-' + ${date}"
-                      class="table table-bordered table-striped table-condensed">
+     <div class="society-well society-well-schedule">
+         <div class="table-responsive">
+        <table th:id="'table-team-schedule-' + ${date}" class="table table-stats ">
                    <thead>
                    <tr>
-                       <th>
-                           <span  th:text="${date}"></span>
-                           <span class="badge">Winner</span>
-                       </th>
-                       <th>R</th>
-                       <th>Loser</th>
-                       <th>R</th>
+                       <th colspan="4"><div style="text-align: center"><span class="" th:text="${date}"></span></div></th>
                    </tr>
                    </thead>
                    <tbody>
@@ -30,4 +24,5 @@
                    </tbody>
                </table>
     </div>
-</div>
+     </div>
+    </div>
