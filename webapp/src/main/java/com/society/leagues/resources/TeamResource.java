@@ -52,6 +52,7 @@ public class TeamResource extends BaseController {
     }
 
     private String processEditTeam(String id, Model model) {
+
         TeamModel tm = TeamModel.fromTeam(teamApi.get(id));
         TeamMembers members = teamApi.members(id);
         tm.setUsers(members.getMembers().stream().filter(User::isReal).collect(Collectors.toList()));

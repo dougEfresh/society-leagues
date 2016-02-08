@@ -193,7 +193,14 @@ function searchUserStats(e) {
            */
 
      $('#table-leaders').dynatable();
-     $('#table-teams').dynatable();
+     $('#table-teams').dynatable(  {
+             dataset: {
+               perPageDefault: 20,
+               perPageOptions: [10,20,50,100]
+
+           }
+     }
+     });
      $('#table-users').dynatable();
      $('#table-team-members').dynatable(
          {
