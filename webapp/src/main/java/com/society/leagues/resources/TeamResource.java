@@ -52,11 +52,17 @@ public class TeamResource extends BaseController {
     }
 
     private String processEditTeam(String id, Model model) {
-
-        TeamModel tm = TeamModel.fromTeam(teamApi.get(id));
-        TeamMembers members = teamApi.members(id);
-        tm.setUsers(members.getMembers().stream().filter(User::isReal).collect(Collectors.toList()));
-        tm.setMembersId(members.getId());
+        TeamModel tm;
+        if (id.equals("new")) {
+            tm = TeamModel.fromTeam(new Team());
+            tm.setMembers(new TeamMembers());
+            tm.setSeason(seasonApi.active().get(0));
+        } else {
+            tm = TeamModel.fromTeam(teamApi.get(id));
+            TeamMembers members = teamApi.members(id);
+            tm.setUsers(members.getMembers().stream().filter(User::isReal).collect(Collectors.toList()));
+            tm.setMembersId(members.getId());
+        }
         model.addAttribute("team", tm);
         listSeasons(model);
         model.addAttribute("season",tm.getSeason());
