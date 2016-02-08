@@ -200,7 +200,7 @@ function searchUserStats(e) {
 
            }
      });
-     
+
      $('#table-users').dynatable();
      $('#table-team-members').dynatable(
          {
