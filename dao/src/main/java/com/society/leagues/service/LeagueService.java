@@ -37,6 +37,7 @@ public class LeagueService {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
         cacheUtil.initialize(mongoRepositories);
+        purge(new Season("-1"));
     }
 
     @SuppressWarnings("unchecked")
