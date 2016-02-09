@@ -86,7 +86,8 @@ public class LoginResource  {
             response.addHeader("Set-Cookie",s);
         }
         logger.info("Got back "  + u.getName());
-        Thread.sleep(1000);
+        Thread.sleep(500);
+
         return "redirect:/app/home";
     }
 
