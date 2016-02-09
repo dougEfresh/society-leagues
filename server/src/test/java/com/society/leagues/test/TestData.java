@@ -39,7 +39,7 @@ public class TestData {
             repo.deleteAll();
         }
         Fairy fairy = Fairy.create();
-        for(int i = 0 ; i< 605; i++) {
+        for(int i = 0 ; i< 705; i++) {
             Person person = fairy.person();
             User u = new User();
             u.setFirstName(person.firstName());
@@ -71,7 +71,7 @@ public class TestData {
         userRepository.save(u);
         List<User> users = userRepository.findAll();
 
-        for(int i = 0 ; i<10; i++) {
+        for(int i = 0 ; i<12; i++) {
             TeamMembers tm = new TeamMembers();
             users.get(i).addHandicap(new HandicapSeason(Handicap.DPLUS,challenge));
             userRepository.save(users.get(i));
@@ -89,10 +89,10 @@ public class TestData {
     }
 
     private void createTeam(Season season, List<User> users , int start) {
-        for(int i = 0 ; i<10; i++) {
+        for(int i = 0 ; i<12; i++) {
             TeamMembers tm = new TeamMembers();
-            int j = start + (i * 10);
-            int max = j + 10;
+            int j = start + (i * 12);
+            int max = j + 12;
             for (; j < max; j++) {
                 User u =  users.get(j);
                 u.addHandicap(new HandicapSeason(season.isNine() ? Handicap.DPLUS : Handicap.FOUR,season));
@@ -108,7 +108,7 @@ public class TestData {
 
     private Season getSeason(Division division, DayOfWeek day) {
         Season s = new Season();
-        s.setRounds(10);
+        s.setRounds(16);
         s.setSeasonStatus(Status.ACTIVE);
         s.setDivision(division);
         LocalDate now = LocalDate.now();
@@ -120,7 +120,7 @@ public class TestData {
                 s.setsDate(startDate);
             }
             cnt++;
-        } while(cnt < 10 && s.getsDate() == null);
+        } while(cnt < 16 && s.getsDate() == null);
         return seasonRepository.save(s);
     }
 

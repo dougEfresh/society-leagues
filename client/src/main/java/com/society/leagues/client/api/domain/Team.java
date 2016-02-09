@@ -132,9 +132,7 @@ public class Team extends LeagueObject {
     @Override
     public String toString() {
         return "Team{" +
-                "season=" + season +
-                ", name='" + name + '\'' +
-                ", created=" + created +
+                " name='" + name + '\'' +
                 '}';
     }
 }

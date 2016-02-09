@@ -7,7 +7,10 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors.*;
 
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
 import static org.junit.Assert.*;
 
 public class TestSeason extends BaseTest {
@@ -77,7 +80,20 @@ public class TestSeason extends BaseTest {
         List<Team> teams = teamApi.seasonTeams(season.getId());
         List<TeamMatch> matches = seasonApi.schedule(season.getId());
         Map<String,List<TeamMatch>> teamMatches = teamMatchApi.matchesBySeasonSummary(season.getId());
-        List<TeamMatch> matchList = teamMatchApi.matchesBySeasonList(season.getId());
+        teamMatchApi.matchesBySeasonList(season.getId());
+        
+
+        for (Team team : teams) {
+            assertTrue(matches.parallelStream().filter(tm->tm.hasTeam(team)).count() == season.getRounds());
+            assertTrue(matches.stream().filter(tm->tm.getHome().equals(team)).count() >= (season.getRounds()/2) -2);
+            assertTrue(matches.stream().filter(tm->tm.getAway().equals(team)).count() >= (season.getRounds()/2) -2);
+        }
+        int week = 0;
+        for (String s : teamMatches.keySet()) {
+            LocalDate dt = LocalDate.parse(s);
+            LocalDate md = season.getStartDate().plusWeeks(week++).toLocalDate();
+            assertEquals(md,dt);
+        }
 
         assertNotNull(matches);
         for (String s : teamMatches.keySet()) {

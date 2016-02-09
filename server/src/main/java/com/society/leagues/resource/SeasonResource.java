@@ -1,6 +1,7 @@
 package com.society.leagues.resource;
 
 import com.society.leagues.client.api.domain.*;
+import com.society.leagues.mongo.TeamMatchRepository;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.ResultService;
 import org.slf4j.Logger;
@@ -12,11 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.Consumer;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @RestController
@@ -26,6 +25,8 @@ public class SeasonResource {
     @Autowired CacheResource cacheResource;
     @Autowired LeagueService leagueService;
     @Autowired ResultService resultService;
+    @Autowired TeamMatchRepository teamMatchRepository;
+
     static Logger logger = LoggerFactory.getLogger(SeasonResource.class);
 
     @RequestMapping(value = "/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
@@ -54,9 +55,33 @@ public class SeasonResource {
         return leagueService.findAll(Season.class).stream().filter(s->s.isActive()).collect(Collectors.toList());
     }
 
+    static  Comparator<TeamMatch> matchSort = (o1, o2) -> o1.getMatchDate().compareTo(o2.getMatchDate());
+    static  Comparator<Team> teamSort = (o1, o2) -> o1.getName().compareTo(o2.getName());
+
+
+    static List<TeamMatch> scheduleSeason(Team[] A, Team[]B, Season season) {
+        int aRows = A.length;
+        int bRows = B.length;
+
+        List<TeamMatch> matches = new ArrayList<>();
+        for(int d = 0; d< aRows; d++) {
+            for (int i = 0; i < aRows; i++) { // aRow
+                for (int j = 0; j < bRows; j++) { // bColumn
+                    Team a = A[i];
+                    Team b = B[j];
+                    if (a.equals(b)) {
+                        continue;
+                    }
+                    matches.add(new TeamMatch(a, b, season.getStartDate().plusWeeks(d)));
+                }
+            }
+        }
+        return matches;
+    }
+
     @RequestMapping(value = "/create/schedule/{seasonId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<TeamMatch> schedule(Principal principal, @PathVariable String seasonId) {
+    public Collection<TeamMatch> schedule(Principal principal, @PathVariable String seasonId) {
         Season season = leagueService.findOne(new Season(seasonId));
         List<Team> teams = leagueService.findAll(Team.class).stream()
                 .filter(t -> t.getSeason().equals(season))
@@ -68,85 +93,55 @@ public class SeasonResource {
             for( PlayerResult result:  leagueService.findAll(PlayerResult.class).stream()
                     .filter(pr->pr.getTeamMatch() != null)
                     .filter(pr -> existing.equals(pr.getTeamMatch())).collect(Collectors.toList())) {
-                leagueService.purge(result);
+                teamMatchRepository.delete(result.getId());
             }
-            leagueService.purge(existing);
+            teamMatchRepository.delete(existing.getId());
         }
 
+        Collection<TeamMatch> allCombos = scheduleSeason(teams.toArray(new Team[]{}),teams.toArray(new Team[]{}),season);
+        Random  random = new Random();
+        LinkedList<Team> a = new LinkedList<>(teams.subList(0,teams.size()/2));
+        LinkedList<Team> b = new LinkedList<>(teams.subList((teams.size()/2),teams.size()));
+        Collections.reverse(b);
         List<TeamMatch> matches = new ArrayList<>();
-
-            for(int i = 0; i < teams.size(); i++) {
-                Team team = teams.get(i);
-                final Team exclude = team;
-                List<Team> opponents = teams.stream().filter(t->!t.equals(exclude)).collect(Collectors.toList());
-                Team opponent = null;
-                for (int week = 0; week < season.getRounds(); week++) {
-                LocalDate matchDate = season.getsDate().plusWeeks(week);
-                if (matches.stream().filter(m -> m.hasTeam(exclude)
-                        && m.getMatchDate().toLocalDate().equals(matchDate)).count() > 0) {
-                    //Already has match for that day
-                    logger.info(String.format("Skipping %s", team.getName()));
-                    continue;
+        for (int week = 0; week < teams.size()-1 ; week ++ ) {
+            for (int i = 0; i < a.size(); i++) {
+                TeamMatch tm = new TeamMatch(a.get(i), b.get(i), season.getStartDate().plusWeeks(week));
+                final Team aTeam = a.get(i);
+                long homeCnt = matches.stream().filter(t->t.getHome().equals(aTeam)).count();
+                long awayCnt = matches.stream().filter(t->t.getAway().equals(aTeam)).count();
+                if (homeCnt <= awayCnt) {
+                    tm.setHome(aTeam);
+                    tm.setAway(b.get(i));
+                } else {
+                    tm.setAway(aTeam);
+                    tm.setHome(b.get(i));
                 }
-                int j = 0;
-                do {
-                    final Team op;
-                    if (week % 2 == 0)
-                        op = opponents.get((week + j) % (opponents.size()));
-                    else
-                        op = opponents.get(( Math.abs(week - opponents.size())) % (opponents.size()));
-                    j++;
-                    //opponent is already playing this week
-                    if (matches.stream()
-                            .filter(m->m.getMatchDate().toLocalDate().equals(matchDate))
-                            .filter(m->m.hasTeam(op)).count() > 0) {
-                        continue;
-                    }
-                    //They played each other previous week
-                    if (matches.stream()
-                            .filter(m->m.getMatchDate().toLocalDate().equals(matchDate.minusWeeks(1)))
-                            .filter(m->m.hasTeam(exclude) && m.hasTeam(op)).count() == 0) {
-                        opponent = op;
-                    }
-
-                } while(opponent == null && (j+1) <= opponents.size()*2);
-
-                if (opponent == null) {
-                    logger.warn("No match for team:  " + team.getName() + "  "+ week);
-                }
-                if (opponent != null) {
-                    logger.info(String.format("%s vs %s (%s)", team.getName(), opponent.getName(), matchDate.toString()));
-
-                    TeamMatch existing = matches.stream().filter(m -> m.hasTeam(exclude)).sorted(new Comparator<TeamMatch>() {
-                        @Override
-                        public int compare(TeamMatch o1, TeamMatch o2) {
-                            return o2.getMatchDate().compareTo(o1.getMatchDate());
-                        }
-                    }).findFirst().orElse(null);
-                    long homeCnt = matches.stream().filter(m->m.getHome().equals(exclude)).count();
-                    long awayCnt = matches.stream().filter(m->m.getAway().equals(exclude)).count();
-                    if (homeCnt <= awayCnt) {
-                        matches.add(new TeamMatch(team, opponent, matchDate.atStartOfDay()));
-                    } else {
-                        matches.add(new TeamMatch(opponent, team, matchDate.atStartOfDay()));
-                    }
+                matches.add(tm);
+            }
+            Team l = a.removeLast();
+            Team f = b.pop();
+            b.addLast(l);
+            a.add(1,f);
+        }
+        int remaining = season.getRounds() - teams.size();
+        if (remaining > 1) {
+            int begWeek = 0;
+            for (int week = season.getRounds() - remaining ; week <= season.getRounds(); week++) {
+                LocalDateTime bDate = season.getStartDate().plusWeeks(begWeek++);
+                List<TeamMatch> fillerMatches = matches.stream().filter(m->m.getMatchDate().equals(bDate)).collect(Collectors.toList());
+                for (TeamMatch fillerMatch : fillerMatches) {
+                    logger.info(String.format("Created %s vs %s (%s)", fillerMatch.getAway().getName(), fillerMatch.getHome().getName(), season.getStartDate().plusWeeks(week-1).toLocalDate()));
+                    teamMatchRepository.save(new TeamMatch(fillerMatch.getAway(),fillerMatch.getHome(),season.getStartDate().plusWeeks(week-1)));
                 }
             }
         }
-        matches.sort((o1, o2) -> {
-            if (o1.getMatchDate().equals(o2.getMatchDate())) {
-                return o1.getHome().getName().compareTo(o2.getHome().getName());
-            }
-            return o1.getMatchDate().compareTo(o2.getMatchDate());
-        });
-        for (TeamMatch match : matches) {
+        for (TeamMatch match : matches.stream().sorted(matchSort).collect(Collectors.toList())) {
             logger.info(String.format("Created %s vs %s (%s)", match.getHome().getName(), match.getAway().getName(), match.getDate()));
-            leagueService.save(match);
+            teamMatchRepository.save(match);
         }
-
         cacheResource.refresh();
-
-        return matches;
+        return leagueService.findAll(TeamMatch.class).parallelStream().filter(t->t.getSeason().equals(season)).collect(Collectors.toList());
     }
 
     @RequestMapping(value = "/admin/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -392,10 +392,10 @@ public class TeamMatch extends LeagueObject {
 
     @Override
     public String toString() {
-        return "TeamMatch{" +
+        return "{" +
                 "home=" + home.getName() +
                 ", away=" + away.getName() +
-                ", matchDate=" + matchDate +
+                ", matchDate=" + matchDate.toLocalDate() +
                 '}';
     }
 
@@ -430,6 +430,22 @@ public class TeamMatch extends LeagueObject {
                 return o1.getMatchDate().compareTo(o2.getMatchDate());
             }
         };
+    }
+
+    public static boolean isSameMatch(TeamMatch t1, TeamMatch t2) {
+        if (!t2.getMatchDate().equals(t1.getMatchDate())) {
+            return false;
+        }
+        if (t1.getHome().equals(t2.getHome()) && t1.getAway().equals(t2.getAway())) {
+            return true;
+        }
+
+        return t1.getHome().equals(t2.getAway()) && t1.getAway().equals(t2.getHome());
+
+    }
+
+    public boolean hasBothTeams(Team a, Team b) {
+        return hasTeam(a) && hasTeam(b);
     }
 
 }
