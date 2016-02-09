@@ -44,14 +44,11 @@ public class ScheduleResource extends BaseController {
             }
             matches = oMatches;
         }
-        Map<String,List<TeamMatch>> sortedMatches = new TreeMap<>(new Comparator() {
-            @Override
-            public int compare(Object o1, Object o2) {
-                if (season.isChallenge()) {
-                    return o2.toString().compareTo(o1.toString());
-                }
-                return o1.toString().compareTo(o2.toString());
+        Map<String,List<TeamMatch>> sortedMatches = new TreeMap<>((Comparator) (o1, o2) -> {
+            if (season.isChallenge()) {
+                return o2.toString().compareTo(o1.toString());
             }
+            return o1.toString().compareTo(o2.toString());
         });
         for (String s : matches.keySet()) {
             sortedMatches.put(s,matches.get(s));

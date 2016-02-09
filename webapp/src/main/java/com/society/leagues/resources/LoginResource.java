@@ -71,7 +71,7 @@ public class LoginResource  {
     }
 
     @RequestMapping(value = {"/login"}, method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public String loginPage(@RequestParam String username, @RequestParam String password, Model model, HttpServletRequest request, ResponseFacade response) {
+    public String loginPage(@RequestParam String username, @RequestParam String password, Model model, HttpServletRequest request, ResponseFacade response) throws InterruptedException {
         logger.info("Login Request for " + username);
         MultiValueMap<String, String> body = new LinkedMultiValueMap<String, String>();
         body.add("username", username.toLowerCase());
@@ -86,6 +86,7 @@ public class LoginResource  {
             response.addHeader("Set-Cookie",s);
         }
         logger.info("Got back "  + u.getName());
+        Thread.sleep(1000);
         return "redirect:/app/home";
     }
 
