@@ -76,8 +76,11 @@
                 </div>
             </div>
             <div class="col-sm-offset-2 col-sm-10">
-                <br/>
                 <input id="submit" type="submit" class="btn btn-sm btn-primary btn-responsive"/>
+            </div>
+             <div class="col-sm-offset-2 col-sm-10">
+                <a th:href="@{/app/user/delete/fb/profile/{id} (id=${editUser.id})}" >
+                    <button class="btn btn-warning">Delete FB Profile</button> </a>
             </div>
         </form>
         </div>

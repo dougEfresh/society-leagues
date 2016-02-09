@@ -32,8 +32,17 @@ public interface UserApi {
     @RequestLine("GET /api/user/all")
     List<User> all();
 
-     @RequestLine("POST /api/user/reset/request")
-     TokenReset resetRequest(User user);
+    @RequestLine("POST /api/user/reset/request")
+    TokenReset resetRequest(User user);
+
+    @RequestLine("POST /api/signup")
+    User signupFacebook(@Param("email") String email);
+
+    @RequestLine("GET /api/logout")
+    String logout();
+
+    @RequestLine("DELETE /api/user/fb/profile/{id}")
+    User deleteFbProfile(@Param("id") String id);
 
     @RequestLine("POST /api/user/reset/password/{token}")
     User resetPassword(@Param("token") String token, Map<String,String> user);

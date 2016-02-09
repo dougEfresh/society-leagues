@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class LoginResource  {
@@ -31,14 +31,27 @@ public class LoginResource  {
     static Logger logger = org.slf4j.LoggerFactory.getLogger(LoginResource.class);
     RestTemplate restTemplate = new RestTemplate();
     @Autowired UserApi userApi;
+    @Value("${fb.endpoint}")
+    String fbEndpoint;
 
     @PostConstruct
     public void init() {
 
     }
+    @RequestMapping(value = {"/user/logout"}, method = RequestMethod.GET)
+    public String logout(HttpServletResponse response) {
+        response.setHeader("Set-Cookie","remember-me=\"\"; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/");
+        response.setHeader("Set-Cookie","JSESSIONID=\"\"; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/");
+        try {
+            userApi.logout();
+        } catch (Exception ignore ){}
+
+        return "redirect:/app/login";
+    }
 
     @RequestMapping(value = {"/login"}, method = RequestMethod.GET)
-    public String loginPage(@RequestParam(required = false, defaultValue = "false") boolean error, HttpServletRequest request) {
+    public String loginPage(@RequestParam(required = false, defaultValue = "false") boolean error, Model model, HttpServletRequest request) {
+        model.addAttribute("fbEndpoint", fbEndpoint);
         return "login";
     }
 
@@ -93,7 +106,7 @@ public class LoginResource  {
             response.addHeader("Set-Cookie",s);
         }
         logger.info("Got back "  + u.getName());
-        Thread.sleep(1500);
+        Thread.sleep(800);
         headers.set("Cookie",cookie.substring(0,cookie.length()-1));
         httpEntity = new HttpEntity<>(headers);
         responseEntity = restTemplate.exchange(restUrl + "/api/user", HttpMethod.GET, httpEntity, User.class);

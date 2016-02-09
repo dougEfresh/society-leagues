@@ -40,7 +40,8 @@
       <div th:if="${topPlayers ne null}" th:each="season : ${topPlayers.keySet()}" class="society-well">
           <div class="well-title">
               <h4>
-         <i class="fa fa-trophy"></i> <span>Top Players - </span><span th:text="${season.getDayName()}"></span>
+                  <i class="fa fa-trophy"></i>
+                  <span>Top Players - </span><span th:text="${season.getDayName()}"></span>
               </h4>
           </div>
            <div class="table-responsive">

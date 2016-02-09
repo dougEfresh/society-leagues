@@ -55,6 +55,12 @@ public class UserResource extends BaseController {
         return processEditUser(userApi.get(id),model);
     }
 
+    @RequestMapping(value = {"/user/delete/fb/profile/{id}"}, method = RequestMethod.GET)
+    public String deleteFbPofile(@PathVariable String id , Model model) {
+        return processEditUser(userApi.get(id),model);
+    }
+
+
     @RequestMapping(value = {"/user/new"}, method = RequestMethod.GET)
     public String edit(Model model, HttpServletResponse response) {
         User u = User.defaultUser();

@@ -1,18 +1,22 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <html xmlns:th="http://www.thymeleaf.org" >
 <head>
-    <link rel="stylesheet" href="/app/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/app/css/bootstrap-social.css" />
-    <link rel="stylesheet" href="/app/css/font-awesome.min.css" />
-    <!--<link rel="stylesheet" href="/app/css/metisMenu.min.css" />-->
-    <link rel="stylesheet" href="/app/css/select2.min.css" />
-    <link rel="stylesheet" href="/app/css/select2-bootstrap.min.css" />
-    <link rel="stylesheet" href="/app/css/society-dashboard.css" />
-    <link rel="stylesheet" href="/app/css/jquery.dynatable.css" />
-    <link rel="stylesheet" href="/app/css/jquery.datetimepicker.css" />
-    <link rel="stylesheet" href="/app/css/society.css" />
-    <link rel="stylesheet" href="/app/css/society-main.css" />
-<script src="/app/js/jquery.min.js"></script>
+      <link href="/app/css/bootstrap.min.css" rel="stylesheet" />
+<link href="/app/css/bootstrap-social.css" rel="stylesheet" />
+<link href="/app/css/font-awesome.min.css" rel="stylesheet" />
+<!--<link rel="stylesheet" href="/app/css/metisMenu.min.css" />-->
+<link href="/app/css/select2.min.css" rel="stylesheet" />
+<link href="/app/css/select2-bootstrap.min.css" rel="stylesheet" />
+<link href="/app/css/society-dashboard.css" rel="stylesheet" />
+<link href="/app/css/jquery.dynatable.css" rel="stylesheet" />
+<link href="/app/css/jquery.datetimepicker.css" rel="stylesheet" />
+<link href="/app/css/toggle/base.css" rel="stylesheet" />
+<link href="/app/css/toggle/style.css" rel="stylesheet" />
+<link href="/app/css/society.css" rel="stylesheet" />
+<link href="/app/css/society-main.css" rel="stylesheet" />
+<link href="/app/css/switch.css" rel="stylesheet" />
+
+    <script src="/app/js/jquery.min.js"></script>
 <script src="/app/js/bootstrap.min.js"></script>
 <script src="/app/js/select2.min.js"></script>
 <script src="/app/js/jquery.dynatable.js"></script>
@@ -20,13 +24,12 @@
 <script src="/app/js/js.cookie.js"></script>
 <script src="/app/js/society.js"></script>
 
-
 </head>
 <body class="login">
     <div id="page-wrapper" >
         <div id="login-app" class="container fluid container-fluid wrap">
         <div class="login-container well col-md-5 col-sm-5" >
-            <form name="fb_signin" id="fb_signin" action="/signin/facebook" method="POST">
+            <form name="fb_signin" id="fb_signin" th:action="@{${fbEndpoint} + '/signin/facebook'}" method="POST">
                 <h2 class="form-signin-heading" >Please Log In</h2>
                 <div class="row" data-reactid=".0.0.0.0.1">
                     <div class="btn-group col-lg-6 col-md-7 col-sm-12 col-xs-12 login-options" >

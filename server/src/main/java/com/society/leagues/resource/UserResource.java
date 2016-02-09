@@ -2,6 +2,7 @@ package com.society.leagues.resource;
 
 import com.society.leagues.client.api.domain.Handicap;
 import com.society.leagues.client.api.domain.HandicapSeason;
+import com.society.leagues.exception.InvalidRequestException;
 import com.society.leagues.exception.UnauthorizedException;
 import com.society.leagues.service.ChallengeService;
 import com.society.leagues.service.LeagueService;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +33,8 @@ public class UserResource {
     @Autowired UserService userService;
     @Autowired LeagueService leagueService;
     @Autowired ChallengeService challengeService;
+    @Autowired UsersConnectionRepository usersConnectionRepository;
+    @Autowired ConnectionRepository connectionRepository;
 
     @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public User get(Principal principal, HttpServletRequest request) {
@@ -61,7 +66,7 @@ public class UserResource {
     public List<User> active(Principal principal) {
         User u = get(principal.getName());
         if (u.isAdmin()) {
-            return leagueService.findAll(User.class).stream().filter(user->user.isActive())
+            return leagueService.findAll(User.class).stream().filter(User::isActive)
                     .sorted((user, t1) -> user.getName().compareTo(t1.getName())).collect(Collectors.toList());
         }
 
@@ -202,6 +207,19 @@ public class UserResource {
              }
         }
         return User.defaultUser();
+    }
+
+    @RequestMapping(value = "/profile/fb/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public User deleteFbProfile(@PathVariable String id) {
+        User u = leagueService.findOne(new User(id));
+        if (u == null){
+            throw new InvalidRequestException("Invalid user " + id);
+        }
+
+        u.getUserProfile().setImageUrl(null);
+        u.getUserProfile().setProfileUrl(null);
+
+        return leagueService.save(u);
     }
 
 

@@ -32,7 +32,7 @@ public class SignUpResource {
     @Autowired UserService userService;
     @Autowired LeagueService leagueService;
 
-    @RequestMapping(value="/api/signup", method= RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @RequestMapping(value="/api/signup", method= RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public User signup(@RequestParam String email, WebRequest webRequest,HttpServletRequest request, HttpServletResponse response) {
         UserDetails userDetails = principleDetailsService.loadUserByUsername(email);
         SecurityContextHolder.getContext().setAuthentication(
