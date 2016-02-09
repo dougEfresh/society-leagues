@@ -74,7 +74,8 @@ public class UserResource extends BaseController {
             }
             User u = userApi.modify(user);
             model.addAttribute("save","success");
-            return processEditUser(u,model);
+            processEditUser(u,model);
+            return "redirect:/app/user/" + u.getId();
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             model.addAttribute("save","error");

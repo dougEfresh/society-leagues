@@ -53,6 +53,8 @@ function changeAdminSeason(e) {
     $('#admin-schedules').attr("href",'/app/schedule/' + id);
     $('#admin-leaders').attr("href",'/app/leaders/' + id);
     $('#admin-standings').attr("href",'/app/display/' + id);
+    $('#admin-season').attr("href",'/app/season/' + id);
+    $('#admin-teams').attr("href",'/app/teams/season/' + id);
 }
 
 function searchUser(e) {
