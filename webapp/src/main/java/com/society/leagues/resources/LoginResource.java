@@ -30,12 +30,11 @@ public class LoginResource  {
     String restUrl;
     static Logger logger = org.slf4j.LoggerFactory.getLogger(LoginResource.class);
     RestTemplate restTemplate = new RestTemplate();
-    HttpHeaders headers = new HttpHeaders();
     @Autowired UserApi userApi;
 
     @PostConstruct
     public void init() {
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
     }
 
     @RequestMapping(value = {"/login"}, method = RequestMethod.GET)
@@ -77,17 +76,33 @@ public class LoginResource  {
         body.add("username", username.toLowerCase());
         body.add("password",password);
         body.add("springRememberMe", "true");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         HttpEntity<?> httpEntity = new HttpEntity<Object>(body, headers);
 
         ResponseEntity<User> responseEntity = restTemplate.exchange(restUrl + "/api/authenticate", HttpMethod.POST, httpEntity, User.class);
         User u = responseEntity.getBody();
+        headers.clear();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String cookie = "";
         for (String s : responseEntity.getHeaders().get("Set-Cookie")) {
             logger.info("Adding cookie: " + s);
+            cookie += s.split(";")[0] +  " ; ";
+            headers.set("Cookie",s);
             response.addHeader("Set-Cookie",s);
         }
         logger.info("Got back "  + u.getName());
-        Thread.sleep(500);
-
+        Thread.sleep(1500);
+        headers.set("Cookie",cookie.substring(0,cookie.length()-1));
+        httpEntity = new HttpEntity<>(headers);
+        responseEntity = restTemplate.exchange(restUrl + "/api/user", HttpMethod.GET, httpEntity, User.class);
+        //for (String s : responseEntity.getHeaders().get("Set-Cookie")) {
+          //  logger.info("cookie: " + s);
+            //cookie += s.split(";")[0] +  ":";
+            //response.addHeader("Set-Cookie",s);
+        //}
+        //logger.info("Got back "  + u.getName());
         return "redirect:/app/home";
     }
 

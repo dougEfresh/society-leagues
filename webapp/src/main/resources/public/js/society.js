@@ -47,7 +47,8 @@ function changeTeamSeason(e) {
 function changeAdminSeason(e) {
     var id = $('#admin-seasons').val();
     console.log('Changing cookie to '  + id);
-    //Cookies.set('admin-season',id);
+    //window.adminSeason = id;
+    Cookies.set('admin-season',id);
     $('#admin-scores').attr("href",'/app/scores/' + id);
     $('#admin-schedules').attr("href",'/app/schedule/' + id);
     $('#admin-leaders').attr("href",'/app/leaders/' + id);
