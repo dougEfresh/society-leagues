@@ -24,7 +24,6 @@ public class HomeResource extends BaseController {
         Map<Season,List<Stat>> topPlayers = new TreeMap<>(Season.sortOrder);
         user.getSeasons().stream()
                 .filter(Season::isActive)
-                .filter(Season::isChallenge)
                 .collect(Collectors.toList())
                 .forEach(s-> topPlayers.put(s,
                         statApi.getUserSeasonStats(s.getId())
