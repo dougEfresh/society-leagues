@@ -38,6 +38,12 @@ public class LoginResource  {
     public void init() {
 
     }
+
+    @RequestMapping(value = {"/help"}, method = RequestMethod.GET)
+    public String help(HttpServletResponse response) {
+        return "help";
+    }
+
     @RequestMapping(value = {"/user/logout"}, method = RequestMethod.GET)
     public String logout(HttpServletResponse response) {
         response.setHeader("Set-Cookie","remember-me=\"\"; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/");
@@ -79,6 +85,13 @@ public class LoginResource  {
 
     @RequestMapping(value = {"/login/reset/link"}, method = RequestMethod.GET)
     public String resetLinkPage(@RequestParam(required = false, defaultValue = "false") boolean error, HttpServletRequest request) {
+        return "reset-link";
+    }
+
+
+    @RequestMapping(value = {"/reset/{token}"}, method = RequestMethod.GET)
+    public String resetLinkPage(@RequestParam String token, Model model, HttpServletRequest request) {
+        model.addAttribute("token","token");
         return "reset-link";
     }
 

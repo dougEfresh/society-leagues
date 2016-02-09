@@ -44,7 +44,7 @@
                   <span>Top Players - </span><span th:text="${season.getDayName()}"></span>
               </h4>
           </div>
-           <div class="table-responsive">
+           <div th:class="${topPlayers.get(season).isEmpty() ? 'hide' : 'table-responsive'}">
            <table class="table table-stats" >
                <thead>
                <tr>
