@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class LoginResource  {
 
-    @Value("${rest.url}")
+    @Value("${client.api.endpoint}")
     String restUrl;
     static Logger logger = org.slf4j.LoggerFactory.getLogger(LoginResource.class);
     RestTemplate restTemplate = new RestTemplate();
