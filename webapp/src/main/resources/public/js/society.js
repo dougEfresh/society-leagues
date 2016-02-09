@@ -148,6 +148,12 @@ function searchUserStats(e) {
               perPageDefault: 10
          }
      });
+
+      $('.table-top-gun-results').dynatable( {
+      dataset : {
+              perPageDefault: 10
+         }
+     });
      $('#table-team-schedule').dynatable( {
      dataset: {
                perPageDefault: 20,

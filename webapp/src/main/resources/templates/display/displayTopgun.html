@@ -21,7 +21,7 @@
                 <td th:text="${stat.getRank()}"></td>
                 <td>
                     <a th:id="'team-standing-link-' + ${stat.getTeam().getId()}"
-                       th:href="@{/app/display/{id}/topgun/{userId} (id=${stat.getSeason().getId()},userId=${stat.getUser().getId()})}"
+                       th:href="@{/app/display/{id}/user/{userId} (id=${stat.getSeason().getId()},userId=${stat.getUser().getId()})}"
                        th:text="${stat.getUser().getName()}"></a>
                 </td>
                 <td th:text="${stat.getHandicapDisplay()}"></td>

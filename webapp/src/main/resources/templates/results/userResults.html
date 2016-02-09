@@ -1,7 +1,7 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org" >
     <div th:if="${not #lists.isEmpty(results)}" >
-        <div th:class="${season.isScramble() ? 'society-well society-well-stats well-scramble-user' : 'society-well society-well-stats'}">
+        <div th:class="${season.isScramble() || season.isChallenge() ? 'society-well society-well-stats well-scramble-user' : 'society-well society-well-stats'}">
             <div class="well-title">
             <h4>
                 <span th:text="${resultUser.getShortName() + ' (' + stats.getWins() + '-' + stats.getLoses() +')'}">

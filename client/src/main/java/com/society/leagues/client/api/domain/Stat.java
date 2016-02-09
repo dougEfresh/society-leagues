@@ -270,6 +270,15 @@ public class Stat {
         this.team = team;
     }
 
+    public static Comparator<Stat> sortSeasonStats() {
+        return new Comparator<Stat>() {
+            @Override
+            public int compare(Stat o1, Stat o2) {
+                return  o2.getPoints().compareTo(o1.getPoints());
+            }
+        };
+    }
+
     public static List<Team> sortTeamStats(List<Team> stats) {
         stats.sort(new Comparator<Team>() {
             @Override

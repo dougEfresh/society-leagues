@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,9 +17,14 @@ public class StatResource  extends BaseController {
 
     @RequestMapping(value = {"/stats/{userId}"}, method = RequestMethod.GET)
     public String stats(@PathVariable String userId, Model model) {
-        List<Stat> stats = statApi.getUserStats(userId);
+        List<Stat> stats = new ArrayList<>();
+        for (Stat userStat : userStats) {
+            if (userStat.getType() == StatType.USER_SEASON)
+                stats.add(userStat);
+        }
         model.addAttribute("statUser",userApi.get(userId));
-
+        model.addAttribute("stats",stats);
+        /*
         model.addAttribute("topgunStats",   stats.stream().filter(s -> s.getSeason() != null && s.getSeason().isChallenge()).collect(Collectors.toList()));
 
         model.addAttribute("thursdayStats", stats.stream().filter(s -> s.getSeason() != null && s.getSeason().getDivision() == Division.EIGHT_BALL_THURSDAYS).collect(Collectors.toList()));
@@ -49,8 +55,9 @@ public class StatResource  extends BaseController {
                         .filter(s -> s.getType() == StatType.MIXED_NINE)
                         .collect(Collectors.toList())
         );
+        */
 
-        model.addAttribute("lifetimeStats", stats.stream().filter(s->s.getType() == StatType.ALL).findFirst().orElse(null));
+        //model.addAttribute("lifetimeStats", stats.stream().filter(s->s.getType() == StatType.ALL).findFirst().orElse(null));
         return "stats/userStats";
     }
 
@@ -59,31 +66,6 @@ public class StatResource  extends BaseController {
         //flag for this view which determines if stats are being viewed from  /stats/* or /display/* section of websire
         model.addAttribute("display",false);
     }
-
-    @RequestMapping(value = {"/stats/{userId}/{seasonId}"}, method = RequestMethod.GET)
-    public String list(@PathVariable String userId, @PathVariable String seasonId , Model model) {
-        Season s = seasonApi.get(seasonId);
-        User u = userApi.get(userId);
-        model.addAttribute("season",s);
-        List<PlayerResult> results = playerResultApi.getResults(userId,seasonId);
-        results.forEach(r->r.setReferenceUser(u));
-        model.addAttribute("results",results);
-        model.addAttribute("resultUser",u);
-
-        if (s.isScramble()) {
-            model.addAttribute("stats", statApi.getUserStats(userId).stream()
-                    .filter(st -> st.getSeason() != null)
-                    .filter(st -> st.getSeason().equals(s))
-                    .findFirst().orElse(null));
-        } else {
-            model.addAttribute("stats", statApi.getUserStats(userId).stream()
-                    .filter(st -> st.getSeason() != null)
-                    .filter(st -> st.getSeason().equals(s))
-                    .findFirst().orElse(null));
-        }
-        return stats(userId,model);
-    }
-
 
     @RequestMapping(value = {"/stats"}, method = RequestMethod.GET)
     public String home(Model model) {

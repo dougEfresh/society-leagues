@@ -4,23 +4,27 @@
     <div id="schedule-app" layout:fragment="content">
         <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
         <div class="society-well">
-            <h4>
+            <div class="well-title">
+            <h4 >
                 <span  th:text="${season.getFormattedName()}"></span>
-                <form id="form-select-team">
-                    <select id="teams-select" th:onChange="'selectTeam()'" class="form-control" >
-                        <option value="-1">...Choose A Team... </option>
-                        <!--/*@thymesVar id="u" type="com.society.admin.model.ChallengeUserModel"*/-->
-                        <option th:each="t : ${teams}"
-                                th:value="${t.getId()}"
-                                th:text="${t.getName()}"
-                                th:selected="${t.getId() == team.getId()}"
-                        >
-                        </option>
-                    </select>
-                </form>
             </h4>
+            </div>
+            <form style="display: inline-block" id="form-select-team">
+                <select id="teams-select" th:onChange="'selectTeam()'" class="form-control" >
+                    <option value="-1">...Choose A Team... </option>
+                    <!--/*@thymesVar id="u" type="com.society.admin.model.ChallengeUserModel"*/-->
+                    <option th:each="t : ${teams}"
+                            th:value="${t.getId()}"
+                            th:text="${t.getName()}"
+                            th:selected="${t.getId() == team.getId()}"
+                    >
+                    </option>
+                </select>
+            </form>
         </div>
-            <div th:if="${season.isChallenge()}"  th:each="date: ${teamMatches.keySet()}">
+
+
+        <div th:if="${season.isChallenge()}"  th:each="date: ${teamMatches.keySet()}">
                 <div  th:include="schedule/scheduleTopgun"></div>
             </div>
             <div th:if="${not season.isChallenge()}" th:style="|height: ${height + 'px'}|" th:each="date: ${teamMatches.keySet()}">

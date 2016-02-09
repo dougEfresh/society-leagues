@@ -1,8 +1,12 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
     <div id="stats-app"  layout:fragment="content">
-        <div th:if="${statUser ne null}" class="input-group custom-search-form">
-            <select id="users-stats-search" class="form-control" >
+
+        <div class="society-well">
+        <div class="well-title">
+            <h3>Stats - Coming Soon</h3>
+            <div th:if="${statUser ne null}" class="input-group custom-search-form">
+            <select id="users-stats-search" class="form-control" style="display: inline-block">
                 <option th:each="u : ${allUsers}" th:selected="${u.getId().equals(statUser.getId())}"
                         th:value="${u.id}" th:text="${u.name}"></option>
             </select>
@@ -12,11 +16,40 @@
                 </button>
             </span>
         </div>
-        <div class="panel panel-default">
-        <div class="panel-heading">
-            Stats
+            <!--
         </div>
-        <div class="panel-body">
+              <div th:if="${not #lists.isEmpty(stats)}" class="table-responsive">
+                <table class="table table-stats">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>HC</th>
+                        <th>W</th>
+                        <th>L</th>
+                        <th>RW</th>
+                        <th>RL</th>
+                        <th>PCT</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="stat : ${stats}">
+
+                        <td >
+                            <a th:text="${stat.getSeason().getFormattedName()}" th:href="@{/app/stats/{id}/{sId} (id=${statUser.id},sId=${stat.getSeason().id})}"></a>
+                        </td>
+                        <td th:text="${stat.getHandicapDisplay()}"> </td>
+                        <td th:text="${stat.getWins()}"> </td>
+                        <td th:text="${stat.getLoses()}"> </td>
+                        <td th:text="${stat.getRacksWon()}">
+                        </td>
+                        <td th:text="${stat.getRacksLost()}">
+                        </td>
+                        <td th:text="${'% ' + #numbers.formatDecimal(stat.getRackPct()*100,1,3)}"> </td>
+                    </tr>
+                    </tbody>
+                </table>
+              </div>
+
             <div th:if="${lifetimeStats ne null}" class="table-stats" th:include="stats/userStatsLifetime" ></div>
             <div th:if="${not #lists.isEmpty(topgunStats)}" class="table-stats" th:include="stats/userStatsTopgun" ></div>
             <div class="row" th:if="${not #lists.isEmpty(scrambleEightStats)}" >
@@ -33,6 +66,7 @@
         </div>
         </div>
         <div th:if="${not #lists.isEmpty(results)}" class="user-results" th:include="results/userResults" ></div>
+        -->
     </div>
 
 </div>

@@ -22,11 +22,15 @@ public class HomeResource extends BaseController {
     @RequestMapping(value = {"/home", "","/"}, method = RequestMethod.GET)
     public String home(Model model) {
         Map<Season,List<Stat>> topPlayers = new TreeMap<>(Season.sortOrder);
-        user.getSeasons().stream().filter(Season::isActive).collect(Collectors.toList()).forEach(s->
-                topPlayers.put(s,
+        user.getSeasons().stream()
+                .filter(Season::isActive)
+                .filter(Season::isChallenge)
+                .collect(Collectors.toList())
+                .forEach(s-> topPlayers.put(s,
                         statApi.getUserSeasonStats(s.getId())
                                 .stream()
                                 .filter(st->st.getType() == StatType.USER_SEASON)
+                                .sorted(Stat.sortSeasonStats())
                                 .limit(5)
                                 .collect(Collectors.toList()))
         );

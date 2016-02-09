@@ -183,3 +183,7 @@ th a, th a:visited , th a:active, th a:hover {
     max-width: 220px;
     width: 220px;
 }
+
+.table>tbody>tr>td.active {
+    background-color: #6B6565;
+}

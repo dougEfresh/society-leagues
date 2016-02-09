@@ -81,7 +81,7 @@ public class TestSeason extends BaseTest {
         List<TeamMatch> matches = seasonApi.schedule(season.getId());
         Map<String,List<TeamMatch>> teamMatches = teamMatchApi.matchesBySeasonSummary(season.getId());
         teamMatchApi.matchesBySeasonList(season.getId());
-        
+
 
         for (Team team : teams) {
             assertTrue(matches.parallelStream().filter(tm->tm.hasTeam(team)).count() == season.getRounds());

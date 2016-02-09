@@ -230,6 +230,9 @@ td > a {
 .dynatable-search, .dynatable-per-page {
 
 }
+.dynatable-search > input {
+    color:black;
+}
 
 .dynatable-per-page {
 
