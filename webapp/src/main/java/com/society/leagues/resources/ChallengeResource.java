@@ -127,9 +127,10 @@ public class ChallengeResource extends BaseController {
         challengeUsers.add(broadcast);
         challengeUsers.addAll(
                 populateTeam(challengeApi.challengeUsersOnDate(date))
-                .stream()
-                .filter(user->user.getChallengeUser() != null)
-                .collect(Collectors.toList()));
+                        .stream()
+                        .filter(t->!t.isDisabled())
+                        .filter(user->user.getChallengeUser() != null)
+                        .collect(Collectors.toList()));
 
 
         Challenge challenge = new Challenge();

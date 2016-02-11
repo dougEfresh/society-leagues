@@ -42,6 +42,7 @@ public class TeamResource {
         }
         existingTeam.setSeason(leagueService.findOne(new Season(body.getSeason().getId())));
         existingTeam.setName(body.getName());
+        existingTeam.setDisabled(body.isDisabled());
         return leagueService.save(existingTeam);
     }
 
