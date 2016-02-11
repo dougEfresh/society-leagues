@@ -1,35 +1,8 @@
-<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
-<html xmlns:th="http://www.thymeleaf.org" >
-<head>
-      <link href="/app/css/bootstrap.min.css" rel="stylesheet" />
-<link href="/app/css/bootstrap-social.css" rel="stylesheet" />
-<link href="/app/css/font-awesome.min.css" rel="stylesheet" />
-<!--<link rel="stylesheet" href="/app/css/metisMenu.min.css" />-->
-<link href="/app/css/select2.min.css" rel="stylesheet" />
-<link href="/app/css/select2-bootstrap.min.css" rel="stylesheet" />
-<link href="/app/css/society-dashboard.css" rel="stylesheet" />
-<link href="/app/css/jquery.dynatable.css" rel="stylesheet" />
-<link href="/app/css/jquery.datetimepicker.css" rel="stylesheet" />
-<link href="/app/css/toggle/base.css" rel="stylesheet" />
-<link href="/app/css/toggle/style.css" rel="stylesheet" />
-<link href="/app/css/society.css" rel="stylesheet" />
-<link href="/app/css/society-main.css" rel="stylesheet" />
-<link href="/app/css/switch.css" rel="stylesheet" />
-
-    <script src="/app/js/jquery.min.js"></script>
-<script src="/app/js/bootstrap.min.js"></script>
-<script src="/app/js/select2.min.js"></script>
-<script src="/app/js/jquery.dynatable.js"></script>
-<script src="/app/js/jquery.datetimepicker.full.min.js"></script>
-<script src="/app/js/js.cookie.js"></script>
-<script src="/app/js/society.js"></script>
-
-
-
-</head>
-<body class="login">
-    <div id="page-wrapper" >
-        <div id="login-app" class="container fluid container-fluid wrap">
+<!DOCTYPE html  "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorator="layout">
+    <div id="login-legacy-app" layout:fragment="content">
+        <!--<div id="login-app" class="container fluid container-fluid wrap">-->
         <div class="login-container well col-md-5 col-sm-5" >
             <form name="login" id="login" action="/app/login" method="POST">
                 <h2 class="form-signin-heading" >Please Log In</h2>
@@ -58,7 +31,7 @@
                 </div>
             </form>
         </div>
-        </div>
-  </div>
-</body>
-</html>
+    </div>
+</div>
+
+

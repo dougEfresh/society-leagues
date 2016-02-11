@@ -1,51 +1,30 @@
-<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
-<html xmlns:th="http://www.thymeleaf.org" >
-<head>
-      <link href="/app/css/bootstrap.min.css" rel="stylesheet" />
-<link href="/app/css/bootstrap-social.css" rel="stylesheet" />
-<link href="/app/css/font-awesome.min.css" rel="stylesheet" />
-<!--<link rel="stylesheet" href="/app/css/metisMenu.min.css" />-->
-<link href="/app/css/select2.min.css" rel="stylesheet" />
-<link href="/app/css/select2-bootstrap.min.css" rel="stylesheet" />
-<link href="/app/css/society-dashboard.css" rel="stylesheet" />
-<link href="/app/css/jquery.dynatable.css" rel="stylesheet" />
-<link href="/app/css/jquery.datetimepicker.css" rel="stylesheet" />
-<link href="/app/css/toggle/base.css" rel="stylesheet" />
-<link href="/app/css/toggle/style.css" rel="stylesheet" />
-<link href="/app/css/society.css" rel="stylesheet" />
-<link href="/app/css/society-main.css" rel="stylesheet" />
-<link href="/app/css/switch.css" rel="stylesheet" />
-
-    <script src="/app/js/jquery.min.js"></script>
-<script src="/app/js/bootstrap.min.js"></script>
-<script src="/app/js/select2.min.js"></script>
-<script src="/app/js/jquery.dynatable.js"></script>
-<script src="/app/js/jquery.datetimepicker.full.min.js"></script>
-<script src="/app/js/js.cookie.js"></script>
-<script src="/app/js/society.js"></script>
-
-</head>
-<body class="login">
-    <div id="page-wrapper" >
-        <div id="login-app" class="container fluid container-fluid wrap">
-        <div class="login-container well col-md-5 col-sm-5" >
+<!DOCTYPE html  "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorator="layout">
+    <!--/*@thymesVar id="user" type="com.society.leagues.client.api.domain.User"*/-->
+    <div id="login-app" layout:fragment="content">
+        <!--<div class="container fluid container-fluid wrap">-->
+        <div class="login-container well col-md-5 col-sm-5">
             <form name="fb_signin" id="fb_signin" th:action="@{${fbEndpoint} + '/signin/facebook'}" method="POST">
-                <h2 class="form-signin-heading" >Please Log In</h2>
+                <h2 class="form-signin-heading">Please Log In</h2>
                 <div class="row" data-reactid=".0.0.0.0.1">
-                    <div class="btn-group col-lg-6 col-md-7 col-sm-12 col-xs-12 login-options" >
-                        <input type="hidden" name="scope" value="public_profile,email,user_friends" >
-                        <input type="hidden" value="true" name="springRememberMe" >
-                        <button class="btn btn-sm  btn-facebook btn-responsive" type="submit" >
+                    <div class="btn-group col-lg-6 col-md-7 col-sm-12 col-xs-12 login-options">
+                        <input type="hidden" name="scope" value="public_profile,email,user_friends">
+                        <input type="hidden" value="true" name="springRememberMe">
+                        <button class="btn btn-sm  btn-facebook btn-responsive" type="submit">
                             <i class="fa fa-facebook"></i><span> Facebook</span></button>
                     </div>
-                    <div class="col-lg-6 col-md-5 col-sm-12 col-xs-12" >
-                        <a class="" href="/app/login/legacy" >
-                            <button type="button" class="btn btn-sm btn-default btn-responsive" >
-                                <b data-reactid=".0.0.0.0.1.1.0.0.0">Username</b></button></a>
-                        <a class="" href="/app/help" ><button class="btn btn-sm btn-default btn-responsive pull-right" >
-                            <b>Help </b>
-                            <span class="glyphicon glyphicon-question-sign" aria-hidden="true" >
-                            </span></button></a>
+                    <div class="col-lg-6 col-md-5 col-sm-12 col-xs-12">
+                        <a class="" href="/app/login/legacy">
+                            <button type="button" class="btn btn-sm btn-default btn-responsive">
+                                <b data-reactid=".0.0.0.0.1.1.0.0.0">Username</b></button>
+                        </a>
+                        <a class="" href="/app/help">
+                            <button class="btn btn-sm btn-default btn-responsive pull-right">
+                                <b>Help </b>
+                            <span class="glyphicon glyphicon-question-sign" aria-hidden="true">
+                            </span></button>
+                        </a>
                     </div>
                 </div>
                 <div style="margin-top:10px;">
@@ -53,29 +32,6 @@
                 </div>
             </form>
         </div>
-        </div>
-        <!--
-      <div class="row">
-          <div class="col-md-offset-3 col-md-6">
-              <div id="login-app">
-                  <h2 class="form-signin-heading">Please </h2>
-                  <form  id="login" action="/app/login" method="post">
-                      <div class="form-field form-group">
-                          <div  class="form-group">
-                              <input id="username" type="input" name="username" placeholder="enter email" class="form-control"/>
-                          </div>
-                          <div class="form-group">
-                              <input id="password"  type='password' name='password' placeholder='enter password' class="form-control" > </input>
-                          </div>
-                      </div>
-                      <div class="btn-group  login-options">
-                          <input id="submit" type="submit" value="login">
-                      </div>
-                  </form>
-              </div>
-          </div>
-      </div>
-      -->
-  </div>
-</body>
-</html>
+    </div>
+</div>
+

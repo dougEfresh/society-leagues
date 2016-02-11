@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.server.PathParam;
 
 @Controller
 public class LoginResource  {
@@ -90,9 +92,20 @@ public class LoginResource  {
 
 
     @RequestMapping(value = {"/reset/{token}"}, method = RequestMethod.GET)
-    public String resetLinkPage(@RequestParam String token, Model model, HttpServletRequest request) {
+    public String resetTokenPage(@PathVariable String token, Model model, HttpServletRequest request) {
         model.addAttribute("token","token");
-        return "reset-link";
+        return "reset-password";
+    }
+
+    @RequestMapping(value = {"/login/signup"}, method = RequestMethod.GET)
+    public String signup( Model model, HttpServletRequest request) {
+        return "signup";
+    }
+
+    @RequestMapping(value = {"/reset"}, method = RequestMethod.POST)
+    public String reset(@PathVariable String token, @RequestParam String email, @RequestParam String password, Model model, HttpServletRequest request) {
+        model.addAttribute("token","token");
+        return "reset-password";
     }
 
     @RequestMapping(value = {"/login"}, method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)

@@ -1,43 +1,16 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
-<html xmlns:th="http://www.thymeleaf.org" >
-<head>
-        <link href="/app/css/bootstrap.min.css" rel="stylesheet" />
-<link href="/app/css/bootstrap-social.css" rel="stylesheet" />
-<link href="/app/css/font-awesome.min.css" rel="stylesheet" />
-<!--<link rel="stylesheet" href="/app/css/metisMenu.min.css" />-->
-<link href="/app/css/select2.min.css" rel="stylesheet" />
-<link href="/app/css/select2-bootstrap.min.css" rel="stylesheet" />
-<link href="/app/css/society-dashboard.css" rel="stylesheet" />
-<link href="/app/css/jquery.dynatable.css" rel="stylesheet" />
-<link href="/app/css/jquery.datetimepicker.css" rel="stylesheet" />
-<link href="/app/css/toggle/base.css" rel="stylesheet" />
-<link href="/app/css/toggle/style.css" rel="stylesheet" />
-<link href="/app/css/society.css" rel="stylesheet" />
-<link href="/app/css/society-main.css" rel="stylesheet" />
-<link href="/app/css/switch.css" rel="stylesheet" />
-
-    <script src="/app/js/jquery.min.js"></script>
-<script src="/app/js/bootstrap.min.js"></script>
-<script src="/app/js/select2.min.js"></script>
-<script src="/app/js/jquery.dynatable.js"></script>
-<script src="/app/js/jquery.datetimepicker.full.min.js"></script>
-<script src="/app/js/js.cookie.js"></script>
-<script src="/app/js/society.js"></script>
-
-</head>
-<body class="login">
-    <div id="page-wrapper" >
-        <div id="login-app" class="container fluid container-fluid wrap">
+<div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorator="layout">
+    <div id="reset-app" layout:fragment="content">
         <div class="login-container well col-md-5 col-sm-5" >
             <form name="login" id="login" action="/app/login/reset" method="POST">
-                <h2 class="form-signin-heading" >Please Log In</h2>
+                <h2 class="form-signin-heading" >Enter Email</h2>
                 <div class="form-field form-group" data-reactid=".0.0.0.1">
                     <div class="form-group" data-reactid=".0.0.0.1.0">
                         <input id="username"  autocorrect="off" autocapitalize="off" type="input" name="username" class="form-control" placeholder="enter email" data-reactid=".0.0.0.1.0.0"> </div></div>
                 <button class="btn btn-default" data-reactid=".0.0.0.2">Reset Password</button>
             </form>
         </div>
-        </div>
     </div>
-</body>
-</html>
+</div>
+

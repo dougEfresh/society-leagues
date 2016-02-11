@@ -37,7 +37,7 @@
         </li>
         -->
     </ul>
-    <div th:if="${user ne null}" class="collapse navbar-collapse navbar-ex1-collapse">
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav">
             <li th:if="${allUsers ne null && user.isAdmin()}" class="sidebar-search">
                 <div class="input-group custom-search-form">
@@ -79,11 +79,11 @@
                 </ul>
             </li>
 
-            <li th:if="${userTeams ne null}">
+            <li >
                 <a hhref="javascript:;" data-toggle="collapse"  data-target="#my-teams">
                     <i class="fa fa-users fa-fw"></i> My Teams<span class="fa arrow"></span>
                 </a>
-                <ul id="my-teams" class="">
+                <ul th:if="${userTeams ne null}" id="my-teams" class="">
                     <li th:if="${not team.isChallenge()}" th:each="team : ${userTeams}">
                         <a  href="javascript:;" data-toggle="collapse" th:attr="data-target='#team-menu-' + ${team.getId()}">
                             <i class="fa fa-users fa-fw"></i><span th:text="${team.getName()}"></span>
@@ -105,9 +105,13 @@
                     </li>
                 </ul>
             </li>
-            <li th:if="${user ne null}">
-                <a th:href="@{/app/stats/{id} (id=${user.getId()})}">
-                    <i class="fa fa-bar-chart"></i> My Stats</a>
+            <li >
+                <a th:if="${user ne null}" th:href="@{/app/stats/{id} (id=${user.getId()})}">
+                    <i  th:if="${user ne null}" class="fa fa-bar-chart"></i> My Stats
+                </a>
+                <a href="#">
+                <i  th:if="${user eq null}" class="fa fa-bar-chart"></i> My Stats
+                </a>
             </li>
         </ul>
     </div>
