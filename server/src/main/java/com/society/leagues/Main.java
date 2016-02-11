@@ -55,7 +55,6 @@ public class Main implements CommandLineRunner {
         }
 
         if (environment.acceptsProfiles("dev")) {
-
             List<User> users = userRepository.findAll();
             for (User user : users) {
                 user.setPassword(def);

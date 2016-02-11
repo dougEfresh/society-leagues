@@ -57,7 +57,7 @@
             </li>
 
             <li>
-                <a href="/app/home"><i class="fa fa-dashboard fa-fw"></i> Home</a>
+                <a id="home-link" href="/app/home"><i class="fa fa-dashboard fa-fw"></i> Home</a>
             </li>
 
             <li th:if="${user ne null && user.isChallenge()}">
@@ -66,27 +66,26 @@
                 </a>
                 <ul id="topgun-dropdown" class="">
                     <li>
-                        <a id="challenge-link" href="/app/challenge"> Challenge</a>
+                        <a id="challenge" href="/app/challenge"> Challenge</a>
                     </li>
                     <li>
-                        <a th:id="'challenge-display-link-' + ${challengeSeason.getId()}"
-                           th:href="@{/app/display/{id} (id=${challengeSeason.getId()})}"
-                        >Standings</a>
+                        <a id="challenge-standings" th:href="@{/app/display/{id} (id=${challengeSeason.getId()})}">Standings</a>
                     </li>
                     <li>
-                        <a th:href="@{/app/schedule/{id} (id=${challengeSeason.getId()})}">Schedule</a>
+                        <a  id="challenge-schedule" th:href="@{/app/schedule/{id} (id=${challengeSeason.getId()})}">Schedule</a>
                     </li>
                 </ul>
             </li>
 
             <li >
-                <a hhref="javascript:;" data-toggle="collapse"  data-target="#my-teams">
+                <a href="javascript:;" data-toggle="collapse"  data-target="#my-teams">
                     <i class="fa fa-users fa-fw"></i> My Teams<span class="fa arrow"></span>
                 </a>
                 <ul th:if="${userTeams ne null}" id="my-teams" class="">
                     <li th:if="${not team.isChallenge()}" th:each="team : ${userTeams}">
                         <a  href="javascript:;" data-toggle="collapse" th:attr="data-target='#team-menu-' + ${team.getId()}">
-                            <i class="fa fa-users fa-fw"></i><span th:text="${team.getName()}"></span>
+                            <i class="fa fa-users fa-fw"></i>
+                            <span th:text="${team.getName()}"></span>
                             <span class="fa arrow"></span>
                         </a>
                         <ul th:id="${'team-menu-' + team.getId()}" class="">
@@ -106,7 +105,7 @@
                 </ul>
             </li>
             <li >
-                <a th:if="${user ne null}" th:href="@{/app/stats/{id} (id=${user.getId()})}">
+                <a id="my-stats" th:if="${user ne null}" th:href="@{/app/stats/{id} (id=${user.getId()})}">
                     <i  th:if="${user ne null}" class="fa fa-bar-chart"></i> My Stats
                 </a>
                 <a href="#">
