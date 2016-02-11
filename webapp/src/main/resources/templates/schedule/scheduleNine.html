@@ -1,14 +1,22 @@
 h<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org">
     <div class="society-well society-well-schedule">
-        <div class="well-title">
-            <h4 th:text="${date}" ></h4>
-        </div>
     <div class="table-responsive">
         <table th:id="'table-team-schedule-' + ${date}" class="table-stats">
             <thead>
+            <tr th:if="${user.isAdmin()}">
+                <th colspan="3"><div style="text-align: center"><span class="" th:text="${date}"></span></div></th>
+                <th colspan="3">
+                     <a th:href="@{/app/sheets/{id}/{date} (id=${season.id},date=${date})}">
+                     <span  class="label label-primary" >Sheets</span>
+                     </a>
+                 </th>
+             </tr>
+            <tr th:if="${!user.isAdmin()}">
+                <th colspan="6"><div style="text-align: center"><span class="" th:text="${date}"></span></div></th>
+             </tr>
             <tr>
-                <th </th>
+                <th> </th>
                 <th>SW</th>
                 <th>R</th>
                 <th></th>

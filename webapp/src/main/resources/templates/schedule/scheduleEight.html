@@ -4,7 +4,12 @@
          <div class="table-responsive">
         <table th:id="'table-team-schedule-' + ${date}" class="table table-stats ">
                    <thead>
-                   <tr>
+                   <tr th:if="${user.isAdmin()}">
+                       <a th:href="@{/app/sheets/{id}/{date} (id=${season.id},date=${date})}">
+                        <h3 style="display: inline-block"><span  class="label label-primary" >Sheets</span></h3>
+                    </a>
+                   </tr>
+                  <tr>
                        <th colspan="4"><div style="text-align: center"><span class="" th:text="${date}"></span></div></th>
                    </tr>
                    </thead>

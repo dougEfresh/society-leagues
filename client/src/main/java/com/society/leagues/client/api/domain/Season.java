@@ -120,7 +120,13 @@ public class Season extends LeagueObject   {
         if (year == null || division == null)
             return "";
 
-        String name = "'" + year.substring(2,4) + " ";
+        String name = "'" ;
+         if (getStartDate() == null )  {
+             name += year.substring(2,4) + " ";
+         } else {
+             name = getStartDate().toString().substring(0,2);
+         }
+
         name += getSeasonType();
         name += " " + division.displayName;
         return name;
