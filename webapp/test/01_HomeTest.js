@@ -3,7 +3,7 @@ var testlib = require('./testLib');
 var u = require('./user.json');
 
 
-function countTopPlayers(id) {
+function count(id) {
         var rows = document.querySelectorAll(id + ' > tbody > tr');
         return rows == undefined || rows == null ? 0 : rows.length;
 }
@@ -30,9 +30,12 @@ casper.test.begin('Test Home Page', function suite(test) {
         test.assertExists('#my-stats', "My Stats");
     });
 
-
     casper.then(function() {
         test.assertExists('#top-players', "Top Players");
+    });
+
+    casper.then(function() {
+        test.assertExists('#upcoming-matches', "Upcoming");
     });
 
     casper.then(function() {
@@ -42,7 +45,6 @@ casper.test.begin('Test Home Page', function suite(test) {
             test.assertExists('#challenge-schedule', "Challenge Schedule");
         }
     });
-
 
     /**
      * Verify top players has rows
@@ -54,8 +56,9 @@ casper.test.begin('Test Home Page', function suite(test) {
                     return;
 
                 test.assertExists('#top-players-' + s.season.id, '#top-players-' + s.season.id);
-                var cnt = this.evaluate(countTopPlayers,'#top-players-' + s.season.id);
-                test.assertTrue(cnt  >0 , "Top  players for " + s.season.id + " " + cnt);
+                test.assertExists('#stats-' + s.season.id, '#stats-' + s.season.id);
+                var cnt = this.evaluate(count,'#top-players-' + s.season.id);
+                test.assertTrue(cnt  > 0 , "Top  players for " + s.season.id + " " + cnt);
             }.bind(this));
         }
      });

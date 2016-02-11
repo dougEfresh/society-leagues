@@ -329,3 +329,7 @@ input.game-type {
      background-color: black;
     color: white;
 }
+
+h4 > a , h4 > a:hover{
+    color: whitesmoke;
+}

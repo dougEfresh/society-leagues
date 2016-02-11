@@ -24,6 +24,8 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.websocket.server.PathParam;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class LoginResource  {
@@ -93,14 +95,27 @@ public class LoginResource  {
 
     @RequestMapping(value = {"/reset/{token}"}, method = RequestMethod.GET)
     public String resetTokenPage(@PathVariable String token, Model model, HttpServletRequest request) {
-        model.addAttribute("token","token");
+        model.addAttribute("token",token);
         return "reset-password";
     }
 
     @RequestMapping(value = {"/reset"}, method = RequestMethod.POST)
-    public String reset(@PathVariable String token, @RequestParam String email, @RequestParam String password, Model model, HttpServletRequest request) {
-        model.addAttribute("token","token");
-        return "reset-password";
+    public String reset(@RequestParam String token, @RequestParam String username, @RequestParam String password, Model model, HttpServletRequest request, ResponseFacade response) throws InterruptedException {
+        Map<String,String> body = new HashMap<>();
+        body.put("login",username);
+        body.put("password", password);
+        try {
+            User u = userApi.resetPassword(token, body);
+            if (u.equals(User.defaultUser())) {
+                model.addAttribute("error","Error resetting password. Please try again");
+                return "reset";
+            }
+            return loginPage(username,password,model,request,response);
+        } catch (Exception e) {
+            model.addAttribute("error","Error resetting password. Please try again");
+            logger.error(e.getLocalizedMessage(),e);
+            return "reset";
+        }
     }
 
     @RequestMapping(value = {"/login"}, method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -127,7 +142,7 @@ public class LoginResource  {
             response.addHeader("Set-Cookie",s);
         }
         logger.info("Got back "  + u.getName());
-        Thread.sleep(800);
+        Thread.sleep(100);
         headers.set("Cookie",cookie.substring(0,cookie.length()-1));
         httpEntity = new HttpEntity<>(headers);
         responseEntity = restTemplate.exchange(restUrl + "/api/user", HttpMethod.GET, httpEntity, User.class);
