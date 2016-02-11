@@ -97,11 +97,6 @@ public class LoginResource  {
         return "reset-password";
     }
 
-    @RequestMapping(value = {"/login/signup"}, method = RequestMethod.GET)
-    public String signup( Model model, HttpServletRequest request) {
-        return "signup";
-    }
-
     @RequestMapping(value = {"/reset"}, method = RequestMethod.POST)
     public String reset(@PathVariable String token, @RequestParam String email, @RequestParam String password, Model model, HttpServletRequest request) {
         model.addAttribute("token","token");

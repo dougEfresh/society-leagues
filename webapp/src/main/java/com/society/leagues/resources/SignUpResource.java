@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +23,7 @@ public class SignUpResource {
     }
 
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
-    public String signup(@RequestParam String email, Model model) {
+    public String signup(@RequestBody String email, Model model) {
         model.addAttribute("fbEndpoint",fbEndpoint);
         userApi.signupFacebook(email);
         return "redirect:/app/home";
