@@ -36,7 +36,7 @@ public interface UserApi {
     TokenReset resetRequest(User user);
 
     @RequestLine("POST /api/signup")
-    User signupFacebook(@Param("email") String email);
+    User signupFacebook(User user);
 
     @RequestLine("GET /api/logout")
     String logout();
