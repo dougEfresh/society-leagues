@@ -26,7 +26,7 @@
                         <select id="challenge-slot" class="form-control" name="slotId">
                             <!--/*@thymesVar id="s" type="com.society.leagues.client.api.domain.Slot"*/-->
                             <option th:each="s : ${challenge.getSlots()}"
-                                    th:text="${#temporals.format(s.getLocalDateTime(), 'hh:mm')}"
+                                    th:text="${#temporals.format(s.getLocalDateTime(), 'h:mm')}"
                                     th:value="${s.getId()}"
                                     th:name="slotId">
                             </option>

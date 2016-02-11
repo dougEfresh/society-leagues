@@ -342,3 +342,15 @@ h4 > a , h4 > a:hover{
 .challenge-times , .challenge-slots {
     max-width: 30%
 }
+
+.challenge-slot {
+    min-width: 90px;
+}
+
+.navbar-toggle {
+    float: none;
+}
+@media (min-width: 768px) {
+.navbar-right {
+    float: none !important;
+}

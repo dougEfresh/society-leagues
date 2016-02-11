@@ -48,7 +48,7 @@
                            th:type="checkbox"
                            th:checked="${'false' == 'true'}"
                            th:value="${slot.getId()}"
-                           th:text="${slot.getTime()}"
+                           th:text="${#temporals.format(slot.getLocalDateTime(), 'h:mm')}"
                            name="slotIds"
                            >
                 </div>
