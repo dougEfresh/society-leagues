@@ -23,7 +23,6 @@ public class TeamResource extends BaseController {
                 .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
                 .collect(Collectors.toList()));
         listSeasons(model);
-        model.addAttribute("season",Season.getDefault());
         return "team/team";
     }
 

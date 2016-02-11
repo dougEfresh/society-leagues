@@ -6,6 +6,11 @@
               <a href="/app/team/new"><button class="btn btn-primary"><b>Add New</b></button></a>
           </div>
           <select id="team-seasons" onchange="changeTeamSeason()">
+               <option
+                      value="-1"
+                      text="...Choose..."
+                      >
+              </option>
               <option
                       th:each="s : ${allSeasons}"
                       th:value="${s.id}"
@@ -17,13 +22,18 @@
               <table id="table-teams" class="table">
                   <thead>
                   <th>Name</th>
+                  <th>State</th>
                   <th>Season</th>
                   </thead>
                   <tbody>
-                  <!--/*@thymesVar id="teams" type="com.society.leagues.client.api.domain.Team"*/-->
+                  <!--/*@thymesVar id="team" type="com.society.leagues.client.api.domain.Team"*/-->
                   <tr th:id="'team-' + ${team.id}" th:each="team : ${teams}">
                       <td>
                           <a th:text="${team.name}" th:href="@{/app/team/{id}(id=${team.id})}"></a>
+                      </td>
+                      <td>
+                          <span th:if="${team.isDisabled()}" class="badge badge-black">Disabled</span>
+                          <span th:if="${!team.isDisabled()}" class="badge badge-black">Active</span>
                       </td>
                       <td th:text="${team.season.shortName}"></td>
                   </tr>

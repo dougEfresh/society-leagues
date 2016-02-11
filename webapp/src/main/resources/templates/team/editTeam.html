@@ -26,6 +26,16 @@
                        type="input" name="name"
                        class="form-control" />
             </div>
+            <label class="col-sm-2 control-label">Disabled</label>
+            <div class="col-sm-10">
+                <input th:value="*{disabled}"
+                       th:field="*{disabled}"
+                       th:type="checkbox"
+                       th:checked="${team.isDisabled()}"
+                       id="disabled"
+                       name="disabled"
+                       class="form-control" >
+            </div>
             <label class="col-sm-2 control-label">Members</label>
             <div class="col-sm-10">
                 <select th:field="*{users}" id="team-members" class="team-members team-members-select" multiple="multiple">

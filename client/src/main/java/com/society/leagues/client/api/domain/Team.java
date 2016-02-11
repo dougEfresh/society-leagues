@@ -23,6 +23,7 @@ public class Team extends LeagueObject {
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime created;
     @DBRef TeamMembers members;
+    boolean disabled = false;
 
     public Team(Season season, String name) {
         this.season = season;
@@ -127,6 +128,15 @@ public class Team extends LeagueObject {
 
     public void setStats(Stat stats) {
         this.stats = stats;
+    }
+
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 
     @Override
