@@ -22,7 +22,6 @@ public class TeamResource extends BaseController {
                 .stream()
                 .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
                 .collect(Collectors.toList()));
-        listSeasons(model);
         return "team/team";
     }
 
@@ -33,19 +32,8 @@ public class TeamResource extends BaseController {
                 .filter(t->t.getSeason().equals(new Season(id)))
                 .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
                 .collect(Collectors.toList()));
-        listSeasons(model);
         model.addAttribute("season",seasonApi.get(id));
         return "team/team";
-    }
-
-    private void listSeasons(Model model) {
-        List<Season> seasons = new ArrayList<>();
-        Season defaultSeason = Season.getDefault();
-        defaultSeason.setName("--- Choose ----");
-        seasons.add(defaultSeason);
-        seasons.addAll(seasonApi.get());
-        model.addAttribute("allSeasons", seasons);
-
     }
 
     private String processEditTeam(String id, Model model) {
@@ -61,7 +49,6 @@ public class TeamResource extends BaseController {
             tm.setMembersId(members.getId());
         }
         model.addAttribute("team", tm);
-        listSeasons(model);
         model.addAttribute("season",tm.getSeason());
         return "team/editTeam";
     }

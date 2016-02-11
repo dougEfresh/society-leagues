@@ -15,7 +15,7 @@
                       th:each="s : ${allSeasons}"
                       th:value="${s.id}"
                       th:text="${s.formattedName}"
-                      th:selected="${season.id eq s.id}">
+                      th:selected="${season ne null && season.id eq s.id}">
               </option>
           </select>
           <div class="table-responsive">

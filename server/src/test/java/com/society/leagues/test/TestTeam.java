@@ -60,10 +60,12 @@ public class TestTeam  extends BaseTest {
     public void testTeamModify() {
         Team team = teamApi.active().stream().filter(t->!t.getSeason().isChallenge()).findAny().get();
         team.setName(UUID.randomUUID().toString());
+        team.setDisabled(true);
         teamApi.save(team);
         Team newTeam = teamApi.get(team.getId());
         assertEquals(team,newTeam);
         assertEquals(team.getName(),newTeam.getName());
+        assertTrue(newTeam.isDisabled());
     }
 
 }
