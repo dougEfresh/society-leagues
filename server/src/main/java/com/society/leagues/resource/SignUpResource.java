@@ -31,13 +31,13 @@ public class SignUpResource {
 
     @RequestMapping(value="/api/signup", method= RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public User signup(@RequestBody User user, WebRequest webRequest, HttpServletRequest request, HttpServletResponse response) {
-        UserDetails userDetails = principleDetailsService.loadUserByUsername(user.getEmail().toLowerCase());
+        UserDetails userDetails = principleDetailsService.loadUserByUsername(user.getLogin().toLowerCase());
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(userDetails.getUsername(),userDetails.getPassword(),userDetails.getAuthorities())
         );
-        providerSignInUtils.doPostSignUp(user.getEmail().toLowerCase(), webRequest);
+        providerSignInUtils.doPostSignUp(user.getLogin().toLowerCase(), webRequest);
         persistentTokenBasedRememberMeServices.loginSuccess(request, response, SecurityContextHolder.getContext().getAuthentication());
-        userService.populateProfile(leagueService.findByLogin(user.getEmail().toLowerCase()));
-        return leagueService.findByLogin(user.getEmail().toLowerCase());
+        userService.populateProfile(leagueService.findByLogin(user.getLogin().toLowerCase()));
+        return leagueService.findByLogin(user.getLogin().toLowerCase());
     }
 }
