@@ -124,7 +124,7 @@ public class Season extends LeagueObject   {
          if (getStartDate() == null )  {
              name += year.substring(2,4) + " ";
          } else {
-             name = getStartDate().toString().substring(0,2);
+             name = getStartDate().toString().substring(2,4);
          }
 
         name += getSeasonType();
