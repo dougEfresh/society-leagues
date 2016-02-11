@@ -62,7 +62,7 @@ public class ChallengeResource extends BaseController {
         ch.setAcceptedSlot(new Slot(slotId));
         ch.setOpponent(userTeams.stream().filter(Team::isChallenge).findAny().get());
         challengeApi.accept(ch);
-        return "redirect:challenge/challenge";
+        return "redirect:/challenge/challenge";
     }
 
     @RequestMapping(value = {"/challenge"}, method = RequestMethod.POST)
@@ -95,12 +95,12 @@ public class ChallengeResource extends BaseController {
         return challenge(null,null,model,response);
     }
 
-    @RequestMapping(value = {"/challenge/accept/{id}/{slotId"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/challenge/accept/{id}/{slotId}"}, method = RequestMethod.GET)
     public String accept(@PathVariable String id, @PathVariable String slotId, Model model, HttpServletResponse response) throws IOException {
         return challenge(null,null,model,response);
     }
 
-    void processDate(String date, String userId, Model model, HttpServletResponse response) throws IOException {
+    private void processDate(String date, String userId, Model model, HttpServletResponse response) throws IOException {
         List<Slot> slots = challengeApi.challengeSlots();
         Set<LocalDate> dates = slots.stream()
                 .map(s->s.getLocalDateTime().toLocalDate())
@@ -122,7 +122,7 @@ public class ChallengeResource extends BaseController {
         teams.parallelStream().forEach(t->t.setMembers(teamApi.members(t.getId())));
         return teams;
     }
-    public void processUser(String userId, String date, Team challenger, Model model) {
+    private void processUser(String userId, String date, Team challenger, Model model) {
         List<Team> challengeUsers = new ArrayList<>();
         challengeUsers.add(broadcast);
         challengeUsers.addAll(

@@ -41,7 +41,7 @@ public class ChallengeResource {
         }
         if (challenger.getChallengeUser().equals(u) || opponent.getChallengeUser().equals(u) || u.isAdmin()) {
             Challenge c = leagueService.save(challenge);
-            sendEmail(c.getUserOpponent(),c.getUserChallenger(),Status.NOTIFY,c,null);
+            sendEmail(c.getUserOpponent(), c.getUserChallenger(),Status.NOTIFY,c,null);
             return c;
         }
 
@@ -57,13 +57,16 @@ public class ChallengeResource {
         }
         User u = leagueService.findByLogin(principal.getName());
         Slot accepted = leagueService.findOne(challenge.getAcceptedSlot());
+        Team opponent = challenge.getOpponent();
         challenge = leagueService.findOne(challenge);
-
-        sendEmail(challenge.getUserChallenger(), challenge.getUserOpponent(), Status.ACCEPTED, null, null);
+        if (challenge.isBroadcast()) {
+            challenge.setOpponent(leagueService.findOne(opponent));
+        }
         if (u.equals(challenge.getChallenger().getChallengeUser()) || u.equals(challenge.getOpponent().getChallengeUser()) || u.isAdmin()) {
             challenge.setStatus(Status.ACCEPTED);
             challenge.setAcceptedSlot(accepted);
             challengeService.accept(challenge);
+            sendEmail(challenge.getUserChallenger(), challenge.getUserOpponent(), Status.ACCEPTED, null, null);
             return leagueService.findOne(challenge);
         }
         //TODO throw exception
@@ -78,7 +81,7 @@ public class ChallengeResource {
         challengeService.cancel(c);
         if (c.isBroadcast())
             return c;
-        
+
         if (c.getUserChallenger().equals(u)) {
             sendEmail(c.getUserOpponent(), c.getUserChallenger(), Status.CANCELLED, null, challenge.getMessage());
         } else {

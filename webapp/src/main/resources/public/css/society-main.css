@@ -210,6 +210,7 @@ td > a {
 
 .slot-container {
     display: inline-block;
+    padding-right: 7px;
 }
 
 .center {
@@ -221,7 +222,7 @@ td > a {
 }
 
 .challenge-submit {
-
+    margin-left: 40%;
 }
 
 .table-responsive {

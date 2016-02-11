@@ -26,7 +26,7 @@ function challengeChange() {
  else
      window.location = '/app/challenge?date=' + date + '&userId=' + userId;
 
-
+    $('.society-well-slots').hide();
 }
 function challengeAcceptSlot() {
  var date = $('#challenge-date').val();
