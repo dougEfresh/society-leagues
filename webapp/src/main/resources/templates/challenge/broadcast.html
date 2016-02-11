@@ -11,6 +11,8 @@
                 <thead></thead>
                 <tbody>
                 <tr th:each="challenge : ${broadcast}">
+                    <form th:method="GET" action="/app/challenge/accept" >
+                        <input th:type="hidden" name="id" th:value="${challenge.getId()}">
                     <td>
                         <a th:href="@{/app/challenge/cancel/{id} (id=${challenge.getId()})}">
                             <span th:text="${challenge.getUserChallenger().getName()}"></span>
@@ -32,20 +34,27 @@
                         </a>
                     </td>
                     <td class="challenge-actions">
-                        <select id="challenge-slot" onChange="challengeAcceptSlot()" class="form-control">
+                        <select id="challenge-slot" class="form-control" name="slotId">
                             <!--/*@thymesVar id="s" type="com.society.leagues.client.api.domain.Slot"*/-->
                             <option th:each="s : ${challenge.getSlots()}"
                                     th:text="${#temporals.format(s.getLocalDateTime(), 'hh:mm')}"
-                                    th:value="${s.getId()}">
+                                    th:value="${s.getId()}"
+                                    th:name="slotId">
                             </option>
                         </select>
-                        <a th:href="@{/app/challenge/cancel/{id} (id=${challenge.getId()})}">
-                            <button class="btn btn-sm btn-success btn-responsive challenge-upcoming-decline-button">
-                                <span class="glyphicon glyphicon-ok-sign"></span>
-                            </button>
+                    </td>
+                    <td>
+                        <a th:if="${challenge.getChallenger().equals(challenger)}" th:href="@{/app/challenge/cancel/{id} (id=${challenge.getId()})}">
+                            <span class="btn btn-sm btn-danger btn-responsive challenge-upcoming-decline-button">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </span>
                         </a>
+                        <button th:if="${!challenge.getChallenger().equals(challenger)}" type="submit" class="btn btn-sm btn-success btn-responsive challenge-upcoming-decline-button">
+                            <span class="glyphicon glyphicon-ok-sign"></span>
+                        </button>
                     </td>
                 </tr>
+                </form>
                 </tbody>
             </table>
         </div>

@@ -20,7 +20,7 @@ public class ChallengeResource extends BaseController {
 
     @Autowired ChallengeApi challengeApi;
 
-    public static Team broadcast = new Team("-1");
+    static Team broadcast = new Team("-1");
     static {
         broadcast.setName("--- Broadcast ---");
     }
@@ -30,14 +30,15 @@ public class ChallengeResource extends BaseController {
         processDate(date,userId,model,response);
         Season s =  seasonApi.active().stream().filter(Season::isChallenge).findFirst().get();
         Team challenger = teamApi.userTeams(user.getId()).stream().filter(Team::isChallenge).findFirst().orElse(null);
+        challenger.setMembers(teamApi.members(challenger.getId()));
         if (challenger == null) {
             //ERROR
         }
         model.addAttribute("challenger",challenger);
         model.addAttribute("season", s);
-        List<Challenge> existingChallenges = challengeApi.challengesForUser(user.getId());
+        List<Challenge> existingChallenges = populateChallenge(challengeApi.challengesForUser(user.getId()));
 
-        model.addAttribute("broadcast", challengeApi.challenges().stream().filter(Challenge::isBroadcast).collect(Collectors.toList()));
+        model.addAttribute("broadcast", populateChallenge(challengeApi.challenges().stream().filter(Challenge::isBroadcast).collect(Collectors.toList())));
         model.addAttribute("sent",existingChallenges.parallelStream().filter(c->c.getStatus(user) == Status.SENT).collect(Collectors.toList()));
         model.addAttribute("pending",existingChallenges.parallelStream().filter(c->c.getStatus(user) == Status.PENDING).collect(Collectors.toList()));
         model.addAttribute("accepted",existingChallenges.parallelStream().filter(c->c.getStatus(user) == Status.ACCEPTED).collect(Collectors.toList()));
@@ -47,13 +48,30 @@ public class ChallengeResource extends BaseController {
         return "challenge/challenge";
     }
 
+    private List<Challenge> populateChallenge(List<Challenge> challenges) {
+        for (Challenge challenge : challenges.stream().filter(c->!c.isBroadcast()).collect(Collectors.toList())) {
+            challenge.getChallenger().setMembers(teamApi.members(challenge.getChallenger().getId()));
+            challenge.getOpponent().setMembers(teamApi.members(challenge.getOpponent().getId()));
+        }
+        return challenges;
+    }
+
+    @RequestMapping(value = {"/challenge/accept"}, method = RequestMethod.GET)
+    public String accept(@RequestParam String id, @RequestParam String slotId) {
+        Challenge ch = challengeApi.challenges().stream().filter(c->c.getId().equals(id)).findAny().get();
+        ch.setAcceptedSlot(new Slot(slotId));
+        ch.setOpponent(userTeams.stream().filter(Team::isChallenge).findAny().get());
+        challengeApi.accept(ch);
+        return "redirect:challenge/challenge";
+    }
+
     @RequestMapping(value = {"/challenge"}, method = RequestMethod.POST)
     public String challenge(@RequestParam(required = true) String userId,
                             @RequestParam(required = true) String date,
                             @RequestParam(required = true) String id,
                             @RequestParam String slotIds, Model  model, HttpServletResponse response) throws IOException {
-        Challenge challenge = new Challenge(id);
-        challenge.setChallenger(new Team(userId));
+        Challenge challenge = new Challenge();
+        challenge.setChallenger(new Team(id));
         List<Slot> slots = new ArrayList<>();
         for (String s : slotIds.split(",")) {
             slots.add(new Slot(s));
@@ -67,6 +85,7 @@ public class ChallengeResource extends BaseController {
         }
         challenge.setOpponent(new Team(userId));
         challenge.setStatus(Status.SENT);
+        challengeApi.challenge(challenge);
         return challenge(userId,date,model,response);
     }
 
@@ -99,11 +118,15 @@ public class ChallengeResource extends BaseController {
         }
     }
 
+    private List<Team> populateTeam(List<Team> teams) {
+        teams.parallelStream().forEach(t->t.setMembers(teamApi.members(t.getId())));
+        return teams;
+    }
     public void processUser(String userId, String date, Team challenger, Model model) {
-        User u = userApi.get();
         List<Team> challengeUsers = new ArrayList<>();
         challengeUsers.add(broadcast);
-        challengeUsers.addAll(challengeApi.challengeUsersOnDate(date)
+        challengeUsers.addAll(
+                populateTeam(challengeApi.challengeUsersOnDate(date))
                 .stream()
                 .filter(user->user.getChallengeUser() != null)
                 .collect(Collectors.toList()));

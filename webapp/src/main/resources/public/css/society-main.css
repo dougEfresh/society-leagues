@@ -262,6 +262,10 @@ td > a {
     width: 696px;
 }
 
+.society-well-broadcast {
+    max-width: 555px;
+}
+
 .society-well-user {
     /*max-width: 500px;*/
 }

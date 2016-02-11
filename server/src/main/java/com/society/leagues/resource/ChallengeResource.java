@@ -76,6 +76,9 @@ public class ChallengeResource {
         User u = leagueService.findByLogin(principal.getName());
         Challenge c = leagueService.findOne(challenge);
         challengeService.cancel(c);
+        if (c.isBroadcast())
+            return c;
+        
         if (c.getUserChallenger().equals(u)) {
             sendEmail(c.getUserOpponent(), c.getUserChallenger(), Status.CANCELLED, null, challenge.getMessage());
         } else {
