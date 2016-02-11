@@ -2,15 +2,9 @@
 <div xmlns:th="http://www.thymeleaf.org"
      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
      layout:decorator="layout">
-    <div id="challenge-app" layout:fragment="content">
-        <div class="society-well society-well-challenge">
-            <div class="well-title">
-                <h3>Under Construction -- Coming Soon</h3>
-            </div>
-        </div>
         <!--       th:action="@{/app/challenge} (userId=${opponent.getId()},date=${date})}" -->
         <!--/*@thymesVar id="u" type="com.society.admin.model.ChallengeUserModel"*/-->
-        <!--
+  <div id="challenge-app" layout:fragment="content">
         <div class="society-well society-well-challenge">
             <div class="well-title"><h4>Choose Date & Victim</h4></div>
             <div class="row">
@@ -47,35 +41,17 @@
             <div class="well-title"><h4>Slots</h4></div>
             <form th:if="${opponent ne null}" id="form-select-challenger"
                   th:action="@{/app/challenge (userId=${opponent.getId()},date=${date})}"
-                  th:object="${challenge}" th:method="post">
-                <input th:if="${challenger ne null}" type="hidden" th:field="*{challenger.id}"
-                       th:value="${challenger.getId()}">
+                  method="post">
+                <input th:if="${challenger ne null}" type="hidden" th:value="${challenger.getId()}" name="id">
                 <div class="slot-container" th:each="slot: ${challenge.getSlots()}">
-                <div class="onoffswitch"  >
                     <input th:id="${'slot-' + slot.getId()}"
                            th:type="checkbox"
                            th:checked="${'false' == 'true'}"
                            th:value="${slot.getId()}"
-                           name="onoffswitch" class="onoffswitch-checkbox">
-                    <label class="onoffswitch-label" th:for="${'slot-' + slot.getId()}">
-                        <span th:class="${'onoffswitch-inner-' + slot.getTime().replace(':','')}"></span>
-                        <span class="onoffswitch-switch"></span>
-                    </label>
+                           th:text="${slot.getTime()}"
+                           name="slotIds"
+                           >
                 </div>
-                </div>
-                    <div class="onoffswitch"  >
-                    <input id="slot-test"
-                           th:type="checkbox"
-                           th:checked="false"
-                           th:value="slot"
-                           name="onoffswitch"
-                           class="onoffswitch-checkbox">
-                    <label class="onoffswitch-label" for="slot-test">
-                        <span class="onoffswitch-inner"></span>
-                        <span class="onoffswitch-switch"></span>
-                    </label>
-                </div>
-
                 <div class="challenge-submit center">
                     <input class="btn btn-primary" type="submit" value="Submit">
                 </div>
@@ -87,6 +63,5 @@
             <div th:include="challenge/broadcast"></div>
             <div th:include="challenge/accepted"></div>
         </div>
--->
-    </div>
+  </div>
 </div>

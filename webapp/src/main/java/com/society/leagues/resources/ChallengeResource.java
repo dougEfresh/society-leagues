@@ -50,8 +50,15 @@ public class ChallengeResource extends BaseController {
     @RequestMapping(value = {"/challenge"}, method = RequestMethod.POST)
     public String challenge(@RequestParam(required = true) String userId,
                             @RequestParam(required = true) String date,
-                            @ModelAttribute Challenge challenge, Model  model, HttpServletResponse response) throws IOException {
-
+                            @RequestParam(required = true) String id,
+                            @RequestParam String slotIds, Model  model, HttpServletResponse response) throws IOException {
+        Challenge challenge = new Challenge(id);
+        challenge.setChallenger(new Team(userId));
+        List<Slot> slots = new ArrayList<>();
+        for (String s : slotIds.split(",")) {
+            slots.add(new Slot(s));
+        }
+        challenge.setSlots(slots);
         if (userId.equals("-1")) {
             challenge.setOpponent(null);
             challenge.setStatus(Status.BROADCAST);
@@ -71,11 +78,10 @@ public class ChallengeResource extends BaseController {
 
     @RequestMapping(value = {"/challenge/accept/{id}/{slotId"}, method = RequestMethod.GET)
     public String accept(@PathVariable String id, @PathVariable String slotId, Model model, HttpServletResponse response) throws IOException {
-
         return challenge(null,null,model,response);
     }
 
-    public void processDate(String date, String userId, Model model, HttpServletResponse response) throws IOException {
+    void processDate(String date, String userId, Model model, HttpServletResponse response) throws IOException {
         List<Slot> slots = challengeApi.challengeSlots();
         Set<LocalDate> dates = slots.stream()
                 .map(s->s.getLocalDateTime().toLocalDate())

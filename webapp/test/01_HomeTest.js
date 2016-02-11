@@ -59,10 +59,18 @@ casper.test.begin('Test Home Page', function suite(test) {
                 test.assertExists('#stats-' + s.season.id, '#stats-' + s.season.id);
                 var cnt = this.evaluate(count,'#top-players-' + s.season.id);
                 test.assertTrue(cnt  > 0 , "Top  players for " + s.season.id + " " + cnt);
+
             }.bind(this));
         }
      });
 
+    casper.then(function() {
+        this.click('#my-stats');
+    });
+    casper.then(function() {
+        test.assertExists('#stats-app', "Stats App");
+        this.back();
+    });
     casper.run(function(){
         test.done();
     });
