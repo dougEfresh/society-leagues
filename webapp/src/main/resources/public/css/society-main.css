@@ -338,3 +338,7 @@ input.game-type {
 h4 > a , h4 > a:hover{
     color: whitesmoke;
 }
+
+.challenge-times , .challenge-slots {
+    max-width: 30%
+}

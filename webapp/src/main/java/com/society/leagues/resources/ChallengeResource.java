@@ -62,7 +62,7 @@ public class ChallengeResource extends BaseController {
         ch.setAcceptedSlot(new Slot(slotId));
         ch.setOpponent(userTeams.stream().filter(Team::isChallenge).findAny().get());
         challengeApi.accept(ch);
-        return "redirect:/challenge/challenge";
+        return "redirect:/app/challenge";
     }
 
     @RequestMapping(value = {"/challenge"}, method = RequestMethod.POST)

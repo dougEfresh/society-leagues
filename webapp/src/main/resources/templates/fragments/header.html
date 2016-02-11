@@ -90,15 +90,15 @@
                             <span class="fa arrow"></span>
                         </a>
                         <ul th:id="${'team-menu-' + team.getId()}" class="">
-                            <li>
+                            <li style="list-style: none">
                                 <a th:id="'team-display-link-' + ${team.getId()}"
                                    th:href="@{/app/display/{id}/{teamId} (id=${team.getSeason().getId()},teamId=${team.getId()})}"
                                 >Standings</a>
                             </li>
-                            <li>
+                            <li style="list-style: none">
                                 <a th:href="@{/app/schedule/{id} (id=${team.getSeason().getId()},teamId=${team.getId()})}">Schedule</a>
                             </li>
-                            <li>
+                            <li style="list-style: none">
                                 <a th:href="@{/app/leaders/{id} (id=${team.getSeason().getId()})}">Leaders</a>
                             </li>
                         </ul>

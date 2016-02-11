@@ -11,7 +11,10 @@
                 <tbody>
                 <tr th:each="challenge : ${sent}">
                     <td class="challenge-date" th:text="${#temporals.format(challenge.getLocalDate(), 'MM/dd')}">
+                    </td>
 
+                    <td class="challenge-times" >
+                        <span th:text="${slot.getTime()}" th:each="slot : ${challenge.getSlots()}"></span>
                     </td>
                     <td class="challenge-name">
                         <span th:text="${challenge.getUserOpponent().getName()}"></span>
