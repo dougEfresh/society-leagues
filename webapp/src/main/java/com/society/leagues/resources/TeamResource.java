@@ -20,7 +20,6 @@ public class TeamResource extends BaseController {
     public String list(Model model) {
         model.addAttribute("teams",  teamApi.active()
                 .stream()
-                .filter(t->!t.getSeason().isChallenge())
                 .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
                 .collect(Collectors.toList()));
         listSeasons(model);
@@ -32,7 +31,6 @@ public class TeamResource extends BaseController {
     public String listSeason(@PathVariable String id, Model model) {
         model.addAttribute("teams",  teamApi.seasonTeams(id)
                 .stream()
-                .filter(t->!t.getSeason().isChallenge())
                 .filter(t->t.getSeason().equals(new Season(id)))
                 .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
                 .collect(Collectors.toList()));
