@@ -9,8 +9,12 @@ import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.converters.DateTimeSerializer;
 import com.society.leagues.client.views.PlayerResultView;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import sun.security.action.GetPropertyAction;
 
 import javax.validation.constraints.NotNull;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.security.AccessController;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,7 +28,7 @@ public class User extends LeagueObject {
     @NotNull String login;
     @NotNull Role role = Role.PLAYER;
     @NotNull Status status = Status.ACTIVE;
-
+    String avatarHash;
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime created = LocalDateTime.now();
@@ -34,6 +38,15 @@ public class User extends LeagueObject {
     Set<Team> currentTeams = new HashSet<>();
 
     UserProfile userProfile = new UserProfile();
+
+    static String dftEncode = AccessController.doPrivileged(new GetPropertyAction("file.encoding"));
+    static String defaultAvatarUrl = "/default";
+    static {
+        try {
+            defaultAvatarUrl = URLEncoder.encode("https://leagues.societybilliards.com/app/img/default-avatar.png",dftEncode);
+        } catch (UnsupportedEncodingException e) {
+        }
+    }
 
     public User() {
         this.created = LocalDateTime.now();
@@ -55,6 +68,14 @@ public class User extends LeagueObject {
         this.password = password;
         this.login = login;
         this.role = role;
+    }
+
+    public String getAvatarHash() {
+        return avatarHash;
+    }
+
+    public void setAvatarHash(String avatarHash) {
+        this.avatarHash = avatarHash;
     }
 
     public String getShortName() {
@@ -275,6 +296,20 @@ public class User extends LeagueObject {
 
     public void setCurrentTeams(Set<Team> currentTeams) {
         this.currentTeams = currentTeams;
+    }
+
+    @JsonIgnore
+    public String getAvatarUrl() {
+        if (getUserProfile() == null || getUserProfile().getImageUrl() == null) {
+            if (avatarHash != null) {
+                return String.format("%s/%s?d=%s",
+                        "http://www.gravatar.com/avatar",
+                            avatarHash,
+                            defaultAvatarUrl);
+            }
+            return "/app/img/default-avatar.png";
+        }
+        return getUserProfile().getImageUrl();
     }
 
     @Override

@@ -17,6 +17,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Iterator;
@@ -36,10 +39,10 @@ public class UserService {
     @Autowired ThreadPoolTaskExecutor threadPoolTaskExecutor;
     final static Logger logger = LoggerFactory.getLogger(UserService.class);
     @Value("${convert:false}") boolean convert;
-
+    static  MessageDigest md ;
     @PostConstruct
-    public void init() {
-
+    public void init() throws NoSuchAlgorithmException {
+        md = MessageDigest.getInstance("MD5");
         threadPoolTaskExecutor.setCorePoolSize(1);
         if (!convert)
         leagueService.addListener(
@@ -94,6 +97,27 @@ public class UserService {
                 }
             }
         }
+    }
+    private static String hex(String email) {
+        try {
+            byte[] array = md.digest(email.getBytes("CP1252"));
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < array.length; ++i) {
+                sb.append(Integer.toHexString((array[i]
+                        & 0xFF) | 0x100).substring(1, 3));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+
+        }
+        return null;
+    }
+
+    @Scheduled(fixedRate = 1000*60*60, initialDelay = 1000*60*1)
+    public void refreshAvatar() {
+        leagueService.findAll(User.class).parallelStream()
+                .filter(u->u.getLogin() != null)
+                .forEach(u-> u.setAvatarHash(hex(u.getLogin())));
     }
 
     @Scheduled(fixedRate = 1000*60*60, initialDelay = 1000*60*11)

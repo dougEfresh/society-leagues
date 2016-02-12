@@ -14,6 +14,7 @@
     <!--/*@thymesVar id="u" type="com.society.leagues.client.api.domain.User"*/-->
     <!--/*@thymesVar id="allUsers" type="com.society.leagues.client.api.domain.User"*/-->
     <!--/*@thymesVar id="challengeSeason" type="com.society.leagues.client.api.domain.Season"*/-->
+    <!--
     <ul class="nav navbar-right top-nav">
         <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -28,18 +29,16 @@
                 <li><a href="/app/user/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                 </li>
             </ul>
-            <!-- /.dropdown-user -->
         </li>
-        <!--
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <i class="fa fa-envelope"></i> <b class="caret"></b></a>
         </li>
-        -->
     </ul>
+    -->
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav">
-            <li th:if="${allUsers ne null && user.isAdmin()}" class="sidebar-search">
+            <li th:if="${activeUsers ne null}" class="sidebar-search">
                 <!--<div class="input-group custom-search-form"> -->
                     <select id="users-search" class="form-control">
                         <option value="Search..." selected="">Search...</option>
@@ -114,6 +113,14 @@
                 </a>
                 <a  th:if="${user eq null}" href="#">
                     <i class="fa fa-bar-chart"></i> My Stats
+                </a>
+            </li>
+            <li>
+                <a id="login" th:if="${user eq null}" href="/app/login">
+                    <i  th:if="${user ne null}" class="fa fa-sign-in"></i> Login
+                </a>
+                <a  id="logout" th:if="${user ne null}" href="/app/logout">
+                    <i class="fa fa-sign-out"></i> Logout
                 </a>
             </li>
         </ul>
