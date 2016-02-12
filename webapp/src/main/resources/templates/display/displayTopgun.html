@@ -21,8 +21,10 @@
                 <td th:text="${stat.getRank()}"></td>
                 <td>
                     <a th:id="'team-standing-link-' + ${stat.getTeam().getId()}"
-                       th:href="@{/app/display/{id}/user/{userId} (id=${stat.getSeason().getId()},userId=${stat.getUser().getId()})}"
-                       th:text="${stat.getUser().getName()}"></a>
+                       th:href="@{/app/display/{id}/user/{userId} (id=${stat.getSeason().getId()},userId=${stat.getUser().getId()})}">
+                        <img class="avatar img-responsive" th:src="${stat.getUser().getAvatarUrl()}"/>
+                        <span th:text="${stat.getUser().getName()}"></span>
+                    </a>
                 </td>
                 <td th:text="${stat.getHandicapDisplay()}"></td>
                 <td th:text="${#numbers.formatDecimal(stat.getPoints(),1,3)}"></td>
