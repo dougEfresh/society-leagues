@@ -7,9 +7,11 @@ import org.apache.catalina.connector.ResponseFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -33,9 +35,18 @@ public class BaseController {
     List<Team> userTeams;
     Set<TeamMatch> userMatches =  new TreeSet<>(TeamMatch.sortAcc());
     List<Stat> userStats;
+    @Autowired Environment environment;
+    boolean dev = true;
+
+    @PostConstruct
+    public void init(){
+        if (environment.acceptsProfiles("dev"))
+            dev = false;
+    }
 
     @ModelAttribute
     public void setModels(Model model, HttpServletRequest request, ResponseFacade response) {
+        model.addAttribute("tracking",dev);
         user = userApi.get();
         userTeams = teamApi.userTeams(user.getId());
         userTeams.parallelStream().forEach(tm->userMatches.addAll(teamMatchApi.getTeamMatchByTeam(tm.getId())));

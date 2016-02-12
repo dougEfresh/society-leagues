@@ -5,7 +5,7 @@
         <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
         <div class="society-well">
             <div class="well-title">
-            <h4 >
+            <h4>
                 <span  th:text="${season.getFormattedName()}"></span>
             </h4>
             </div>
@@ -24,12 +24,11 @@
 
         <div th:if="${season.isChallenge()}"  th:each="date: ${teamMatches.keySet()}">
                 <div  th:include="schedule/scheduleTopgun"></div>
-            </div>
-            <div th:if="${not season.isChallenge()}" th:each="date: ${teamMatches.keySet()}">
-                <div th:if="${season.isTuesdayNine()}" th:include="schedule/scheduleNine"></div>
-                <div th:if="${season.isEight()}" th:include="schedule/scheduleEight"></div>
-                <div th:if="${season.isScramble()}" th:include="schedule/scheduleEight"></div>
-            </div>
+        </div>
+        <div th:if="${not season.isChallenge()}" th:each="date: ${teamMatches.keySet()}">
+            <div th:if="${season.isTuesdayNine()}" th:include="schedule/scheduleNine"></div>
+            <div th:if="${season.isEight()}" th:include="schedule/scheduleEight"></div>
+            <div th:if="${season.isScramble()}" th:include="schedule/scheduleEight"></div>
         </div>
     </div>
 </div>
