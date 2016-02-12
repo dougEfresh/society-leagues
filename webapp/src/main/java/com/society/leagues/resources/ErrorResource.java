@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -62,26 +63,27 @@ public class ErrorResource  {
     }
 
     @ExceptionHandler(value = {Exception.class, RuntimeException.class})
-    public ModelAndView handleError(HttpServletRequest req, HttpServletResponse response, Exception exception) throws IOException {
+    public String handleError(Model model, HttpServletRequest req, HttpServletResponse response, Exception exception) throws IOException {
         if (exception.getCause() instanceof  UnauthorizedException || exception instanceof UnauthorizedException) {
             ModelAndView mav = new ModelAndView();
             mav.addObject("error","Unauthorized");
             mav.setViewName("login");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            return mav;
+            return "redirect:/app/login";
         }
         ModelAndView mav = new ModelAndView();
-        mav.addObject("exception", exception);
-        mav.addObject("url", req.getRequestURL());
-        mav.addObject("error",exception.getMessage());
-        mav.setViewName("error");
+        if (model != null) {
+            model.addAttribute("exception", exception);
+            model.addAttribute("url", req.getRequestURL());
+            model.addAttribute("error", exception.getMessage());
+        }
         if (exceptionStatusCodeMap.containsKey(exception.getClass())) {
             response.setStatus(exceptionStatusCodeMap.get(exception.getClass()).value());
         } else {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
         }
         logger.error(exception.getMessage(),exception);
-        return mav;
+        return "error";
 
     }
 }

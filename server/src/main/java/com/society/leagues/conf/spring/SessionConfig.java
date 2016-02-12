@@ -15,6 +15,6 @@ public class SessionConfig implements EmbeddedServletContainerCustomizer {
 
     @Override
     public void customize(ConfigurableEmbeddedServletContainer container) {
-        container.setSessionTimeout(100, TimeUnit.DAYS);
+        container.setSessionTimeout(365, TimeUnit.DAYS);
     }
 }

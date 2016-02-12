@@ -13,10 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -43,6 +40,12 @@ public class LoginResource  {
 
     }
 
+    @ModelAttribute
+    public void setModels(Model model, HttpServletRequest request, ResponseFacade response) {
+        model.addAttribute("fbEndpoint",fbEndpoint);
+    }
+
+
     @RequestMapping(value = {"/help"}, method = RequestMethod.GET)
     public String help(HttpServletResponse response) {
         return "help";
@@ -61,7 +64,6 @@ public class LoginResource  {
 
     @RequestMapping(value = {"/login"}, method = RequestMethod.GET)
     public String loginPage(@RequestParam(required = false, defaultValue = "false") boolean error, Model model, HttpServletRequest request) {
-        model.addAttribute("fbEndpoint", fbEndpoint);
         return "login";
     }
 
