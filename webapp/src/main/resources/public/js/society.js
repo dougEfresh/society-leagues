@@ -95,6 +95,16 @@ function searchUserStats(e) {
 }
 
  $(document).ready(function() {
+     $('#users-search').multiselect({
+         enableFiltering: true,
+         enableCaseInsensitiveFiltering: true,
+         filterPlaceholder: 'Search...',
+         nonSelectedText: 'Search Users...',
+         onChange: function(option, checked, select) {
+                 window.location = '/app/stats/' +  $(option).val();
+         }
+     });
+
  /*
      $.dynatableSetup({
            dataset: {
@@ -139,7 +149,7 @@ function searchUserStats(e) {
      );
 
      $("#team-members").select2({ width: 600 });
-     $("#users-search").select2();
+     /*$("#users-search").select2();*/
      $("#users-stats-search").select2();
      $('#table-player-results').dynatable( {
          dataset : {

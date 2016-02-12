@@ -69,6 +69,7 @@ public class BaseController {
         model.addAttribute("userTeams", userTeams);
         model.addAttribute("userStats", userStats);
         model.addAttribute("allUsers", userApi.all().parallelStream().filter(User::isReal).collect(Collectors.toList()));
+        model.addAttribute("activeUsers", userApi.all().parallelStream().filter(User::isReal).filter(u->u.getSeasons().stream().filter(Season::isActive).count() > 0).collect(Collectors.toList()));
         model.addAttribute("adminSeason",adminSeason);
         /**
          * Cache the users schedule and season stats
