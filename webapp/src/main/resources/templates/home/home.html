@@ -64,7 +64,7 @@
                <tbody>
                <tr th:each="stat : ${topPlayers.get(season)}" >
                    <td class="name" >
-                       <div th:replace="fragments/avatarUser"></div>
+                       <img   class="avatar img-responsive" th:if="${stat ne null}" th:src="${stat.getUser().getAvatarUrl()}"/>
                        <a th:href="@{/app/display/{seasonId}/user/{userId} (seasonId=${stat.getSeason().getId()},userId=${stat.getUser().getId()})}">
                            <span th:text="${stat.getUser().getName()}"></span>
                        </a>

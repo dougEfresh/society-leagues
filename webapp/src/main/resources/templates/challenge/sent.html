@@ -17,7 +17,7 @@
                         <span th:text="${#temporals.format(slot.getLocalDateTime(), 'h:mm')}" th:each="slot : ${challenge.getSlots()}"></span>
                     </td>
                     <td class="challenge-name">
-                        <div th:replace="../fragments/avatarUser"></div>
+                        <img  th:fragments="avatarUser" class="avatar img-responsive" th:if="${challenger ne null}" th:src="${challenge.getUserOpponent().getAvatarUrl()}"/>
                         <span th:text="${challenge.getUserOpponent().getName()}"></span>
                     </td>
                     <td class="challenge-race">

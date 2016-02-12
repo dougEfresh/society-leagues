@@ -19,7 +19,7 @@
             <!--/*@thymesVar id="team" type="com.society.leagues.client.api.domain.Team"*/-->
             <tr th:id="'team-member-' + ${stat.getUser().getId()}" th:each="stat : ${displayMemberStats}">
                 <td th:class="${stat.getUser().equals(displayUser) ? ' active schedule-link' : 'schedule-link'}">
-                    <div th:replace="../fragments/avatarUser"></div>
+                    <img  th:fragments="avatarUser" class="avatar img-responsive" th:if="${stat ne null}" th:src="${stat.getUser().getAvatarUrl()}"/>
                     <a href="#"
                        th:href="@{/app/display/{id}/{teamId}/{userId} (id=${season.getId()},teamId=${team.getId()},userId=${stat.getUser().getId()})}">
                        <span th:text="${stat.getUser().getName()}"></span>

@@ -1,6 +1,7 @@
 var user = casper.cli.has("user") ? casper.cli.get("user") : "dchimento@gmail.com";
 var pass = casper.cli.has("password") ? casper.cli.get("password") : "abc123";
-var server = casper.cli.has("server") ? casper.cli.get("server") : "http://localhost:8082";
+var server = casper.cli.has("server") ? casper.cli.get("server") : "https://leagues.societybilliards.com";
+//var server = casper.cli.has("server") ? casper.cli.get("server") : "http://localhost:8082";
 var page = casper.cli.has("page") ? casper.cli.get("page") : "/";
 var wait = casper.cli.has("wait") ? casper.cli.get("wait") : "appReady";
 var width =  casper.cli.has("width") ? casper.cli.get("width") : 1028;
@@ -23,7 +24,6 @@ var homeState = null;
 var awayState = null;
 var homeWin = false;
 var stats = [];
-var users = require('./user.json');
 
 function getTopGunStats() {
  var rows = document.querySelectorAll('#table-team-standings > tbody > tr');
@@ -84,6 +84,7 @@ return function(season) {
 
 var login = function (test,user) {
     casper.then(function(){
+        this.debugHTML();
         test.assertExists("#login-app")
     });
 

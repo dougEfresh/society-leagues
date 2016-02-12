@@ -20,6 +20,7 @@
                 <!--/*@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"*/-->
                 <td th:text="${stat.getRank()}"></td>
                 <td>
+                    <img class="avatar img-responsive"  th:src="${stat.getUser().getAvatarUrl()}"/>
                     <a th:id="${'leader-user-link-' + stat.getUser().getId()}"
                        th:href="@{/app/display/{id}/{teamId}/{userId} (id=${stat.getSeason().getId()}, teamId=${stat.getTeam().getId()}, userId=${stat.getUser().getId()})}"
                        th:text="${stat.getUser().getName()}"></a>
