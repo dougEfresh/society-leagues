@@ -105,6 +105,14 @@ function searchUserStats(e) {
          maxItems: 1,
          onChange: function(v) {  window.location = '/app/stats/' + v;}
         });
+
+
+     $('#users-search-admin').selectize({
+         persist: false,
+         maxItems: 1,
+         onChange: function(v) {  window.location = '/app/user/' + v;}
+        });
+
      $('#users-stats-search').selectize({
          persist: false,
          maxItems: 1,
@@ -238,7 +246,6 @@ function searchUserStats(e) {
            }
      });
 
-     $('#table-users').dynatable();
      $('#table-team-members').dynatable(
          {
              features: {
