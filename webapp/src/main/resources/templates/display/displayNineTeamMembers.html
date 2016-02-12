@@ -18,10 +18,12 @@
             <!--/*@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"*/-->
             <!--/*@thymesVar id="team" type="com.society.leagues.client.api.domain.Team"*/-->
             <tr th:id="'team-member-' + ${stat.getUser().getId()}" th:each="stat : ${displayMemberStats}">
-                <td class="schedule-link">
+                <td th:class="${stat.getUser().equals(displayUser) ? ' active schedule-link' : 'schedule-link'}">
                     <a href="#"
-                       th:href="@{/app/display/{id}/{teamId}/{userId} (id=${season.getId()},teamId=${team.getId()},userId=${stat.getUser().getId()})}"
-                       th:text="${stat.getUser().getName()}"></a></td>
+                       th:href="@{/app/display/{id}/{teamId}/{userId} (id=${season.getId()},teamId=${team.getId()},userId=${stat.getUser().getId()})}">
+                       <span th:text="${stat.getUser().getName()}"></span>
+                    </a>
+                </td>
                 <td th:text="${stat.getHandicapDisplay()}"></td>
                 <td th:text="${stat.getWins()}"></td>
                 <td th:text="${stat.getLoses()}"></td>

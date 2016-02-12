@@ -131,10 +131,13 @@ public class DisplayResource extends BaseController {
 
             model.addAttribute("results", results);
             model.addAttribute("resultUser", u);
+            model.addAttribute("displayUser", u);
             model.addAttribute("stats", statApi.getUserStatsSummary(userId).stream()
                     .filter(st -> s.equals(st.getSeason()))
                     .filter(st -> st.getType() == StatType.USER_SEASON)
                     .findFirst().orElse(new Stat()));
+        } else {
+            model.addAttribute("displayUser",user);
         }
 
         return "display/display";

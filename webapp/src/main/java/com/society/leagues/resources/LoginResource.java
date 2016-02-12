@@ -48,7 +48,7 @@ public class LoginResource  {
         return "help";
     }
 
-    @RequestMapping(value = {"/user/logout"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/user/logout","/logout"}, method = RequestMethod.GET)
     public String logout(HttpServletResponse response) {
         response.setHeader("Set-Cookie","remember-me=\"\"; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/");
         response.setHeader("Set-Cookie","JSESSIONID=\"\"; Expires=Thu, 01-Jan-1970 00:00:10 GMT; Path=/");

@@ -18,10 +18,10 @@
         <tbody>
         <!--/*@thymesVar id="stat" type="com.society.admin.model.ScrambleStatModel"*/-->
         <tr th:id="'team-member-' + ${stat.getUser().getId()}" th:each="stat : ${displayMemberStats}">
-            <td>
-                <a href="#"
-                   th:href="@{/app/display/{id}/{teamId}/{userId} (id=${season.getId()},teamId=${team.getId()},userId=${stat.getUser().getId()})}"
-                   th:text="${stat.getUser().getName()}"></a>
+            <td th:class="${stat.getUser().equals(displayUser) ? ' active schedule-link' : 'schedule-link'}">
+                <a th:href="@{/app/display/{id}/{teamId}/{userId} (id=${season.getId()},teamId=${team.getId()},userId=${stat.getUser().getId()})}">
+                    <span th:text="${stat.getUser().getName()}"></span>
+                </a>
             </td>
             <td th:text="${stat.getHandicapDisplay()}"></td>
             <td th:text="${stat.getEightWins()}"></td>
