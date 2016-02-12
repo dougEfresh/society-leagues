@@ -9,3 +9,5 @@ build/
 .gradle/
 
 derby.log
+users.json
+user.json

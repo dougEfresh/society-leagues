@@ -1,5 +1,8 @@
 package com.society.leagues.client.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.society.leagues.client.views.PlayerResultSummary;
+
 public enum Division {
     
     EIGHT_BALL_WEDNESDAYS(LeagueType.TEAM,"8ball Weds",5,"wednesday"),
@@ -12,10 +15,10 @@ public enum Division {
     UNKNOWN(LeagueType.INDIVIDUAL,"Unknown",100,""),
     NINE_BALL_CHALLENGE(LeagueType.INDIVIDUAL,"Top Gun",0,"sunday");
 
-    final LeagueType leagueType;
-    final String displayName;
-    final Integer order;
-    final String day;
+    @JsonView(PlayerResultSummary.class) final LeagueType leagueType;
+    @JsonView(PlayerResultSummary.class) final String displayName;
+    @JsonView(PlayerResultSummary.class) final Integer order;
+    @JsonView(PlayerResultSummary.class) final String day;
 
     Division(LeagueType leagueType,String name,int order, String day) {
         this.leagueType = leagueType; this.displayName = name; this.order = order; this.day = day;
@@ -30,18 +33,22 @@ public enum Division {
         return this.name();
     }
 
+    @JsonView(PlayerResultSummary.class)
     public LeagueType getLeagueType() {
         return leagueType;
     }
 
+    @JsonView(PlayerResultSummary.class)
     public String getDisplayName() {
         return displayName;
     }
 
+    @JsonView(PlayerResultSummary.class)
     public Integer getOrder() {
         return order;
     }
 
+    @JsonView(PlayerResultSummary.class)
     public String getDay() {
         return day;
     }

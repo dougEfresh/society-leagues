@@ -5,7 +5,7 @@
     <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
     <!--/*@thymesVar id="date" type="java.lang.String"*/-->
     <div class="table-responsive">
-        <table id="team-match-results" class="table table-stripped table-bordered table-condensed table">
+        <table id="team-match-results" class="table table-scores">
             <thead>
             <th></th>
             <th></th>
@@ -25,12 +25,12 @@
             <tr th:id="${match.id}" th:each="match, rowStat: *{matches}">
                 <td class="delete">
                     <a th:id="${'delete-' + match.getId()}" th:href="@{/app/scores/{id}/{matchId}/delete/{date} (id=${season.id},date=${date},matchId=${match.id})}">
-                       X
+                        <h4><span class="label label-danger"><span class="glyphicon glyphicon-remove"></span></span></h4>
                     </a>
                 </td>
                 <td class="results">
                     <a th:id="${'player-results-' + match.getId()}" th:href="@{/app/scores/{id}/{matchId} (id=${season.id},date=${date},matchId=${match.id})}">
-                        Results
+                        <h4><span class="label label-primary">Results</span></h4>
                     </a>
                 </td>
                 <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.TeamMatch"*/-->
@@ -75,14 +75,14 @@
                     <input class="racks" th:id="${'awayForfeits-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].awayForfeits}" type="text"
                            th:value="${match.awayForfeits}"/>
                 </td>
-                <td th:class="${season.isScramble()}? 'show' : 'hide'">
-                      <input class="name" th:id="${'game-' + match.getId()}"
+                <td th:class="${season.isScramble()}? 'show name' : 'hide'">
+                      <input class="game-type" th:id="${'game-' + match.getId()}"
                              th:field="*{matches[__${rowStat.index}__].division}" type="text"
                              th:value="${match.division}"/>
                 </td>
                 <td class="sheet-link">
                     <a th:id="${'sheet-' + match.getId()}" th:href="@{/app/sheets/{matchId} (matchId=${match.id})}">
-                        Sheet
+                       <h4> <span class="label label-primary" >Sheet </span></h4>
                     </a>
                 </td>
 

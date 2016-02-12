@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,44 +20,35 @@ public class TeamResource extends BaseController {
     public String list(Model model) {
         model.addAttribute("teams",  teamApi.active()
                 .stream()
-                .filter(t->!t.getSeason().isChallenge())
                 .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
                 .collect(Collectors.toList()));
-        listSeasons(model);
-        model.addAttribute("season",Season.getDefault());
         return "team/team";
     }
 
     @RequestMapping(value = {"/team/season/{id}"}, method = RequestMethod.GET)
     public String listSeason(@PathVariable String id, Model model) {
-        model.addAttribute("teams",  teamApi.getBySeason(id)
+        model.addAttribute("teams",  teamApi.seasonTeams(id)
                 .stream()
-                .filter(t->!t.getSeason().isChallenge())
                 .filter(t->t.getSeason().equals(new Season(id)))
                 .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
                 .collect(Collectors.toList()));
-        listSeasons(model);
         model.addAttribute("season",seasonApi.get(id));
         return "team/team";
     }
 
-    private void listSeasons(Model model) {
-        List<Season> seasons = new ArrayList<>();
-        Season defaultSeason = Season.getDefault();
-        defaultSeason.setName("--- Choose ----");
-        seasons.add(defaultSeason);
-        seasons.addAll(seasonApi.get());
-        model.addAttribute("allSeasons", seasons);
-
-    }
-
     private String processEditTeam(String id, Model model) {
-        TeamModel tm = TeamModel.fromTeam(teamApi.get(id));
-        TeamMembers members = teamApi.members(id);
-        tm.setUsers(members.getMembers().stream().filter(User::isReal).collect(Collectors.toList()));
-        tm.setMembersId(members.getId());
+        TeamModel tm;
+        if (id.equals("new")) {
+            tm = TeamModel.fromTeam(new Team());
+            tm.setMembers(new TeamMembers());
+            tm.setSeason(seasonApi.active().get(0));
+        } else {
+            tm = TeamModel.fromTeam(teamApi.get(id));
+            TeamMembers members = teamApi.members(id);
+            tm.setUsers(members.getMembers().stream().filter(User::isReal).collect(Collectors.toList()));
+            tm.setMembersId(members.getId());
+        }
         model.addAttribute("team", tm);
-        listSeasons(model);
         model.addAttribute("season",tm.getSeason());
         return "team/editTeam";
     }

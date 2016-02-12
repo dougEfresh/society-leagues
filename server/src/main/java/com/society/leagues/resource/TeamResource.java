@@ -1,11 +1,8 @@
 package com.society.leagues.resource;
 
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.society.leagues.client.api.domain.*;
-import com.society.leagues.client.views.PlayerResultView;
 import com.society.leagues.service.LeagueService;
-import com.society.leagues.client.views.TeamSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +25,14 @@ public class TeamResource {
         return leagueService.save(team);
     }
 
+
+    @RequestMapping(value = "/admin/delete/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Team delete(@PathVariable String id) {
+        Team t = leagueService.findOne(new Team(id));
+        return leagueService.purge(t);
+    }
+
     @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Team modify(@RequestBody Team body) {
@@ -37,12 +42,13 @@ public class TeamResource {
         }
         existingTeam.setSeason(leagueService.findOne(new Season(body.getSeason().getId())));
         existingTeam.setName(body.getName());
+        existingTeam.setDisabled(body.isDisabled());
         return leagueService.save(existingTeam);
     }
 
     @RequestMapping(value = "/admin/modify/members/{teamId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Team modifyMembers(@PathVariable String teamId, @RequestBody TeamMembers teamMembers) {
+    public TeamMembers modifyMembers(@PathVariable String teamId, @RequestBody TeamMembers teamMembers) {
         TeamMembers existingMembers = leagueService.findOne(teamMembers);
         Team existingTeam = leagueService.findOne(new Team(teamId));
         if (existingTeam == null)
@@ -58,9 +64,10 @@ public class TeamResource {
                     new User(user.getId())
             ));
         }
-        leagueService.save(existingMembers);
+        existingMembers = leagueService.save(existingMembers);
         existingTeam.setMembers(existingMembers);
-        return leagueService.save(existingTeam);
+        leagueService.save(existingTeam);
+        return existingMembers;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)

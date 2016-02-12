@@ -11,7 +11,8 @@
              <strong>Error!</strong> <pre th:text="${error}"></pre>
          </div>
      </div>
-    <form id="team-form" action="#" th:action="@{/app/team/{id}(id=${team.id})}" th:object="${team}" method="post">
+    <div class="society-well society-well-team" >
+    <form style="display: inline-block;" class="team-edit" id="team-form" action="#" th:action="@{/app/team/{id}(id=${team.id})}" th:object="${team}" method="post">
         <div class="form-group">
             <input type="hidden" th:value="${team.id}" th:field="*{id}"/>
             <input type="hidden" th:value="${team.membersId}" th:field="*{membersId}"/>
@@ -25,9 +26,19 @@
                        type="input" name="name"
                        class="form-control" />
             </div>
+            <label class="col-sm-2 control-label">Disabled</label>
+            <div class="col-sm-10">
+                <input th:value="*{disabled}"
+                       th:field="*{disabled}"
+                       th:type="checkbox"
+                       th:checked="${team.isDisabled()}"
+                       id="disabled"
+                       name="disabled"
+                       class="form-control" >
+            </div>
             <label class="col-sm-2 control-label">Members</label>
             <div class="col-sm-10">
-                <select th:field="*{users}" id="team-members" class="team-members" multiple="multiple">
+                <select th:field="*{users}" id="team-members" class="team-members team-members-select" multiple="multiple">
                     <option th:field="*{users}"
                             th:each="u : ${allUsers}"
                             th:value="${u.id}"
@@ -53,7 +64,8 @@
             <input id="submit" type="submit" class="btn btn-sm btn-primary btn-responsive"/>
         </div>
     </form>
+    </div>
 </div>
-</body>
 </div>
+
 

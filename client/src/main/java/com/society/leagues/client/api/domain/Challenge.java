@@ -77,13 +77,12 @@ public class Challenge extends LeagueObject {
         this.status = status;
     }
 
-    //TODO remove after migration
-    //@JsonIgnore
+    @JsonIgnore
     public Season getSeason() {
         return challenger.getSeason();
     }
 
-    //@JsonIgnore
+    @JsonIgnore
     public boolean isCancelled() {
         return status == Status.CANCELLED;
     }
@@ -96,7 +95,7 @@ public class Challenge extends LeagueObject {
         return slots.get(0).getLocalDateTime().toLocalDate();
     }
 
-    //@JsonIgnore
+    @JsonIgnore
     public String getDate() {
         if (slots == null || slots.isEmpty() || slots.iterator().next().getLocalDateTime() == null)
             return null;
@@ -104,7 +103,7 @@ public class Challenge extends LeagueObject {
         return slots.get(0).getLocalDateTime().toString();
     }
 
-    //@JsonIgnore
+    @JsonIgnore
     public User getUserChallenger() {
         if (challenger == null || challenger.getMembers() == null || challenger.getMembers().getMembers().isEmpty())
             return null;
@@ -119,7 +118,7 @@ public class Challenge extends LeagueObject {
         return getUserChallenger().getHandicap(getSeason());
     }
 
-    //@JsonIgnore
+    @JsonIgnore
     public User getUserOpponent() {
         if (opponent == null || opponent.getMembers() == null || opponent.getMembers().getMembers().isEmpty())
             return null;

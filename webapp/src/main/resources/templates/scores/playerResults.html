@@ -1,0 +1,37 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org" >
+<div class="society-well society-well-admin society-well-player-scores" th:fragments="playerresults">
+    <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+    <div th:if="${results ne null}" id="player-results">
+    <script>
+        function handleCheckbox(e) {
+            var other = null;
+            if (e.id.indexOf("home")>=0) {
+                other = document.getElementById(e.id.replace("home","away"));
+            } else {
+                other = document.getElementById(e.id.replace("away","home"));
+            }
+            other.checked = !e.checked;
+        }
+    </script>
+
+    <form id="result-form" th:object="${results}" th:method="post" method="post"
+          th:action="@{/app/scores/{id}/{matchId}/{date} (id=${season.id},date=${date},matchId=${results.matchId})}" >
+                <div class="well-title">
+                    <h4><span th:text="${results.getName()}"></span></h4>
+                </div>
+        <div th:if="${season.isNine()}">
+            <div th:replace="scores/nineTable">
+            </div>
+        </div>
+
+        <div th:if="${!season.isNine()}">
+            <div th:replace="scores/eightTable">
+            </div>
+        </div>
+        <div th:replace="scores/footer"></div>
+    </form>
+    </div>
+
+</div>
+</div>

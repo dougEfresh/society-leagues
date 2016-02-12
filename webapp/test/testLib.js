@@ -23,6 +23,7 @@ var homeState = null;
 var awayState = null;
 var homeWin = false;
 var stats = [];
+var users = require('./user.json');
 
 function getTopGunStats() {
  var rows = document.querySelectorAll('#table-team-standings > tbody > tr');
@@ -81,9 +82,14 @@ return function(season) {
     }
 }
 
-var login = function (test,username,password) {
+var login = function (test,user) {
     casper.then(function(){
         test.assertExists("#login-app")
+    });
+
+    casper.then(function(){
+        test.assertExists("#login-legacy");
+        this.click("#login-legacy");
     });
 
     casper.then(function(){
@@ -91,8 +97,8 @@ var login = function (test,username,password) {
     });
     casper.then(function () {
         this.fill('form#login', {
-            'username': username,
-            'password': password
+            'username': user,
+            'password': "abd123"
         }, false);
     });
     casper.then(function () {

@@ -164,7 +164,7 @@ public class ResultService {
     }
 
     public PlayerResult add(TeamMatch teamMatch) {
-        List<PlayerResult> results = leagueService.findCurrent(PlayerResult.class)
+        List<PlayerResult> results = leagueService.findAll(PlayerResult.class)
                 .parallelStream()
                 .filter(pr -> pr.getSeason().isActive())
                 .filter(pr -> pr.getTeamMatch().equals(teamMatch))

@@ -1,37 +1,51 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
-<div xmlns:th="http://www.thymeleaf.org" >
-    <div th:if="${not #lists.isEmpty(pending)}" class="panel panel-default">
-            <div class="panel-heading">
-                <span>Pending</span>
-            </div>
-            <div id="challenge-sent" class="panel-body">
-                <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead></thead>
-                        <tbody>
-                        <tr th:each="challenge : ${pending}">
-                            <td class="challenge-date" >
+<div xmlns:th="http://www.thymeleaf.org">
+    <div th:if="${not #lists.isEmpty(pending)}" class="society-well society-well-pending">
+        <div class="well-title">
+            <h4>Pending</h4>
+        </div>
+        <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+        <div class="table-responsive">
+            <table class="table">
+                <thead></thead>
+                <tbody>
+                <tr th:each="challenge : ${pending}">
+                     <form th:method="GET" action="/app/challenge/accept" >
+                        <input th:type="hidden" name="id" th:value="${challenge.getId()}">
+                    <td class="challenge-date">
                                 <span th:text="${#temporals.format(challenge.getLocalDate(), 'MM/dd')}">
                                 </span>
-                            </td>
-                            <td class="challenge-name">
-                                <span th:text="${challenge.getUserOpponent().getName()}"></span>
-                            </td>
-                            <td class="challenge-race">
-                                <span th:text="${challenge.getRace()}"></span>
-                            </td>
-                             <td class="challenge-actions">
-                                 <a th:href="@{/app/challenge/cancel/{id} (id=${challenge.getId()})}">
-                                    <button class="btn btn-sm btn-danger btn-responsive challenge-upcoming-decline-button">
-                                        <span class="glyphicon glyphicon-remove"></span>
-                                    </button>
-                                </a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                    </td>
+                    <td class="challenge-name">
+                        <span th:text="${challenge.getChallenger().getName()}"></span>
+                    </td>
+                    <td class="challenge-race">
+                        <span th:text="${challenge.getRace()}"></span>
+                    </td>
+                         <td class="challenge-actions">
+                        <select id="challenge-slot" class="form-control" name="slotId">
+                            <!--/*@thymesVar id="s" type="com.society.leagues.client.api.domain.Slot"*/-->
+                            <option th:each="s : ${challenge.getSlots()}"
+                                    th:text="${#temporals.format(s.getLocalDateTime(), 'h:mm')}"
+                                    th:value="${s.getId()}"
+                                    th:name="slotId">
+                            </option>
+                        </select>
+                    </td>
+                    <td class="challenge-actions">
+                            <span class="btn btn-sm btn-danger btn-responsive challenge-upcoming-decline-button">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </span>
+                        <button type="submit" class="btn btn-sm btn-success btn-responsive challenge-upcoming-decline-button">
+                            <span class="glyphicon glyphicon-ok-sign"></span>
+                        </button>
+                     </td>
+                     </form>
+                </tr>
+
+
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

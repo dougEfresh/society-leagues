@@ -5,34 +5,36 @@
         <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
         <div class="row">
             <div class="col-xs-12 col-md-8 col-lg-6">
-                <div class="panel panel-default">
-                    <div th:text="${season.getFormattedName()}" class="panel-heading">
-                        Standings
+                <div class="society-well society-well-stats">
+                    <div class="well-title">
+                        <h4 th:text="${season.getFormattedName()}" ></h4>
                     </div>
-                    <div class="panel-body">
                         <div id="display-eight" th:if="${season.isEight()}" th:include="display/displayEight"></div>
                         <div id="display-scramble" th:if="${season.isScramble()}" th:include="display/displayEight"></div>
                         <div id="display-nine" th:if="${season.isTuesdayNine()}" th:include="display/displayNine"></div>
                         <div id="display-topgun" th:if="${season.isChallenge()}" th:include="display/displayTopgun"></div>
-                    </div>
                 </div>
             </div>
-            <div th:if="${not #lists.isEmpty(displayMemberStats)}" class="col-xs-12 col-md-8 col-lg-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading" th:text="${team.getName()}"> </div>
-                    <div class="panel-body">
-                        <div id="display-eight-members" th:if="${season.isEight()}"
-                             th:include="display/displayEightTeamMembers"></div>
-                        <div th:id="${'display-scramble-members-'}" th:if="${season.isScramble()}"
-                             th:include="display/displayScrambleTeamMembers"></div>
-                        <div id="display-nine-members" th:if="${season.isTuesdayNine()}"
-                             th:include="display/displayNineTeamMembers"></div>
+            <div th:if="${not #lists.isEmpty(displayMemberStats)}" class="col-xs-12 col-md-8 col-lg-5">
+                <div class="society-well society-well-stats">
+                    <div class="well-title">
+                    <h4 >
+                        <span th:text="${team.getName()}"></span>
+                        <span th:text="'(' + ${team.getStats().getWins() + ' -'}"></span>
+                        <span th:text="${team.getStats().getLoses() +')'}"></span>
+                    </h4>
                     </div>
+                    <div id="display-eight-members" th:if="${season.isEight()}"
+                         th:include="display/displayEightTeamMembers"></div>
+                    <div th:id="${'display-scramble-members-'}" th:if="${season.isScramble()}"
+                         th:include="display/displayScrambleTeamMembers"></div>
+                    <div id="display-nine-members" th:if="${season.isTuesdayNine()}"
+                         th:include="display/displayNineTeamMembers"></div>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-xs-12 col-md-8 col-lg-7">
+            <div class="col-xs-12 col-md-12 col-lg-12">
                 <div id="user-results" th:include="results/userResults"></div>
             </div>
         </div>

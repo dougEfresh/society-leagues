@@ -1,29 +1,39 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
   <div id="team-app" layout:fragment="content">
-      <div id="teams" >
+      <div id="teams" class="society-well society-well-teams" >
           <div>
               <a href="/app/team/new"><button class="btn btn-primary"><b>Add New</b></button></a>
           </div>
           <select id="team-seasons" onchange="changeTeamSeason()">
+               <option
+                      value="-1"
+                      text="...Choose..."
+                      >
+              </option>
               <option
                       th:each="s : ${allSeasons}"
                       th:value="${s.id}"
                       th:text="${s.formattedName}"
-                      th:selected="${season.id eq s.id}">
+                      th:selected="${season ne null && season.id eq s.id}">
               </option>
           </select>
           <div class="table-responsive">
-              <table id="table-teams" class="table table-stripped table-bordered table-condensed">
+              <table id="table-teams" class="table">
                   <thead>
                   <th>Name</th>
+                  <th>State</th>
                   <th>Season</th>
                   </thead>
                   <tbody>
-                  <!--/*@thymesVar id="teams" type="com.society.leagues.client.api.domain.Team"*/-->
+                  <!--/*@thymesVar id="team" type="com.society.leagues.client.api.domain.Team"*/-->
                   <tr th:id="'team-' + ${team.id}" th:each="team : ${teams}">
                       <td>
                           <a th:text="${team.name}" th:href="@{/app/team/{id}(id=${team.id})}"></a>
+                      </td>
+                      <td>
+                          <span th:if="${team.isDisabled()}" class="badge badge-black">Disabled</span>
+                          <span th:if="${!team.isDisabled()}" class="badge badge-black">Active</span>
                       </td>
                       <td th:text="${team.season.shortName}"></td>
                   </tr>

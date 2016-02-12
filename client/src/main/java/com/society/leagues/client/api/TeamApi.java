@@ -10,7 +10,7 @@ import java.util.List;
 public interface TeamApi {
 
     @RequestLine("GET /api/team/season/{id}")
-    List<Team> getBySeason(@Param("id") String id);
+    List<Team> seasonTeams(@Param("id") String id);
 
     @RequestLine("GET /api/team/active")
     List<Team> active();
@@ -27,8 +27,8 @@ public interface TeamApi {
     @RequestLine("POST /api/team/admin/modify")
     Team save(Team team);
 
-    @RequestLine("GET /api/team/user/{userId}")
-    List<Team> getTeamsByUser(@Param("userId") String userId);
+    @RequestLine("DELETE /api/team/admin/delete/{teamId}")
+    Team delete(@Param("teamId") String teamId);
 
     @RequestLine("POST /api/team/admin/modify/members/{teamId}")
     TeamMembers saveMembers(@Param("teamId") String teamId, TeamMembers members);

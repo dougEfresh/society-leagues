@@ -2,7 +2,7 @@
 <div xmlns:th="http://www.thymeleaf.org">
     <div class="table-responsive">
         <table th:if="${not #lists.isEmpty(displayMemberStats)}" th:id="${'table-team-members-' + team.getId()}"
-               class="table table-bordered table-striped table-condensed">
+               class="table table-stats">
         <thead>
         <tr>
             <th>Player</th>
@@ -15,15 +15,6 @@
             <th>9 PCT</th>
         </tr>
         </thead>
-            <tfoot>
-            <tr>
-            <th></th>
-            <th></th>
-            <th th:text="${handicaps}"></th>
-            <th th:text="${totalWin}"></th>
-            <th th:text="${totalLost}"></th>
-            </tr>
-            </tfoot>
         <tbody>
         <!--/*@thymesVar id="stat" type="com.society.admin.model.ScrambleStatModel"*/-->
         <tr th:id="'team-member-' + ${stat.getUser().getId()}" th:each="stat : ${displayMemberStats}">
@@ -35,30 +26,13 @@
             <td th:text="${stat.getHandicapDisplay()}"></td>
             <td th:text="${stat.getEightWins()}"></td>
             <td th:text="${stat.getEightLoses()}"></td>
-            <td th:text="${#numbers.formatDecimal(stat.getEightWinsPct(),0,3)}"></td>
+            <td th:text="${'% ' + #numbers.formatDecimal(stat.getEightWinsPct()*100,0,2)}"></td>
 
             <td th:text="${stat.getNineWins()}"></td>
             <td th:text="${stat.getNineLoses()}"></td>
-            <td th:text="${#numbers.formatDecimal(stat.getNineWinsPct(),0,3)}"></td>
+            <td th:text="${'% ' + #numbers.formatDecimal(stat.getNineWinsPct()*100,0,2)}"></td>
         </tr>
         </tbody>
           </table>
     </div>
-    <div class="table-responsive">
-      <table class="table table-bordered table-condensed">
-            <thead>
-            <tr></tr>
-            <th>Handicaps Given</th>
-            <th>Handicaps Received</th>
-            <th>Total Win</th>
-            <th>Total Lost</th>
-            </thead>
-            <tbody>
-            <th th:text="${handicapGiven}"></th>
-            <th th:text="${handicapReceived}"></th>
-            <th th:text="${totalWin}"></th>
-            <th th:text="${totalLost}"></th>
-            </tbody>
-        </table>
-        </div>
 </div>

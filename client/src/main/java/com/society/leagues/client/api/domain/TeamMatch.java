@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.Objects;
 
 @SuppressWarnings("unused")
@@ -224,14 +225,10 @@ public class TeamMatch extends LeagueObject {
     }
 
     public Integer getSetWins(Team team) {
-        if (!team.isNine()) { return isWinner(team) ? 1 : 0; }
-
         return team.equals(home)? setHomeWins : setAwayWins;
     }
 
     public Integer getSetLoses(Team team) {
-         if (!team.isNine()) { return isWinner(team) ? 1 : 0; }
-
         return team.equals(home)? setAwayWins : setHomeWins;
     }
 
@@ -395,14 +392,10 @@ public class TeamMatch extends LeagueObject {
 
     @Override
     public String toString() {
-        return "TeamMatch{" +
-                "home=" + home +
-                ", away=" + away +
-                ", matchDate=" + matchDate +
-                ", homeRacks=" + homeRacks +
-                ", awayRacks=" + awayRacks +
-                ", setHomeWins=" + setHomeWins +
-                ", setAwayWins=" + setAwayWins +
+        return "{" +
+                "home=" + home.getName() +
+                ", away=" + away.getName() +
+                ", matchDate=" + matchDate.toLocalDate() +
                 '}';
     }
 
@@ -430,5 +423,29 @@ public class TeamMatch extends LeagueObject {
         this.referenceUser = referenceUser;
     }
 
+    public static Comparator<TeamMatch> sortAcc() {
+        return new Comparator<TeamMatch>() {
+            @Override
+            public int compare(TeamMatch o1, TeamMatch o2) {
+                return o1.getMatchDate().compareTo(o2.getMatchDate());
+            }
+        };
+    }
+
+    public static boolean isSameMatch(TeamMatch t1, TeamMatch t2) {
+        if (!t2.getMatchDate().equals(t1.getMatchDate())) {
+            return false;
+        }
+        if (t1.getHome().equals(t2.getHome()) && t1.getAway().equals(t2.getAway())) {
+            return true;
+        }
+
+        return t1.getHome().equals(t2.getAway()) && t1.getAway().equals(t2.getHome());
+
+    }
+
+    public boolean hasBothTeams(Team a, Team b) {
+        return hasTeam(a) && hasTeam(b);
+    }
 
 }

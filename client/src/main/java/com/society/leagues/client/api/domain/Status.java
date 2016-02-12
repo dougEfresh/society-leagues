@@ -11,5 +11,6 @@ public enum Status {
     COMPLETE,
     UPCOMING,
     BROADCAST,
-    UNKNOWN
+    UNKNOWN,
+    DISABLED
 }

@@ -3,6 +3,8 @@ package com.society.leagues.resource;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.views.PlayerResultSummary;
+import com.society.leagues.exception.ChallengeException;
+import com.society.leagues.exception.InvalidRequestException;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.ResultService;
 import com.society.leagues.service.StatService;
@@ -40,8 +42,7 @@ public class TeamMatchResource {
     public Map<String,List<TeamMatch>> delete(Principal principal, @PathVariable String teamMatchId) {
         TeamMatch tm = leagueService.findOne(new TeamMatch(teamMatchId));
         if (tm == null) {
-            logger.error("Could not find team match for " + teamMatchId);
-            return Collections.emptyMap();
+            throw new InvalidRequestException("Could not find team match for " + teamMatchId);
         }
         resultService.removeTeamMatchResult(tm);
         return Collections.emptyMap();
@@ -81,7 +82,6 @@ public class TeamMatchResource {
         if (processed.get(0).getSeason().isChallenge()) {
             statService.refresh();
         }
-        statService.refreshTeamRank();
         return processed;
     }
 
@@ -170,8 +170,8 @@ public class TeamMatchResource {
     public TeamMatch add(Principal principal, @PathVariable String seasonId, @PathVariable String date) {
         TeamMatch tm = new TeamMatch();
         tm.setMatchDate(LocalDate.parse(date).atTime(11,0));
-        tm.setHome(leagueService.findAll(Team.class).stream().filter(t -> t.getSeason().getId().equals(seasonId)).findFirst().get());
-        tm.setAway(leagueService.findAll(Team.class).stream().filter(t -> t.getSeason().getId().equals(seasonId)).findFirst().get());
+        tm.setHome(leagueService.findAll(Team.class).stream().filter(t -> t.getSeason().getId().equals(seasonId)).collect(Collectors.toList()).get(0));
+        tm.setAway(leagueService.findAll(Team.class).stream().filter(t -> t.getSeason().getId().equals(seasonId)).collect(Collectors.toList()).get(1));
         return leagueService.save(tm);
     }
 
@@ -249,10 +249,19 @@ public class TeamMatchResource {
 
     @JsonView(PlayerResultSummary.class)
     @RequestMapping(value = {"/season/{id}/summary"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public Map<String,List<TeamMatch>> getTeamMatchesSummary(Principal principal, @PathVariable String id) {
+    public Map<String,List<TeamMatch>> getTeamMatchesSummaryByDate(Principal principal, @PathVariable String id) {
         return getTeamMatches(principal,id);
     }
 
+    @JsonView(PlayerResultSummary.class)
+    @RequestMapping(value = {"/season/{id}/summary/list"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    public List<TeamMatch> getTeamMatchesSummary(Principal principal, @PathVariable String id) throws Exception {
+        Season season = leagueService.findOne(new Season(id));
+        if (season == null) {
+            throw new Exception("Could not find season for " + id);
+        }
+        return leagueService.findAll(TeamMatch.class).parallelStream().filter(t->t.getSeason().equals(season)).collect(Collectors.toList());
+    }
 
   @RequestMapping(value = {"/team/{teamId}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
   public List<TeamMatch> getMatchesByTeam(Principal principal, @PathVariable String teamId) {

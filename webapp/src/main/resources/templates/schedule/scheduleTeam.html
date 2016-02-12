@@ -2,61 +2,67 @@
 <div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
      layout:decorator="layout">
     <div id="schedule-app" layout:fragment="content">
-        <form id="form-select-team">
-            <select id="teams-select" th:onChange="'selectTeam()'" class="form-control" >
-                <!--/*@thymesVar id="u" type="com.society.admin.model.ChallengeUserModel"*/-->
-                <option th:each="t : ${teams}"
-                        th:value="${t.getId()}"
-                        th:text="${t.getName()}"
-                        th:selected="${t.getId() == team.getId()}"
-                        >
-                </option>
+        <div class="society-well">
+            <h4>
+                <div class="padding-bottom-10">
+                    <a th:href="@{/app/schedule/{seasonId} (seasonId=${season.getId()})} ">
+                        <span class="label label-primary">See Full Schedule</span></a></div>
+            </h4>
+            <select id="teams-select" th:onChange="'selectTeam()'" class="form-control">
+                    <!--/*@thymesVar id="u" type="com.society.admin.model.ChallengeUserModel"*/-->
+                    <!--/*@thymesVar id="t" type="com.society.leagues.client.api.domain.Team"*/-->
+                    <option th:each="t : ${teams}"
+                            th:value="${t.getId()}"
+                            th:text="${t.getName() + ' (' + t.getStats().getWins() + '-'  + t.getStats().getLoses() + ')'}"
+                            th:selected="${t.getId() == team.getId()}"
+                    >
+                    </option>
             </select>
-        </form>
-        <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
-            <div class="panel panel-default">
-                <div th:text="${season.getFormattedName()}" class="panel-heading">
-                </div>
-                <div class="panel-body">
-                    <div class="table-responsive">
-                        <table id="table-team-schedule" class="table table-bordered table-striped table-condensed">
-                   <thead>
-                   <tr>
-                       <th>Date</th>
-                       <th th:if="${!season.isNine()}">H/A</th>
-                       <th>W/L</th>
-                       <th>R</th>
-                       <!--<th>Forfeits</th>-->
-                       <th>Opponent</th>
-                       <th>Op. R</th>
-                       <!--<th>Op. Forfeits</th>-->
-                   </tr>
-                   </thead>
-                   <tbody>
-                   <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.TeamMatch"*/-->
-                   <tr th:class="${match.isHasResults() ? 'results' : 'no-results'}" th:each="match: ${teamMatches}">
-                       <td th:if="${user.isAdmin()}">
-                           <a th:text="${#temporals.format(match.getMatchDate(),'yyyy-MM-dd')}" th:href="@{/app/scores/{id}/{matchId} (id=${season.id},matchId=${match.id})}">
-                           </a>
-                       </td>
-                       <td th:if="${!user.isAdmin()}" th:text="${#temporals.format(match.getMatchDate(),'yyyy-MM-dd')}"></td>
-                       <td th:if="${!season.isNine()}" th:text="${match.homeOrAway(team)}" ></td>
-                       <td th:if="${not match.isHasResults()}"></td>
-                       <td th:if="${match.isHasResults()}" th:text="${match.isWin(team) ? 'W' : 'L'}"></td>
-
-                       <td class="racks"  th:text="${match.racks(team)}"></td>
-                       <!--<td class="racks"  th:text="${match.forfeits(team)}"></td>-->
-                       <td >
-                           <a th:href="@{/app/results/{matchId} (matchId=${match.getId()})}" th:text="${match.getOpponent(team).getName()}"></a>
-                       </td>
-                       <td class="racks"  th:text="${match.racks(match.getOpponent(team))}"></td>
-                       <!--<td class="racks"  th:text="${match.forfeits(match.getOpponent(team))}"></td>-->
-                   </tr>
-                   </tbody>
-                        </table>
-                    </div>
-                </div>
+            <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+            <div style="padding-bottom: 15px"></div>
+            <div class="table-responsive">
+                <table id="table-team-schedule" class="table table-schedule">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Opponent</th>
+                        <th th:if="${!season.isNine()}">H / A</th>
+                        <th>W / L</th>
+                        <th>R</th>
+                        <!--<th>Forfeits</th>-->
+                        <th>Op. R</th>
+                        <!--<th>Op. Forfeits</th>-->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.TeamMatch"*/-->
+                    <tr th:class="${match.isHasResults() ? 'results' : 'no-results'}" th:each="match: ${teamMatches}">
+                        <td class="short-date">
+                            <a th:if="${user.isAdmin()}" th:text="${#temporals.format(match.getMatchDate(),'MM/dd')}"
+                               th:href="@{/app/scores/{id}/{matchId} (id=${season.id},matchId=${match.id})}">
+                            </a>
+                            <span th:if="${!user.isAdmin()}" th:text="${match.getOpponent(team).getName()}">
+                            </span>
+                        </td>
+                        <td>
+                            <a th:href="@{/app/results/{matchId} (matchId=${match.getId()})}"
+                               th:text="${match.getOpponent(team).getName()}"></a>
+                        </td>
+                        <td th:if="${!season.isNine()}" th:text="${match.homeOrAway(team)}"></td>
+                        <td th:if="${not match.isHasResults()}"></td>
+                        <td class="win-lost" th:if="${match.isHasResults()}">
+                            <span th:if="${match.isWin(team)}" class="badge badge-win">W</span>
+                            <span th:if="${!match.isWin(team)}" >L</span>
+                        </td>
+                        <td class="racks" th:text="${match.racks(team)}"></td>
+                        <!--<td class="racks"  th:text="${match.forfeits(team)}"></td>-->
+                        <td class="racks" th:text="${match.racks(match.getOpponent(team))}"></td>
+                        <!--<td class="racks"  th:text="${match.forfeits(match.getOpponent(team))}"></td>-->
+                    </tr>
+                    </tbody>
+                </table>
             </div>
+        </div>
     </div>
 </div>
 

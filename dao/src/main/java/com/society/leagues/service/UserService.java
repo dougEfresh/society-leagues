@@ -69,7 +69,7 @@ public class UserService {
                     String.format("Hello %s,\n     Please click: %s%s/%s \n to reset your password.",
                             u.getFirstName(),
                             serviceUrl.charAt(serviceUrl.length()-1) == '/' ? serviceUrl.substring(0,serviceUrl.length()-1) : serviceUrl,
-                            "/#/reset",
+                            "/app/reset",
                             reset.getToken())
             );
         } catch (Exception ignore) {

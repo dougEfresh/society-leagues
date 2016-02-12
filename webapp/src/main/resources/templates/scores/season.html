@@ -2,16 +2,17 @@
 <div xmlns:th="http://www.thymeleaf.org">
 <div id="season-matches-app" >
     <div id="matches" th:if="${model ne null}" >
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="panel-title">
-                    <span>Matches - </span>
+        <div class="society-well society-well-admin ">
+            <div class="well-title">
                     <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
-                    <span th:text="${season.shortName}"></span><span> -
-                    <a th:href="@{/app/scores/{id}/add/{date} (id=${season.id},date=${date})}">Add New</a>
-                    <span> - </span>
-                    <a th:href="@{/app/sheets/{id}/{date} (id=${season.id},date=${date})}">Sheets</a>
-                </span>
+                    <h4 style="display: inline-block" th:text="${season.shortName}"></h4>
+                    <a th:href="@{/app/scores/{id}/add/{date} (id=${season.id},date=${date})}">
+                      <h3 style="display: inline-block">  <span style="display: inline-block" class="label label-primary">Add New</span></h3>
+                    </a>
+                    <a th:href="@{/app/sheets/{id}/{date} (id=${season.id},date=${date})}">
+                        <h3 style="display: inline-block"><span  class="label label-primary" >Sheets</span></h3>
+                    </a>
+
                     <form id="form-select-date">
                     <select name="select-date" id="select-date" th:onChange="'selectDate()'" class="form-control" >
                         <option th:each="d: ${dates}"
@@ -21,8 +22,9 @@
                         </option>
                     </select>
                     </form>
-                </div>
             </div>
+        </div>
+        <div class="society-well society-well-admin society-well-scores">
             <form id="team-match-form" th:object="${model}" th:method="post" method="post"
                   th:action="@{/app/scores/{id}/{date} (id=${season.id},date=${date})}">
             <div class="panel-body">
@@ -40,20 +42,13 @@
                 </div>
 
             </div>
-            <div class="panel-footer"><input id="submit-team-match-scores" type="submit" value="submit" /></div>
+            <div class="" style="padding-left: 20px">
+                <input id="submit-team-match-scores" class="btn btn-lg btn-success" type="submit" value="Submit" /></div>
             </form>
         </div>
     </div>
 
-    <div th:if="${season.isEight()}">
-        <div th:replace="scores/playerResultsEight"></div>
-    </div>
-    <div th:if="${season.isScramble()}">
-        <div th:replace="scores/playerResultsEight"></div>
-    </div>
-    <div th:if="${season.isNine()}">
-        <div th:replace="scores/playerResultsNine"></div>
-    </div>
+    <div th:replace="scores/playerResults"></div>
 
     </div>
 </div>

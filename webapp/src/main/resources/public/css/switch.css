@@ -1,0 +1,672 @@
+/** 01:00 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-0100 {margin-left: 0;}
+
+.onoffswitch-inner-0100 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-0100:before, .onoffswitch-inner-0100:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-0100:before {
+    content: "01:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-0100:after {
+    content: "01:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 01:00 **/
+/** 01:30 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-0130 {margin-left: 0;}
+
+.onoffswitch-inner-0130 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-0130:before, .onoffswitch-inner-0130:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-0130:before {
+    content: "01:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-0130:after {
+    content: "01:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 01:30 **/
+/** 02:00 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-0200 {margin-left: 0;}
+
+.onoffswitch-inner-0200 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-0200:before, .onoffswitch-inner-0200:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-0200:before {
+    content: "02:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-0200:after {
+    content: "02:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 02:00 **/
+/** 02:30 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-0230 {margin-left: 0;}
+
+.onoffswitch-inner-0230 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-0230:before, .onoffswitch-inner-0230:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-0230:before {
+    content: "02:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-0230:after {
+    content: "02:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 02:30 **/
+/** 03:00 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-0300 {margin-left: 0;}
+
+.onoffswitch-inner-0300 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-0300:before, .onoffswitch-inner-0300:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-0300:before {
+    content: "03:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-0300:after {
+    content: "03:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 03:00 **/
+/** 03:30 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-0330 {margin-left: 0;}
+
+.onoffswitch-inner-0330 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-0330:before, .onoffswitch-inner-0330:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-0330:before {
+    content: "03:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-0330:after {
+    content: "03:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 03:30 **/
+/** 04:00 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-0400 {margin-left: 0;}
+
+.onoffswitch-inner-0400 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-0400:before, .onoffswitch-inner-0400:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-0400:before {
+    content: "04:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-0400:after {
+    content: "04:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 04:00 **/
+/** 04:30 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-0430 {margin-left: 0;}
+
+.onoffswitch-inner-0430 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-0430:before, .onoffswitch-inner-0430:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-0430:before {
+    content: "04:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-0430:after {
+    content: "04:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 04:30 **/
+/** 05:00 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-0500 {margin-left: 0;}
+
+.onoffswitch-inner-0500 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-0500:before, .onoffswitch-inner-0500:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-0500:before {
+    content: "05:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-0500:after {
+    content: "05:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 05:00 **/
+/** 05:30 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-0530 {margin-left: 0;}
+
+.onoffswitch-inner-0530 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-0530:before, .onoffswitch-inner-0530:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-0530:before {
+    content: "05:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-0530:after {
+    content: "05:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 05:30 **/
+/** 06:00 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-0600 {margin-left: 0;}
+
+.onoffswitch-inner-0600 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-0600:before, .onoffswitch-inner-0600:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-0600:before {
+    content: "06:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-0600:after {
+    content: "06:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 06:00 **/
+/** 06:30 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-0630 {margin-left: 0;}
+
+.onoffswitch-inner-0630 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-0630:before, .onoffswitch-inner-0630:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-0630:before {
+    content: "06:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-0630:after {
+    content: "06:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 06:30 **/
+/** 07:00 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-0700 {margin-left: 0;}
+
+.onoffswitch-inner-0700 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-0700:before, .onoffswitch-inner-0700:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-0700:before {
+    content: "07:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-0700:after {
+    content: "07:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 07:00 **/
+/** 07:30 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-0730 {margin-left: 0;}
+
+.onoffswitch-inner-0730 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-0730:before, .onoffswitch-inner-0730:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-0730:before {
+    content: "07:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-0730:after {
+    content: "07:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 07:30 **/
+/** 08:00 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-0800 {margin-left: 0;}
+
+.onoffswitch-inner-0800 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-0800:before, .onoffswitch-inner-0800:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-0800:before {
+    content: "08:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-0800:after {
+    content: "08:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 08:00 **/
+/** 08:30 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-0830 {margin-left: 0;}
+
+.onoffswitch-inner-0830 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-0830:before, .onoffswitch-inner-0830:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-0830:before {
+    content: "08:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-0830:after {
+    content: "08:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 08:30 **/
+/** 09:00 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-0900 {margin-left: 0;}
+
+.onoffswitch-inner-0900 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-0900:before, .onoffswitch-inner-0900:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-0900:before {
+    content: "09:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-0900:after {
+    content: "09:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 09:00 **/
+/** 09:30 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-0930 {margin-left: 0;}
+
+.onoffswitch-inner-0930 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-0930:before, .onoffswitch-inner-0930:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-0930:before {
+    content: "09:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-0930:after {
+    content: "09:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 09:30 **/
+/** 10:00 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-1000 {margin-left: 0;}
+
+.onoffswitch-inner-1000 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-1000:before, .onoffswitch-inner-1000:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-1000:before {
+    content: "10:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-1000:after {
+    content: "10:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 10:00 **/
+/** 10:30 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-1030 {margin-left: 0;}
+
+.onoffswitch-inner-1030 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-1030:before, .onoffswitch-inner-1030:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-1030:before {
+    content: "10:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-1030:after {
+    content: "10:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 10:30 **/
+/** 11:00 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-1100 {margin-left: 0;}
+
+.onoffswitch-inner-1100 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-1100:before, .onoffswitch-inner-1100:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-1100:before {
+    content: "11:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-1100:after {
+    content: "11:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 11:00 **/
+/** 11:30 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-1130 {margin-left: 0;}
+
+.onoffswitch-inner-1130 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-1130:before, .onoffswitch-inner-1130:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-1130:before {
+    content: "11:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-1130:after {
+    content: "11:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 11:30 **/
+/** 12:00 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-1200 {margin-left: 0;}
+
+.onoffswitch-inner-1200 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-1200:before, .onoffswitch-inner-1200:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-1200:before {
+    content: "12:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-1200:after {
+    content: "12:00";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 12:00 **/
+/** 12:30 **/
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner-1230 {margin-left: 0;}
+
+.onoffswitch-inner-1230 {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+
+
+.onoffswitch-inner-1230:before, .onoffswitch-inner-1230:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner-1230:before {
+    content: "12:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+.onoffswitch-inner-1230:after {
+    content: "12:30";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+
+/** END 12:30 **/

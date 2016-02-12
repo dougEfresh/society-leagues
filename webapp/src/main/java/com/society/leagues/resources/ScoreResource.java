@@ -25,6 +25,7 @@ public class ScoreResource extends BaseController {
 
     @RequestMapping(value = {"/scores"}, method = RequestMethod.GET)
     public String edit(Model model) {
+
         return "scores/index";
     }
 
@@ -169,7 +170,7 @@ public class ScoreResource extends BaseController {
         model.addAttribute("dates", matches.keySet());
         model.addAttribute("date", d);
         model.addAttribute("model", new TeamMatchModel(seasonApi.get(seasonId),matches.get(d)));
-        model.addAttribute("teams", teamApi.getBySeason(seasonId));
+        model.addAttribute("teams", teamApi.seasonTeams(seasonId));
         Season s = seasonApi.get(seasonId);
         model.addAttribute("season", s);
 

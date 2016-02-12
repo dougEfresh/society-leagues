@@ -1,6 +1,7 @@
-<nav xmlns:th="http://www.thymeleaf.org" class="navbar navbar-default navbar-static-top" role="navigation">
+<nav xmlns:th="http://www.thymeleaf.org" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -13,7 +14,7 @@
     <!--/*@thymesVar id="u" type="com.society.leagues.client.api.domain.User"*/-->
     <!--/*@thymesVar id="allUsers" type="com.society.leagues.client.api.domain.User"*/-->
     <!--/*@thymesVar id="challengeSeason" type="com.society.leagues.client.api.domain.Season"*/-->
-    <ul class="nav navbar-top-links navbar-right">
+    <ul class="nav navbar-right top-nav">
         <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                 <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
@@ -24,152 +25,94 @@
                 <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
                 </li>
                 <li class="divider"></li>
-                <li><a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                <li><a href="/app/user/logout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                 </li>
             </ul>
             <!-- /.dropdown-user -->
         </li>
+        <!--
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-envelope"></i> <b class="caret"></b></a>
+        </li>
+        -->
     </ul>
-
-    <aside class="sidebar" >
-        <nav class="sidebar-nav">
-            <ul class="nav metismenu" id="side-menu">
-                <li th:if="${allUsers ne null}" class="sidebar-search">
-                    <div class="input-group custom-search-form">
-                        <select id="users-search" class="form-control">
-                            <option th:each="u : ${allUsers}" th:value="${u.getId()}" th:text="${u.getName()}"></option>
-                        </select>
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav side-nav">
+            <li th:if="${allUsers ne null && user.isAdmin()}" class="sidebar-search">
+                <div class="input-group custom-search-form">
+                    <select id="users-search" class="form-control">
+                        <option th:each="u : ${allUsers}" th:value="${u.getId()}" th:text="${u.getName()}"></option>
+                    </select>
                         <span class="input-group-btn">
-                            <button onclick="searchUser()" class="btn btn-default" type="button">
+                            <button th:if="${user.isAdmin()}" style="height: 28px" onclick="searchAdminUser()" class="btn btn-default" type="button">
+                                <i class="fa fa-search"></i>
+                            </button>
+
+                            <button  th:if="${!user.isAdmin()}" style="height: 28px" onclick="searchUser()" class="btn btn-default" type="button">
                                 <i class="fa fa-search"></i>
                             </button>
                         </span>
-                    </div>
-                </li>
-                <li>
-                    <a href="/app/home"><i class="fa fa-dashboard fa-fw"></i> Home</a>
-                </li>
-                 <li th:if="${user ne null && user.isChallenge()}">
-                      <a href="#">
-                        <i class="fa fa-trophy fa-fw"></i> Top Gun<span class="fa arrow"></span>
-                      </a>
-                     <ul  class="nav nav-second-level">
-                          <li>
-                             <a id="challenge-link" href="/app/challenge"> Challenge</a>
-                         </li>
-                         <li>
+                </div>
+            </li>
 
-                             <a th:id="'challenge-display-link-' + ${challengeSeason.getId()}"
-                                th:href="@{/app/display/{id} (id=${challengeSeason.getId()})}"
-                                     >Standings</a>
-                         </li>
-                         <li>
-                             <a th:href="@{/app/schedule/{id} (id=${challengeSeason.getId()})}">Schedule</a>
-                         </li>
-                     </ul>
-                </li>
-                <li th:if="${userTeams ne null}">
-                    <a href="#">
-                        <i class="fa fa-users fa-fw"></i> My Teams<span class="fa arrow"></span>
-                    </a>
-                    <ul class="nav nav-second-level">
-                        <li th:if="${not team.isChallenge()}" th:each="team : ${userTeams}">
-                             <a href="#">
-                                 <i class="fa fa-users fa-fw"></i><span th:text="${team.getName()}"></span><span class="fa arrow"></span>
-                             </a>
-                            <ul  class="nav nav-third-level">
-                                <li>
-                                    <a th:id="'team-display-link-' + ${team.getId()}"
-                                       th:href="@{/app/display/{id}/{teamId} (id=${team.getSeason().getId()},teamId=${team.getId()})}"
-                                       >Standings</a>
-                                </li>
-                                <li >
-                                    <a th:href="@{/app/schedule/{id} (id=${team.getSeason().getId()},teamId=${team.getId()})}">Schedule</a>
-                                </li>
-                                <li>
-                                    <a th:href="@{/app/leaders/{id} (id=${team.getSeason().getId()})}">Leaders</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li th:if="${user ne null}">
+            <li>
+                <a id="home-link" href="/app/home"><i class="fa fa-dashboard fa-fw"></i> Home</a>
+            </li>
 
-                    <a th:href="@{/app/stats/{id} (id=${user.getId()})}">
-                        <i class="fa fa-bar-chart"></i> My Stats</a>
-                </li>
-                <li th:if="${user ne null && user.isAdmin()}">
-                    <a href="#" ><i class="fa fa-gears fa-fw"></i> Admin <span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
-                         <li>
-                             <a href="/app/season"> <i class="fa fa-sun-o"></i> Season</a>
-                        </li>
-                        <li>
-                            <a href="/app/user"><i class="fa fa-user fa-fw"></i> Users</a>
-                        </li>
-                        <li>
-                            <a href="/app/team"><i class="fa fa-users fa-fw"></i> Teams</a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <span class="glyphicon glyphicon-th-list"></span> Scores<span class="fa arrow"></span>
-                            </a>
-                            <!--/*@thymesVar id="seasons" type="List<com.society.leagues.client.api.domain.Season>"*/-->
-                            <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
-                            <ul  th:if="${activeSeasons ne null}" class="nav nav-third-level">
-                                <li th:each="season : ${activeSeasons}">
-                                    <a th:id="${season.getShortName().replaceAll(' ','') + '-scores'}"
-                                       th:href="@{/app/scores/{id}(id=${season.getId()})}"
-                                       th:text="${season.getShortName()}"></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a   href="#"><i class="fa fa-trophy fa-fw"></i> Standings <span class="fa arrow"></span></a>
-                            <ul  th:if="${activeSeasons ne null}" class="nav nav-third-level">
-                                <li th:each="season : ${activeSeasons}">
-                                    <a th:id="${season.getShortName().replaceAll(' ','') + '-standings'}"
-                                       th:href="@{/app/display/{id} (id=${season.getId()})}"
-                                       th:text="${season.getShortName()}"></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a  href="#"><i class="fa fa-calendar fa-fw"></i> Schedule <span class="fa arrow"></span></a>
-                            <ul  th:if="${activeSeasons ne null}" class="nav nav-third-level">
-                                <li th:each="season : ${activeSeasons}">
-                                    <a th:id="${season.getShortName().replaceAll(' ','')}"
-                                       th:href="@{/app/schedule/{id} (id=${season.getId()})}"
-                                       th:text="${season.getShortName()}"></a>
-                                </li>
-                           </ul>
-                        </li>
-                          <li>
-                            <a href="#">
-                                <span class="glyphicon glyphicon-th-list"></span> Leaders<span class="fa arrow"></span>
-                            </a>
-                            <!--/*@thymesVar id="seasons" type="List<com.society.leagues.client.api.domain.Season>"*/-->
-                            <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
-                            <ul  th:if="${activeSeasons ne null}" class="nav nav-third-level">
-                                <li  th:each="season : ${activeSeasons}">
-                                    <div class="hide" >
-                                        <a th:id="${season.getDay() + '-leaders-all'}"
-                                           th:href="@{/app/leaders/{id}?perPage=200 (id=${season.getId()})}"
-                                           th:text="${season.getShortName()}"></a>
-                                    </div>
-                                    <a th:if="${not season.isChallenge()}" th:id="${season.getDay() + '-leaders'}"
-                                       th:href="@{/app/leaders/{id}(id=${season.getId()})}"
-                                       th:text="${season.getShortName()}"></a>
-                                    <a th:if="${season.isChallenge()}"
-                                       th:id="${season.getDay() + '-leaders'}"
-                                       th:href="@{/app/display/{id}(id=${season.getId()})}"
-                                       th:text="${season.getShortName()}"></a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-    </aside>
+            <li th:if="${user ne null && user.isChallenge()}">
+                <a href="javascript:;" data-toggle="collapse" data-target="#topgun-dropdown">
+
+                    <i class="fa fa-trophy fa-fw"></i> Top Gun <i class="fa fa-fw fa-arrow"></i>
+                </a>
+                <ul id="topgun-dropdown" class="">
+                    <li>
+                        <a id="challenge" href="/app/challenge"> Challenge</a>
+                    </li>
+                    <li>
+                        <a id="challenge-standings" th:href="@{/app/display/{id} (id=${challengeSeason.getId()})}">Standings</a>
+                    </li>
+                    <li>
+                        <a  id="challenge-schedule" th:href="@{/app/schedule/{id} (id=${challengeSeason.getId()})}">Schedule</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li >
+                <a href="javascript:;" data-toggle="collapse"  data-target="#my-teams">
+                    <i class="fa fa-users fa-fw"></i> My Teams<span class="fa arrow"></span>
+                </a>
+                <ul th:if="${userTeams ne null}" id="my-teams" class="">
+                    <li th:if="${not team.isChallenge()}" th:each="team : ${userTeams}">
+                        <a  href="javascript:;" data-toggle="collapse" th:attr="data-target='#team-menu-' + ${team.getId()}">
+                            <i class="fa fa-users fa-fw"></i>
+                            <span th:text="${team.getName()}"></span>
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ul th:id="${'team-menu-' + team.getId()}" class="">
+                            <li style="list-style: none">
+                                <a th:id="'team-display-link-' + ${team.getId()}"
+                                   th:href="@{/app/display/{id}/{teamId} (id=${team.getSeason().getId()},teamId=${team.getId()})}"
+                                >Standings</a>
+                            </li>
+                            <li style="list-style: none">
+                                <a th:href="@{/app/schedule/{id} (id=${team.getSeason().getId()},teamId=${team.getId()})}">Schedule</a>
+                            </li>
+                            <li style="list-style: none">
+                                <a th:href="@{/app/leaders/{id} (id=${team.getSeason().getId()})}">Leaders</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li >
+                <a id="my-stats" th:if="${user ne null}" th:href="@{/app/stats/{id} (id=${user.getId()})}">
+                    <i  th:if="${user ne null}" class="fa fa-bar-chart"></i> My Stats
+                </a>
+                <a  th:if="${user eq null}" href="#">
+                    <i class="fa fa-bar-chart"></i> My Stats
+                </a>
+            </li>
+        </ul>
+    </div>
 </nav>

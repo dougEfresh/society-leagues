@@ -35,8 +35,8 @@ public class DisplayResource extends BaseController {
         return processDisplay(seasonId, model, teamId, userId);
     }
 
-    @RequestMapping(value = {"/display/{seasonId}/topgun/{userId}"}, method = RequestMethod.GET)
-    public String displayTopGunStandings(@PathVariable String seasonId, @PathVariable String userId, Model model, HttpServletResponse response) throws IOException {
+    @RequestMapping(value = {"/display/{seasonId}/user/{userId}"}, method = RequestMethod.GET)
+    public String displaySeasonUserStandings(@PathVariable String seasonId, @PathVariable String userId, Model model, HttpServletResponse response) throws IOException {
         return processDisplay(seasonId, model, null, userId);
     }
 
@@ -47,7 +47,8 @@ public class DisplayResource extends BaseController {
 
     public String processDisplay(@NotNull String seasonId, @NotNull Model model, String teamId, String userId) {
         Season s = seasonApi.get(seasonId);
-        List<Team> teams = Stat.sortTeamStats(statApi.getTeamSeasonStats(s.getId()));
+        List<Team> teams = Stat.sortTeamStats(statApi.teamSeasonStats(s.getId()));
+        teams.parallelStream().forEach(t->t.setMembers(teamApi.members(t.getId())));
         model.addAttribute("season",s);
         model.addAttribute("displayTeams", teams);
         Team team =  null ;
@@ -117,10 +118,19 @@ public class DisplayResource extends BaseController {
 
         if (userId != null) {
             User u = userApi.get(userId);
+
             List<PlayerResult> results = playerResultApi.getResultsSummary(userId, seasonId);
-            results.forEach(r->r.setReferenceUser(u));
+            /**
+             * Populate Teams with stats in PlayerResults
+             */
+            results.parallelStream().forEach(r->{
+                r.setReferenceUser(u);
+                r.getTeamMatch().setHome(teams.stream().filter(t->t.equals(r.getTeamMatch().getHome())).findAny().get());
+                r.getTeamMatch().setAway(teams.stream().filter(t->t.equals(r.getTeamMatch().getAway())).findAny().get());
+            });
+
             model.addAttribute("results", results);
-            model.addAttribute("resultUser", userApi.get(userId));
+            model.addAttribute("resultUser", u);
             model.addAttribute("stats", statApi.getUserStatsSummary(userId).stream()
                     .filter(st -> s.equals(st.getSeason()))
                     .filter(st -> st.getType() == StatType.USER_SEASON)

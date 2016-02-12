@@ -13,10 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.social.connect.web.ProviderSignInUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -32,15 +29,15 @@ public class SignUpResource {
     @Autowired UserService userService;
     @Autowired LeagueService leagueService;
 
-    @RequestMapping(value="/api/signup", method= RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public User signup(@RequestParam String email, WebRequest webRequest,HttpServletRequest request, HttpServletResponse response) {
-        UserDetails userDetails = principleDetailsService.loadUserByUsername(email);
+    @RequestMapping(value="/api/signup", method= RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public User signup(@RequestBody User user, WebRequest webRequest, HttpServletRequest request, HttpServletResponse response) {
+        UserDetails userDetails = principleDetailsService.loadUserByUsername(user.getLogin().toLowerCase());
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(userDetails.getUsername(),userDetails.getPassword(),userDetails.getAuthorities())
         );
-        providerSignInUtils.doPostSignUp(email, webRequest);
+        providerSignInUtils.doPostSignUp(user.getLogin().toLowerCase(), webRequest);
         persistentTokenBasedRememberMeServices.loginSuccess(request, response, SecurityContextHolder.getContext().getAuthentication());
-        userService.populateProfile(leagueService.findByLogin(email));
-        return leagueService.findByLogin(email);
+        userService.populateProfile(leagueService.findByLogin(user.getLogin().toLowerCase()));
+        return leagueService.findByLogin(user.getLogin().toLowerCase());
     }
 }

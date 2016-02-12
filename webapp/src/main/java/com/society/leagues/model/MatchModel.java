@@ -1,9 +1,6 @@
 package com.society.leagues.model;
 
-import com.society.leagues.client.api.domain.Handicap;
-import com.society.leagues.client.api.domain.PlayerResult;
-import com.society.leagues.client.api.domain.Team;
-import com.society.leagues.client.api.domain.TeamMatch;
+import com.society.leagues.client.api.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
@@ -56,9 +53,13 @@ public class MatchModel extends TeamMatch {
         return racks;
     }
 
-   public int forfeits(Team t) {
+    public int forfeits(Team t) {
        return getHome().equals(t) ? getHomeForfeits() : getAwayForfeits();
    }
+
+    public Team getOpponent(User user) {
+        return getHome().hasUser(user) ? getAway() : getHome();
+    }
 
     public int getHomeCumulativeHC() {
         if (!hasPlayerResults() || getSeason().isNine() || getSeason().isChallenge())

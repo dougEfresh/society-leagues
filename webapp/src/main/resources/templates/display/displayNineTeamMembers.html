@@ -1,11 +1,10 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org">
     <div class="table-responsive">
-        <table th:if="${not #lists.isEmpty(displayMemberStats)}"  th:id="${'table-team-members-' + team.getId()}" class="table table-bordered table-striped table-condensed">
+        <table th:if="${not #lists.isEmpty(displayMemberStats)}"  th:id="${'table-team-members-' + team.getId()}" class="table table-stats">
 
             <thead>
             <tr>
-                <th>#</th>
                 <th>Player</th>
                 <th>HC</th>
                 <th>W</th>
@@ -19,7 +18,6 @@
             <!--/*@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"*/-->
             <!--/*@thymesVar id="team" type="com.society.leagues.client.api.domain.Team"*/-->
             <tr th:id="'team-member-' + ${stat.getUser().getId()}" th:each="stat : ${displayMemberStats}">
-                <td th:text="${stat.getRank()}"></td>
                 <td class="schedule-link">
                     <a href="#"
                        th:href="@{/app/display/{id}/{teamId}/{userId} (id=${season.getId()},teamId=${team.getId()},userId=${stat.getUser().getId()})}"
@@ -29,7 +27,8 @@
                 <td th:text="${stat.getLoses()}"></td>
                 <td th:text="${stat.getRacksWon()}"></td>
                 <td th:text="${stat.getRacksLost()}"></td>
-                <td th:text="${#numbers.formatDecimal(stat.getRackPct(),0,3)}"></td>
+                <td th:text="${'% ' + #numbers.formatDecimal(stat.getRackPct()*100,0,2)}"></td>
+
             </tr>
             </tbody>
         </table>

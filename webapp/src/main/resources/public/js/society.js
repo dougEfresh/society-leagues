@@ -26,7 +26,7 @@ function challengeChange() {
  else
      window.location = '/app/challenge?date=' + date + '&userId=' + userId;
 
-
+    $('.society-well-slots').hide();
 }
 function challengeAcceptSlot() {
  var date = $('#challenge-date').val();
@@ -39,17 +39,34 @@ function challengeAcceptSlot() {
 
 }
 
-
-
 function changeTeamSeason(e) {
     var id = $('#team-seasons').val();
     window.location = '/app/team/season/' + id;
 }
 
+function changeAdminSeason(e) {
+    var id = $('#admin-seasons').val();
+    console.log('Changing cookie to '  + id);
+    //window.adminSeason = id;
+    Cookies.set('admin-season',id);
+    $('#admin-scores').attr("href",'/app/scores/' + id);
+    $('#admin-schedules').attr("href",'/app/schedule/' + id);
+    $('#admin-leaders').attr("href",'/app/leaders/' + id);
+    $('#admin-standings').attr("href",'/app/display/' + id);
+    $('#admin-season').attr("href",'/app/season/' + id);
+    $('#admin-teams').attr("href",'/app/teams/season/' + id);
+}
+
 function searchUser(e) {
+    var id = $('#users-search').val();
+    window.location = '/app/stats/' + id;
+}
+
+function searchAdminUser(e) {
     var id = $('#users-search').val();
     window.location = '/app/user/' + id;
 }
+
 function seasonChange(e) {
     var id = $('#season-select').val();
     window.location = '/app/season?seasonId=' + id;
@@ -134,6 +151,12 @@ function searchUserStats(e) {
               perPageDefault: 10
          }
      });
+
+      $('.table-top-gun-results').dynatable( {
+      dataset : {
+              perPageDefault: 10
+         }
+     });
      $('#table-team-schedule').dynatable( {
      dataset: {
                perPageDefault: 20,
@@ -162,8 +185,8 @@ function searchUserStats(e) {
 
            });
 
-
-          $('#table-team-standings').dynatable( {
+     /*
+     $('#table-team-standings').dynatable( {
      dataset: {
                perPageDefault: 50,
                perPageOptions: [10,20,50,100]
@@ -176,9 +199,17 @@ function searchUserStats(e) {
            }
 
            });
+           */
 
      $('#table-leaders').dynatable();
-     $('#table-teams').dynatable();
+     $('#table-teams').dynatable(  {
+             dataset: {
+               perPageDefault: 20,
+               perPageOptions: [10,20,50,100]
+
+           }
+     });
+
      $('#table-users').dynatable();
      $('#table-team-members').dynatable(
          {
@@ -192,39 +223,3 @@ function searchUserStats(e) {
              }
          });
  });
-
-$(function() {
-    $('#side-menu').metisMenu();
-});
-
-//Loads the correct sidebar on window load,
-//collapses the sidebar on window resize.
-// Sets the min-height of #page-wrapper to window size
-$(function() {
-    $(window).bind("load resize", function() {
-        topOffset = 50;
-        width = (this.window.innerWidth > 0) ? this.window.innerWidth : this.screen.width;
-        if (width < 768) {
-            $('div.navbar-collapse').addClass('collapse');
-            topOffset = 100; // 2-row-menu
-        } else {
-            $('div.navbar-collapse').removeClass('collapse');
-        }
-
-        height = ((this.window.innerHeight > 0) ? this.window.innerHeight : this.screen.height) - 1;
-        height = height - topOffset;
-        if (height < 1) height = 1;
-        if (height > topOffset) {
-            $("#page-wrapper").css("min-height", (height) + "px");
-        }
-    });
-
-    var url = window.location;
-    var element = $('ul.nav a').filter(function() {
-        return this.href == url || url.href.indexOf(this.href) == 0;
-    }).addClass('active').parent().parent().addClass('in').parent();
-    if (element.is('li')) {
-        element.addClass('active');
-    }
-});
-

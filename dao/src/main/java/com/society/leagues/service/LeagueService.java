@@ -1,5 +1,6 @@
 package com.society.leagues.service;
 
+import com.society.leagues.InvalidLeagueObject;
 import com.society.leagues.cache.CachedCollection;
 import com.society.leagues.cache.CacheUtil;
 import com.society.leagues.client.api.domain.*;
@@ -37,10 +38,18 @@ public class LeagueService {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
         cacheUtil.initialize(mongoRepositories);
+        purge(new Season("-1"));
+        purge(new Team("-1"));
+        purge(new User("-1"));
+        purge(new TeamMatch("-1"));
+        purge(new PlayerResult("-1"));
     }
 
     @SuppressWarnings("unchecked")
     public <T extends LeagueObject> T save(final T entity) {
+        if ("-1".equals(entity.getId())) {
+            throw new InvalidLeagueObject(entity.getId() + " " + entity.getClass().getCanonicalName());
+        }
         MongoRepository repo = cacheUtil.getCache(entity).getRepo();
         Set<ConstraintViolation<T>> constraintViolations = validator.validate(entity);
         if (!constraintViolations.isEmpty()) {
@@ -48,7 +57,7 @@ public class LeagueService {
             for (ConstraintViolation<T> constraintViolation : constraintViolations) {
                 sb.append(constraintViolation.toString());
             }
-            throw new RuntimeException("Could not validate " + entity + "\n" + sb.toString());
+            throw new InvalidLeagueObject("Could not validate " + entity + "\n" + sb.toString());
         }
         repo.save(entity);
         T newEntity = (T) repo.findOne(entity.getId());

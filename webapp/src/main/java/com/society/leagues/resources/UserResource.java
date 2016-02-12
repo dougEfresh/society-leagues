@@ -45,7 +45,7 @@ public class UserResource extends BaseController {
             u.addHandicap(new HandicapSeason(Handicap.NA,s));
         }
         u.setHandicapSeasons(u.getActiveHandicapSeasons());
-        model.addAttribute("editUserTeams", teamApi.getTeamsByUser(u.getId()).stream().filter(t->t.getSeason().isActive()).collect(Collectors.toList()));
+        model.addAttribute("editUserTeams", teamApi.userTeams(u.getId()).stream().filter(t->t.getSeason().isActive()).collect(Collectors.toList()));
         model.addAttribute("editUser", u);
         return "user/editUser";
     }
@@ -54,6 +54,12 @@ public class UserResource extends BaseController {
     public String edit(@PathVariable String id , Model model) {
         return processEditUser(userApi.get(id),model);
     }
+
+    @RequestMapping(value = {"/user/delete/fb/profile/{id}"}, method = RequestMethod.GET)
+    public String deleteFbPofile(@PathVariable String id , Model model) {
+        return processEditUser(userApi.get(id),model);
+    }
+
 
     @RequestMapping(value = {"/user/new"}, method = RequestMethod.GET)
     public String edit(Model model, HttpServletResponse response) {
@@ -74,7 +80,8 @@ public class UserResource extends BaseController {
             }
             User u = userApi.modify(user);
             model.addAttribute("save","success");
-            return processEditUser(u,model);
+            processEditUser(u,model);
+            return "redirect:/app/user/" + u.getId();
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             model.addAttribute("save","error");

@@ -9,7 +9,7 @@
  * Date: Tue Jan 02 2014
  */
 th.dynatable-head {
-  background: #006a72;
+  background: black;
 }
 
 th a {
@@ -70,4 +70,8 @@ th a:hover {
 .dynatable-disabled-page:hover {
   background: none;
   color: #999;
+}
+
+.dynatable-per-page-select {
+  background-color: black;
 }

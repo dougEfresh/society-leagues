@@ -35,7 +35,7 @@ public class Slot extends LeagueObject {
     public static List<LocalDateTime> getDefault(LocalDateTime date) {
         List<LocalDateTime> slots = new ArrayList<>();
         LocalDateTime startDateNoon = date.withHour(11).withMinute(0).withSecond(0);
-        for (int i = 0; i< 15; i++) {
+        for (int i = 0; i< 16; i++) {
             LocalDateTime dt = startDateNoon.plusMinutes(i*30);
             slots.add(dt);
         }

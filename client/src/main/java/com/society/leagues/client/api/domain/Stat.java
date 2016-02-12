@@ -29,7 +29,6 @@ public class Stat {
     public Stat() {
     }
 
-
     public void setType(StatType type) {
         this.type = type;
     }
@@ -38,19 +37,6 @@ public class Stat {
     public String getGame() {
         return getType() == StatType.MIXED_EIGHT ? "8" : "9";
     }
-
-    public static Stat buildHandicapStats(final List<PlayerResult> results, StatType statType, User user, Handicap handicap) {
-        Stat s= new Stat();
-        if (results == null || results.isEmpty())
-            return null;
-
-        s.setSeason(results.get(0).getSeason());
-        s.setUser(user);
-        s.setHandicap(handicap);
-        calculate(user,s,results);
-        return s;
-    }
-
 
     public static Stat buildTeamStats(final Team team, final List<TeamMatch> matches) {
         Stat s = new Stat();
@@ -98,14 +84,6 @@ public class Stat {
         }
     }
 
-    public static Stat buildPlayerTeamStats(final User u, final Team team , final List<PlayerResult> matches) {
-        Stat s = new Stat();
-        s.setUser(u);
-        s.setSeason(team.getSeason());
-        calculate(u,s,matches);
-        return s;
-    }
-
     public static Stat buildPlayerSeasonStats(final User u, final Season season , final List<PlayerResult> matches) {
         Stat s = new Stat();
         s.setUser(u);
@@ -150,7 +128,7 @@ public class Stat {
         Stat s = new Stat();
         s.setUser(u);
         s.type = StatType.ALL;
-        for (Stat stat : stats) {
+        for (Stat stat : stats.stream().filter(st->st.getType() == StatType.USER_SEASON).collect(Collectors.toList())) {
             s.racksLost += stat.racksLost;
             s.racksWon += stat.racksWon;
             s.wins += stat.wins;
@@ -229,6 +207,7 @@ public class Stat {
         this.user = user;
     }
 
+    @JsonView(PlayerResultSummary.class)
     public Integer getSetLoses() {
         return setLoses;
     }
@@ -237,6 +216,7 @@ public class Stat {
         this.setLoses = setLoses;
     }
 
+    @JsonView(PlayerResultSummary.class)
     public Integer getSetWins() {
         return setWins;
     }
@@ -288,6 +268,15 @@ public class Stat {
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    public static Comparator<Stat> sortSeasonStats() {
+        return new Comparator<Stat>() {
+            @Override
+            public int compare(Stat o1, Stat o2) {
+                return  o2.getPoints().compareTo(o1.getPoints());
+            }
+        };
     }
 
     public static List<Team> sortTeamStats(List<Team> stats) {

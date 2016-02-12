@@ -39,6 +39,7 @@ appender("SYSLOG", SyslogAppender) {
   suffixPattern = "[%thread] %logger %msg"
 }
 
+logger("feign.Logger", DEBUG)
 logger("com.society", DEBUG)
 logger("org.springframework.web",INFO)
 logger("org.springframework.security",INFO)

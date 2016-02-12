@@ -4,7 +4,7 @@
     <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
     <!--/*@thymesVar id="date" type="java.lang.String"*/-->
     <div class="table-responsive">
-        <table id="team-match-results" class="table table-stripped table-bordered table-condensed table">
+        <table id="team-match-results" class="table ">
             <thead>
             <th></th>
             <th></th>
@@ -25,12 +25,12 @@
             <tr th:id="${match.getId()}" th:each="match, rowStat: *{matches}">
                   <td class="delete">
                     <a th:id="${'delete-' + match.getId()}" th:href="@{/app/scores/{id}/{matchId}/delete/{date} (id=${season.id},date=${date},matchId=${match.id})}">
-                        X
+                        <h4><span class="label label-danger"><span class="glyphicon glyphicon-remove"></span></span></h4>
                     </a>
                 </td>
                  <td class="results">
                     <a th:id="${'player-results-' + match.getId()}" th:href="@{/app/scores/{id}/{matchId} (id=${season.id},date=${date},matchId=${match.id})}">
-                        Results
+                        <h4><span class="label label-primary">Results</span></h4>
                     </a>
                 </td>
                 <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.TeamMatch"*/-->
@@ -83,7 +83,7 @@
                 </td>
                  <td class="sheet-link">
                     <a th:id="${'sheet-' + match.getId()}" th:href="@{/app/sheets/{matchId} (matchId=${match.id})}">
-                        Sheet
+                        <h4><span class="label label-primary">Sheets</span></h4>
                     </a>
                 </td>
             </tr>

@@ -1,9 +1,16 @@
 package com.society.leagues.client.api.domain;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.society.leagues.converters.DateTimeDeSerializer;
+import com.society.leagues.converters.DateTimeSerializer;
+
 import java.time.LocalDateTime;
 
 public class TokenReset {
     String token;
+    @JsonSerialize(using = DateTimeSerializer.class)
+    @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime created = LocalDateTime.now();
 
     public TokenReset(String token) {
