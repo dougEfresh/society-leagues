@@ -1,9 +1,12 @@
 package com.society.leagues.client.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.society.leagues.client.views.PlayerResultSummary;
+
 public class UserProfile {
 
     String profileUrl;
-    String imageUrl;
+    @JsonView(PlayerResultSummary.class) String imageUrl;
 
     public String getProfileUrl() {
         return profileUrl;

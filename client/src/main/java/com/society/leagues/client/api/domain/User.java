@@ -37,6 +37,7 @@ public class User extends LeagueObject {
 
     Set<Team> currentTeams = new HashSet<>();
 
+    @JsonView(PlayerResultSummary.class)
     UserProfile userProfile = new UserProfile();
 
     static String dftEncode = AccessController.doPrivileged(new GetPropertyAction("file.encoding"));
