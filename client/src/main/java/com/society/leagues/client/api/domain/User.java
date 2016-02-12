@@ -26,9 +26,9 @@ public class User extends LeagueObject {
     @NotNull String email;
     String password;
     @NotNull String login;
-    @NotNull Role role = Role.PLAYER;
-    @NotNull Status status = Status.ACTIVE;
-    String avatarHash;
+    @JsonView(PlayerResultSummary.class) @NotNull Role role = Role.PLAYER;
+    @JsonView(PlayerResultSummary.class) @NotNull Status status = Status.ACTIVE;
+    @JsonView(PlayerResultSummary.class) String avatarHash;
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     LocalDateTime created = LocalDateTime.now();
