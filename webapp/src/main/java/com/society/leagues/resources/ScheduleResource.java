@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,27 +23,12 @@ public class ScheduleResource extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/schedule/{seasonId}")
     public String getSchedule(@PathVariable String seasonId, @RequestParam(required = false) String teamId, Model model) {
         //Map<String,List<TeamMatch>> matches = teamMatchApi.matchesBySeason(seasonId);
-        Map<String,List<TeamMatch>> matches = teamMatchApi.matchesBySeasonSummary(seasonId);
+        List<TeamMatch> matches = teamMatchApi.matchesBySeasonList(seasonId);
         Season season = seasonApi.get(seasonId);
+        model.addAttribute("season", season);
+        LocalDate yest = LocalDateTime.now().minusDays(1).toLocalDate();
         if (season.isChallenge()) {
-            LocalDateTime tenWeeks = LocalDateTime.now().minusWeeks(11);
-            for (String s : matches.keySet()) {
-                matches.put(s,matches.get(s).stream().filter(m->m.getMatchDate()
-                        .isAfter(tenWeeks)).collect(Collectors.toList()
-                )
-                );
-            }
-            Map<String,List<TeamMatch>> orderMatches = new HashMap<>();
-            for (String s : matches.keySet()) {
-                if (!matches.get(s).isEmpty()) {
-                    orderMatches.put(s,matches.get(s));
-                }
-            }
-             Map<String,List<TeamMatch>> oMatches = new HashMap<>();
-            for (String s : orderMatches.keySet()) {
-                oMatches.put(s,orderMatches.get(s));
-            }
-            matches = oMatches;
+            matches = matches.stream().filter(tm->tm.getMatchDate().toLocalDate().isAfter(yest)).collect(Collectors.toList());
         }
         Map<String,List<TeamMatch>> sortedMatches = new TreeMap<>((Comparator) (o1, o2) -> {
             if (season.isChallenge()) {
@@ -50,27 +36,17 @@ public class ScheduleResource extends BaseController {
             }
             return o1.toString().compareTo(o2.toString());
         });
-        for (String s : matches.keySet()) {
-            sortedMatches.put(s,matches.get(s));
-        }
-        matches = sortedMatches;
-        int maxGames = 0;
-        for (String s : matches.keySet()) {
-            if (maxGames < matches.get(s).size()) {
-                maxGames = matches.get(s).size();
-            }
-        }
-        final User u = model.containsAttribute("user") ? (User) model.asMap().get("user") : userApi.get();
-        model.addAttribute("userTeam",
-                teamApi.userTeams(u.getId()).stream()
-                .filter(t->t.getSeason().getId().equals(seasonId))
-                .filter(t->t.hasUser(u)).findFirst().orElse(new Team("-1")));
+        sortedMatches = matches.stream().collect(Collectors.groupingBy(t->t.getMatchDate().toLocalDate().toString()));
 
-        model.addAttribute("maxHeight",maxGames*45);
+        model.addAttribute("userTeam",
+                teamApi.userTeams(user.getId()).stream()
+                .filter(t->t.getSeason().getId().equals(seasonId))
+                .filter(t->t.hasUser(user)).findFirst().orElse(new Team("-1")));
+
         List<Team> teams = new ArrayList<>();
         teams.addAll(statApi.teamSeasonStats(seasonId));
-        model.addAttribute("teams",teams);
-        model.addAttribute("season",seasonApi.get(seasonId));
+        model.addAttribute("teams",teams.stream().filter(t->season.isChallenge() && !t.isDisabled()).collect(Collectors.toList()));
+
         if (teamId == null  || teamId.equals("-1")) {
             model.addAttribute("team", new Team("-1"));
             Map<String,List<MatchModel>> sorted = new TreeMap<>(new Comparator() {
@@ -83,9 +59,9 @@ public class ScheduleResource extends BaseController {
                 }
             });
             sorted.clear();
-            for (String s : matches.keySet()) {
+            for (String s : sortedMatches.keySet()) {
                 List<MatchModel> teamMatches = new ArrayList<>();
-                for (TeamMatch teamMatch : matches.get(s)) {
+                for (TeamMatch teamMatch : sortedMatches.get(s)) {
                     MatchModel matchModel = MatchModel.fromTeam(Arrays.asList(teamMatch)).iterator().next();
                     if (season.isChallenge()) {
                         teamMatch.getHome().setMembers(teamApi.members(teamMatch.getHome().getId()));
