@@ -71,6 +71,8 @@ casper.test.begin('Test Home Page', function suite(test) {
         test.assertExists('#stats-app', "Stats App");
         this.back();
     });
+
+
     casper.run(function(){
         test.done();
     });

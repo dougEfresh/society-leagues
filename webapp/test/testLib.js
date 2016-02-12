@@ -84,7 +84,6 @@ return function(season) {
 
 var login = function (test,user) {
     casper.then(function(){
-        this.debugHTML();
         test.assertExists("#login-app")
     });
 
@@ -97,9 +96,9 @@ var login = function (test,user) {
         test.assertExists("#login")
     });
     casper.then(function () {
-        this.fill('form#login', {
+        this.fill('form', {
             'username': user,
-            'password': "abd123"
+            'password': "abc123"
         }, false);
     });
     casper.then(function () {
