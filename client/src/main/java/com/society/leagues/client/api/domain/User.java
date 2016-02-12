@@ -304,7 +304,7 @@ public class User extends LeagueObject {
         if (getUserProfile() == null || getUserProfile().getImageUrl() == null) {
             if (avatarHash != null) {
                 return String.format("%s/%s?d=%s",
-                        "http://www.gravatar.com/avatar",
+                        "https://www.gravatar.com/avatar",
                             avatarHash,
                             defaultAvatarUrl);
             }
