@@ -3,9 +3,9 @@
      layout:decorator="layout">
     <div id="schedule-app" layout:fragment="content">
         <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
-        <div class="society-well">
+        <div th:if="${!season.isChallenge()}" class="society-well">
             <div class="well-title">
-            <h4>
+            <h4 >
                 <span  th:text="${season.getFormattedName()}"></span>
             </h4>
             </div>
