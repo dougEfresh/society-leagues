@@ -1,20 +1,14 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
     <div id="stats-app"  layout:fragment="content">
-
-        <div class="society-well">
+        <div class="society-well society-well-user-stats">
         <div class="well-title">
             <h3>Stats - Coming Soon</h3>
-            <div th:if="${statUser ne null}" class="input-group custom-search-form">
-            <select id="users-stats-search" class="form-control" style="display: inline-block">
+        </div>
+            <select th:if="${statUser ne null}" id="users-stats-search">
                 <option th:each="u : ${allUsers}" th:selected="${u.getId().equals(statUser.getId())}"
                         th:value="${u.id}" th:text="${u.name}"></option>
             </select>
-            <span class="input-group-btn">
-                <button onclick="searchUserStats()" class="btn btn-default" type="button">
-                    <i class="fa fa-search"></i>
-                </button>
-            </span>
         </div>
             <!--
         </div>

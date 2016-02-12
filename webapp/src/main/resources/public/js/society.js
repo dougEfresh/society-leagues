@@ -95,6 +95,24 @@ function searchUserStats(e) {
 }
 
  $(document).ready(function() {
+
+     $('#team-members').selectize({
+         persist: false,
+         maxItems: 8
+});
+     $('#users-search').selectize({
+         persist: false,
+         maxItems: 1,
+         onChange: function(v) {  window.location = '/app/stats/' + v;}
+        });
+     $('#users-stats-search').selectize({
+         persist: false,
+         maxItems: 1,
+         onChange: function(v) {  if (v != null && v != undefined && v.length > 0 ) window.location = '/app/stats/' + v;}
+        });
+
+
+/*
      $('#users-search').multiselect({
          enableFiltering: true,
          enableCaseInsensitiveFiltering: true,
@@ -104,6 +122,7 @@ function searchUserStats(e) {
                  window.location = '/app/stats/' +  $(option).val();
          }
      });
+     */
 
  /*
      $.dynatableSetup({
@@ -148,9 +167,8 @@ function searchUserStats(e) {
      }
      );
 
-     $("#team-members").select2({ width: 600 });
+     //$("#team-members").select2({ width: 600 });
      /*$("#users-search").select2();*/
-     $("#users-stats-search").select2();
      $('#table-player-results').dynatable( {
          dataset : {
               perPageDefault: 10

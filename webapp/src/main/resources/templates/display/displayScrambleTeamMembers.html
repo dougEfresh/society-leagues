@@ -19,6 +19,7 @@
         <!--/*@thymesVar id="stat" type="com.society.admin.model.ScrambleStatModel"*/-->
         <tr th:id="'team-member-' + ${stat.getUser().getId()}" th:each="stat : ${displayMemberStats}">
             <td th:class="${stat.getUser().equals(displayUser) ? ' active schedule-link' : 'schedule-link'}">
+                <div th:replace="/fragments/avatarUser"></div>
                 <a th:href="@{/app/display/{id}/{teamId}/{userId} (id=${season.getId()},teamId=${team.getId()},userId=${stat.getUser().getId()})}">
                     <span th:text="${stat.getUser().getName()}"></span>
                 </a>

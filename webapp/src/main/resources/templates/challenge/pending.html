@@ -17,6 +17,7 @@
                                 </span>
                     </td>
                     <td class="challenge-name">
+                        <img class="avatar img-responsive" th:src="${challenge.getUserChallenger().getAvatarUrl()}"/>
                         <span th:text="${challenge.getChallenger().getName()}"></span>
                     </td>
                     <td class="challenge-race">

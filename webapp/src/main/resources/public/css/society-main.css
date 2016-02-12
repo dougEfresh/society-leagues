@@ -382,3 +382,9 @@ font-size: 16px;
     }
 }
 
+
+.item {
+    color: black;
+    font-size: 18px;
+    background-color: whitesmoke;
+}

@@ -39,10 +39,10 @@
     -->
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav">
-            <li th:if="${activeUsers ne null}" class="sidebar-search">
+            <li th:if="${activeUsers ne null}" style="width: 100%;" class="sidebar-search">
                 <!--<div class="input-group custom-search-form"> -->
-                    <select id="users-search" class="form-control">
-                        <option value="Search..." selected="">Search...</option>
+                    <select id="users-search" placeholder="Search...">
+                        <option value="" >Search...</option>
                         <option th:each="u : ${activeUsers}" th:value="${u.getId()}" th:text="${u.getName()}"></option>
                     </select>
                     <!--

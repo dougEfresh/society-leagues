@@ -22,7 +22,7 @@
                 <td>
                     <a th:id="'team-standing-link-' + ${stat.getTeam().getId()}"
                        th:href="@{/app/display/{id}/user/{userId} (id=${stat.getSeason().getId()},userId=${stat.getUser().getId()})}">
-                        <img class="avatar img-responsive" th:src="${stat.getUser().getAvatarUrl()}"/>
+                        <div th:replace="/fragments/avatarUser"></div>
                         <span th:text="${stat.getUser().getName()}"></span>
                     </a>
                 </td>

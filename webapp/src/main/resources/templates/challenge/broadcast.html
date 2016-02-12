@@ -14,6 +14,7 @@
                     <form th:method="GET" action="/app/challenge/accept" >
                         <input th:type="hidden" name="id" th:value="${challenge.getId()}">
                     <td>
+                        <img class="avatar img-responsive" th:src="${challenge.getUserChallenger().getAvatarUrl()}"/>
                         <a th:href="@{/app/challenge/cancel/{id} (id=${challenge.getId()})}">
                             <span th:text="${challenge.getUserChallenger().getName()}"></span>
                         </a>
