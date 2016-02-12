@@ -41,7 +41,9 @@
       <div th:if="${topPlayers ne null}" th:each="season : ${topPlayers.keySet()}" class="society-well">
           <div class="well-title">
               <h4>
-                  <a th:href="@{/app/leaders/{id} (id=${season.getId()})}" >
+                  <a th:if="${!season.isChallenge()}" th:href="@{/app/leaders/{id} (id=${season.getId()})}" >
+
+                      <a th:if="${season.isChallenge()}" th:href="@{/app/display/{id} (id=${season.getId()})}" >
                   <i class="fa fa-trophy"></i>
                   <span id="top-players">Top Players - </span>
                   <span th:text="${season.getDayName()}"></span>
@@ -62,7 +64,7 @@
                <tbody>
                <tr th:each="stat : ${topPlayers.get(season)}" >
                    <td class="name" >
-                       <div th:replace="/fragments/avatarUser"></div>
+                       <div th:replace="fragments/avatarUser"></div>
                        <a th:href="@{/app/display/{seasonId}/user/{userId} (seasonId=${stat.getSeason().getId()},userId=${stat.getUser().getId()})}">
                            <span th:text="${stat.getUser().getName()}"></span>
                        </a>
