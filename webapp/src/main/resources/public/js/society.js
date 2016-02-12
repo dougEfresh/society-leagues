@@ -100,6 +100,11 @@ function searchUserStats(e) {
          persist: false,
          maxItems: 8
 });
+       $('#challenge-slots').selectize({
+         persist: false,
+         maxItems: 6
+       });
+
      $('#users-search').selectize({
          persist: false,
          maxItems: 1,

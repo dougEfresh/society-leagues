@@ -142,6 +142,7 @@ public class LoginResource  {
             cookie += s.split(";")[0] +  " ; ";
             headers.set("Cookie",s);
             response.addHeader("Set-Cookie",s);
+            logger.info("Setting cookie: " + s);
         }
         logger.info("Got back "  + u.getName());
         Thread.sleep(100);

@@ -42,6 +42,7 @@
                   th:action="@{/app/challenge (userId=${opponent.getId()},date=${date})}"
                   method="post">
                 <input th:if="${challenger ne null}" type="hidden" th:value="${challenger.getId()}" name="id">
+                <!--
                 <div class="slot-container" th:each="slot: ${challenge.getSlots()}">
                     <input th:id="${'slot-' + slot.getId()}"
                            th:type="checkbox"
@@ -51,6 +52,12 @@
                            name="slotIds"
                            >
                 </div>
+                -->
+                <select id="challenge-slots" name="slotIds" multiple="multiple">
+                    <option  th:each="slot: ${challenge.getSlots()}" th:text="${#temporals.format(slot.getLocalDateTime(), 'h:mm')}" th:value="${slot.getId()}" >
+
+                    </option>
+                </select>
                 <div class="challenge-submit center">
                     <input class="btn btn-primary" type="submit" value="Submit">
                 </div>

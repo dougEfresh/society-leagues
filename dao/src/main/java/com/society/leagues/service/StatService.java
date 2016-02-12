@@ -125,7 +125,9 @@ public class StatService {
         resultService.refresh();
         List<MatchPoints> points = resultService.matchPoints();
         double totalPoints = 0d;
-        List<MatchPoints> pointsList = points.stream().parallel().filter(p-> p.getUser() != null && p.getUser().equals(user)).collect(Collectors.toList());
+        List<MatchPoints> pointsList = points.stream().parallel()
+                .filter(p-> p.getUser() != null && p.getUser().equals(user))
+                .collect(Collectors.toList());
         for (MatchPoints matchPoints : pointsList) {
             totalPoints += matchPoints.getWeightedAvg();
         }
