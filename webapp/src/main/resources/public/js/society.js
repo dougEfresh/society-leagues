@@ -98,10 +98,12 @@ function searchUserStats(e) {
 
      $('#team-members').selectize({
          persist: false,
+         plugins: ['remove_button'],
          maxItems: 8
 });
        $('#challenge-slots').selectize({
          persist: false,
+           plugins: ['remove_button'],
          maxItems: 6
        });
 
