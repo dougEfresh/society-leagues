@@ -8,7 +8,7 @@
                     <a th:href="@{/app/schedule/{seasonId} (seasonId=${season.getId()})} ">
                         <span class="label label-primary">See Full Schedule</span></a></div>
             </h4>
-            <select id="teams-select" th:onChange="'selectTeam()'" class="form-control">
+            <select th:if="${!season.isChallenge()}" id="teams-select" th:onChange="'selectTeam()'" class="form-control">
                     <!--/*@thymesVar id="u" type="com.society.admin.model.ChallengeUserModel"*/-->
                     <!--/*@thymesVar id="t" type="com.society.leagues.client.api.domain.Team"*/-->
                     <option th:each="t : ${teams}"

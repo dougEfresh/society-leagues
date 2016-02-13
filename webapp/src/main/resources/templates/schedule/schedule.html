@@ -10,7 +10,7 @@
             </h4>
             </div>
             <form style="display: inline-block" id="form-select-team">
-                <select id="teams-select" th:onChange="'selectTeam()'" class="form-control" >
+                <select th:if="${!season.isChallenge()}" id="teams-select" th:onChange="'selectTeam()'" class="form-control" >
                     <option value="-1">...Choose A Team... </option>
                     <!--/*@thymesVar id="u" type="com.society.admin.model.ChallengeUserModel"*/-->
                     <option th:each="t : ${teams}"

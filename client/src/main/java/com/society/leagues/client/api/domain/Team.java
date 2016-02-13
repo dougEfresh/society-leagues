@@ -17,7 +17,7 @@ import java.util.List;
 
 public class Team extends LeagueObject {
 
-    @NotNull @DBRef Season season;
+    @JsonView(PlayerResultSummary.class) @NotNull @DBRef Season season;
     @JsonView(PlayerResultSummary.class) @NotNull String name;
     @JsonSerialize(using = DateTimeSerializer.class)
     @JsonDeserialize(using = DateTimeDeSerializer.class)

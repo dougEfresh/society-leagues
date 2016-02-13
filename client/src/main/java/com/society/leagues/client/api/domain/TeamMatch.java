@@ -313,7 +313,7 @@ public class TeamMatch extends LeagueObject {
                 return "";
             Handicap h  = getHome().getChallengeUser().getHandicap(getSeason());
             Handicap a = getAway().getChallengeUser().getHandicap(getSeason());
-        return Handicap.race(h,a);
+            return Handicap.race(h,a);
         }
         if (race != null && !race.isEmpty())
             return race;
