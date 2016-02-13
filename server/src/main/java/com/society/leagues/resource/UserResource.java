@@ -114,7 +114,6 @@ public class UserResource {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public User modify(@RequestBody User user) {
         User existingUser = leagueService.findOne(user);
         if (existingUser == null) {
