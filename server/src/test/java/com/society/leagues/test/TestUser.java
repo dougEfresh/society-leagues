@@ -5,9 +5,8 @@ import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.person.Person;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.time.LocalTime;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -93,4 +92,22 @@ public class TestUser extends BaseTest {
         u = userApi.get();
         assertEquals(newUser.getId(),u.getId());
     }
+
+    @Test
+    public void testProfile() {
+        User u = userApi.active().stream().findAny().get();
+        LocalTime now = LocalTime.now();
+
+        List<LocalTime> broadcast = new ArrayList<>();
+        broadcast.add(now.plusHours(1));
+        broadcast.add(now.plusHours(2));
+
+        u.getUserProfile().setDisabledSlots(Collections.singletonList(now));
+        u.getUserProfile().setBroadcastSlots(broadcast);
+
+        User newUser = userApi.modifyProfile(u);
+        newUser.getUserProfile().getBroadcastSlots().containsAll(broadcast);
+        newUser.getUserProfile().getDisabledSlots().contains(now);
+    }
+
 }

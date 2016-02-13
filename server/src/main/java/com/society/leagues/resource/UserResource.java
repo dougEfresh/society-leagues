@@ -208,7 +208,7 @@ public class UserResource {
         return User.defaultUser();
     }
 
-    @RequestMapping(value = "/profile/modify", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/modify/profile", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public User modifyProfile(@RequestBody User user) {
         User exitsting = leagueService.findOne(new User(user.getId()));
         if (exitsting == null){

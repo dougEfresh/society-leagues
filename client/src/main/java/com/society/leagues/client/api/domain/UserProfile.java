@@ -1,7 +1,11 @@
 package com.society.leagues.client.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.society.leagues.client.views.PlayerResultSummary;
+import com.society.leagues.converters.TimeDeSerializer;
+import com.society.leagues.converters.TimeSerializer;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -11,6 +15,8 @@ public class UserProfile {
 
     String profileUrl;
     @JsonView(PlayerResultSummary.class) String imageUrl;
+    @JsonSerialize(using = TimeSerializer.class)
+    @JsonDeserialize(using = TimeDeSerializer.class)
     List<LocalTime> disabledSlots = new ArrayList<>();
     List<LocalTime> broadcastSlots = new ArrayList<>();
 
