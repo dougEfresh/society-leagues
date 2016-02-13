@@ -39,9 +39,9 @@ public class ChallengeResource extends BaseController {
         List<Challenge> existingChallenges = populateChallenge(challengeApi.challengesForUser(user.getId()));
 
         model.addAttribute("broadcast", populateChallenge(challengeApi.challenges().stream().filter(Challenge::isBroadcast).collect(Collectors.toList())));
-        model.addAttribute("sent",existingChallenges.parallelStream().filter(c->c.getStatus(user) == Status.SENT).collect(Collectors.toList()));
-        model.addAttribute("pending",existingChallenges.parallelStream().filter(c->c.getStatus(user) == Status.PENDING).collect(Collectors.toList()));
-        model.addAttribute("accepted",existingChallenges.parallelStream().filter(c->c.getStatus(user) == Status.ACCEPTED).collect(Collectors.toList()));
+        model.addAttribute("sent",existingChallenges.parallelStream().filter(c-> c.getStatus() != null && c.getStatus(user) == Status.SENT).collect(Collectors.toList()));
+        model.addAttribute("pending",existingChallenges.parallelStream().filter(c->c.getStatus() != null && c.getStatus(user) == Status.PENDING).collect(Collectors.toList()));
+        model.addAttribute("accepted",existingChallenges.parallelStream().filter(c->c.getStatus() != null && c.getStatus(user) == Status.ACCEPTED).collect(Collectors.toList()));
         if (date != null)
             processUser(userId, date, challenger, model);
 
