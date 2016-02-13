@@ -1,5 +1,6 @@
 package com.society.leagues.client.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.society.leagues.client.views.PlayerResultSummary;
 
@@ -91,6 +92,7 @@ public class Stat {
         calculate(u,s,matches);
         return s;
     }
+
 
     public void setHandicap(Handicap handicap) {
         this.handicap = handicap;
@@ -268,6 +270,12 @@ public class Stat {
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+
+    @JsonIgnore
+    public StatSeason getStatSeason() {
+        return new StatSeason(getSeason().getsDate().getYear(), getSeason().getSeasonType());
     }
 
     public static Comparator<Stat> sortSeasonStats() {

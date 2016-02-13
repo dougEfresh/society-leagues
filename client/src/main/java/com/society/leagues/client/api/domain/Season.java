@@ -133,19 +133,17 @@ public class Season extends LeagueObject   {
     }
 
     @JsonIgnore
-    public String getSeasonType() {
+    public SeasonType getSeasonType() {
         if (getStartDate() == null)
-            return "";
+            return SeasonType.UNKNOWN;
         int month = getsDate().get(ChronoField.MONTH_OF_YEAR);
-        if ( month < 3) {
-            return "Winter";
+        if ( month < 6) {
+            return SeasonType.WINTER;
         }
-
-        if (month >= 3 && month < 9) {
-            return "Summer";
+        if (month >= 6 && month <= 9) {
+            return SeasonType.SUMMER;
         }
-
-        return "Fall";
+        return SeasonType.FALL;
     }
 
     public boolean isScramble() {
@@ -207,6 +205,7 @@ public class Season extends LeagueObject   {
         return year;
     }
 
+
     public void setYear(String year) {
         this.year = year;
     }
@@ -256,6 +255,7 @@ public class Season extends LeagueObject   {
             return 0;
         }
     };
+
 
     public boolean isTuesdayNine() {
         if (division == null)

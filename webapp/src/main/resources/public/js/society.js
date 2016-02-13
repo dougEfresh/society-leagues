@@ -94,7 +94,12 @@ function searchUserStats(e) {
     window.location = '/app/stats/' + id;
 }
 
+function lifeTimeStats(v) {
+
+}
+
  $(document).ready(function() {
+
 
      $('#team-members').selectize({
          persist: false,
