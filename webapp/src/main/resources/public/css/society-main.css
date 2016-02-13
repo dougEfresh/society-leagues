@@ -224,6 +224,14 @@ td > a {
 .challenge-submit {
     margin-left: 40%;
 }
+@media(max-width:768px) {
+    .challenge-name , .name {
+        max-width: 110px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
 
 .table-responsive {
 
@@ -347,8 +355,8 @@ h4 > a , h4 > a:hover{
     max-width: 30%
 }
 
-.challenge-slot {
-    min-width: 90px;
+.challenge-slots {
+    min-width: 100px;
 }
 
 .navbar-toggle {

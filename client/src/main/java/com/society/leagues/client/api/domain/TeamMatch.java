@@ -318,7 +318,6 @@ public class TeamMatch extends LeagueObject {
         if (race != null && !race.isEmpty())
             return race;
 
-
         return "";
     }
 

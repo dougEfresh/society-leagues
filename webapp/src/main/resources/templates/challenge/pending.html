@@ -5,6 +5,9 @@
             <h4>Pending</h4>
         </div>
         <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+        <!--/*@thymesVar id="user" type="com.society.leagues.client.api.domain.User"*/-->
+        <!--/*@thymesVar id="challenge" type="com.society.leagues.client.api.domain.Challenge"*/-->
+        <!--/*@thymesVar id="slot" type="com.society.leagues.client.api.domain.Slot"*/-->
         <div class="table-responsive">
             <table class="table">
                 <thead></thead>
@@ -18,12 +21,14 @@
                     </td>
                     <td class="challenge-name">
                         <img class="avatar img-responsive" th:src="${challenge.getUserChallenger().getAvatarUrl()}"/>
+                        <a th:href="@{/app/display/{seasonId}/user/{id} (id=${challenge.getUserChallenger.getId()},seasonId=${season.getId()})}">
                         <span th:text="${challenge.getChallenger().getName()}"></span>
+                        </a>
                     </td>
                     <td class="challenge-race">
                         <span th:text="${challenge.getRace()}"></span>
                     </td>
-                         <td class="challenge-actions">
+                         <td class="challenge-slots">
                         <select id="challenge-slot" class="form-control" name="slotId">
                             <!--/*@thymesVar id="s" type="com.society.leagues.client.api.domain.Slot"*/-->
                             <option th:each="s : ${challenge.getSlots()}"

@@ -5,6 +5,9 @@
             <h4>Sent</h4>
         </div>
         <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+        <!--/*@thymesVar id="user" type="com.society.leagues.client.api.domain.User"*/-->
+        <!--/*@thymesVar id="challenge" type="com.society.leagues.client.api.domain.Challenge"*/-->
+        <!--/*@thymesVar id="slot" type="com.society.leagues.client.api.domain.Slot"*/-->
         <div class="table-responsive">
             <table class="table">
                 <thead></thead>
@@ -18,7 +21,9 @@
                     </td>
                     <td class="challenge-name">
                         <img  th:fragments="avatarUser" class="avatar img-responsive" th:if="${challenger ne null}" th:src="${challenge.getUserOpponent().getAvatarUrl()}"/>
+                        <a th:href="@{/app/display/{seasonId}/user/{id} (id=${challenge.getUserOpponent.getId()},seasonId=${season.getId()})}">
                         <span th:text="${challenge.getUserOpponent().getName()}"></span>
+                        </a>
                     </td>
                     <td class="challenge-race">
                         <span th:text="${challenge.getRace()}"></span>
