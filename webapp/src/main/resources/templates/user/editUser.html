@@ -2,19 +2,20 @@
 <div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
      layout:decorator="layout">
 
-    <div th:if="${save eq 'success'}">
-        <div class="alert alert-success alert-dismissible" role="alert">
-            <strong>Success!</strong> Updated Successfully.
-        </div>
-    </div>
-    <div th:if="${save eq 'error'}">
-        <div class="alert alert-danger alert-dismissible" role="alert">
-            <strong>Error!</strong>
-            <pre th:text="${error}"></pre>
-        </div>
-    </div>
+
     <div id="user-edit" layout:fragment="content">
         <div  class="society-well society-well-users">
+            <div th:if="${save eq 'success'}">
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    <strong>Success!</strong> Updated Successfully.
+                </div>
+            </div>
+            <div th:if="${save eq 'error'}">
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    <strong>Error!</strong>
+                    <pre th:text="${error}"></pre>
+                </div>
+            </div>
         <form  class="edit-user" id="user-form" action="#" th:action="@{/app/user/{id}(id=${editUser.id})}" th:object="${editUser}"
               method="post">
             <div class="form-group">
@@ -37,24 +38,24 @@
                 <div class="col-sm-8">
                     <input th:value="${editUser.login}" th:field="*{login}" id="login" class="form-control form-user-email"/>
                 </div>
-                <label class="col-sm-3 control-label">Role</label>
+                <label th:if="${user.isAdmin()}" class="col-sm-3 control-label">Role</label>
 
-                <div class="col-sm-8">
+                <div th:if="${user.isAdmin()}" class="col-sm-8">
                     <select id="role" name="role" class="form-control form-user-role" th:value="${editUser.role}" th:field="*{role}">
                         <option value="PLAYER">Player</option>
                         <option value="ADMIN">Admin</option>
                     </select>
                 </div>
-                <label class="col-sm-3 control-label">status</label>
+                <label th:if="${user.isAdmin()}" class="col-sm-3 control-label">status</label>
 
-                <div class="col-sm-8">
+                <div th:if="${user.isAdmin()}" class="col-sm-8">
                     <select class="form-control form-user-status" th:value=${editUser.status} th:field="*{status}">
                         <option value="ACTIVE">Active</option>
                         <option value="INACTIVE">Disable</option>
                     </select>
                 </div>
                 <!--/*@thymesVar id="handicapSeasons" type="com.society.leagues.client.api.domain.HandicapSeason"*/-->
-                <div th:each="hs, rowIndex: ${editUser.handicapSeasons}">
+                <div th:if="${user.isAdmin()}" th:each="hs, rowIndex: ${editUser.handicapSeasons}">
                     <label th:text="${hs.season.getShortName()}" class="col-sm-3 control-label"></label>
                     <input type="hidden" th:value="${hs.season.id}"
                            th:field="${editUser.handicapSeasons[__${rowIndex.index}__].season.id}"/>
@@ -75,17 +76,28 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-offset-2 col-sm-10">
-                <input id="submit" type="submit" class="btn btn-sm btn-primary btn-responsive"/>
+            <label class="col-sm-3 control-label">Submit</label>
+            <div class="col-sm-8">
+                <input style="max-width: 145px;" id="submit" type="submit" class="btn btn-sm btn-primary btn-responsive"/>
             </div>
-             <div class="col-sm-offset-2 col-sm-10">
+            <label style="padding: 10px" class="col-sm-3 control-label">Fb Profile</label>
+             <div style="padding: 10px" class="col-sm-8">
                 <a th:href="@{/app/user/delete/fb/profile/{id} (id=${editUser.id})}" >
-                    <button class="btn btn-warning">Delete FB Profile</button> </a>
+                    <button style="max-width: 145px;"   class="btn btn-danger">Delete FB Profile</button> </a>
             </div>
+             <label style="padding: 10px" class="col-sm-3 control-label">Disable Challenges</label>
+             <div style="padding: 10px" class="col-sm-8">
+                <a th:href="@{/app/user/disable/challenges/{id} (id=${editUser.id})}" >
+                    <button style="max-width: 145px;"   class="btn btn-danger">Disable Challenges</button> </a>
+            </div>
+
         </form>
         </div>
     </div>
     <div class="society-well">
+        <div class="well-title">
+            <h4>My Teams</h4>
+        </div>
     <div th:if="${not #lists.isEmpty(editUserTeams)}" id="user-teams">
         <table id="table-users-teams" class="table table-stripped table-bordered table-condensed">
             <thead>

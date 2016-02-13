@@ -1,10 +1,7 @@
 package com.society.leagues.resources;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.society.leagues.client.api.domain.Handicap;
-import com.society.leagues.client.api.domain.HandicapSeason;
-import com.society.leagues.client.api.domain.Season;
-import com.society.leagues.client.api.domain.User;
+import com.society.leagues.client.api.domain.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -58,6 +55,17 @@ public class UserResource extends BaseController {
     @RequestMapping(value = {"/user/delete/fb/profile/{id}"}, method = RequestMethod.GET)
     public String deleteFbPofile(@PathVariable String id , Model model) {
         return processEditUser(userApi.get(id),model);
+    }
+
+    @RequestMapping(value = {"/user/disable/challenges/{id}"}, method = RequestMethod.GET)
+    public String disableChallenges(@PathVariable String id , Model model) {
+        List<Team> team = teamApi.userTeams(id).stream().filter(t->t.getSeason().isChallenge()).collect(Collectors.toList());
+        for (Team t : team) {
+            t.setDisabled(true);
+            teamApi.save(t);
+        }
+        model.addAttribute("save","success");
+        return "user/editUser";
     }
 
 

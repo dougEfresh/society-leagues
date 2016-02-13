@@ -34,7 +34,6 @@ public class TeamResource {
     }
 
     @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Team modify(@RequestBody Team body) {
         Team existingTeam = leagueService.findOne(new Team(body.getId()));
         if (existingTeam == null) {
