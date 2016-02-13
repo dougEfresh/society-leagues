@@ -41,6 +41,9 @@ public interface UserApi {
     @RequestLine("GET /api/logout")
     String logout();
 
+    @RequestLine("PUT /api/user/modify/profile")
+    User modifyProfile(User user);
+
     @RequestLine("DELETE /api/user/fb/profile/{id}")
     User deleteFbProfile(@Param("id") String id);
 

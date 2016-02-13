@@ -1,8 +1,10 @@
 package com.society.leagues.resources;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.society.leagues.client.api.ChallengeApi;
 import com.society.leagues.client.api.domain.*;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,13 +13,17 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
 public class UserResource extends BaseController {
 
     @Autowired ObjectMapper objectMapper;
+    @Autowired ChallengeApi challengeApi;
 
     @RequestMapping(value = {"/user"}, method = RequestMethod.GET)
     public String list(@RequestParam(defaultValue = "", required = false) String search , Model model) {
@@ -44,6 +50,22 @@ public class UserResource extends BaseController {
         u.setHandicapSeasons(u.getActiveHandicapSeasons());
         model.addAttribute("editUserTeams", teamApi.userTeams(u.getId()).stream().filter(t->t.getSeason().isActive()).collect(Collectors.toList()));
         model.addAttribute("editUser", u);
+        Map<String,List<Slot>> times = challengeApi.challengeSlots().parallelStream()
+                .collect(Collectors.groupingBy(Slot::getTime)
+                );
+        model.addAttribute("times",times.keySet().stream().sorted().collect(Collectors.toList()));
+        if (user.isChallenge()) {
+
+            model.addAttribute("challengeDisabled",
+                    teamApi.userTeams(u.getId())
+                            .stream()
+                            .filter(t -> t.getSeason().isChallenge())
+                            .filter(Team::isDisabled).count() > 0
+            );
+        }  else {
+            model.addAttribute("challengeDisabled",true);
+        }
+
         return "user/editUser";
     }
 
@@ -61,11 +83,10 @@ public class UserResource extends BaseController {
     public String disableChallenges(@PathVariable String id , Model model) {
         List<Team> team = teamApi.userTeams(id).stream().filter(t->t.getSeason().isChallenge()).collect(Collectors.toList());
         for (Team t : team) {
-            t.setDisabled(true);
+            t.setDisabled(!t.isDisabled());
             teamApi.save(t);
         }
-        model.addAttribute("save","success");
-        return "user/editUser";
+        return "redirect:/app/user/" + id;
     }
 
 
@@ -79,6 +100,14 @@ public class UserResource extends BaseController {
         }
         return processEditUser(u,model);
     }
+
+     @RequestMapping(value = {"/user/modify/slots/{id}"}, method = RequestMethod.POST)
+     public String disabledSlots(@PathVariable String id , @RequestParam List<LocalTime> disabledSlots , @RequestParam List<LocalTime> broadcastSlots, Model model) {
+         User u = userApi.get(id);
+         u.getUserProfile().setBroadcastSlots(broadcastSlots);
+         u.getUserProfile().setDisabledSlots(disabledSlots);
+         return processEditUser(u,model);
+     }
 
     @RequestMapping(value = {"/user/{id}"}, method = RequestMethod.POST)
     public String save(@PathVariable String id, @ModelAttribute("editUser") User user, Model model, HttpServletResponse response) {

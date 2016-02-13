@@ -109,7 +109,12 @@ function lifeTimeStats(v) {
        $('#challenge-slots').selectize({
          persist: false,
            plugins: ['remove_button'],
-         maxItems: 6
+         maxItems: 8
+       });
+     $('#challenge-broadcast-slots').selectize({
+         persist: false,
+           plugins: ['remove_button'],
+         maxItems: 8
        });
 
      $('#users-search').selectize({

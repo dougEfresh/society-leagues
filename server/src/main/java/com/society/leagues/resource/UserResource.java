@@ -208,6 +208,17 @@ public class UserResource {
         return User.defaultUser();
     }
 
+    @RequestMapping(value = "/profile/modify", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    public User modifyProfile(@RequestBody User user) {
+        User exitsting = leagueService.findOne(new User(user.getId()));
+        if (exitsting == null){
+            throw new InvalidRequestException("Invalid user " + user.getId());
+        }
+
+        exitsting.setUserProfile(user.getUserProfile());
+        return leagueService.save(exitsting);
+    }
+
     @RequestMapping(value = "/profile/fb/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public User deleteFbProfile(@PathVariable String id) {
         User u = leagueService.findOne(new User(id));

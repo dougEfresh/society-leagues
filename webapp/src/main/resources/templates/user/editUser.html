@@ -16,9 +16,12 @@
                     <pre th:text="${error}"></pre>
                 </div>
             </div>
-        <form  class="edit-user" id="user-form" action="#" th:action="@{/app/user/{id}(id=${editUser.id})}" th:object="${editUser}"
-              method="post">
-            <div class="form-group">
+            <div class="well-title">
+                <h4><span th:text="${editUser.getName()}"></span></h4>
+            </div>
+            <form  class="edit-user" id="user-form" action="#" th:action="@{/app/user/{id}(id=${editUser.id})}" th:object="${editUser}"
+                   method="post">
+            <div style="padding: 10px;" class="form-group">
                 <input type="hidden" th:value="${editUser.id}" th:field="*{id}"/>
                 <label class="col-sm-3 control-label">First Name</label>
 
@@ -75,7 +78,7 @@
                         </select>
                     </div>
                 </div>
-            </div>
+
             <label class="col-sm-3 control-label">Submit</label>
             <div class="col-sm-8">
                 <input style="max-width: 145px;" id="submit" type="submit" class="btn btn-sm btn-primary btn-responsive"/>
@@ -83,17 +86,47 @@
             <label style="padding: 10px" class="col-sm-3 control-label">Fb Profile</label>
              <div style="padding: 10px" class="col-sm-8">
                 <a th:href="@{/app/user/delete/fb/profile/{id} (id=${editUser.id})}" >
-                    <button style="max-width: 145px;"   class="btn btn-danger">Delete FB Profile</button> </a>
+                    <span style="max-width: 145px;"   class="btn btn-danger">Delete FB Profile</span> </a>
             </div>
-             <label style="padding: 10px" class="col-sm-3 control-label">Disable Challenges</label>
-             <div style="padding: 10px" class="col-sm-8">
-                <a th:href="@{/app/user/disable/challenges/{id} (id=${editUser.id})}" >
-                    <button style="max-width: 145px;"   class="btn btn-danger">Disable Challenges</button> </a>
             </div>
-
         </form>
         </div>
+        <div th:if="${editUser.isChallenge()}" class="society-well society-well-users">
+            <div class="well-title">
+                <h4>Challenge Profile</h4>
+            </div>
+            <form  class="edit-user" id="challenge-slot" action="#" th:action="@{/app/user/modify/slots/{id}(id=${editUser.getId()})}"
+                   method="post">
+                <label class="col-sm-4 control-label">Disable</label>
+                <div style="padding: 10px" class="col-sm-7">
+                    <a th:if="${challengeDisabled}" th:href="@{/app/user/disable/challenges/{id} (id=${editUser.id})}" >
+                        <span style="max-width: 145px;"   class="btn btn-primary">Enable Challenges</span> </a>
+
+                    <a th:if="${not challengeDisabled}" th:href="@{/app/user/disable/challenges/{id} (id=${editUser.id})}" >
+                        <span style="max-width: 145px;" class="btn btn-danger">Disable Challenges</span> </a>
+                </div>
+                <label class="col-sm-4 control-label">Disable Times</label>
+                <div class="col-sm-7">
+                    <select id="challenge-broadcast-slots" name="disableSlots" multiple="multiple">
+                        <option th:each="time: ${times}" th:text="${time}" th:value="${time}" >
+                        </option>
+                    </select>
+                </div>
+                <label class="col-sm-4 control-label">Broadcast Times</label>
+                <div class="col-sm-7">
+                    <select id="challenge-slots" name="broadcastSlots" multiple="multiple">
+                        <option  th:each="time: ${times}" th:text="${time}" th:value="${time}" >
+                        </option>
+                    </select>
+                </div>
+                <label class="col-sm-4 control-label">Submit</label>
+            <div class="col-sm-7">
+                <input style="max-width: 145px;" type="submit" class="btn btn-sm btn-primary btn-responsive"/>
+            </div>
+            </form>
+        </div>
     </div>
+</div>
     <div class="society-well">
         <div class="well-title">
             <h4>My Teams</h4>
