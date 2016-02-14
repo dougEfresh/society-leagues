@@ -1,6 +1,9 @@
 var utils = require('utils');
 var testlib = require('./testLib');
 var stats = [];
+var u = require('./user.json');
+var seasons = require('./seasons.json');
+
 function getStats() {
     var rows = document.querySelectorAll('#table-leaders > tbody > tr');
     var stats = [];
@@ -16,7 +19,7 @@ function getStats() {
     return stats;
 }
 
-function processStats(test) {
+function processStats(season,test) {
     for(var i = 0; i< stats.length; i++) {
         verifyStat(stats[i],(i+1),test);
     }
@@ -49,9 +52,17 @@ function verifyStat(stat,rank,test) {
 
 
 function processSeason(season,test) {
+    if (season.challenge) {
+        return processTopgun(season,test);
+
+    }
+    casper.thenOpen(testlib.server + '/app/leaders/' + season.id, function () {
+    });
+
+
     casper.then(function() {
-        test.assertExists('#' + season + '-leaders');
-        this.click('#' + season + '-leaders-all');
+        test.assertExists('#leaders-' + season.id);
+        //this.click('#' + season + '-leaders-all');
     });
 
     casper.then(function() {
@@ -64,8 +75,19 @@ function processSeason(season,test) {
     });
 
     casper.then(function () {
-        processStats(test);
+        processStats(season,test);
     });
+}
+
+function processTopgun(season,test) {
+    casper.thenOpen(testlib.server + '/app/display/' + season.id, function () {
+    });
+
+    casper.then(function() {
+        test.assertExists('#display-topgun','display-topgun');
+        test.assertExists('#table-team-standings','table-team-standings');
+    });
+
 }
 
 casper.test.begin('Test Home Page', function suite(test) {
@@ -74,11 +96,9 @@ casper.test.begin('Test Home Page', function suite(test) {
     });
     testlib.login(test,testlib.user,testlib.pass);
 
-    processSeason('thursday',test);
-    processSeason('wednesday',test);
-    processSeason('tuesday',test);
-    processSeason('monday',test);
-    processSeason('sunday',test);
+    seasons.forEach(function(s) {
+        processSeason(s,test);
+    });
 
     casper.run(function(){
         test.done();

@@ -2,7 +2,7 @@
 <div xmlns:th="http://www.thymeleaf.org"  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout"  >
     <!--@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"-->
     <div layout:fragment="content">
-        <div class="society-well society-well-leaders">
+        <div th:id="${'leaders-' +season.getId()}" class="society-well society-well-leaders">
             <div class="well-title">
             <h4><span th:text="${season.getFormattedName()}"></span></h4>
             </div>
