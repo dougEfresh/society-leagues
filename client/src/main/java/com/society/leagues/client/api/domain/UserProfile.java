@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.society.leagues.client.views.PlayerResultSummary;
 import com.society.leagues.converters.TimeDeSerializer;
 import com.society.leagues.converters.TimeSerializer;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -15,10 +16,9 @@ public class UserProfile {
 
     String profileUrl;
     @JsonView(PlayerResultSummary.class) String imageUrl;
-    @JsonSerialize(using = TimeSerializer.class)
-    @JsonDeserialize(using = TimeDeSerializer.class)
-    List<LocalTime> disabledSlots = new ArrayList<>();
-    List<LocalTime> broadcastSlots = new ArrayList<>();
+    @JsonView(PlayerResultSummary.class) List<String> disabledSlots = new ArrayList<>();
+    @JsonView(PlayerResultSummary.class) List<String> broadcastSlots = new ArrayList<>();
+    @JsonView(PlayerResultSummary.class) boolean receiveBroadcasts;
 
     public String getProfileUrl() {
         return profileUrl;
@@ -36,20 +36,41 @@ public class UserProfile {
         this.imageUrl = imageUrl;
     }
 
-    public List<LocalTime> getDisabledSlots() {
+
+    public boolean isReceiveBroadcasts() {
+        return receiveBroadcasts;
+    }
+
+    public void setReceiveBroadcasts(boolean receiveBroadcasts) {
+        this.receiveBroadcasts = receiveBroadcasts;
+    }
+
+    public List<String> getDisabledSlots() {
         return disabledSlots;
     }
 
-    public void setDisabledSlots(List<LocalTime> disabledSlots) {
+    public void setDisabledSlots(List<String> disabledSlots) {
         this.disabledSlots = disabledSlots;
     }
 
-    public List<LocalTime> getBroadcastSlots() {
+    public void setDisabledSlotsLocalTime(List<LocalTime> disabledSlots) {
+        setLocalTime(this.disabledSlots,disabledSlots);
+    }
+
+    public List<String> getBroadcastSlots() {
         return broadcastSlots;
     }
 
-    public void setBroadcastSlots(List<LocalTime> broadcastSlots) {
+    public void setBroadcastSlots(List<String> broadcastSlots) {
         this.broadcastSlots = broadcastSlots;
+    }
+
+    public void setBroadcastSlotsLocalTime(List<LocalTime> broadcastSlots) {
+        setLocalTime(this.broadcastSlots,broadcastSlots);
+    }
+
+    private void setLocalTime(List<String> t, List<LocalTime> times) {
+        times.stream().filter(time->time != null).forEach(time->t.add(time.toString()));
     }
 
     @Override

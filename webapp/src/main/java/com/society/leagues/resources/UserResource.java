@@ -102,11 +102,11 @@ public class UserResource extends BaseController {
     }
 
      @RequestMapping(value = {"/user/modify/slots/{id}"}, method = RequestMethod.POST)
-     public String disabledSlots(@PathVariable String id , @RequestParam List<LocalTime> disabledSlots , @RequestParam List<LocalTime> broadcastSlots, Model model) {
+     public String disabledSlots(@PathVariable String id , @RequestParam List<String> disabledSlots , @RequestParam List<String> broadcastSlots, Model model) {
          User u = userApi.get(id);
          u.getUserProfile().setBroadcastSlots(broadcastSlots);
          u.getUserProfile().setDisabledSlots(disabledSlots);
-         return processEditUser(u,model);
+         return processEditUser(userApi.modifyProfile(u),model);
      }
 
     @RequestMapping(value = {"/user/{id}"}, method = RequestMethod.POST)

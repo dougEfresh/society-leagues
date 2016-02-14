@@ -97,7 +97,8 @@
             </div>
             <form  class="edit-user" id="challenge-slot" action="#" th:action="@{/app/user/modify/slots/{id}(id=${editUser.getId()})}"
                    method="post">
-                <label class="col-sm-4 control-label">Disable</label>
+                <label th:if="${challengeDisabled}"  style="padding-top: 10px" class="col-sm-4 control-label">Enable</label>
+                <label th:if="${not challengeDisabled}" style="padding-top: 10px" class="col-sm-4 control-label">Disable</label>
                 <div style="padding: 10px" class="col-sm-7">
                     <a th:if="${challengeDisabled}" th:href="@{/app/user/disable/challenges/{id} (id=${editUser.id})}" >
                         <span style="max-width: 145px;"   class="btn btn-primary">Enable Challenges</span> </a>
@@ -107,19 +108,19 @@
                 </div>
                 <label class="col-sm-4 control-label">Disable Times</label>
                 <div class="col-sm-7">
-                    <select id="challenge-broadcast-slots" name="disableSlots" multiple="multiple">
+                    <select id="challenge-broadcast-slots" name="disabledSlots" multiple="multiple">
                         <option th:each="time: ${times}" th:text="${time}" th:value="${time}" >
                         </option>
                     </select>
                 </div>
-                <label class="col-sm-4 control-label">Broadcast Times</label>
+                <label class="col-sm-4 control-label">Weekly Broadcast</label>
                 <div class="col-sm-7">
                     <select id="challenge-slots" name="broadcastSlots" multiple="multiple">
                         <option  th:each="time: ${times}" th:text="${time}" th:value="${time}" >
                         </option>
                     </select>
                 </div>
-                <label class="col-sm-4 control-label">Submit</label>
+                <label style="padding-top: 10px" class="col-sm-4 control-label">Submit</label>
             <div class="col-sm-7">
                 <input style="max-width: 145px;" type="submit" class="btn btn-sm btn-primary btn-responsive"/>
             </div>
@@ -127,7 +128,7 @@
         </div>
     </div>
 </div>
-    <div class="society-well">
+    <div class="society-well hide">
         <div class="well-title">
             <h4>My Teams</h4>
         </div>

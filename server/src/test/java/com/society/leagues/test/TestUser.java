@@ -102,8 +102,8 @@ public class TestUser extends BaseTest {
         broadcast.add(now.plusHours(1));
         broadcast.add(now.plusHours(2));
 
-        u.getUserProfile().setDisabledSlots(Collections.singletonList(now));
-        u.getUserProfile().setBroadcastSlots(broadcast);
+        u.getUserProfile().setDisabledSlots(Collections.singletonList(now.toString()));
+        u.getUserProfile().setBroadcastSlotsLocalTime(broadcast);
 
         User newUser = userApi.modifyProfile(u);
         newUser.getUserProfile().getBroadcastSlots().containsAll(broadcast);

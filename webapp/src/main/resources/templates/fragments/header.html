@@ -8,7 +8,7 @@
             <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="/app/home">Society</a>
-        <img th:if="${user ne null}" class="avatar avatar-menu" th:src="${user.getAvatarUrl()}">
+        <a th:if="${user ne null}"  th:href="@{/app/user/{id} (id=${user.getId()})}" > <img th:if="${user ne null}" class="avatar avatar-menu img-responsive" th:src="${user.getAvatarUrl()}"></a>
     </div>
     <!-- /.navbar-header -->
     <!--/*@thymesVar id="user" type="com.society.leagues.client.api.domain.User"*/-->
