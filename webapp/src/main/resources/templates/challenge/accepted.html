@@ -18,11 +18,15 @@
                         </span>
                         <span th:text="${#temporals.format(challenge.getAcceptedSlot().getLocalDateTime(), 'h:mm')}"></span>
                     </td>
-                    <td class="challenge-name">
-                        <img  th:fragments="avatarUser" class="avatar img-responsive" th:if="${challenger ne null}" th:src="${challenge.getUserOpponent().getAvatarUrl()}"/>
+                    <td th:if="${challenge.getUserOpponent().equals(user)}" class="challenge-name">
+                        <img  th:fragments="avatarUser" class="avatar img-responsive" th:src="${challenge.getUserChallenger().getAvatarUrl()}"/>
+                        <a th:href="@{/app/display/{seasonId}/user/{id} (id=${challenge.getUserChallenger().getId()},seasonId=${season.getId()})}">
+                        <span th:text="${challenge.getUserChallenger().getName()}"></span>
+                    </td>
+                    <td  th:if="${challenge.getUserChallenger().equals(user)}" class="challenge-name">
+                        <img  th:fragments="avatarUser" class="avatar img-responsive"  th:src="${challenge.getUserOpponent().getAvatarUrl()}"/>
                         <a th:href="@{/app/display/{seasonId}/user/{id} (id=${challenge.getUserOpponent.getId()},seasonId=${season.getId()})}">
                         <span th:text="${challenge.getUserOpponent().getName()}"></span>
-                        </a>
                     </td>
                     <td class="challenge-race">
                         <span th:text="${challenge.getRace()}"></span>

@@ -21,7 +21,7 @@
                     </td>
                     <td class="challenge-name">
                         <img class="avatar img-responsive" th:src="${challenge.getUserChallenger().getAvatarUrl()}"/>
-                        <a th:href="@{/app/display/{seasonId}/user/{id} (id=${challenge.getUserChallenger.getId()},seasonId=${season.getId()})}">
+                        <a th:href="@{/app/display/{seasonId}/user/{id} (id=${challenge.getUserChallenger().getId()},seasonId=${season.getId()})}">
                         <span th:text="${challenge.getChallenger().getName()}"></span>
                         </a>
                     </td>

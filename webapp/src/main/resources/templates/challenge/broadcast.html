@@ -17,7 +17,7 @@
                         <input th:type="hidden" name="id" th:value="${challenge.getId()}">
                     <td class="challenge-name">
                         <img class="avatar img-responsive" th:src="${challenge.getUserChallenger().getAvatarUrl()}"/>
-                        <a th:href="@{/app/display/{seasonId}/user/{id} (id=${challenge.getUserChallenger.getId()},seasonId=${season.getId()})}">
+                        <a th:href="@{/app/display/{seasonId}/user/{id} (id=${challenge.getUserChallenger().getId()},seasonId=${season.getId()})}">
                             <span th:text="${challenge.getUserChallenger().getName()}"></span>
                         </a>
                     </td>
@@ -25,8 +25,8 @@
                         <span th:text="${challenge.getUserChallengerHandicap().getDisplayName()}"></span>
                     </td>
                     <td class="challenge-date">
-                                <span th:text="${#temporals.format(challenge.getLocalDate(), 'MM/dd')}">
-                                </span>
+                        <span th:text="${#temporals.format(challenge.getLocalDate(), 'MM/dd')}">
+                        </span>
                     </td>
                     <td class="challenge-actions">
                         <a th:if="${challenge.getUserChallenger().equals(user.getId())}"
