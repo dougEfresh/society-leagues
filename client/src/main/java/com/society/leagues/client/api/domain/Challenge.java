@@ -22,6 +22,7 @@ public class Challenge extends LeagueObject {
     public Challenge(String id) {
         this.id = id;
     }
+
     public Challenge(Status status, Team challenger, Team opponent, List<Slot> slots) {
         this.status = status;
         this.challenger = challenger;
