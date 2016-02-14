@@ -110,8 +110,9 @@ public class ChallengeResource extends BaseController {
                 .map(s->s.getLocalDateTime().toLocalDate())
                 .collect(Collectors.toCollection(TreeSet::new))
                 .stream().filter(d->!opponent.getChallengeUser().getUserProfile().hasBlockedDate(d.toString())).collect(Collectors.toSet());
-        dates = dates.stream().sorted().collect(Collectors.toSet());
-        model.addAttribute("dates",dates);
+        dates = dates.stream().sorted((o1, o2) -> o1.compareTo(o2)).collect(Collectors.toSet());
+
+        model.addAttribute("dates", dates);
         model.addAttribute("date",date);
         slots.sort((o1, o2) -> o1.getLocalDateTime().compareTo(o2.getLocalDateTime()));
         model.addAttribute("slots",slots);
