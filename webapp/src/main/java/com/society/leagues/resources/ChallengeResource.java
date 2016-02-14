@@ -20,9 +20,11 @@ public class ChallengeResource extends BaseController {
 
     @Autowired ChallengeApi challengeApi;
 
-    static Team broadcast = new Team("-1");
+    public final static Team broadcast = new Team("-1");
     static {
         broadcast.setName("--- Broadcast ---");
+        broadcast.setMembers(new TeamMembers());
+        broadcast.addMember(User.defaultUser());
     }
 
     @RequestMapping(value = {"/challenge"}, method = RequestMethod.GET)
@@ -119,38 +121,39 @@ public class ChallengeResource extends BaseController {
     }
 
     private List<Team> populateTeam(List<Team> teams) {
-        teams.parallelStream().forEach(t->t.setMembers(teamApi.members(t.getId())));
+        teams.parallelStream().filter(t->t.equals(broadcast)).forEach(t->t.setMembers(teamApi.members(t.getId())));
         return teams;
     }
     private void processUser(String userId, String date, Team challenger, Model model) {
         List<Team> challengeUsers = new ArrayList<>();
-        challengeUsers.add(broadcast);
+        LocalDate localDate = LocalDate.parse(date);
+        Season challengeSeason = seasonApi.active().stream().filter(Season::isChallenge).findAny().get();
         challengeUsers.addAll(
-                populateTeam(challengeApi.challengeUsersOnDate(date))
-                        .stream()
-                        .filter(t->!t.isDisabled())
-                        .filter(user->user.getChallengeUser() != null)
-                        .collect(Collectors.toList()));
+                populateTeam(teamApi.seasonTeams(challengeSeason.getId()).parallelStream()
+                        .filter(t->!t.isDisabled()).collect(Collectors.toList())
+                ).parallelStream()
+                        .filter(t->t.getChallengeUser() != null)
+                        .filter(t->!t.getChallengeUser().getUserProfile().hasBlockedDate(date))
+                        .filter(t->!t.getChallengeUser().equals(user))
+                        .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
+                        .collect(Collectors.toList())
+        );
 
 
         Challenge challenge = new Challenge();
-        challenge.setOpponent(new Team(userId));
-        if (broadcast.getId().equals(userId)) {
-            LocalDate localDate = LocalDate.parse(date);
-            challenge.setSlots(challengeApi.challengeSlots().parallelStream()
-                    .filter(s->s.getLocalDateTime().toLocalDate().equals(localDate))
-                    .sorted((o1, o2) -> o1.getLocalDateTime().compareTo(o2.getLocalDateTime()))
-                    .collect(Collectors.toList()));
-        } else {
-            challenge.setSlots(challengeApi.getAvailableSlotsForUsers(userId,date));
-        }
-        challenge.setChallenger(challenger);
-        List<ChallengeUserModel> users = ChallengeUserModel.fromTeams(challengeUsers.stream()
-                .filter(user->!user.equals(challenger))
-                .sorted((o1, o2) -> o1.getName().compareTo(o2.getName())).collect(Collectors.toList()));
+        Team opponent = broadcast.getId().equals(userId) ? broadcast : populateTeam(Collections.singletonList(teamApi.get(userId))).get(0);
+        challenge.setOpponent(opponent);
+        List<Slot> slots =
+                challengeApi.challengeSlots().parallelStream()
+                        .filter(s->s.getLocalDateTime().toLocalDate().equals(localDate))
+                        .filter(s->!opponent.getChallengeUser().getUserProfile().hasBlockedTime(s))
+                        .sorted((o1, o2) -> o1.getLocalDateTime().compareTo(o2.getLocalDateTime()))
+                        .collect(Collectors.toList());
 
-        model.addAttribute("opponent", userId == null || broadcast.getId().equals(userId) ? broadcast : teamApi.get(userId));
-        model.addAttribute("challengers", users);
+        challenge.setSlots(slots);
+        challenge.setChallenger(challenger);
+        model.addAttribute("opponent", opponent);
+        model.addAttribute("challengers",  ChallengeUserModel.fromTeams(challengeUsers));
         model.addAttribute("challenge", challenge);
     }
 }

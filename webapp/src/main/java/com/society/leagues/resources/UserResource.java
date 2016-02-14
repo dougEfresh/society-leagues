@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.society.leagues.client.api.ChallengeApi;
 import com.society.leagues.client.api.domain.*;
 
+import com.society.leagues.model.TimeModel;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -53,9 +54,18 @@ public class UserResource extends BaseController {
         Map<String,List<Slot>> times = challengeApi.challengeSlots().parallelStream()
                 .collect(Collectors.groupingBy(Slot::getTime)
                 );
-        model.addAttribute("times",times.keySet().stream().sorted().collect(Collectors.toList()));
-        if (user.isChallenge()) {
 
+        List<TimeModel> disabledTimes = new ArrayList<>();
+        List<TimeModel> broadcastTimes = new ArrayList<>();
+        times.keySet().stream().sorted().forEach(
+                t->disabledTimes.add(new TimeModel(t,u.getUserProfile().getDisabledSlots().contains(t)))
+        );
+        times.keySet().stream().sorted().forEach(
+                t->broadcastTimes.add(new TimeModel(t,u.getUserProfile().getBroadcastSlots().contains(t)))
+        );
+        model.addAttribute("disabledTimes",disabledTimes);
+        model.addAttribute("broadcastTimes",broadcastTimes);
+        if (user.isChallenge()) {
             model.addAttribute("challengeDisabled",
                     teamApi.userTeams(u.getId())
                             .stream()
@@ -101,12 +111,18 @@ public class UserResource extends BaseController {
         return processEditUser(u,model);
     }
 
-     @RequestMapping(value = {"/user/modify/slots/{id}"}, method = RequestMethod.POST)
-     public String disabledSlots(@PathVariable String id , @RequestParam List<String> disabledSlots , @RequestParam List<String> broadcastSlots, Model model) {
+     @RequestMapping(value = {"/user/modify/challenge/profile/{id}"}, method = RequestMethod.POST)
+     public String disabledSlots(@PathVariable String id ,
+                                 @RequestParam(required = false) List<String> disabledSlots,
+                                 @RequestParam(required = false) List<String> broadcastSlots,
+                                 @RequestParam(required = false, defaultValue = "false") Boolean receiveBroadcasts,
+                                 Model model) {
          User u = userApi.get(id);
          u.getUserProfile().setBroadcastSlots(broadcastSlots);
          u.getUserProfile().setDisabledSlots(disabledSlots);
-         return processEditUser(userApi.modifyProfile(u),model);
+         u.getUserProfile().setReceiveBroadcasts(receiveBroadcasts);
+         userApi.modifyProfile(u);
+         return "redirect:/app/user/" + id;
      }
 
     @RequestMapping(value = {"/user/{id}"}, method = RequestMethod.POST)

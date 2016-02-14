@@ -4,7 +4,7 @@
 
 
     <div id="user-edit" layout:fragment="content">
-        <div  class="society-well society-well-users">
+        <div th:if="${user.equals(editUser) || user.isAdmin()} " class="society-well society-well-users">
             <div th:if="${save eq 'success'}">
                 <div class="alert alert-success alert-dismissible" role="alert">
                     <strong>Success!</strong> Updated Successfully.
@@ -95,7 +95,7 @@
             <div class="well-title">
                 <h4>Challenge Profile</h4>
             </div>
-            <form  class="edit-user" id="challenge-slot" action="#" th:action="@{/app/user/modify/slots/{id}(id=${editUser.getId()})}"
+            <form  class="edit-user" id="challenge-slot" action="#" th:action="@{/app/user/modify/challenge/profile/{id}(id=${editUser.getId()})}"
                    method="post">
                 <label th:if="${challengeDisabled}"  style="padding-top: 10px" class="col-sm-4 control-label">Enable</label>
                 <label th:if="${not challengeDisabled}" style="padding-top: 10px" class="col-sm-4 control-label">Disable</label>
@@ -109,16 +109,33 @@
                 <label class="col-sm-4 control-label">Disable Times</label>
                 <div class="col-sm-7">
                     <select id="challenge-broadcast-slots" name="disabledSlots" multiple="multiple">
-                        <option th:each="time: ${times}" th:text="${time}" th:value="${time}" >
+                        <option th:each="time: ${disabledTimes}" th:text="${time.getTime()}" th:value="${time.getTime()}" th:selected="${time.isSelected()}">
                         </option>
                     </select>
                 </div>
                 <label class="col-sm-4 control-label">Weekly Broadcast</label>
                 <div class="col-sm-7">
                     <select id="challenge-slots" name="broadcastSlots" multiple="multiple">
-                        <option  th:each="time: ${times}" th:text="${time}" th:value="${time}" >
+                        <option th:each="time: ${broadcastTimes}" th:text="${time.getTime()}" th:value="${time.getTime()}" th:selected="${time.isSelected()}">
                         </option>
                     </select>
+                </div>
+
+                <label class="col-sm-4 control-label">Block Dates</label>
+                <div class="col-sm-7">
+                    <select id="challenge-block-dates" name="blockedDates" multiple="multiple">
+                        <option th:each="time: ${broadcastTimes}" th:text="${time.getTime()}" th:value="${time.getTime()}" th:selected="${time.isSelected()}">
+                        </option>
+                    </select>
+                </div>
+                <label class="col-sm-4 control-label">Receive Broadcast Email</label>
+                <div class="col-sm-7">
+                       <input
+                       th:type="checkbox"
+                       th:checked="${editUser.getUserProfile().isReceiveBroadcasts()}"
+                       id="receiveBroadcasts"
+                       name="receiveBroadcasts"
+                       class="form-control" >
                 </div>
                 <label style="padding-top: 10px" class="col-sm-4 control-label">Submit</label>
             <div class="col-sm-7">

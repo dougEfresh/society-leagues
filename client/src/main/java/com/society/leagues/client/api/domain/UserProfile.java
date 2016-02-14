@@ -10,6 +10,7 @@ import org.springframework.cglib.core.Local;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class UserProfile {
@@ -19,6 +20,15 @@ public class UserProfile {
     @JsonView(PlayerResultSummary.class) List<String> disabledSlots = new ArrayList<>();
     @JsonView(PlayerResultSummary.class) List<String> broadcastSlots = new ArrayList<>();
     @JsonView(PlayerResultSummary.class) boolean receiveBroadcasts;
+    @JsonView(PlayerResultSummary.class) List<String> blockedDates = new ArrayList<>();
+
+    public List<String> getBlockedDates() {
+        return blockedDates;
+    }
+
+    public void setBlockedDates(List<String> blockedDates) {
+        this.blockedDates = blockedDates;
+    }
 
     public String getProfileUrl() {
         return profileUrl;
@@ -50,6 +60,9 @@ public class UserProfile {
     }
 
     public void setDisabledSlots(List<String> disabledSlots) {
+        if (disabledSlots == null) {
+            this.disabledSlots = Collections.emptyList();
+        }
         this.disabledSlots = disabledSlots;
     }
 
@@ -62,6 +75,9 @@ public class UserProfile {
     }
 
     public void setBroadcastSlots(List<String> broadcastSlots) {
+        if (broadcastSlots == null) {
+            this.broadcastSlots = Collections.emptyList();
+        }
         this.broadcastSlots = broadcastSlots;
     }
 
@@ -70,6 +86,8 @@ public class UserProfile {
     }
 
     private void setLocalTime(List<String> t, List<LocalTime> times) {
+        if (times == null)
+            return;
         times.stream().filter(time->time != null).forEach(time->t.add(time.toString()));
     }
 
@@ -79,5 +97,13 @@ public class UserProfile {
                 "profileUrl='" + profileUrl + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 '}';
+    }
+
+    public boolean hasBlockedDate(String date) {
+        return blockedDates.contains(date);
+    }
+
+    public boolean hasBlockedTime(Slot s) {
+        return broadcastSlots.contains(s.getTime());
     }
 }
