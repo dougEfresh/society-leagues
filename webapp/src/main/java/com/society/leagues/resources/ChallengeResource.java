@@ -29,12 +29,12 @@ public class ChallengeResource extends BaseController {
 
     @RequestMapping(value = {"/challenge"}, method = RequestMethod.GET)
     public String challenge(@RequestParam(required = false) String userId, @RequestParam(required = false) String date, Model  model, HttpServletResponse response) throws IOException {
+        return challenge(user,userId,date,model,response);
+    }
+
+    public String challenge(User user , String userId, String date, Model  model, HttpServletResponse response) throws IOException {
         Season s =  seasonApi.active().stream().filter(Season::isChallenge).findFirst().get();
-        Team challenger = teamApi.userTeams(user.getId()).stream().filter(Team::isChallenge).findFirst().orElse(null);
-        challenger.setMembers(teamApi.members(challenger.getId()));
-        if (challenger == null) {
-            //ERROR
-        }
+        Team challenger = populateTeam( Arrays.asList(teamApi.userTeams(user.getId()).stream().filter(Team::isChallenge).findFirst().orElse(broadcast))).get(0);
         model.addAttribute("challenger",challenger);
         model.addAttribute("season", s);
         processDate(date,userId,model,response);
@@ -50,6 +50,8 @@ public class ChallengeResource extends BaseController {
 
         return "challenge/challenge";
     }
+
+
 
     private List<Challenge> populateChallenge(List<Challenge> challenges) {
         for (Challenge challenge : challenges.stream().filter(c->!c.isBroadcast()).collect(Collectors.toList())) {

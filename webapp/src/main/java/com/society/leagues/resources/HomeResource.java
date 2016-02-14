@@ -9,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -18,9 +20,10 @@ import java.util.stream.Collectors;
 public class HomeResource extends BaseController {
 
     @Autowired ChallengeApi challengeApi;
+    @Autowired ChallengeResource challengeResource;
 
     @RequestMapping(value = {"/home", "","/"}, method = RequestMethod.GET)
-    public String home(Model model) {
+    public String home(Model model, HttpServletResponse response) throws IOException {
         Map<Season,List<Stat>> topPlayers = new TreeMap<>(Season.sortOrder);
         user.getSeasons().stream()
                 .filter(Season::isActive)
@@ -49,6 +52,11 @@ public class HomeResource extends BaseController {
                 .filter(s->s.getType() == StatType.USER_SEASON)
                 .filter(s->s.getSeason().isActive())
                 .collect(Collectors.toList()));
+
+
+        if (user.isChallenge()) {
+            challengeResource.challenge(user,ChallengeResource.broadcast.getId(),LocalDate.now().toString(),model,response);
+        }
         return "home/home";
     }
 }

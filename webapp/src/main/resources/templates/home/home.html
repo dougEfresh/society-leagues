@@ -3,6 +3,9 @@
     <!--/*@thymesVar id="user" type="com.society.leagues.client.api.domain.User"*/-->
   <div id="home-app" layout:fragment="content">
       <div th:if="${user ne null}" th:text="${user.getFirstName()}" id="name" class="hide"></div>
+      <div id="challenge-broadcast" class="challenges">
+          <div th:replace="challenge/broadcast"></div>
+      </div>
       <!--/*@thymesVar id="match" type="com.society.leagues.model.MatchModel"*/-->
       <!--/*@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"*/-->
       <div id="upcoming-matches" th:if="${upcomingMatches ne null}" class="society-well">
