@@ -28,7 +28,7 @@
                    <td class="short-date">
                        <a th:href="@{/app/schedule/{seasonId} (seasonId=${match.getSeason().getId()})}">
                            <!--<span th:text="${#temporals.format(match.getMatchDate(), 'MMM dd H:mm')}" class="badge badge-date"></span>-->
-                           <span th:if="${match.getSeason().isChallenge()}" th:text="${#temporals.format(match.getMatchDate(), 'MMM dd H:mm')}" ></span>
+                           <span th:if="${match.getSeason().isChallenge()}" th:text="${#temporals.format(match.getMatchDate(), 'MMM dd h:mm')}" ></span>
                            <span th:if="${!match.getSeason().isChallenge()}" th:text="${#temporals.format(match.getMatchDate(), 'MMM dd')}" ></span>
                        </a>
                    </td>
