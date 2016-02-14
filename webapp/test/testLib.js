@@ -1,7 +1,7 @@
 var user = casper.cli.has("user") ? casper.cli.get("user") : "dchimento@gmail.com";
 var pass = casper.cli.has("password") ? casper.cli.get("password") : "abc123";
-var server = casper.cli.has("server") ? casper.cli.get("server") : "https://leagues.societybilliards.com";
-//var server = casper.cli.has("server") ? casper.cli.get("server") : "http://localhost:8082";
+///var server = casper.cli.has("server") ? casper.cli.get("server") : "https://leagues.societybilliards.com";
+var server = casper.cli.has("server") ? casper.cli.get("server") : "http://localhost:8082";
 var page = casper.cli.has("page") ? casper.cli.get("page") : "/";
 var wait = casper.cli.has("wait") ? casper.cli.get("wait") : "appReady";
 var width =  casper.cli.has("width") ? casper.cli.get("width") : 1028;
@@ -98,7 +98,7 @@ var login = function (test,user) {
     casper.then(function () {
         this.fill('form', {
             'username': user,
-            'password': "abc123"
+            'password': "abd123"
         }, false);
     });
     casper.then(function () {
