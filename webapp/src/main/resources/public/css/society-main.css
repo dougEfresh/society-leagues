@@ -396,3 +396,7 @@ font-size: 16px;
     font-size: 18px;
     background-color: whitesmoke;
 }
+
+.society-well-stats {
+    max-width: 700px;
+}

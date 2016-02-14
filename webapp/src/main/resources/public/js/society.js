@@ -94,7 +94,12 @@ function searchUserStats(e) {
     window.location = '/app/stats/' + id;
 }
 
+function lifeTimeStats(v) {
+
+}
+
  $(document).ready(function() {
+
 
      $('#team-members').selectize({
          persist: false,
@@ -104,7 +109,19 @@ function searchUserStats(e) {
        $('#challenge-slots').selectize({
          persist: false,
            plugins: ['remove_button'],
-         maxItems: 6
+         maxItems: 8
+       });
+
+     $('#challenge-broadcast-slots').selectize({
+         persist: false,
+           plugins: ['remove_button'],
+         maxItems: 8
+       });
+
+     $('#challenge-block-dates').selectize({
+         persist: false,
+           plugins: ['remove_button'],
+         maxItems: 8
        });
 
      $('#users-search').selectize({

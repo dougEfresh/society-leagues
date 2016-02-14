@@ -4,10 +4,12 @@ import com.society.leagues.client.api.domain.*;
 import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.person.Person;
 import org.junit.Test;
+import org.springframework.data.convert.Jsr310Converters;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -93,4 +95,32 @@ public class TestUser extends BaseTest {
         u = userApi.get();
         assertEquals(newUser.getId(),u.getId());
     }
+
+    @Test
+    public void testProfile() {
+        User u = userApi.active().stream().findAny().get();
+        LocalDateTime now = LocalDateTime.now();
+
+        List<LocalTime> broadcast = new ArrayList<>();
+        broadcast.add(now.toLocalTime().plusHours(1));
+        broadcast.add(now.toLocalTime().plusHours(2));
+
+        u.getUserProfile().setBlockedDates(Collections.singletonList(LocalDate.now().toString()));
+        u.getUserProfile().setDisabledSlots(Collections.singletonList(now.toLocalTime().toString()));
+        u.getUserProfile().setReceiveBroadcasts(true);
+        u.getUserProfile().setBroadcastSlotsLocalTime(broadcast);
+
+        User newUser = userApi.modifyProfile(u);
+
+        for (LocalTime localTime : broadcast) {
+            assertTrue(newUser.getUserProfile().getBroadcastSlots().contains(localTime.toString()));
+        }
+        Slot s = new Slot(now);
+        assertTrue(newUser.getUserProfile().hasBlockedTime(s));
+        s.setTimeStamp(LocalDateTime.now().plusHours(2));
+        assertFalse(newUser.getUserProfile().hasBlockedTime(s));
+        assertTrue(newUser.getUserProfile().hasBlockedDate(LocalDate.now().toString()));
+        assertTrue(newUser.getUserProfile().isReceiveBroadcasts());
+    }
+
 }

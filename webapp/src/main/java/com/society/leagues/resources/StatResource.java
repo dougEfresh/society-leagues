@@ -1,15 +1,14 @@
 package com.society.leagues.resources;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.society.leagues.client.api.domain.*;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -61,10 +60,70 @@ public class StatResource  extends BaseController {
         return "stats/userStats";
     }
 
-    @ModelAttribute
-    public void setDisplay(Model model) {
-        //flag for this view which determines if stats are being viewed from  /stats/* or /display/* section of websire
-        model.addAttribute("display",false);
+    public static class StatLifeTime {
+        @JsonIgnore
+        StatSeason ss;
+        int win;
+        int lost;
+
+        public String getSeason() {
+            return ss.getName();
+        }
+
+        @JsonIgnore
+        public StatSeason getSs() {
+            return ss;
+        }
+
+        public int getLost() {
+            return lost;
+        }
+
+        public int getWin() {
+            return win;
+        }
+
+        public StatLifeTime(StatSeason ss) {
+            this.ss = ss;
+        }
+        public void addWins(int wins){
+            this.win += wins;
+        }
+
+        public void addLost(int lost){
+            this.lost += lost;
+        }
+        public StatLifeTime() {
+        }
+    }
+
+    @RequestMapping(value = {"/stats/lifetime/{userId}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody public List<StatLifeTime> lifetime(@PathVariable String userId) {
+        List<StatLifeTime> stats  = new ArrayList<>();
+        LocalDate now = LocalDate.now().plusWeeks(1);
+        Map<StatSeason,List<Stat>> userStats = statApi.getUserStatsSummary(userId).stream()
+                .filter(s->s.getType() == StatType.USER_SEASON)
+                .filter(s->!s.getSeason().isChallenge())
+                .filter(s->s.getSeason().getsDate() != null)
+                .filter(s->s.getSeason().getsDate().isBefore(now))
+                .filter(s->!s.getSeason().isActive())
+                .sorted((o1, o2) -> o1.getSeason().getsDate().compareTo(o2.getSeason().getsDate()))
+                .collect(Collectors.groupingBy(Stat::getStatSeason));
+
+        for (StatSeason ss : userStats.keySet()) {
+            StatLifeTime sf = new StatLifeTime(ss);
+            for (Stat stat : userStats.get(ss)) {
+                sf.addWins(stat.getWins());
+                sf.addLost(stat.getLoses());
+            }
+            stats.add(sf);
+        }
+        return stats.stream().sorted((o1, o2) -> {
+            if (o1.getSs().getYear().equals(o2.getSs().getYear())) {
+                return o1.getSs().getType().getOrder().compareTo(o2.getSs().getType().getOrder());
+            }
+            return o1.getSs().getYear().compareTo(o2.getSs().getYear());
+        }).collect(Collectors.toList());
     }
 
     @RequestMapping(value = {"/stats"}, method = RequestMethod.GET)

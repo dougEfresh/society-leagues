@@ -49,7 +49,7 @@ public class Slot extends LeagueObject {
 
     @JsonIgnore
     public String getTime() {
-        return timeStamp.toString().split("T")[1].substring(0,5);
+        return timeStamp.toLocalTime().toString();
     }
 
     @JsonIgnore

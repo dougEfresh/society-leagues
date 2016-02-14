@@ -20,6 +20,7 @@ public interface ChallengeApi {
     Challenge accept(Challenge challenge);
 
     @RequestLine("GET /api/challenge/date/{date}")
+    @Deprecated
     List<Team> challengeUsersOnDate(@Param("date") String date);
 
     @RequestLine("GET /api/challenge/slots")

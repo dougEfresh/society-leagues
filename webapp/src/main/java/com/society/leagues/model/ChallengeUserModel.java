@@ -3,6 +3,7 @@ package com.society.leagues.model;
 import com.society.leagues.client.api.domain.Handicap;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.User;
+import com.society.leagues.resources.ChallengeResource;
 import org.springframework.util.ReflectionUtils;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class ChallengeUserModel extends Team {
     }
 
     public String display(User user) {
-        if (getChallengeUser()  == null) {
+        if (getChallengeUser()  == null || this.equals(ChallengeResource.broadcast)) {
             return getName();
         }
         return String.format("%s - %s - %s",
