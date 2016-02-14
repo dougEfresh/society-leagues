@@ -106,12 +106,12 @@ public class ChallengeResource extends BaseController {
     private void processDate(String date, String userId, Model model, HttpServletResponse response) throws IOException {
         List<Slot> slots = challengeApi.challengeSlots();
         Team opponent = getOpponent(userId);
-        Set<LocalDate> dates = slots.stream()
+        List<LocalDate> dates = slots.stream()
                 .map(s->s.getLocalDateTime().toLocalDate())
                 .collect(Collectors.toCollection(TreeSet::new))
-                .stream().filter(d->!opponent.getChallengeUser().getUserProfile().hasBlockedDate(d.toString())).collect(Collectors.toSet());
-        dates = dates.stream().sorted((o1, o2) -> o1.compareTo(o2)).collect(Collectors.toSet());
+                .stream().filter(d->!opponent.getChallengeUser().getUserProfile().hasBlockedDate(d.toString())).collect(Collectors.toList());
 
+        Collections.sort(dates, LocalDate::compareTo);
         model.addAttribute("dates", dates);
         model.addAttribute("date",date);
         slots.sort((o1, o2) -> o1.getLocalDateTime().compareTo(o2.getLocalDateTime()));

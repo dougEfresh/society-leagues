@@ -111,12 +111,14 @@ function lifeTimeStats(v) {
            plugins: ['remove_button'],
          maxItems: 8
        });
+
      $('#challenge-broadcast-slots').selectize({
          persist: false,
            plugins: ['remove_button'],
          maxItems: 8
        });
-          $('#challenge-block-dates').selectize({
+
+     $('#challenge-block-dates').selectize({
          persist: false,
            plugins: ['remove_button'],
          maxItems: 8
