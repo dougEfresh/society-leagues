@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.society.leagues.client.api.ChallengeApi;
 import com.society.leagues.client.api.domain.*;
 
+import com.society.leagues.model.DateModel;
 import com.society.leagues.model.TimeModel;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,16 +57,26 @@ public class UserResource extends BaseController {
                 .collect(Collectors.groupingBy(Slot::getTime)
                 );
 
+        Map<LocalDate,List<Slot>> slotDates = challengeApi.challengeSlots().parallelStream()
+                .collect(Collectors.groupingBy(s->s.getTimeStamp().toLocalDate())
+                );
+
         List<TimeModel> disabledTimes = new ArrayList<>();
         List<TimeModel> broadcastTimes = new ArrayList<>();
+        List<DateModel> blockedDates = new ArrayList<>();
+
         times.keySet().stream().sorted().forEach(
                 t->disabledTimes.add(new TimeModel(t,u.getUserProfile().getDisabledSlots().contains(t)))
         );
         times.keySet().stream().sorted().forEach(
                 t->broadcastTimes.add(new TimeModel(t,u.getUserProfile().getBroadcastSlots().contains(t)))
         );
+        slotDates.keySet().stream().sorted().forEach(
+                d->blockedDates.add(new DateModel(d,u.getUserProfile().hasBlockedDate(d.toString())))
+        );
         model.addAttribute("disabledTimes",disabledTimes);
         model.addAttribute("broadcastTimes",broadcastTimes);
+        model.addAttribute("blockedDates",blockedDates);
         if (user.isChallenge()) {
             model.addAttribute("challengeDisabled",
                     teamApi.userTeams(u.getId())
@@ -115,12 +127,14 @@ public class UserResource extends BaseController {
      public String disabledSlots(@PathVariable String id ,
                                  @RequestParam(required = false) List<String> disabledSlots,
                                  @RequestParam(required = false) List<String> broadcastSlots,
+                                 @RequestParam(required = false) List<String> blockedDates,
                                  @RequestParam(required = false, defaultValue = "false") Boolean receiveBroadcasts,
                                  Model model) {
          User u = userApi.get(id);
          u.getUserProfile().setBroadcastSlots(broadcastSlots);
          u.getUserProfile().setDisabledSlots(disabledSlots);
          u.getUserProfile().setReceiveBroadcasts(receiveBroadcasts);
+         u.getUserProfile().setBlockedDates(blockedDates);
          userApi.modifyProfile(u);
          return "redirect:/app/user/" + id;
      }

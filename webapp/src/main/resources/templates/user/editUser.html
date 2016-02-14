@@ -124,7 +124,10 @@
                 <label class="col-sm-4 control-label">Block Dates</label>
                 <div class="col-sm-7">
                     <select id="challenge-block-dates" name="blockedDates" multiple="multiple">
-                        <option th:each="time: ${broadcastTimes}" th:text="${time.getTime()}" th:value="${time.getTime()}" th:selected="${time.isSelected()}">
+                        <option th:each="dt: ${blockedDates}"
+                                th:text="${#temporals.format(dt.getDate(), 'MM/dd')}"
+                                th:value="${dt.getDate().toString()}"
+                                th:selected="${dt.isSelected()}">
                         </option>
                     </select>
                 </div>

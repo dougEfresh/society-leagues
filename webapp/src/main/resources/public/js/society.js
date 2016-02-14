@@ -116,6 +116,11 @@ function lifeTimeStats(v) {
            plugins: ['remove_button'],
          maxItems: 8
        });
+          $('#challenge-block-dates').selectize({
+         persist: false,
+           plugins: ['remove_button'],
+         maxItems: 8
+       });
 
      $('#users-search').selectize({
          persist: false,

@@ -27,7 +27,10 @@ public class UserProfile {
     }
 
     public void setBlockedDates(List<String> blockedDates) {
-        this.blockedDates = blockedDates;
+        if (blockedDates == null)
+            this.blockedDates = new ArrayList<>();
+        else
+            this.blockedDates = blockedDates;
     }
 
     public String getProfileUrl() {
@@ -60,10 +63,10 @@ public class UserProfile {
     }
 
     public void setDisabledSlots(List<String> disabledSlots) {
-        if (disabledSlots == null) {
+        if (disabledSlots == null)
             this.disabledSlots = Collections.emptyList();
-        }
-        this.disabledSlots = disabledSlots;
+        else
+            this.disabledSlots = disabledSlots;
     }
 
     public void setDisabledSlotsLocalTime(List<LocalTime> disabledSlots) {
@@ -75,10 +78,10 @@ public class UserProfile {
     }
 
     public void setBroadcastSlots(List<String> broadcastSlots) {
-        if (broadcastSlots == null) {
+        if (broadcastSlots == null)
             this.broadcastSlots = Collections.emptyList();
-        }
-        this.broadcastSlots = broadcastSlots;
+        else
+            this.broadcastSlots = broadcastSlots;
     }
 
     public void setBroadcastSlotsLocalTime(List<LocalTime> broadcastSlots) {
@@ -104,6 +107,6 @@ public class UserProfile {
     }
 
     public boolean hasBlockedTime(Slot s) {
-        return broadcastSlots.contains(s.getTime());
+        return disabledSlots.contains(s.getTime());
     }
 }

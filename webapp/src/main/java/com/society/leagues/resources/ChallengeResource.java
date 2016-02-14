@@ -29,7 +29,6 @@ public class ChallengeResource extends BaseController {
 
     @RequestMapping(value = {"/challenge"}, method = RequestMethod.GET)
     public String challenge(@RequestParam(required = false) String userId, @RequestParam(required = false) String date, Model  model, HttpServletResponse response) throws IOException {
-        processDate(date,userId,model,response);
         Season s =  seasonApi.active().stream().filter(Season::isChallenge).findFirst().get();
         Team challenger = teamApi.userTeams(user.getId()).stream().filter(Team::isChallenge).findFirst().orElse(null);
         challenger.setMembers(teamApi.members(challenger.getId()));
@@ -38,6 +37,8 @@ public class ChallengeResource extends BaseController {
         }
         model.addAttribute("challenger",challenger);
         model.addAttribute("season", s);
+        processDate(date,userId,model,response);
+
         List<Challenge> existingChallenges = populateChallenge(challengeApi.challengesForUser(user.getId()));
 
         model.addAttribute("broadcast", populateChallenge(challengeApi.challenges().stream().filter(Challenge::isBroadcast).collect(Collectors.toList())));
@@ -104,9 +105,12 @@ public class ChallengeResource extends BaseController {
 
     private void processDate(String date, String userId, Model model, HttpServletResponse response) throws IOException {
         List<Slot> slots = challengeApi.challengeSlots();
+        Team opponent = getOpponent(userId);
         Set<LocalDate> dates = slots.stream()
                 .map(s->s.getLocalDateTime().toLocalDate())
-                .collect(Collectors.toCollection(TreeSet::new));
+                .collect(Collectors.toCollection(TreeSet::new))
+                .stream().filter(d->!opponent.getChallengeUser().getUserProfile().hasBlockedDate(d.toString())).collect(Collectors.toSet());
+        dates = dates.stream().sorted().collect(Collectors.toSet());
         model.addAttribute("dates",dates);
         model.addAttribute("date",date);
         slots.sort((o1, o2) -> o1.getLocalDateTime().compareTo(o2.getLocalDateTime()));
@@ -123,6 +127,9 @@ public class ChallengeResource extends BaseController {
     private List<Team> populateTeam(List<Team> teams) {
         teams.parallelStream().filter(t->t.equals(broadcast)).forEach(t->t.setMembers(teamApi.members(t.getId())));
         return teams;
+    }
+    private Team getOpponent(String userId) {
+        return userId == null || userId.isEmpty() || broadcast.getId().equals(userId) ? broadcast : populateTeam(Collections.singletonList(teamApi.get(userId))).get(0);
     }
     private void processUser(String userId, String date, Team challenger, Model model) {
         List<Team> challengeUsers = new ArrayList<>();
@@ -141,7 +148,7 @@ public class ChallengeResource extends BaseController {
 
 
         Challenge challenge = new Challenge();
-        Team opponent = broadcast.getId().equals(userId) ? broadcast : populateTeam(Collections.singletonList(teamApi.get(userId))).get(0);
+        Team opponent = getOpponent(userId);
         challenge.setOpponent(opponent);
         List<Slot> slots =
                 challengeApi.challengeSlots().parallelStream()
