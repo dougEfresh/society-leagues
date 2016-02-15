@@ -91,7 +91,7 @@ public class SeasonResource {
 
         teams.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
         if (season.isScramble()){
-            LocalDate after = LocalDate.now().withMonth(2).withDayOfMonth(9);
+            LocalDate after = LocalDate.now().minusDays(2);
             List <TeamMatch> existings = leagueService.findAll(TeamMatch.class).stream()
                     .filter(tm->tm.getMatchDate().toLocalDate().isAfter(after))
                     .filter(tm->season.equals(tm.getSeason())).collect(Collectors.toList());
