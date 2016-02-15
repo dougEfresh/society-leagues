@@ -46,7 +46,7 @@ public class ScheduleResource extends BaseController {
         sortedMatches = matches.stream().collect(Collectors.groupingBy(t->t.getMatchDate().toLocalDate().toString()));
         List<Team> teams = new ArrayList<>();
         teams.addAll(statApi.teamSeasonStats(seasonId));
-        model.addAttribute("teams",teams.stream().filter(t->season.isChallenge() && !t.isDisabled()).collect(Collectors.toList()));
+        model.addAttribute("teams",teams.stream().filter(t->!t.isDisabled()).collect(Collectors.toList()));
 
         List<MatchModel> teamMatches;
         if (teamId != null  && ! teamId.equals("-1")) {
