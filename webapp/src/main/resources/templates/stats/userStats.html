@@ -1,29 +1,41 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
-    <script>
-        function drawChart() {
-
-        }
-    </script>
     <div id="stats-app"  layout:fragment="content">
         <div class="society-well society-well-stats society-well-user-stats">
         <div class="well-title">
             <h3>Stats</h3>
         </div>
             <select th:if="${statUser ne null}" id="users-stats-search">
-                <option th:each="u : ${allUsers}" th:selected="${u.getId().equals(statUser.getId())}"
-                        th:value="${u.id}" th:text="${u.name}"></option>
+                <option th:each="u : ${allUsers}"
+                        th:selected="${u.getId().equals(statUser.getId())}"
+                        th:value="${u.id}" th:text="${u.name}">
+                </option>
+            </select>
+            <select th:onchange="'onSeasonChange()'" th:if="${activeSeasons ne null}" id="season-select">
+                <option value="-1">All</option>
+                <option th:if="${not s.isChallenge()}" th:each="s : ${activeSeasons}"
+                        th:value="${s.id}"
+                        th:selected="${s.id == season.id}"
+                        th:text="${s.getDayName()}">
+                </option>
             </select>
             <div id="stats-line-lifetime">
             </div>
             <script th:inline="javascript">
+                function onSeasonChange() {
+                    window.location = window.location.pathname + '?seasonId=' + $('#season-select').val();
+                }
+            </script>
+            <script th:inline="javascript">
                     /*<![CDATA[*/
                     var id = [[${statUser.getId()}]];
-                     $.getJSON("/app/stats/lifetime/" + id, function (json) {
+                    var seasonId = [[${season.getId()}]];
+                     $.getJSON("/app/stats/lifetime/" + id + '?seasonId=' +  seasonId, function (json) {
                          console.log(json);
                          Morris.Line({
                              element: 'stats-line-lifetime',
                              data: json,
+                             smooth: true,
                              xkey: 'season',
                              ykeys: ['win','lost'],
                              labels: ['Win','Lost']
