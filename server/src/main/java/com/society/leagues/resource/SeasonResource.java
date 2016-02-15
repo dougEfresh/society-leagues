@@ -1,6 +1,7 @@
 package com.society.leagues.resource;
 
 import com.society.leagues.client.api.domain.*;
+import com.society.leagues.mongo.PlayerResultRepository;
 import com.society.leagues.mongo.TeamMatchRepository;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.ResultService;
@@ -26,6 +27,7 @@ public class SeasonResource {
     @Autowired LeagueService leagueService;
     @Autowired ResultService resultService;
     @Autowired TeamMatchRepository teamMatchRepository;
+    @Autowired PlayerResultRepository playerResultRepository;
 
     static Logger logger = LoggerFactory.getLogger(SeasonResource.class);
 
@@ -97,7 +99,7 @@ public class SeasonResource {
                 for (PlayerResult result : leagueService.findAll(PlayerResult.class).stream()
                         .filter(pr -> pr.getTeamMatch() != null)
                         .filter(pr -> existing.equals(pr.getTeamMatch())).collect(Collectors.toList())) {
-                    teamMatchRepository.delete(result.getId());
+                    playerResultRepository.delete(result.getId());
                 }
                 teamMatchRepository.delete(existing.getId());
             }
@@ -107,7 +109,7 @@ public class SeasonResource {
                 for (PlayerResult result : leagueService.findAll(PlayerResult.class).stream()
                         .filter(pr -> pr.getTeamMatch() != null)
                         .filter(pr -> existing.equals(pr.getTeamMatch())).collect(Collectors.toList())) {
-                    teamMatchRepository.delete(result.getId());
+                    playerResultRepository.delete(result.getId());
                 }
                 teamMatchRepository.delete(existing.getId());
             }
