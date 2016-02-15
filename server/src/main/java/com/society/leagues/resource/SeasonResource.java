@@ -88,24 +88,90 @@ public class SeasonResource {
                 .collect(Collectors.toList());
 
         teams.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
-        List <TeamMatch> existings = leagueService.findAll(TeamMatch.class).stream().filter(tm->season.equals(tm.getSeason())).collect(Collectors.toList());
-        for (TeamMatch existing : existings) {
-            for( PlayerResult result:  leagueService.findAll(PlayerResult.class).stream()
-                    .filter(pr->pr.getTeamMatch() != null)
-                    .filter(pr -> existing.equals(pr.getTeamMatch())).collect(Collectors.toList())) {
-                teamMatchRepository.delete(result.getId());
+        if (season.isScramble()){
+            LocalDate after = LocalDate.now().withMonth(2).withDayOfMonth(9);
+            List <TeamMatch> existings = leagueService.findAll(TeamMatch.class).stream()
+                    .filter(tm->tm.getMatchDate().toLocalDate().isAfter(after))
+                    .filter(tm->season.equals(tm.getSeason())).collect(Collectors.toList());
+            for (TeamMatch existing : existings) {
+                for (PlayerResult result : leagueService.findAll(PlayerResult.class).stream()
+                        .filter(pr -> pr.getTeamMatch() != null)
+                        .filter(pr -> existing.equals(pr.getTeamMatch())).collect(Collectors.toList())) {
+                    teamMatchRepository.delete(result.getId());
+                }
+                teamMatchRepository.delete(existing.getId());
             }
-            teamMatchRepository.delete(existing.getId());
+        } else {
+            List<TeamMatch> existings = leagueService.findAll(TeamMatch.class).stream().filter(tm -> season.equals(tm.getSeason())).collect(Collectors.toList());
+            for (TeamMatch existing : existings) {
+                for (PlayerResult result : leagueService.findAll(PlayerResult.class).stream()
+                        .filter(pr -> pr.getTeamMatch() != null)
+                        .filter(pr -> existing.equals(pr.getTeamMatch())).collect(Collectors.toList())) {
+                    teamMatchRepository.delete(result.getId());
+                }
+                teamMatchRepository.delete(existing.getId());
+            }
         }
 
         Collection<TeamMatch> allCombos = scheduleSeason(teams.toArray(new Team[]{}),teams.toArray(new Team[]{}),season);
         Random  random = new Random();
         LinkedList<Team> a = new LinkedList<>(teams.subList(0,teams.size()/2));
         LinkedList<Team> b = new LinkedList<>(teams.subList((teams.size()/2),teams.size()));
+        if (season.isScramble()) {
+            /**
+             * Round 1. (1 plays 14, 2 plays 13, ... )
+             1  2  3  4  5  6  7
+             14 13 12 11 10 9  8
+             * Round 2. (1 plays 13, 14 plays 12, ... )
+             1  14 2  3  4  5  6
+             13 12 11 10 9  8  7
+             *
+             */
+            a.clear();
+            b.clear();
+            /*
+            a.add(0,teams.stream().filter(t->t.getName().equals("86 These Balls")).findFirst().get()); 1
+            b.add(0,teams.stream().filter(t->t.getName().equals("Ace")).findFirst().get()); 12
+
+            a.add(1,teams.stream().filter(t->t.getName().equals("Barkada")).findFirst().get()); 2
+            b.add(1,teams.stream().filter(t->t.getName().equals("All 7's")).findFirst().get()); 11
+
+            a.add(2,teams.stream().filter(t->t.getName().equals("C & G")).findFirst().get()); 3
+            b.add(2,teams.stream().filter(t->t.getName().equals("Iron Monster")).findFirst().get()); 10
+
+            a.add(3,teams.stream().filter(t->t.getName().equals("Incoming")).findFirst().get()); 4
+            b.add(3,teams.stream().filter(t->t.getName().equals("Jaws")).findFirst().get()); 9
+
+            a.add(4,teams.stream().filter(t->t.getName().equals("Low Expectations")).findFirst().get()); 5
+            b.add(4,teams.stream().filter(t->t.getName().equals("Menace to Sobriety")).findFirst().get());  8
+
+            a.add(4,teams.stream().filter(t->t.getName().equals("Worst Behavior")).findFirst().get()); 6
+            b.add(4,teams.stream().filter(t->t.getName().equals("TBD")).findFirst().get());  7
+
+            */
+            a.add(0,teams.stream().filter(t->t.getName().equals("86 These Balls")).findFirst().get()); // 1
+            b.add(0,teams.stream().filter(t->t.getName().equals("All 7's")).findFirst().get()); // 11
+
+            a.add(1,teams.stream().filter(t->t.getName().equals("Ace")).findFirst().get()); // 12
+            b.add(1,teams.stream().filter(t->t.getName().equals("Iron Monster")).findFirst().get()); // 10
+
+            a.add(2,teams.stream().filter(t->t.getName().equals("Barkada")).findFirst().get());  //2
+            b.add(2,teams.stream().filter(t->t.getName().equals("Jaws")).findFirst().get()); // 9
+
+            a.add(3,teams.stream().filter(t->t.getName().equals("C & G")).findFirst().get()); //3
+            b.add(3,teams.stream().filter(t->t.getName().equals("Menace to Sobriety")).findFirst().get()); //8
+
+            a.add(4,teams.stream().filter(t->t.getName().equals("Incoming")).findFirst().get()); //4
+            b.add(4,teams.stream().filter(t->t.getName().equals("TBD")).findFirst().get()); //7
+
+            a.add(5,teams.stream().filter(t->t.getName().equals("Low Expectations")).findFirst().get()); //5
+            b.add(5,teams.stream().filter(t->t.getName().equals("Worst Behavior")).findFirst().get()); //6
+        }
+
         Collections.reverse(b);
         List<TeamMatch> matches = new ArrayList<>();
-        for (int week = 0; week < teams.size()-1 ; week ++ ) {
-            for (int i = 0; i < a.size(); i++) {
+        for (int week = season.isScramble() ? 1 : 0 ; week < teams.size()-1 ; week ++ ) {
+            for (int i = 0 ; i < a.size(); i++) {
                 TeamMatch tm = new TeamMatch(a.get(i), b.get(i), season.getStartDate().plusWeeks(week));
                 final Team aTeam = a.get(i);
                 long homeCnt = matches.stream().filter(t->t.getHome().equals(aTeam)).count();
