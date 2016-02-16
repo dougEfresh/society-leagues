@@ -43,14 +43,39 @@ public class StatResource  extends BaseController {
         Handicap handicap;
         int wins;
         int lost;
-        
+
+        public StatHandicap(Handicap handicap) {
+            this.handicap = handicap;
+        }
+
+        public void addWin(int wins) {
+            this.wins += wins;
+        }
+
+        public void addLost(int lost) {
+            this.lost += lost;
+        }
     }
 
     @RequestMapping(value = {"/stats/lifetime/handicap/{userId}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<StatLifeTime> handicapLifetime(@PathVariable String userId, @RequestParam(required = false, defaultValue = "-1") String seasonId) {
+    public List<StatHandicap> handicapLifetime(@PathVariable String userId, @RequestParam(required = false, defaultValue = "-1") String seasonId) {
         Season season = seasonId.equals("-1") ?  Season.getDefault() : seasonApi.get(seasonId);
-        return get(statApi.getUserStatsSummary(userId).stream().filter(s->s.getType().isScramble()).collect(Collectors.toList()));
+        List<Stat> stats = statApi.getUserStatsSummary(userId).stream().filter(s->s.getType() == StatType.HANDICAP).collect(Collectors.toList());
+        if (!season.equals(Season.getDefault())) {
+            stats = stats.stream().filter(s->s.getSeason().equals(season)).collect(Collectors.toList());
+        }
+        List<StatHandicap> statHandicaps = new ArrayList<>();
+        Map<Handicap,List<Stat>> statSeasons = stats.stream().collect(Collectors.groupingBy(Stat::getHandicap));
+        for (Handicap hc: statSeasons.keySet()) {
+            StatHandicap statHandicap = new StatHandicap(hc);
+            for (Stat stat : statSeasons.get(hc)) {
+                statHandicap.addWin(stat.getWins());
+                statHandicap.addLost(stat.getLoses());
+            }
+            statHandicaps.add(statHandicap);
+        }
+        return statHandicaps;
     }
 
     private List<StatLifeTime> get(List<Stat> stats) {
