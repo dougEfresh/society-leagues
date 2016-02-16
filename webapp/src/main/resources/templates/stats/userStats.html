@@ -5,6 +5,10 @@
             function onSeasonChange() {
                 window.location = window.location.pathname + '?seasonId=' + $('#season-select').val() + '&chartType=' +  $('#chart-select').val();
             }
+            function onNineHandicapChange(){
+                window.location = window.location.pathname + '?seasonId=' + $('#season-select').val() + '&chartType=' +  $('#chart-select').val() + '&nineId=' + $('#season-nine-handicap-select').val();
+
+            }
 
         </script>
         <div class="society-well society-well-stats society-well-user-stats">
@@ -79,30 +83,30 @@
 
         <div class="society-well society-well-stats society-well-user-stats">
             <div class="well-title">
-                <h3>Handicap</h3>
+                <h3>Handicap - 9 Ball</h3>
             </div>
             <!--th:selected="${s.id == season.id}"-->
-            <select th:onchange="'onSeasonChange()'" th:if="${statSeasons ne null}" id="season-select">
-                <option value="-1">All</option>
+            <select th:onchange="'onNineHandicapChange()'" th:if="${nineSeasons ne null}" id="season-nine-handicap-select">
+                <option value="-1">All Seasons</option>
                 <option
-                        th:each="s : ${statSeasons}"
+                        th:each="s : ${nineSeasons}"
                         th:value="${s.id}"
-                        th:selected="${s.id == season.getId()}"
-                        th:text="${s.getDayName()}">
+                        th:selected="${s.id == nineSeason.getId()}"
+                        th:text="${s.getFormattedName()}">
                 </option>
             </select>
 
-            <div id="stats-handicap-lifetime">
+            <div id="stats-nine-handicap-lifetime">
             </div>
 
             <script  th:inline="javascript">
                     /*<![CDATA[*/
                     var id = [[${statUser.getId()}]];
-                    var seasonId = [[${season.getId()}]];
-                    $.getJSON("/app/stats/lifetime/handicap" + id + '?seasonId=' +  seasonId, function (json) {
+                    var seasonId = [[${nineSeason.getId()}]];
+                    $.getJSON("/app/stats/lifetime/handicap/nine/" + id + '?seasonId=' +  seasonId, function (json) {
                          console.log(json);
                          Morris.Bar({
-                             element: 'stats-handicap-lifetime',
+                             element: 'stats-nine-handicap-lifetime',
                              data: json,
                              smooth: true,
                              xkey: 'handicap',
@@ -114,6 +118,7 @@
             </script>
         </div>
 
+        <!--
         <div th:if="${not #lists.isEmpty(scrambleStats)}" class="society-well society-well-stats society-well-user-stats">
             <div class="well-title">
                 <h3>Scramble</h3>
@@ -164,6 +169,7 @@
                 /*]]>*/
             </script>
         </div>
+-->
 
         <div class="society-well society-well-stats society-well-user-stats">
             <div class="well-title">
