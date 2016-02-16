@@ -45,11 +45,10 @@
           <div class="well-title">
               <h4>
                   <a th:if="${!season.isChallenge()}" th:href="@{/app/leaders/{id} (id=${season.getId()})}" >
-
                       <a th:if="${season.isChallenge()}" th:href="@{/app/display/{id} (id=${season.getId()})}" >
-                  <i class="fa fa-trophy"></i>
-                  <span id="top-players">Top Players - </span>
-                  <span th:text="${season.getDayName()}"></span>
+                          <i class="fa fa-trophy"></i>
+                          <span id="top-players">Top Players - </span>
+                          <span th:text="${season.getDayName()}"></span>
                   </a>
               </h4>
           </div>
