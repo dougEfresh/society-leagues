@@ -20,7 +20,8 @@
                         <span th:text="${#temporals.format(slot.getLocalDateTime(), 'h:mm')}" th:each="slot : ${challenge.getSlots()}"></span>
                     </td>
                     <td class="challenge-name">
-                        <img  th:fragments="avatarUser" class="avatar img-responsive" th:if="${challenger ne null}" th:src="${challenge.getUserOpponent().getAvatarUrl()}"/>
+                        <img  th:fragments="avatarUser" class="avatar img-responsive" th:if="${challenger ne null}"
+                              th:src="${challenge.getUserOpponent().getAvatarUrl()}"/>
                         <a th:href="@{/app/display/{seasonId}/user/{id} (id=${challenge.getUserOpponent().getId()},seasonId=${season.getId()})}">
                         <span th:text="${challenge.getUserOpponent().getName()}"></span>
                         </a>
