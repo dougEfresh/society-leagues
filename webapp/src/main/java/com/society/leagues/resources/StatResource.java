@@ -39,6 +39,13 @@ public class StatResource  extends BaseController {
         return get(statApi.getUserStatsSummary(userId).stream().filter(s->s.getType().isScramble()).collect(Collectors.toList()));
     }
 
+    static class StatHandicap {
+        Handicap handicap;
+        int wins;
+        int lost;
+        
+    }
+
     @RequestMapping(value = {"/stats/lifetime/handicap/{userId}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<StatLifeTime> handicapLifetime(@PathVariable String userId, @RequestParam(required = false, defaultValue = "-1") String seasonId) {

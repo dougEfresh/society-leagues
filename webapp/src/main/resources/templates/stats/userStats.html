@@ -77,6 +77,43 @@
 
         </div>
 
+        <div class="society-well society-well-stats society-well-user-stats">
+            <div class="well-title">
+                <h3>Handicap</h3>
+            </div>
+            <!--th:selected="${s.id == season.id}"-->
+            <select th:onchange="'onSeasonChange()'" th:if="${statSeasons ne null}" id="season-select">
+                <option value="-1">All</option>
+                <option
+                        th:each="s : ${statSeasons}"
+                        th:value="${s.id}"
+                        th:selected="${s.id == season.getId()}"
+                        th:text="${s.getDayName()}">
+                </option>
+            </select>
+
+            <div id="stats-handicap-lifetime">
+            </div>
+
+            <script  th:inline="javascript">
+                    /*<![CDATA[*/
+                    var id = [[${statUser.getId()}]];
+                    var seasonId = [[${season.getId()}]];
+                    $.getJSON("/app/stats/lifetime/handicap" + id + '?seasonId=' +  seasonId, function (json) {
+                         console.log(json);
+                         Morris.Bar({
+                             element: 'stats-handicap-lifetime',
+                             data: json,
+                             smooth: true,
+                             xkey: 'handicap',
+                             ykeys: ['win','lost'],
+                             labels: ['Win','Lost']
+                         });
+                     });
+                    /*]]>*/
+            </script>
+        </div>
+
         <div th:if="${not #lists.isEmpty(scrambleStats)}" class="society-well society-well-stats society-well-user-stats">
             <div class="well-title">
                 <h3>Scramble</h3>
