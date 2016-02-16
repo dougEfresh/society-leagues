@@ -22,15 +22,13 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.social.UserIdSource;
-import org.springframework.social.security.SpringSocialConfigurer;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
-
+import static com.stormpath.spring.config.StormpathWebSecurityConfigurer.stormpath;
 
 @Configuration
 @EnableWebSecurity
@@ -77,6 +75,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         CsrfTokenResponseHeaderBindingFilter csrfTokenFilter = new CsrfTokenResponseHeaderBindingFilter();
         http.addFilterAfter(csrfTokenFilter, CsrfFilter.class);
+        http.apply(stormpath()).and().authorizeRequests().antMatchers("/*").permitAll();
+        /*
         http.csrf().disable()
                     .formLogin().loginPage("/api/authenticate")
                     //.loginProcessingUrl("/signup/authenticate")
@@ -94,6 +94,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .postLoginUrl("/app/home").alwaysUsePostLoginUrl(false)
                     //.signupUrl("/signup").defaultFailureUrl("/failure")
                     .userIdSource(userIdSource);
+                    */
     }
 
     @Bean

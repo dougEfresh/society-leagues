@@ -31,6 +31,7 @@ dependencies {
     compile project(':client')
     compile project(':spring-client')
     compile 'org.slf4j:slf4j-api:1.7.7'
+    compile 'com.stormpath.spring:stormpath-default-spring-boot-starter:1.0.RC8.3'
 
     compile 'org.springframework.boot:spring-boot-actuator'
     compile 'org.springframework.boot:spring-boot-autoconfigure'

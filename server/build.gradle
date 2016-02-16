@@ -32,7 +32,7 @@ dependencies {
     testCompile project(':spring-client')
     compile project(':dao')
     compile 'org.slf4j:slf4j-api:1.7.7'
-
+    compile 'com.stormpath.spring:stormpath-default-spring-boot-starter:1.0.RC8.3'
     //DB
     compile 'mysql:mysql-connector-java:5.1.32'
     compile "com.h2database:h2:1.4.185"
