@@ -43,7 +43,8 @@ public class LeagueService {
         final MongoRepository repo = cacheUtil.getCache(TeamMembers.class).getRepo();
         findAll(Team.class).stream().filter(t->t.getSeason() != null).filter(t->t.getSeason().isActive()).forEach(
                 t->fakes.stream()
-                        .forEach(u->{t.getMembers().removeMember(u);repo.delete(t.getMembers());})
+                        .forEach(u->{t.getMembers().removeMember(u);
+                            repo.save(t.getMembers());})
         );
         purge(new Season("-1"));
         purge(new Team("-1"));

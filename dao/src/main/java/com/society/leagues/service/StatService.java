@@ -80,7 +80,11 @@ public class StatService {
 
     public List<Stat> getUserStats(User user, Season season, boolean cache) {
         if (!season.isActive() && cache) {
-            return userStats.get().stream().filter(s->user.equals(s.getUser())).collect(Collectors.toList());
+            return userStats.get().stream()
+                    .filter(s->s.getSeason() != null)
+                    .filter(s->s.getSeason().equals(season))
+                    .filter(s->user.equals(s.getUser())
+            ).collect(Collectors.toList());
         }
         List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel()
                 .filter(pr->pr.hasUser(user))
