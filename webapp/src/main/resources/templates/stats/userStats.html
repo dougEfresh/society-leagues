@@ -11,11 +11,13 @@
                         th:value="${u.id}" th:text="${u.name}">
                 </option>
             </select>
+            <!--th:selected="${s.id == season.id}"-->
             <select th:onchange="'onSeasonChange()'" th:if="${activeSeasons ne null}" id="season-select">
                 <option value="-1">All</option>
-                <option th:if="${not s.isChallenge()}" th:each="s : ${activeSeasons}"
+                <option th:if="${not s.isChallenge()}"
+                        th:each="s : ${activeSeasons}"
                         th:value="${s.id}"
-                        th:selected="${s.id == season.id}"
+                        th:selected="${s.id == season.getId()}"
                         th:text="${s.getDayName()}">
                 </option>
             </select>
@@ -26,13 +28,14 @@
                     window.location = window.location.pathname + '?seasonId=' + $('#season-select').val();
                 }
             </script>
+
             <script th:inline="javascript">
                     /*<![CDATA[*/
                     var id = [[${statUser.getId()}]];
                     var seasonId = [[${season.getId()}]];
                      $.getJSON("/app/stats/lifetime/" + id + '?seasonId=' +  seasonId, function (json) {
                          console.log(json);
-                         Morris.Line({
+                         Morris.Bar({
                              element: 'stats-line-lifetime',
                              data: json,
                              smooth: true,

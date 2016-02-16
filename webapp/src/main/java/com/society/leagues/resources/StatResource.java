@@ -23,13 +23,14 @@ public class StatResource  extends BaseController {
     }
 
     @RequestMapping(value = {"/stats/lifetime/{userId}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody public List<StatLifeTime> lifetime(@PathVariable String userId, @RequestParam(required = false , defaultValue = "-1") String seasonId) {
+    @ResponseBody
+    public List<StatLifeTime> lifetime(@PathVariable String userId, @RequestParam(required = false , defaultValue = "-1") String seasonId) {
         List<StatLifeTime> stats  = new ArrayList<>();
         LocalDate now = LocalDate.now().plusWeeks(1);
         Season season = seasonId.equals("-1") ?  Season.getDefault() : seasonApi.get(seasonId);
-      Map<StatSeason, List<Stat>> userStats;
+
         if (Season.getDefault().equals(season)) {
-           userStats = statApi.getUserStatsSummary(userId).stream()
+            Map<StatSeason, List<Stat>> userStats = statApi.getUserStatsSummary(userId).stream()
                     .filter(s -> s.getType() == StatType.USER_SEASON)
                     .filter(s -> !s.getSeason().isChallenge())
                     .filter(s -> s.getSeason().getsDate() != null)
@@ -37,26 +38,34 @@ public class StatResource  extends BaseController {
                     .filter(s -> !s.getSeason().isActive())
                     .sorted((o1, o2) -> o1.getSeason().getsDate().compareTo(o2.getSeason().getsDate()))
                    .collect(Collectors.groupingBy(Stat::getStatSeason));
+            for (StatSeason ss : userStats.keySet()) {
+                StatLifeTime sf = new StatLifeTime(ss);
+                for (Stat stat : userStats.get(ss)) {
+                    sf.addWins(stat.getWins());
+                    sf.addLost(stat.getLoses());
+                }
+                stats.add(sf);
+            }
         } else {
-            userStats = statApi.getUserStatsSummary(userId).stream()
+            List<Stat> statUser = statApi.getUserStatsSummary(userId).stream()
                     .filter(s -> s.getType() == StatType.USER_SEASON)
+                    .filter(s-> s.getSeason() != null)
                     .filter(s -> !s.getSeason().isChallenge())
                     .filter(s -> s.getSeason().getsDate() != null)
                     .filter(s -> s.getSeason().getsDate().isBefore(now))
                     .filter(s-> s.getSeason().getDay().equals(season.getDay()))
                     .filter(s -> !s.getSeason().isActive())
                     .sorted((o1, o2) -> o1.getSeason().getsDate().compareTo(o2.getSeason().getsDate()))
-                    .collect(Collectors.groupingBy(Stat::getStatSeason));
+                    .collect(Collectors.toList());
+            for (Stat ss : statUser) {
+                StatLifeTime sf = new StatLifeTime(ss.getStatSeason());
+                sf.addWins(ss.getWins());
+                sf.addLost(ss.getLoses());
+                stats.add(sf);
+            }
+
         }
 
-        for (StatSeason ss : userStats.keySet()) {
-            StatLifeTime sf = new StatLifeTime(ss);
-            for (Stat stat : userStats.get(ss)) {
-                sf.addWins(stat.getWins());
-                sf.addLost(stat.getLoses());
-            }
-            stats.add(sf);
-        }
         return stats.stream().sorted((o1, o2) -> {
             if (o1.getSs().getYear().equals(o2.getSs().getYear())) {
                 return o1.getSs().getType().getOrder().compareTo(o2.getSs().getType().getOrder());

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
@@ -38,6 +39,12 @@ public class LeagueService {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
         cacheUtil.initialize(mongoRepositories);
+        List<User> fakes = findAll(User.class).stream().filter(u->!u.isReal()).collect(Collectors.toList());
+        final MongoRepository repo = cacheUtil.getCache(TeamMembers.class).getRepo();
+        findAll(Team.class).stream().filter(t->t.getSeason() != null).filter(t->t.getSeason().isActive()).forEach(
+                t->fakes.stream()
+                        .forEach(u->{t.getMembers().removeMember(u);repo.delete(t.getMembers());})
+        );
         purge(new Season("-1"));
         purge(new Team("-1"));
         purge(new User("-1"));
