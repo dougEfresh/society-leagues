@@ -117,6 +117,15 @@
                     <i class="fa fa-bar-chart"></i> My Stats
                 </a>
             </li>
+
+             <li >
+                <a id="my-profile" th:if="${user ne null}" th:href="@{/app/user/{id} (id=${user.getId()})}">
+                    <i  th:if="${user ne null}" class="fa fa-server"></i> My Pofile
+                </a>
+                <a  th:if="${user eq null}" href="#">
+                    <i class="fa fa-server"></i> My Profile
+                </a>
+            </li>
             <li>
                 <a id="login" th:if="${user eq null}" href="/app/login">
                     <i  th:if="${user ne null}" class="fa fa-sign-in"></i> Login

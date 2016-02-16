@@ -1,12 +1,8 @@
 package com.society.leagues.client.api.domain;
 
 public enum StatType {
-    USER,
     USER_SEASON,
     ALL,
-    TEAM,
-    HANDICAP_WINS,
-    HANDICAP_LOSES,
     MIXED_EIGHT,
     MIXED_NINE,
     MIXED_SCOTCH,
@@ -15,6 +11,7 @@ public enum StatType {
     LIFETIME_NINE_BALL_TUESDAY,
     LIFETIME_EIGHT_BALL_SCRAMBLE,
     LIFETIME_NINE_BALL_SCRAMBLE,
+    HANDICAP,
     UNKNOWN;
 
     public boolean isLifetime() {
@@ -24,5 +21,9 @@ public enum StatType {
                 this == LIFETIME_EIGHT_BALL_THURSDAY ||
                 this == LIFETIME_NINE_BALL_SCRAMBLE ||
                 this == ALL;
+    }
+
+    public boolean isScramble() {
+        return this == MIXED_EIGHT || this == MIXED_NINE || this == MIXED_SCOTCH;
     }
 }

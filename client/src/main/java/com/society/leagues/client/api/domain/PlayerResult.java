@@ -323,6 +323,16 @@ public class PlayerResult  extends LeagueObject {
         return Handicap.UNKNOWN;
     }
 
+    public Handicap getOpponentHandicap(User u) {
+        if (u.equals(playerAway)) {
+            return playerHomeHandicap ;
+        }
+        if (u.equals(playerHome)) {
+            return playerAwayHandicap;
+        }
+        return Handicap.UNKNOWN;
+    }
+
     public boolean isNine() {
         if (getSeason() == null)
             return false;

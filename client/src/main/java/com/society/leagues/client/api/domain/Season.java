@@ -127,8 +127,8 @@ public class Season extends LeagueObject   {
              name += getStartDate().toString().substring(2,4) + " ";
          }
 
-        name += getSeasonType();
-        name += " " + division.displayName;
+        name += getSeasonType().getSeasonProperName();
+        name += " " + getDayName();
         return name;
     }
 

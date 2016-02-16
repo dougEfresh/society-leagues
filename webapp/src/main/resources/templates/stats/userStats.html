@@ -1,6 +1,12 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
 <div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
     <div id="stats-app"  layout:fragment="content">
+        <script th:inline="javascript">
+            function onSeasonChange() {
+                window.location = window.location.pathname + '?seasonId=' + $('#season-select').val() + '&chartType=' +  $('#chart-select').val();
+            }
+
+        </script>
         <div class="society-well society-well-stats society-well-user-stats">
         <div class="well-title">
             <h3>Stats</h3>
@@ -11,25 +17,30 @@
                         th:value="${u.id}" th:text="${u.name}">
                 </option>
             </select>
+        </div>
+        <div class="society-well society-well-stats society-well-user-stats">
+            <div class="well-title">
+                <h3>Lifetime</h3>
+            </div>
             <!--th:selected="${s.id == season.id}"-->
-            <select th:onchange="'onSeasonChange()'" th:if="${activeSeasons ne null}" id="season-select">
+            <select th:onchange="'onSeasonChange()'" th:if="${statSeasons ne null}" id="season-select">
                 <option value="-1">All</option>
-                <option th:if="${not s.isChallenge()}"
-                        th:each="s : ${activeSeasons}"
+                <option
+                        th:each="s : ${statSeasons}"
                         th:value="${s.id}"
                         th:selected="${s.id == season.getId()}"
                         th:text="${s.getDayName()}">
                 </option>
             </select>
+             <select th:onchange="'onSeasonChange()'" th:if="${activeSeasons ne null}" id="chart-select">
+                 <option value="bar" th:selected="${chartType.equals('bar')}">Bar</option>
+                 <option value="line" th:selected="${chartType.equals('line')}">Line</option>
+            </select>
+
             <div id="stats-line-lifetime">
             </div>
-            <script th:inline="javascript">
-                function onSeasonChange() {
-                    window.location = window.location.pathname + '?seasonId=' + $('#season-select').val();
-                }
-            </script>
 
-            <script th:inline="javascript">
+            <script th:if="${chartType.equals('bar')}" th:inline="javascript">
                     /*<![CDATA[*/
                     var id = [[${statUser.getId()}]];
                     var seasonId = [[${season.getId()}]];
@@ -46,10 +57,83 @@
                      });
                     /*]]>*/
             </script>
+            <script th:if="${chartType.equals('line')}" th:inline="javascript">
+                    /*<![CDATA[*/
+                    var id = [[${statUser.getId()}]];
+                    var seasonId = [[${season.getId()}]];
+                     $.getJSON("/app/stats/lifetime/" + id + '?seasonId=' +  seasonId, function (json) {
+                         console.log(json);
+                         Morris.Line({
+                             element: 'stats-line-lifetime',
+                             data: json,
+                             smooth: true,
+                             xkey: 'season',
+                             ykeys: ['win','lost'],
+                             labels: ['Win','Lost']
+                         });
+                     });
+                    /*]]>*/
+            </script>
+
         </div>
-        <!--
-              <div th:if="${not #lists.isEmpty(stats)}" class="table-responsive">
-                <table class="table table-stats">
+
+        <div th:if="${not #lists.isEmpty(scrambleStats)}" class="society-well society-well-stats society-well-user-stats">
+            <div class="well-title">
+                <h3>Scramble</h3>
+            </div>
+            <select th:onchange="'onSeasonChange()'" id="scramble-type">
+                <option value="all">All</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="scotch">Scotch</option>
+            </select>
+            <select th:onchange="'onSeasonChange()'" th:if="${activeSeasons ne null}" id="chart-select">
+                <option value="bar" th:selected="${chartType.equals('bar')}">Bar</option>
+                <option value="line" th:selected="${chartType.equals('line')}">Line</option>
+            </select>
+
+            <div id="stats-scramble-lifetime">
+            </div>
+            <script th:if="${chartType.equals('bar')}" th:inline="javascript">
+                /*<![CDATA[*/
+                var id = [[${statUser.getId()}]];
+                $.getJSON("/app/stats/lifetime/scramble/" + id, function (json) {
+                    console.log(json);
+                    Morris.Bar({
+                        element: 'stats-scramble-lifetime',
+                        data: json,
+                        smooth: true,
+                        xkey: 'season',
+                        ykeys: ['win','lost'],
+                        labels: ['Win','Lost']
+                    });
+                });
+                /*]]>*/
+            </script>
+            <script th:if="${chartType.equals('line')}" th:inline="javascript">
+                /*<![CDATA[*/
+                var id = [[${statUser.getId()}]];
+                $.getJSON("/app/stats/lifetime/scramble/" + id , function (json) {
+                    console.log(json);
+                    Morris.Line({
+                        element: 'stats-scramble-lifetime',
+                        data: json,
+                        smooth: true,
+                        xkey: 'season',
+                        ykeys: ['win','lost'],
+                        labels: ['Win','Lost']
+                    });
+                });
+                /*]]>*/
+            </script>
+        </div>
+
+        <div class="society-well society-well-stats society-well-user-stats">
+            <div class="well-title">
+                <h3>Data</h3>
+            </div>
+             <div th:if="${not #lists.isEmpty(stats)}" class="table-responsive">
+                  <table class="table table-stats">
                     <thead>
                     <tr>
                         <th></th>
@@ -63,40 +147,26 @@
                     </thead>
                     <tbody>
                     <tr th:each="stat : ${stats}">
-
                         <td >
-                            <a th:text="${stat.getSeason().getFormattedName()}" th:href="@{/app/stats/{id}/{sId} (id=${statUser.id},sId=${stat.getSeason().id})}"></a>
+                            <span th:text="${stat.getSeason().getFormattedName()}" ></span>
                         </td>
                         <td th:text="${stat.getHandicapDisplay()}"> </td>
                         <td th:text="${stat.getWins()}"> </td>
                         <td th:text="${stat.getLoses()}"> </td>
-                        <td th:text="${stat.getRacksWon()}">
+                        <td >
+                            <span th:if="${stat.getSeason().isNine()}" th:text="${stat.getRacksWon()}"></span>
+                            <span th:if="${not stat.getSeason().isNine()}" ></span>
                         </td>
-                        <td th:text="${stat.getRacksLost()}">
+                        <td>
+                            <span th:if="${stat.getSeason().isNine()}" th:text="${stat.getRacksLost()}"></span>
+                            <span th:if="${not stat.getSeason().isNine()}" ></span>
                         </td>
-                        <td th:text="${'% ' + #numbers.formatDecimal(stat.getRackPct()*100,1,3)}"> </td>
+                        <td th:text="${#numbers.formatDecimal(stat.getRackPct(),1,3)}"> </td>
                     </tr>
                     </tbody>
                 </table>
               </div>
+        </div>
 
-            <div th:if="${lifetimeStats ne null}" class="table-stats" th:include="stats/userStatsLifetime" ></div>
-            <div th:if="${not #lists.isEmpty(topgunStats)}" class="table-stats" th:include="stats/userStatsTopgun" ></div>
-            <div class="row" th:if="${not #lists.isEmpty(scrambleEightStats)}" >
-                <div class="table-stats col-xs-12 col-md-6 col-lg-3" th:include="stats/userStatsScramble8">
-                </div>
-                <div class="table-stats col-xs-12 col-md-6 col-lg-3" th:include="stats/userStatsScramble9">
-                </div>
-            </div>
-            <div th:if="${not #lists.isEmpty(tuesdayStats)}" class="table-stats" th:include="stats/userStatsTuesday" ></div>
-            <div class="row"  >
-                <div th:if="${not #lists.isEmpty(wednesdayStats)}" class="table-stats col-xs-12 col-md-6 col-lg-3" th:include="stats/userStatsWednesday" ></div>
-                <div th:if="${not #lists.isEmpty(thursdayStats)}" class="table-stats col-xs-12 col-md-6 col-lg-3" th:include="stats/userStatsThursday" ></div>
-            </div>
-        </div>
-        </div>
-        <div th:if="${not #lists.isEmpty(results)}" class="user-results" th:include="results/userResults" ></div>
-        -->
     </div>
-
 </div>

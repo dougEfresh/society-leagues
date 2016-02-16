@@ -148,7 +148,11 @@ public class LoginResource  {
         Thread.sleep(100);
         headers.set("Cookie",cookie.substring(0,cookie.length()-1));
         httpEntity = new HttpEntity<>(headers);
-        responseEntity = restTemplate.exchange(restUrl + "/api/user", HttpMethod.GET, httpEntity, User.class);
+        try {
+            responseEntity = restTemplate.exchange(restUrl + "/api/user", HttpMethod.GET, httpEntity, User.class);
+        } catch (Exception e){
+            return "redirect:/app/login?error=failed";
+        }
         //for (String s : responseEntity.getHeaders().get("Set-Cookie")) {
           //  logger.info("cookie: " + s);
             //cookie += s.split(";")[0] +  ":";
