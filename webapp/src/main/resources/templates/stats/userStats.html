@@ -36,38 +36,22 @@
                         th:text="${s.getDayName()}">
                 </option>
             </select>
+            <!--
              <select th:onchange="'onSeasonChange()'" th:if="${activeSeasons ne null}" id="chart-select">
                  <option value="bar" th:selected="${chartType.equals('bar')}">Bar</option>
                  <option value="line" th:selected="${chartType.equals('line')}">Line</option>
             </select>
-
+-->
             <div id="stats-line-lifetime">
             </div>
 
-            <script th:if="${chartType.equals('bar')}" th:inline="javascript">
+            <script th:inline="javascript">
                     /*<![CDATA[*/
                     var id = [[${statUser.getId()}]];
                     var seasonId = [[${season.getId()}]];
                      $.getJSON("/app/stats/lifetime/" + id + '?seasonId=' +  seasonId, function (json) {
                          console.log(json);
                          Morris.Bar({
-                             element: 'stats-line-lifetime',
-                             data: json,
-                             smooth: true,
-                             xkey: 'season',
-                             ykeys: ['win','lost'],
-                             labels: ['Win','Lost']
-                         });
-                     });
-                    /*]]>*/
-            </script>
-            <script th:if="${chartType.equals('line')}" th:inline="javascript">
-                    /*<![CDATA[*/
-                    var id = [[${statUser.getId()}]];
-                    var seasonId = [[${season.getId()}]];
-                     $.getJSON("/app/stats/lifetime/" + id + '?seasonId=' +  seasonId, function (json) {
-                         console.log(json);
-                         Morris.Line({
                              element: 'stats-line-lifetime',
                              data: json,
                              smooth: true,
@@ -99,7 +83,7 @@
             <div id="stats-nine-handicap-lifetime">
             </div>
 
-            <script  th:inline="javascript">
+            <script th:inline="javascript">
                     /*<![CDATA[*/
                     var id = [[${statUser.getId()}]];
                     var seasonId = [[${nineSeason.getId()}]];

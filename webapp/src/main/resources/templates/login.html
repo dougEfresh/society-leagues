@@ -5,6 +5,9 @@
     <div id="login-app" layout:fragment="content">
         <!--<div class="container fluid container-fluid wrap">-->
         <div class="login-container well col-md-5 col-sm-5">
+            <div th:if="${error ne null}" class="alert alert-danger alert-dismissible" role="alert" >
+                <strong>Error!</strong> <pre th:text="${error}"></pre>
+            </div>
             <form name="fb_signin" id="fb_signin" th:action="@{${fbEndpoint} + '/signin/facebook'}" method="POST">
                 <h2 class="form-signin-heading">Please Log In</h2>
                 <div class="row" data-reactid=".0.0.0.0.1">

@@ -44,27 +44,46 @@ public class ResultService {
     public void refresh() {
         matchPoints().clear();
         LocalDateTime tenWeeks = LocalDateTime.now().plusDays(1).minusWeeks(10);
-        List<PlayerResult> challengeResults =
+        List<PlayerResult> allResults =
                 leagueService.findAll(PlayerResult.class).stream().parallel()
                         .filter(r->r.getTeamMatch() != null)
                         .filter(r->r.getSeason() != null)
                         .filter(r->r.getSeason().isActive())
-                        .filter(r -> r.getSeason().isChallenge())
                         .filter(pr -> pr.getMatchDate() != null)
-                        .filter(pr -> pr.getMatchDate().isAfter(tenWeeks))
-                        .filter(r -> r.hasResults())
+                        .filter(PlayerResult::hasResults)
                         .collect(Collectors.toList());
 
         for(User challengeUser: leagueService.findAll(User.class).stream()
-                .filter(u -> u.isChallenge())
+                .filter(User::isChallenge)
                 .collect(Collectors.toList())
                 ) {
-            List<PlayerResult> results = challengeResults.stream().parallel()
+            List<PlayerResult> results = allResults.stream().parallel()
+                    .filter(r -> r.getSeason().isChallenge())
                     .filter(pr -> pr.hasUser(challengeUser)).filter(PlayerResult::hasResults)
+                    .filter(pr -> pr.getMatchDate().isAfter(tenWeeks))
                     .sorted((playerResult, t1) -> t1.getTeamMatch().getMatchDate().compareTo(playerResult.getTeamMatch().getMatchDate())).limit(7)
                     .collect(Collectors.toList());
 
-            double matchNum = 0;
+            calcPoints(challengeUser, results);
+        }
+        Season nineSeason = leagueService.findAll(Season.class).stream().filter(Season::isActive).filter(s->s.getDivision() == Division.NINE_BALL_TUESDAYS).findAny().orElse(null);
+        if (nineSeason != null) {
+            for (User user : leagueService.findAll(User.class).stream()
+                    .filter(u -> u.getSeasons().contains(nineSeason))
+                    .collect(Collectors.toList())
+                    ) {
+                List<PlayerResult> results = allResults.stream().parallel()
+                        .filter(pr -> pr.hasUser(user))
+                        .filter(pr -> pr.getSeason().equals(nineSeason))
+                        .sorted((playerResult, t1) -> t1.getTeamMatch().getMatchDate().compareTo(playerResult.getTeamMatch().getMatchDate()))
+                        .collect(Collectors.toList());
+                calcPoints(user, results);
+            }
+        }
+    }
+
+    private void calcPoints(User user, List<PlayerResult> results) {
+          double matchNum = 0;
             for (PlayerResult challengeResult : results) {
                 MatchPoints mp = new MatchPoints();
                 int points = 1;
@@ -78,7 +97,7 @@ public class ResultService {
                     } catch (NumberFormatException e) {
                     }
                 }
-                if (challengeResult.isWinner(challengeUser)) {
+                if (challengeResult.isWinner(user)) {
                     if (challengeResult.getLoserRacks() == 0) {
                         points += 1;
                     } else {
@@ -96,14 +115,12 @@ public class ResultService {
                 mp.setWeightedAvg((double) points / (period / (period - matchNum)));
                 mp.setMatchNum(new Double(matchNum).intValue());
                 mp.setPlayerResult(challengeResult);
-                mp.setUser(challengeUser);
+                mp.setUser(user);
                 mp.setCalculation(String.format("(%s * (10-%s))/10", points, new Double(matchNum).intValue()));
                 matchNum++;
                 matchPointsCache.add(mp);
 
             }
-        }
-
     }
 
     public List<MatchPoints> matchPoints() {

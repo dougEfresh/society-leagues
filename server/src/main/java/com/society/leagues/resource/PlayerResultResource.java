@@ -28,12 +28,6 @@ public class PlayerResultResource {
     @Autowired StatService statService;
     @Autowired ObjectMapper objectMapper;
 
-    @RequestMapping(value = "/admin/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public PlayerResult create(@RequestBody PlayerResult playerResult) {
-        return resultService.createOrModify(playerResult);
-    }
-
     @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<PlayerResult> modify(@RequestBody List<PlayerResult> playerResult) {
@@ -45,11 +39,6 @@ public class PlayerResultResource {
     public Boolean delete(@PathVariable String id) {
         leagueService.purge(new PlayerResult(id));
         return true;
-    }
-
-    @RequestMapping(value = "/get/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public PlayerResult get(Principal principal, @PathVariable String id) {
-        return leagueService.findOne(new PlayerResult(id));
     }
 
     @RequestMapping(value = "/teammatch/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
@@ -108,26 +97,13 @@ public class PlayerResultResource {
         return results;
     }
 
-    @RequestMapping(value = "/get/season/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public List<PlayerResult> getPlayerResultSeason(Principal principal, @PathVariable String id) {
-        Season s = leagueService.findOne(new Season(id));
-        if (s.isActive()) {
-            return leagueService.findCurrent(PlayerResult.class).stream().parallel().filter(pr -> pr.getSeason().equals(s))
-                .collect(Collectors.toList());
-        }
-        return leagueService.findAll(PlayerResult.class).stream().parallel()
-                .filter(pr -> pr.getSeason().equals(s))
-                .collect(Collectors.toList());
-    }
-
-
     @RequestMapping(value = "/season/{id}/date", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
     public Map<String,List<PlayerResult>> getPlayerResultSeasonByDate(Principal principal, @PathVariable String id) {
         Season s = leagueService.findOne(new Season(id));
         List<PlayerResult> results = new ArrayList<>();
         if (s.isActive()) {
             results = leagueService.findCurrent(PlayerResult.class).stream().parallel().filter(pr -> pr.getSeason().equals(s)).filter(PlayerResult::hasResults)
-                .collect(Collectors.toList());
+                    .collect(Collectors.toList());
         }
         results = leagueService.findAll(PlayerResult.class).stream().parallel()
                 .filter(pr -> pr.getSeason().equals(s))
@@ -136,117 +112,16 @@ public class PlayerResultResource {
         return results.stream().collect(Collectors.groupingBy(pr->pr.getMatchDate().toLocalDate().toString()));
     }
 
-    @RequestMapping(value = {"/team/{id}","/get/team/{id}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public List<PlayerResult> getPlayerResultTeam(Principal principal, @PathVariable String id) {
-        Team t  = leagueService.findOne(new Team(id));
-        List<PlayerResult> results;
-        if (t.getSeason().isActive()) {
-            results = leagueService.findCurrent(PlayerResult.class).stream().parallel()
-                    .filter(pr -> pr.getSeason().equals(t.getSeason()))
-                    .filter(pr -> pr.hasTeam(t)).collect(Collectors.toList());
-        } else {
-            results = leagueService.findAll(PlayerResult.class).stream().parallel()
-                    .filter(pr -> pr.getSeason().equals(t.getSeason()))
-                    .filter(pr -> pr.hasTeam(t)).collect(Collectors.toList());
-        }
-        final List<PlayerResult> copyResults = new ArrayList<>(results.size());
-        results.stream().forEach(r-> copyResults.add(PlayerResult.copy(r)));
-        copyResults.parallelStream().forEach(pr -> pr.setReferenceTeam(t));
-        return copyResults.stream().
-                sorted((playerResult, t1) -> playerResult.getTeamMember().getName().compareTo(t1.getTeamMember().getName())).
-                collect(Collectors.toList());
-
-    }
-
-    @RequestMapping(value = "/get/user/{id}/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public Map<String,List<PlayerResult>> getPlayerResultByUser(Principal principal, @PathVariable String id, @PathVariable String type) {
-        User u = leagueService.findOne(new User(id));
-        List<PlayerResult> results = new ArrayList<>(500);
-        if (type.equals("all"))
-         results = leagueService.findAll(PlayerResult.class).stream().parallel().filter(pr -> pr.hasUser(u))
-                    .sorted((playerResult, t1) -> t1.getMatchDate().compareTo(playerResult.getMatchDate()))
-                    .collect(Collectors.toList());
-        else
-            results = leagueService.findCurrent(PlayerResult.class).stream().
-                    parallel().filter(pr->pr.hasUser(u)).collect(Collectors.toList());
-
-
-        List<PlayerResult> copyResults = new ArrayList<>(results.size());
-        results.stream().forEach(r-> copyResults.add(PlayerResult.copy(r)));
-        copyResults.parallelStream().forEach(pr -> pr.setReferenceUser(u));
-        Map<String,List<PlayerResult>> resultsBySeason = copyResults.stream().collect(Collectors.groupingBy(pr -> pr.getSeason().getId()));
-
-        for (String season : resultsBySeason.keySet()) {
-            resultsBySeason.put(season, resultsBySeason.get(season).stream()
-                    .sorted((playerResult, t1)
-                                    -> t1.getMatchDate().compareTo(playerResult.getMatchDate())
-                    )
-                .collect(Collectors.toList()));
-        }
-
-
-        if (u.isChallenge()) {
-            List<MatchPoints> matchPointsList = resultService.matchPoints();
-            List<PlayerResult> challengeResults = resultsBySeason.get(u.getHandicapSeasons().stream().filter(s->s.getSeason().isChallenge()).findFirst().get().getSeason().getId());
-            for (PlayerResult challengeResult : challengeResults) {
-                challengeResult.setMatchPoints(
-                        matchPointsList.parallelStream()
-                                .filter(
-                                        mp -> mp.getPlayerResult().getId().equals(challengeResult.getId()) &&
-                                                mp.getUser().equals(u)
-                                )
-                                .findFirst().orElse(null));
-            }
-        }
-        return resultsBySeason;
-    }
-
-    @RequestMapping(value = "/user/{id}/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public Map<String,Object> getPlayerResultByUserSeason(Principal principal, @PathVariable String id, @PathVariable String seasonId) {
-            User u = leagueService.findOne(new User(id));
-        Season s = leagueService.findOne(new Season(seasonId));
-        List<PlayerResult> results = new ArrayList<>(500);
-        if (s == null) {
-            return Collections.EMPTY_MAP;
-        }
-
-        results = leagueService.findAll(PlayerResult.class)
-                .stream()
-                .parallel()
-                .filter(pr -> pr.getTeamMatch() != null)
-                .filter(pr -> pr.getTeamMatch().getHome() != null)
-                .filter(pr -> pr.getTeamMatch().getAway() != null)
-                .filter(pr -> pr.hasUser(u))
-                .filter(pr->pr.getSeason().equals(s))
-                .filter(pr->pr.hasResults())
+    @RequestMapping(value = "/{matchId}/add", method = {RequestMethod.GET, RequestMethod.PUT}, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<PlayerResult> addMatch(Principal principal, @PathVariable String matchId) {
+        TeamMatch teamMatch = leagueService.findOne(new TeamMatch(matchId));
+        List<PlayerResult> results = leagueService.findCurrent(PlayerResult.class)
+                .parallelStream()
+                .filter(pr -> pr.getTeamMatch().equals(teamMatch))
                 .collect(Collectors.toList());
-
-        List<PlayerResult> copyResults = new ArrayList<>(results.size());
-        results.stream().forEach(r-> copyResults.add(PlayerResult.copy(r)));
-        copyResults.parallelStream().forEach(pr -> pr.setReferenceUser(u));
-        copyResults.sort(
-                (playerResult, t1) -> t1.getMatchDate().compareTo(playerResult.getMatchDate())
-        );
-
-        if (s.isChallenge()) {
-            List<MatchPoints> matchPointsList = resultService.matchPoints();
-            for (PlayerResult challengeResult : copyResults) {
-                challengeResult.setMatchPoints(
-                        matchPointsList.parallelStream()
-                                .filter(
-                                        mp -> mp.getPlayerResult().getId().equals(challengeResult.getId()) &&
-                                                mp.getUser().equals(u)
-                                )
-                                .findFirst().orElse(null));
-            }
-        }
-        Map<String,Object> r = new HashMap<>();
-        if (statService.getUserSeasonStats().containsKey(s))
-            r.put("stats",statService.getUserSeasonStats().get(s).parallelStream().filter(st->st.getUser().equals(u)).findFirst().orElse(null));
-
-        r.put("results",copyResults);
-
-        return r;
+        results.add(resultService.add(teamMatch));
+        return results;
     }
 
     @RequestMapping(value = "/{userId}/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
@@ -262,12 +137,12 @@ public class PlayerResultResource {
                 .stream()
                 .parallel()
                 .filter(pr -> pr.hasUser(u))
-                .filter(pr->pr.getSeason().equals(s))
+                .filter(pr -> pr.getSeason().equals(s))
                 .filter(PlayerResult::hasResults)
                 .collect(Collectors.toList());
 
         List<PlayerResult> copyResults = new ArrayList<>(results.size());
-        results.stream().forEach(r-> copyResults.add(PlayerResult.copy(r)));
+        results.stream().forEach(r -> copyResults.add(PlayerResult.copy(r)));
         copyResults.parallelStream().forEach(pr -> pr.setReferenceUser(u));
         copyResults.sort(
                 (playerResult, t1) -> t1.getMatchDate().compareTo(playerResult.getMatchDate())
@@ -293,89 +168,6 @@ public class PlayerResultResource {
     public List<PlayerResult> getUserResultsBySeasonSummary(Principal principal, @PathVariable String userId, @PathVariable String seasonId) {
         return getUserResultsBySeason(principal,userId,seasonId);
     }
-
-    @RequestMapping(value = "/racks/{matchId}/{type}/{racks}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public PlayerResult updateRacks(Principal principal, @PathVariable String matchId, @PathVariable String type, @PathVariable Integer racks) {
-        PlayerResult result = leagueService.findOne(new PlayerResult(matchId));
-        if (result == null)
-            return null;
-
-        if (type.equals("home")) {
-            result.setHomeRacks(racks);
-        } else {
-            result.setAwayRacks(racks);
-        }
-
-        return leagueService.save(result);
-    }
-
-    @RequestMapping(value = "/player/{matchId}/{type}/{playerId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public PlayerResult updatePlayer(Principal principal, @PathVariable String matchId, @PathVariable String type, @PathVariable String playerId) {
-        PlayerResult result = leagueService.findOne(new PlayerResult(matchId));
-        User player = leagueService.findOne(new User(playerId));
-        if (result == null || player == null)
-            return null;
-
-        if (type.equals("home")) {
-            result.setPlayerHome(player);
-        } else {
-            result.setPlayerAway(player);
-        }
-
-        return leagueService.save(result);
-    }
-
-    @RequestMapping(value = "/{matchId}/add", method = {RequestMethod.GET, RequestMethod.PUT}, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<PlayerResult> addMatch(Principal principal, @PathVariable String matchId) {
-        TeamMatch teamMatch = leagueService.findOne(new TeamMatch(matchId));
-         List<PlayerResult> results = leagueService.findCurrent(PlayerResult.class)
-                .parallelStream()
-                .filter(pr -> pr.getTeamMatch().equals(teamMatch))
-                .collect(Collectors.toList());
-        results.add(resultService.add(teamMatch));
-        return results;
-    }
-
-
-    @RequestMapping(value = "/{resultId}/winner/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public PlayerResult setWinner(Principal principal, @PathVariable String resultId, @PathVariable String userId) {
-        PlayerResult result = leagueService.findOne(new PlayerResult(resultId));
-        User user = leagueService.findOne(new User(userId));
-        if (result == null || user == null)
-            throw new RuntimeException("No user or reulst for " + userId + " "+ resultId);
-
-        if (result.getPlayerHome().equals(user)) {
-            result.setHomeRacks(1);
-            result.setAwayRacks(0);
-        } else {
-            result.setHomeRacks(0);
-            result.setAwayRacks(1);
-        }
-        return leagueService.save(result);
-    }
-
-    @RequestMapping(value = "/{resultId}/loser/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public PlayerResult setLoser(Principal principal, @PathVariable String resultId, @PathVariable String userId) {
-        PlayerResult result = leagueService.findOne(new PlayerResult(resultId));
-        User user = leagueService.findOne(new User(userId));
-        if (result == null || user == null)
-            throw new RuntimeException("No user or result for " + userId + " "+ resultId);
-
-        if (result.getPlayerHome().equals(user)) {
-            result.setHomeRacks(0);
-            result.setAwayRacks(1);
-        } else {
-            result.setHomeRacks(1);
-            result.setAwayRacks(0);
-        }
-        return leagueService.save(result);
-    }
-
 
 
 }

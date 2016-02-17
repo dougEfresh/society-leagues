@@ -29,7 +29,7 @@ public class StatResource  extends BaseController {
         model.addAttribute("nineSeason",userApi.get(userId).getSeasons().stream().filter(s->s.getId().equals(nineId)).findAny().orElse(Season.getDefault()));
         model.addAttribute("eightSeason",userApi.get(userId).getSeasons().stream().filter(s->s.getId().equals(eightId)).findAny().orElse(Season.getDefault()));
 
-        model.addAttribute("statSeasons",seasonApi.active().stream().filter(s->!s.isScramble()).collect(Collectors.toList()));
+        model.addAttribute("statSeasons",seasonApi.active().stream().collect(Collectors.toList()));
         List<Stat> userStats = statApi.getUserStatsSummary(userId);
         model.addAttribute("stats", userStats.stream().filter(s->s.getType() == StatType.USER_SEASON).sorted(Stat.sortSeasonStats()).collect(Collectors.toList()));
         model.addAttribute("scrambleStats",userStats.stream().filter(s->s.getType().isScramble()).collect(Collectors.toList()));
@@ -108,6 +108,8 @@ public class StatResource  extends BaseController {
     private List<StatHandicap> getHandicapStats(Season season, String userId, List<Division> divisions) {
         List<Stat> stats = statApi.getUserStatsSummary(userId).stream().filter(s->s.getType() == StatType.HANDICAP)
                 .filter(s-> divisions.contains(s.getSeason().getDivision()))
+                .filter(s->s.getHandicap() != Handicap.UNKNOWN)
+                .filter(s->s.getHandicap() != Handicap.NA)
                 .collect(Collectors.toList());
         if (!season.equals(Season.getDefault())) {
             stats = stats.stream().filter(s->s.getSeason().equals(season)).collect(Collectors.toList());
@@ -160,7 +162,7 @@ public class StatResource  extends BaseController {
                     .filter(s -> !s.getSeason().isChallenge())
                     .filter(s -> s.getSeason().getsDate() != null)
                     .filter(s -> s.getSeason().getsDate().isBefore(now))
-                    .filter(s -> !s.getSeason().isActive())
+                    //.filter(s -> !s.getSeason().isActive())
                     .sorted((o1, o2) -> o1.getSeason().getsDate().compareTo(o2.getSeason().getsDate()))
                    .collect(Collectors.groupingBy(Stat::getStatSeason));
             for (StatSeason ss : userStats.keySet()) {
@@ -182,7 +184,7 @@ public class StatResource  extends BaseController {
                     .filter(s -> s.getSeason().getsDate() != null)
                     .filter(s -> s.getSeason().getsDate().isBefore(now))
                     .filter(s-> s.getSeason().getDay().equals(season.getDay()))
-                    .filter(s -> !s.getSeason().isActive())
+                    //.filter(s -> !s.getSeason().isActive())
                     .sorted((o1, o2) -> o1.getSeason().getsDate().compareTo(o2.getSeason().getsDate()))
                     .collect(Collectors.toList()));
     }
