@@ -65,7 +65,7 @@ public class ChallengeResource extends BaseController {
     public String accept(@RequestParam String id, @RequestParam String slotId) {
         Challenge ch = challengeApi.challenges().stream().filter(c->c.getId().equals(id)).findAny().get();
         ch.setAcceptedSlot(new Slot(slotId));
-        ch.setOpponent(userTeams.stream().filter(Team::isChallenge).findAny().get());
+        ch.setOpponent(teamApi.userTeams(user.getId()).stream().filter(Team::isChallenge).findAny().get());
         challengeApi.accept(ch);
         return "redirect:/app/challenge";
     }
