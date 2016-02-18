@@ -87,6 +87,7 @@ public class SeasonResource {
         Season season = leagueService.findOne(new Season(seasonId));
         List<Team> teams = leagueService.findAll(Team.class).stream()
                 .filter(t -> t.getSeason().equals(season))
+                .filter(t -> !t.isDisabled())
                 .collect(Collectors.toList());
 
         teams.sort((o1, o2) -> o1.getName().compareTo(o2.getName()));
