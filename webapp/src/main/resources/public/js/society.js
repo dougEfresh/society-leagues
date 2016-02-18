@@ -124,6 +124,32 @@ function lifeTimeStats(v) {
          maxItems: 8
        });
 
+
+     var availableItesm = [];
+
+     $('.users-available').forEach(function (s) {
+         availableItesm
+     });
+
+     $('.users-available').selectize({
+         persist: false,
+         plugins: ['remove_button'],
+         maxItems: 12,
+         onChange: function(v) {
+
+         }
+     });
+
+     $('.users-not-available').selectize({
+         persist: false,
+         plugins: ['remove_button'],
+         maxItems: 12,
+         onChange: function(v) {
+             console.log(v);
+         }
+//         sortField: 'text'
+     });
+
      $('#users-search').selectize({
          persist: false,
          maxItems: 1,

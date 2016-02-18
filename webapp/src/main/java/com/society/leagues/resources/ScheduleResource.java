@@ -96,7 +96,6 @@ public class ScheduleResource extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/schedule/team/available/{teamId}")
     public String getTeamAvailableSchedule(@PathVariable String teamId, Model model) {
         getTeamSchedule(teamId,model);
-
         return "schedule/scheduleTeamAvailable";
     }
 }
