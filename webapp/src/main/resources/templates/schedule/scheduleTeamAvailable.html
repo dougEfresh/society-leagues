@@ -1,0 +1,53 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorator="layout">
+    <div id="schedule-app" layout:fragment="content">
+        <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+        <!--/*@thymesVar id="match" type="com.society.leagues.model.MatchModel"*/-->
+        <div class="society-well">
+            <h4>
+                <div class="padding-bottom-10">
+                    <a th:href="@{/app/schedule/{seasonId} (seasonId=${season.getId()})} ">
+                        <span class="label label-primary">Schedule</span></a>
+                </div>
+            </h4>
+            <div style="padding-bottom: 15px"></div>
+            <div class="table-responsive">
+                <table id="table-team-schedule" class="table table-schedule">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Opponent</th>
+                        <th>Available</th>
+                        <th>Not Available</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr th:class="${match.isHasResults() ? 'results' : 'no-results'}" th:each="match: ${teamMatches}">
+                        <td class="short-date">
+                             <span th:text="${#temporals.format(match.getMatchDate(),'MM/dd')}">
+                            </span>
+                        </td>
+                        <td>
+                            <a th:href="@{/app/results/{matchId} (matchId=${match.getId()})}"
+                               th:text="${match.getOpponent(team).getName()}"></a>
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+                            <button type=submit" class="btn btn-md btn-primary">Update</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

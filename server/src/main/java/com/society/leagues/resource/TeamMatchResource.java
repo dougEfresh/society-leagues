@@ -258,9 +258,13 @@ public class TeamMatchResource {
     public List<TeamMatch> getTeamMatchesSummary(Principal principal, @PathVariable String id) throws Exception {
         Season season = leagueService.findOne(new Season(id));
         if (season == null) {
-            throw new Exception("Could not find season for " + id);
+            throw new InvalidRequestException("Could not find season for " + id);
         }
-        return leagueService.findAll(TeamMatch.class).parallelStream().filter(t->t.getSeason().equals(season)).collect(Collectors.toList());
+        return leagueService.findAll(TeamMatch.class)
+                .parallelStream()
+                .filter(t->t.getHome().getSeason().equals(season))
+                .filter(t->t.getAway().getSeason().equals(season))
+                .collect(Collectors.toList());
     }
 
   @RequestMapping(value = {"/team/{teamId}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)

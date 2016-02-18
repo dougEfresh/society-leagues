@@ -140,6 +140,7 @@ function lifeTimeStats(v) {
      $('#users-stats-search').selectize({
          persist: false,
          maxItems: 1,
+         plugins: ['remove_button'],
          onChange: function(v) {  if (v != null && v != undefined && v.length > 0 ) window.location = '/app/stats/' + v;}
         });
 

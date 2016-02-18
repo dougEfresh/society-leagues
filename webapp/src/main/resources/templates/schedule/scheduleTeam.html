@@ -41,7 +41,7 @@
                             <a th:if="${user.isAdmin()}" th:text="${#temporals.format(match.getMatchDate(),'MM/dd')}"
                                th:href="@{/app/scores/{id}/{matchId} (id=${season.id},matchId=${match.id})}">
                             </a>
-                            <span th:if="${!user.isAdmin()}" th:text="${match.getOpponent(team).getName()}">
+                            <span th:text="${#temporals.format(match.getMatchDate(),'MM/dd')}">
                             </span>
                         </td>
                         <td>
