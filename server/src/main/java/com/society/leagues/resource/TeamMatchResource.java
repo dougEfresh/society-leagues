@@ -300,4 +300,20 @@ public class TeamMatchResource {
         copy.parallelStream().forEach(c->c.setReferenceUser(u));
         return copy;
     }
+
+    @RequestMapping(value = "/modify/available", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public TeamMatch modifyAvailable(@RequestBody TeamMatch teamMatch) {
+        TeamMatch existing = leagueService.findOne(teamMatch);
+        if (existing == null) {
+            throw new InvalidRequestException("Unknown teamMatch id " + teamMatch.getId());
+        }
+        existing.getHomeNotAvailable().clear();
+        existing.getAwayNotAvailable().clear();
+
+        teamMatch.getHomeNotAvailable().forEach(existing::addHomeNotAvailable);
+        teamMatch.getAwayNotAvailable().forEach(existing::addAwayNotAvailable);
+
+        return leagueService.save(existing);
+    }
+
 }

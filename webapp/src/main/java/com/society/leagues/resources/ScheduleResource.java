@@ -4,7 +4,6 @@ import com.society.leagues.model.MatchModel;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.TeamMatch;
-import com.society.leagues.client.api.domain.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 public class ScheduleResource extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/schedule/{seasonId}")
-    public String getSchedule(@PathVariable String seasonId, @RequestParam(required = false) String teamId, Model model) {
+    public String getSchedule(@PathVariable String seasonId, Model model) {
         //Map<String,List<TeamMatch>> matches = teamMatchApi.matchesBySeason(seasonId);
         List<TeamMatch> matches = teamMatchApi.matchesBySeasonList(seasonId);
         Season season = seasonApi.get(seasonId);
@@ -37,29 +36,13 @@ public class ScheduleResource extends BaseController {
             matches = matches.stream().filter(tm->tm.getMatchDate().toLocalDate().isAfter(yest)).collect(Collectors.toList());
         }
 
-        Map<String,List<TeamMatch>> sortedMatches = new TreeMap<>((Comparator) (o1, o2) -> {
-            if (season.isChallenge()) {
-                return o2.toString().compareTo(o1.toString());
-            }
-            return o1.toString().compareTo(o2.toString());
-        });
+        Map<String,List<TeamMatch>> sortedMatches;
         sortedMatches = matches.stream().collect(Collectors.groupingBy(t->t.getMatchDate().toLocalDate().toString()));
         List<Team> teams = new ArrayList<>();
         teams.addAll(statApi.teamSeasonStats(seasonId));
         model.addAttribute("teams",teams.stream().filter(t->!t.isDisabled()).collect(Collectors.toList()));
 
         List<MatchModel> teamMatches;
-        if (teamId != null  && ! teamId.equals("-1")) {
-            teamMatches = MatchModel.fromTeam(teamMatchApi.getTeamMatchByTeam(teamId));
-            teamMatches.sort((o1, o2) -> o1.getMatchDate().compareTo(o2.getMatchDate()));
-            for (MatchModel teamMatch : teamMatches) {
-                teamMatch.setPlayerResults(playerResultApi.getPlayerResultsSummary(teamMatch.getId()));
-            }
-            model.addAttribute("team", teamApi.get(teamId));
-            model.addAttribute("teamMatches", teamMatches);
-            return "schedule/scheduleTeam";
-        }
-
         model.addAttribute("team", new Team("-1"));
         Map<String,List<MatchModel>> sorted = new TreeMap<>((Comparator) (o1, o2) -> {
             if (season.isChallenge()) {
@@ -93,5 +76,18 @@ public class ScheduleResource extends BaseController {
         }
         model.addAttribute("teamMatches", sorted);
         return "schedule/schedule";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/schedule/team/{teamId}")
+    public String getTeamSchedule(@PathVariable String teamId, Model model) {
+        Team team = teamApi.get(teamId);
+        Season season = team.getSeason();
+        getSchedule(season.getId(),model);
+        model.addAttribute("team", team);
+        List<MatchModel> teamMatches = MatchModel.fromTeam(teamMatchApi.getTeamMatchByTeam(teamId));
+        teamMatches.sort((o1, o2) -> o1.getMatchDate().compareTo(o2.getMatchDate()));
+        teamMatches.stream().forEach(teamMatch->teamMatch.setPlayerResults(playerResultApi.getPlayerResultsSummary(teamMatch.getId())));
+        model.addAttribute("teamMatches", teamMatches);
+        return "schedule/scheduleTeam";
     }
 }

@@ -86,7 +86,7 @@ function changeChallengeUser(e) {
 
 function selectTeam(e) {
     var id = $('#teams-select').val();
-    window.location = window.location.pathname + '?teamId=' + id;
+    window.location = '/app/schedule/team/' + id;
 }
 
 function searchUserStats(e) {

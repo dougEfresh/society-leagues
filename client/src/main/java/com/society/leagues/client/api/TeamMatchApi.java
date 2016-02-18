@@ -30,6 +30,7 @@ public interface TeamMatchApi {
     TeamMatch delete(@Param("matchId") String matchId);
 
     @RequestLine("GET /api/teammatch/members/{id}")
+    @Deprecated
     Map<String,List<User>> teamMembers(@Param("id") String id);
 
     @RequestLine("GET /api/teammatch/team/{teamId}")
@@ -37,4 +38,8 @@ public interface TeamMatchApi {
 
     @RequestLine("POST /api/teammatch/admin/modify/list")
     List<TeamMatch> save(List<TeamMatch> matches);
+
+    @RequestLine("PUT /api/teammatch/modify/available")
+    TeamMatch modifyAvailable(TeamMatch tm);
+
 }

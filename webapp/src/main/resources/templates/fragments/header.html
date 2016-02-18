@@ -100,7 +100,7 @@
                                 >Standings</a>
                             </li>
                             <li style="list-style: none">
-                                <a th:href="@{/app/schedule/{id} (id=${team.getSeason().getId()},teamId=${team.getId()})}">Schedule</a>
+                                <a th:href="@{/app/schedule/team/{id} (id=${team.getId()})}">Schedule</a>
                             </li>
                             <li style="list-style: none">
                                 <a th:href="@{/app/leaders/{id} (id=${team.getSeason().getId()})}">Leaders</a>
