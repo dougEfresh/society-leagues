@@ -77,6 +77,7 @@ public class UserResource extends BaseController {
         model.addAttribute("disabledTimes",disabledTimes);
         model.addAttribute("broadcastTimes",broadcastTimes);
         model.addAttribute("blockedDates",blockedDates);
+        User user = userApi.get();
         if (user.isChallenge()) {
             model.addAttribute("challengeDisabled",
                     teamApi.userTeams(u.getId())

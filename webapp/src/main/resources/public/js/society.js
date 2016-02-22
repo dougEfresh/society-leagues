@@ -141,10 +141,28 @@ function lifeTimeStats(v) {
              index: i,
              id: id,
              onChange: function(v) {
-                 //console.log($('#'+ this.settings.id.replace('users-available','users-not-available')));
+                 var notIdSelect= '#'+ this.settings.id.replace('users-available','users-not-available-select');
+                 var notId = '#'+ this.settings.id.replace('users-available','users-not-available');
                  this.items.forEach(function(item){
-                     $('#'+ this.settings.id.replace('users-available','users-not-available') + '  option[value="' + item + '"]').prop('selected',true);
+                     $(notIdSelect+ '  option[value="' + item + '"]').prop('selected',false);
                  }.bind(this));
+
+                 var options = $(notIdSelect+ ' option');
+                 var txt = "";
+                 for (var j = 0; j < options.length; j++ ) {
+                     var o = options[j];
+                     var available = false;
+                     this.items.forEach(function(item){
+                         if (item == o.value) {
+                             available = true;
+                         }
+                     }.bind(this));
+                     if (!available) {
+                         txt += '<div data-value="' + o.value + '" style="cursor: none" class="item no-cursor" >' +  o.innerHTML + '</div>';
+                     }
+                 }
+                 $(notId).html(txt);
+
                  //console.log($('#'+ this.settings.id.replace('users-available','users-not-available') + '  option[value="' + v + '"]')
                  //console.log(notAvailableSelectize[this.settings.index].getOption(v));
                  //console.log(notAvailableSelectize[this.settings.index].getOption(v));

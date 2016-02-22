@@ -30,7 +30,6 @@ public class BaseController {
     @Autowired UserApi userApi;
     @Autowired StatApi statApi;
 
-    User user;
     Season adminSeason;
     @Autowired Environment environment;
     boolean dev = true;
@@ -44,7 +43,7 @@ public class BaseController {
     @ModelAttribute
     public void setModels(Model model, HttpServletRequest request, ResponseFacade response) {
         model.addAttribute("tracking",dev);
-        user = userApi.get();
+        User user = userApi.get();
 
         List<Season> seasons = seasonApi.get();
         RequestFacade requestFacade = (RequestFacade) request;

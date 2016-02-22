@@ -5,54 +5,94 @@
         <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
         <!--/*@thymesVar id="u" type="com.society.leagues.client.api.domain.User"*/-->
         <!--/*@thymesVar id="match" type="com.society.leagues.model.MatchModel"*/-->
-        <div th:each="match: ${teamMatches}" class="society-well society-well-team-available">
+        <script th:inline="javascript">
+            function onChange() {
+                var notAvailables = [];
+                $('.users-not-available').each(function (e) {
+                    var na = {id: this.id.replace('users-not-available-', ''), notAvailable: []};
+                    $('#' + this.id).children('div').each(function () {
+                        na.notAvailable.push($(this).attr('data-value'));
+                    });
+                    if (na.notAvailable.length != 0)
+                        notAvailables.push(na);
+                });
+
+                console.log(JSON.stringify(notAvailables));
+                $.ajax({
+                    processData: false,
+                    contentType: 'application/json',
+                    method: 'post',
+                    url: '/app/schedule/team/available',
+                    data: JSON.stringify(notAvailables),
+                    success: function () {
+                        location.reload();
+                    },
+                    dataType: 'json'
+                });
+            }
+        </script>
+        <div class="society-well">
             <div class="well-title">
                 <h4>
-                    <span th:text="${#temporals.format(match.getMatchDate(),'MM/dd')}">
-                    </span>
-                    <span> Vs </span>
-                    <span th:href="@{/app/display/{seasonId}/{teamId} (seasonId=${season.getId()},teamId=${match.getId()})}"
-                       th:text="${match.getOpponent(team).getName()}"></span>
+                    <button th:onclick="${'onChange()'}" class="btn btn-lg btn-primary">Update Availability</button>
                 </h4>
             </div>
-            <div style="padding-top: 11px">
-            <form  class="edit-available"
-                   th:action="@{/app//{id}(id=${match.id})}"
-                   method="post">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Available</label>
-                    <input type="hidden" th:value="${match.getId()}" th:name="matchId"/>
-                    <div class="col-sm-10">
-                        <select th:id="${'users-available-' + match.getId()}"
-                                placeholder="Select a member..."
-                                multiple="multiple"
-                                class="users-available">
+        </div>
+        <div th:each="match: ${teamMatches}" class="society-well society-well-team-available">
+            <div class="row">
+                <div class="col-sm-2"><span>Date</span></div>
+                <div class="col-sm-10">
+                    <span th:text="${#temporals.format(match.getMatchDate(),'MM/dd')}"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">Team</div>
+                <div class="col-sm-10">
+                    <a th:href="@{/app/display/{seasonId}/{teamId} (seasonId=${season.getId()},teamId=${match.getId()})}"
+                          th:text="${match.getOpponent(team).getName()}">
+
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">Available</div>
+                <div class="col-sm-10">
+                    <select th:id="${'users-available-' + match.getId()}"
+                            placeholder="Select a member..."
+                            multiple="multiple"
+                            class="users-available">
+                        <option th:each="u : ${match.getMembers(team)}"
+                                th:selected="${match.isAvailable(u)}"
+                                th:name="available"
+                                th:value="${u.id}"
+                                th:text="${u.getShortName()}">
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="row" style="padding-top: 10px">
+                <label class="col-sm-2">Not Available</label>
+                <div class="col-sm-10">
+                    <div class="selectize-control multi plugin-remove_button">
+                        <div th:id="${'users-not-available-' + match.getId()}"
+                             class="selectize-input users-not-available items not-full has-options has-items">
+
+                        </div>
+                        <select multiple="multiple" th:id="${'users-not-available-select-' + match.getId()}"
+                                class="hide">
                             <option th:each="u : ${match.getMembers(team)}"
-                                    th:selected="${match.isAvailable(u)}"
-                                    th:name="available"
+                                    th:selected="${not match.isAvailable(u)}"
                                     th:value="${u.id}"
+                                    th:name="notAvailable"
+                                    th:multiple="multiple"
                                     th:text="${u.getShortName()}">
                             </option>
                         </select>
                     </div>
-                    <label class="col-sm-2 control-label">Not Available</label>
-                    <div class="col-sm-10">
-                            <select multiple="multiple" th:id="${'users-not-available-' + match.getId()}" placeholder="Select a member..." class="users-not-available">
-                                <option th:each="u : ${match.getMembers(team)}"
-                                        th:selected="${not match.isAvailable(u)}"
-                                        th:value="${u.id}"
-                                        th:name="notAvailable"
-                                        th:multiple="multiple"
-                                        th:text="${u.getShortName()}">
-                                </option>
-                            </select>
-                    </div>
-                    <button type=submit" class="btn btn-md btn-primary">Update</button>
                 </div>
-            </form>
+            </div>
             </div>
         </div>
-    </div>
 </div>
 
 

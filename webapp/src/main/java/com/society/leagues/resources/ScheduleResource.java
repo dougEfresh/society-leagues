@@ -1,15 +1,14 @@
 package com.society.leagues.resources;
 
+import com.society.leagues.client.api.domain.User;
 import com.society.leagues.model.MatchModel;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.TeamMatch;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,8 +25,9 @@ public class ScheduleResource extends BaseController {
         Season season = seasonApi.get(seasonId);
         model.addAttribute("season", season);
         LocalDate yest = LocalDateTime.now().minusDays(1).toLocalDate();
+        User user = userApi.get();
         model.addAttribute("userTeam",
-                teamApi.userTeams(user.getId()).stream()
+                teamApi.userTeams(userApi.get().getId()).stream()
                         .filter(t->t.getSeason().getId().equals(seasonId))
                         .filter(t->t.hasUser(user)).findFirst().orElse(new Team("-1"))
         );
@@ -96,6 +96,16 @@ public class ScheduleResource extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/schedule/team/available/{teamId}")
     public String getTeamAvailableSchedule(@PathVariable String teamId, Model model) {
         getTeamSchedule(teamId,model);
+         List<MatchModel> teamMatches = (List<MatchModel>) model.asMap().get("teamMatches");
+        LocalDateTime now = LocalDateTime.now().minusDays(1);
+        model.addAttribute("teamMatches", teamMatches.stream().filter(t->t.getMatchDate().isAfter(now)).collect(Collectors.toList()));
         return "schedule/scheduleTeamAvailable";
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/schedule/team/available", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public List<Map<String,Object>> updateTeamAvailable(@RequestBody  List<Map<String,Object>> notAvailables) {
+
+        return  notAvailables;
     }
 }
