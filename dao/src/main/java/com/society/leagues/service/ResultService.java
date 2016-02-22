@@ -66,6 +66,7 @@ public class ResultService {
 
             calcPoints(challengeUser, results);
         }
+        /*
         Season nineSeason = leagueService.findAll(Season.class).stream().filter(Season::isActive).filter(s->s.getDivision() == Division.NINE_BALL_TUESDAYS).findAny().orElse(null);
         if (nineSeason != null) {
             for (User user : leagueService.findAll(User.class).stream()
@@ -80,6 +81,7 @@ public class ResultService {
                 calcPoints(user, results);
             }
         }
+        */
     }
 
     private void calcPoints(User user, List<PlayerResult> results) {
