@@ -45,12 +45,7 @@ public class BaseController {
     public void setModels(Model model, HttpServletRequest request, ResponseFacade response) {
         model.addAttribute("tracking",dev);
         user = userApi.get();
-        //userTeams = teamApi.userTeams(user.getId());
-        //userTeams.parallelStream().forEach(tm->userMatches.addAll(teamMatchApi.getTeamMatchByTeam(tm.getId())));
-        //userStats = statApi.getUserStatsSummary(user.getId());
-        //for (Stat userStat : userStats.stream().filter(u->u.getSeason() != null).collect(Collectors.toList())) {
-          //  userStat.setSeason(user.getSeasons().parallelStream().filter(s->s.equals(userStat.getSeason())).findFirst().get());
-        //}
+
         List<Season> seasons = seasonApi.get();
         RequestFacade requestFacade = (RequestFacade) request;
         adminSeason = seasons.stream().sorted(Season.sortOrder).findFirst().get();
@@ -68,12 +63,5 @@ public class BaseController {
         model.addAttribute("allUsers", userApi.all().parallelStream().filter(User::isReal).collect(Collectors.toList()));
         model.addAttribute("activeUsers", userApi.all().parallelStream().filter(User::isReal).filter(u->u.getSeasons().stream().filter(Season::isActive).count() > 0).collect(Collectors.toList()));
         model.addAttribute("adminSeason",adminSeason);
-        /**
-         * Cache the users schedule and season stats
-         */
-        for (Season season : user.getSeasons().stream().filter(Season::isActive).collect(Collectors.toList())) {
-            teamMatchApi.matchesBySeasonList(season.getId());
-            statApi.teamSeasonStats(season.getId());
-        }
     }
 }

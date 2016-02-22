@@ -100,13 +100,12 @@ function lifeTimeStats(v) {
 
  $(document).ready(function() {
 
-
      $('#team-members').selectize({
          persist: false,
          plugins: ['remove_button'],
          maxItems: 8
 });
-       $('#challenge-slots').selectize({
+     $('#challenge-slots').selectize({
          persist: false,
            plugins: ['remove_button'],
          maxItems: 8
@@ -125,30 +124,73 @@ function lifeTimeStats(v) {
        });
 
 
-     var availableItesm = [];
 
-     $('.users-available').forEach(function (s) {
-         availableItesm
+     var available = $('.users-available');
+     var availableSelectize = [];
+     var notAvailableSelectize = [];
+     for (var i = 0; i< available.length ; i++ ) {
+         var id = available[i].id;
+         if (!id) {
+             continue
+         }
+
+         var a = $('#' + id ).selectize({
+             persist: false,
+             plugins: ['remove_button'],
+             maxItems: 12,
+             index: i,
+             id: id,
+             onChange: function(v) {
+                 //console.log($('#'+ this.settings.id.replace('users-available','users-not-available')));
+                 this.items.forEach(function(item){
+                     $('#'+ this.settings.id.replace('users-available','users-not-available') + '  option[value="' + item + '"]').prop('selected',true);
+                 }.bind(this));
+                 //console.log($('#'+ this.settings.id.replace('users-available','users-not-available') + '  option[value="' + v + '"]')
+                 //console.log(notAvailableSelectize[this.settings.index].getOption(v));
+                 //console.log(notAvailableSelectize[this.settings.index].getOption(v));
+                 //notAvailableSelectize[this.settings.index].addItem(v,true);
+                 //console.log(notAvailableSelectize[this.settings.index]);
+             }
+         });
+
+         availableSelectize.push(a[0].selectize);
+         /*
+         notAvailableSelectize.push($('#' + id.replace('users-available','users-not-available')).selectize({
+             persist: false,
+             plugins: ['remove_button'],
+             maxItems: 12,
+             index: i,
+             onChange: function(v) {
+                 console.log(availableSelectize[this.settings.index].getOption(v));
+
+             }
+         })[0].selectize);
+         */
+
+     }
+     notAvailableSelectize.forEach(function(a){
+//         a.disable();
      });
-
+     /*
      $('.users-available').selectize({
          persist: false,
          plugins: ['remove_button'],
          maxItems: 12,
+         other: {id: "asdas"},
          onChange: function(v) {
-
+             console.log(this);
          }
      });
-
      $('.users-not-available').selectize({
          persist: false,
          plugins: ['remove_button'],
          maxItems: 12,
          onChange: function(v) {
-             console.log(v);
+             console.log(this.id);
          }
 //         sortField: 'text'
      });
+      */
 
      $('#users-search').selectize({
          persist: false,
