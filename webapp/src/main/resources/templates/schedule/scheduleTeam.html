@@ -45,7 +45,7 @@
                     <tbody>
 
                     <tr th:class="${match.getAvailable(team).size() < 4 ? 'warning-available' : 'ok'}" th:each="match: ${teamMatches}">
-                        <td th:class="${match.isAvailable(user) ? 'active' : 'not-available'}" >
+                        <td th:class="${match.isAvailable(user) ? 'not-available' : 'active'}" >
                             <a th:if="${user.isAdmin()}" th:text="${#temporals.format(match.getMatchDate(),'MM/dd')}"
                                th:href="@{/app/scores/{id}/{matchId} (id=${season.id},matchId=${match.id})}">
                             </a>
