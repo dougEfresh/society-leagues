@@ -1,7 +1,6 @@
 <!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
-<div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-     layout:decorator="layout">
-    <div id="schedule-app" layout:fragment="content">
+<div xmlns:th="http://www.thymeleaf.org" >
+    <div id="available-app" >
         <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
         <!--/*@thymesVar id="u" type="com.society.leagues.client.api.domain.User"*/-->
         <!--/*@thymesVar id="match" type="com.society.leagues.model.MatchModel"*/-->
@@ -36,42 +35,17 @@
                 });
             }
         </script>
+        <a name="available">
         <div class="society-well">
             <div th:id="${team.getId()}" class="hide team-id"></div>
             <div class="well-title">
                 <h4>
                     <button th:onclick="${'onChange()'}" class="btn btn-lg btn-primary">Update Availability</button>
-                    <a th:href="@{/app/schedule/team/{id} (id=${team.getId()})}"><button class="btn btn-lg btn-success">Schedule</button></a>
                 </h4>
             </div>
-            <div class="table-responsive">
-                <table class="table table-stats">
-                    <thead>
-                    <tr>
-                        <th>Player</th>
-                        <th>Count</th>
-                        <th>Dates</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="u : ${playerCount}">
-                        <td class="name" style="max-width: 80px">
-                            <span th:text="${u.getFirstName()}"></span>
-                        </td>
-                        <td>
-                            <span  style="max-width: 40px; width: 40px;" th:text="${u.getCount()}"></span>
-                        </td>
-                        <td>
-                            <a th:each="dt: ${u.getMatchDates()}" th:href="${'#' + dt.toString()}">
-                            <span  th:class="${u.isPlaying(dt) ? 'label label-success' : 'label label-default'}" style="font-size: 14px; margin: 10px"  th:text="${#temporals.format(dt,'MM/dd')}">
-                            </span>
-                            </a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
         </div>
+        </a>
+
         <div class="society-well working" style="display: none;">
             <h3><i class="fa fa-refresh fa-spin-custom"></i></h3>
         </div>
@@ -133,7 +107,8 @@
                 </div>
             </div>
             </div>
-        </div>
+    </div>
+
 </div>
 
 

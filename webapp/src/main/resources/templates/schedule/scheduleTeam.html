@@ -12,7 +12,7 @@
                 <div class="padding-bottom-10">
                     <a th:href="@{/app/schedule/{seasonId} (seasonId=${season.getId()})} ">
                         <span class="label label-primary">See Full Schedule</span></a>
-                    <a th:href="@{/app/schedule/team/available/{teamId} (teamId=${team.getId()})} ">
+                    <a  th:if="${team.hasUser(user)}" th:href="${'#available'} ">
                         <span class="label label-primary">Availability</span></a>
                 </div>
             </h4>
@@ -74,6 +74,8 @@
                 </table>
             </div>
         </div>
+        <div  th:if="${team.hasUser(user)}" th:include="schedule/available"></div>
+        <div  th:if="${team.hasUser(user)}" th:include="schedule/scheduleTeamAvailable"></div>
     </div>
 </div>
 
