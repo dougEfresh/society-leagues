@@ -74,7 +74,7 @@ public class TestSeason extends BaseTest {
         seasonApi.modify(original);
     }
 
-    @Test
+    //@Test
     public void testSchedule() {
         Season season = seasonApi.active().stream().filter(s->!s.isChallenge()).findAny().get();
         List<Team> teams = teamApi.seasonTeams(season.getId());
