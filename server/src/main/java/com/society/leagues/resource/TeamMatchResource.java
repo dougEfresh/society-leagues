@@ -271,22 +271,16 @@ public class TeamMatchResource {
   public List<TeamMatch> getMatchesByTeam(Principal principal, @PathVariable String teamId) {
       List<TeamMatch> results;
       Team team = leagueService.findOne(new Team(teamId));
+      Season season = team.getSeason();
       LocalDateTime  now  = LocalDateTime.now().minusDays(1);
-      results = leagueService.findCurrent(TeamMatch.class).stream().parallel()
-                .filter(tm -> tm.hasTeam(team))
-                .sorted(new Comparator<TeamMatch>() {
-                    @Override
-                    public int compare(TeamMatch teamMatch, TeamMatch t1) {
-                        if (t1.getMatchDate() == null || teamMatch.getMatchDate() == null)
-                            return -1;
-                        return t1.getMatchDate().compareTo(teamMatch.getMatchDate());
-                    }
+      return leagueService.findCurrent(TeamMatch.class).stream().parallel()
+              .filter(tm -> tm.hasTeam(team))
+              .filter(tm->tm.getHome().getSeason().equals(season) && tm.getAway().getSeason().equals(season) )
+                .sorted((teamMatch, t1) -> {
+                    if (t1.getMatchDate() == null || teamMatch.getMatchDate() == null)
+                        return -1;
+                    return t1.getMatchDate().compareTo(teamMatch.getMatchDate());
                 }).collect(Collectors.toList());
-        for (TeamMatch result : results) {
-            boolean hasPlayerResults = leagueService.findCurrent(PlayerResult.class).parallelStream().filter(r->r.getTeamMatch().equals(result)).count() > 0;
-            result.setHasPlayerResults(hasPlayerResults);
-        }
-        return results;
     }
 
     @RequestMapping(value = "/user/{id}/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
