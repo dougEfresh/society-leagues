@@ -6,10 +6,15 @@
         <!--/*@thymesVar id="u" type="com.society.leagues.client.api.domain.User"*/-->
         <!--/*@thymesVar id="match" type="com.society.leagues.model.MatchModel"*/-->
         <script th:inline="javascript">
+            $('.working').hide();
             function onChange() {
                 var notAvailables = [];
+                var teamId = $('.team-id')[0].id;
+                $('.working').show();
+                $('.society-well-team-available').hide();
+
                 $('.users-not-available').each(function (e) {
-                    var na = {id: this.id.replace('users-not-available-', ''), notAvailable: []};
+                    var na = {teamId: teamId, id: this.id.replace('users-not-available-', ''), notAvailable: []};
                     $('#' + this.id).children('div').each(function () {
                         na.notAvailable.push($(this).attr('data-value'));
                     });
@@ -32,22 +37,27 @@
             }
         </script>
         <div class="society-well">
+            <div th:id="${team.getId()}" class="hide team-id"></div>
             <div class="well-title">
                 <h4>
                     <button th:onclick="${'onChange()'}" class="btn btn-lg btn-primary">Update Availability</button>
+                    <a th:href="@{/app/schedule/team/{id} (id=${team.getId()})}"><button class="btn btn-lg btn-success">Schedule</button></a>
                 </h4>
             </div>
         </div>
-        <div th:each="match: ${teamMatches}" class="society-well society-well-team-available">
+        <div class="society-well working" style="display: none;">
+            <h3><i class="fa fa-refresh fa-spin-custom"></i></h3>
+        </div>
+        <div th:each="match: ${teamMatches}" style="padding-top: 15px" class="society-well society-well-team-available">
             <div class="row">
-                <div class="col-sm-2"><span>Date</span></div>
-                <div class="col-sm-10">
+                <label class="col-xs-2 col-md-2">Date</label>
+                <div class="col-xs-10 col-md-10">
                     <span th:text="${#temporals.format(match.getMatchDate(),'MM/dd')}"></span>
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-2">Team</div>
-                <div class="col-sm-10">
+                <label class="col-xs-2 col-md-2">Team</label>
+                <div class="col-xs-10 col-md-10">
                     <a th:href="@{/app/display/{seasonId}/{teamId} (seasonId=${season.getId()},teamId=${match.getId()})}"
                           th:text="${match.getOpponent(team).getName()}">
 
@@ -55,7 +65,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-2">Available</div>
+                <label class="col-sm-2">Available</label>
                 <div class="col-sm-10">
                     <select th:id="${'users-available-' + match.getId()}"
                             placeholder="Select a member..."
@@ -70,13 +80,18 @@
                     </select>
                 </div>
             </div>
-            <div class="row" style="padding-top: 10px">
+            <div class="row" style="padding-top: 10px; padding-bottom: 15px">
                 <label class="col-sm-2">Not Available</label>
                 <div class="col-sm-10">
                     <div class="selectize-control multi plugin-remove_button">
                         <div th:id="${'users-not-available-' + match.getId()}"
                              class="selectize-input users-not-available items not-full has-options has-items">
-
+                            <div th:each="u : ${match.getMembers(team)}"
+                                 th:if="${not match.isAvailable(u)}"
+                                 th:text="${u.getShortName()}"
+                                 th:attr="data-value=${u.getId()}"
+                                 style="cursor: none" class="item no-cursor">
+                            </div>
                         </div>
                         <select multiple="multiple" th:id="${'users-not-available-select-' + match.getId()}"
                                 class="hide">

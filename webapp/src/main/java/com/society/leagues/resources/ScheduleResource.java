@@ -105,7 +105,20 @@ public class ScheduleResource extends BaseController {
     @RequestMapping(method = RequestMethod.POST, value = "/schedule/team/available", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<Map<String,Object>> updateTeamAvailable(@RequestBody  List<Map<String,Object>> notAvailables) {
-
-        return  notAvailables;
+        for (Map<String, Object> notAvailable : notAvailables) {
+            TeamMatch tm = teamMatchApi.get(notAvailable.get("id").toString());
+            Team t = teamApi.get(notAvailable.get("teamId").toString());
+            Set<String> ids = new HashSet<>();
+            for (Object na : (List) notAvailable.get("notAvailable")) {
+                ids.add(na.toString());
+            }
+            if (tm.getHome().equals(t)) {
+                tm.setHomeNotAvailable(ids);
+            } else {
+                tm.setAwayNotAvailable(ids);
+            }
+            teamMatchApi.modifyAvailable(tm);
+        }
+        return notAvailables;
     }
 }

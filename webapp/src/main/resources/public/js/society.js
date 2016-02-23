@@ -304,7 +304,10 @@ function lifeTimeStats(v) {
               perPageDefault: 10
          }
      });
+
+     /*
      $('#table-team-schedule').dynatable( {
+
      dataset: {
                perPageDefault: 20,
                perPageOptions: [10,20,50,100]
@@ -317,7 +320,7 @@ function lifeTimeStats(v) {
            }
 
            });
-
+      */
   $('#table-season').dynatable( {
      dataset: {
                perPageDefault: 5,

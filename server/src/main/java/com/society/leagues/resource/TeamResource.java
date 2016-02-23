@@ -30,6 +30,8 @@ public class TeamResource {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Team delete(@PathVariable String id) {
         Team t = leagueService.findOne(new Team(id));
+        leagueService.findAll(PlayerResult.class).parallelStream().filter(pr->pr.hasTeam(t)).forEach(pr->leagueService.purge(pr));
+        leagueService.findAll(TeamMatch.class).parallelStream().filter(tm->tm.hasTeam(t)).forEach(tm->leagueService.purge(tm));
         return leagueService.purge(t);
     }
 
