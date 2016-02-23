@@ -93,8 +93,10 @@ public class ScheduleResource extends BaseController {
         teamMatches.sort((o1, o2) -> o1.getMatchDate().compareTo(o2.getMatchDate()));
         teamMatches.stream().forEach(teamMatch->teamMatch.setPlayerResults(playerResultApi.getPlayerResultsSummary(teamMatch.getId())));
         for (MatchModel teamMatch : teamMatches) {
-            playerCountModelList.stream().filter(teamMatch::isPlayedOrAvailable).forEach(PlayerCountModel::add);
+            playerCountModelList.stream().forEach(pc->pc.addMatchDate(teamMatch.getMatchDate()));
+            playerCountModelList.stream().filter(teamMatch::isPlayedOrAvailable).forEach(pr->pr.add(teamMatch.getMatchDate()));
         }
+        model.addAttribute("playerCount", playerCountModelList);
         model.addAttribute("teamMatches", teamMatches);
         return "schedule/scheduleTeam";
     }
@@ -102,10 +104,6 @@ public class ScheduleResource extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/schedule/team/available/{teamId}")
     public String getTeamAvailableSchedule(@PathVariable String teamId, Model model) {
         getTeamSchedule(teamId,model);
-        List<MatchModel> teamMatches = (List<MatchModel>) model.asMap().get("teamMatches");
-
-        LocalDateTime now = LocalDateTime.now().minusDays(1);
-        model.addAttribute("teamMatches", teamMatches.stream().filter(t->t.getMatchDate().isAfter(now)).collect(Collectors.toList()));
         return "schedule/scheduleTeamAvailable";
     }
 

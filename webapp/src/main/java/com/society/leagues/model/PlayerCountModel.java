@@ -5,15 +5,22 @@ import com.society.leagues.client.api.domain.TeamMembers;
 import com.society.leagues.client.api.domain.User;
 import org.springframework.util.ReflectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.function.Function;
 
 public class PlayerCountModel extends User {
 
-    int count;
+    List<LocalDateTime> playing = new ArrayList<>();
+    List<LocalDateTime> matchDates = new ArrayList<>();
 
-    public void add() {
-        count++;
+    public void add(LocalDateTime dt) {
+        playing.add(dt);
+    }
+
+    public void addMatchDate(LocalDateTime dt) {
+        matchDates.add(dt);
     }
 
     public static List<PlayerCountModel> create(TeamMembers members) {
@@ -25,5 +32,17 @@ public class PlayerCountModel extends User {
         }
          playerCountModelList.sort(User.sort);
         return playerCountModelList;
+    }
+
+    public int getCount() {
+        return playing.size();
+    }
+
+    public boolean isPlaying(LocalDateTime dt) {
+        return playing.stream().filter(dt::isEqual).count() > 0;
+    }
+
+    public List<LocalDateTime> getMatchDates() {
+        return matchDates;
     }
 }

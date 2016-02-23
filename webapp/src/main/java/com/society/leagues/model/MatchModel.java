@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -58,11 +59,20 @@ public class MatchModel extends TeamMatch {
     }
 
     public boolean isAvailable(User user) {
-        return awayAvailable().contains(user) || homeAvailable().contains(user);
+        if (getPlayerResults().isEmpty())
+            return awayAvailable().contains(user) || homeAvailable().contains(user);
+
+        return getPlayerResults().stream().filter(p->p.hasUser(user)).count() > 0;
     }
 
     public boolean isPlayedOrAvailable(User user) {
-        return getPlayerResults().stream().filter(pr->pr.hasUser(user)).count() > 0 || isAvailable(user);
+        if (getPlayerResults().stream().filter(pr->pr.hasUser(user)).count() > 0)
+            return true;
+
+        if (getMatchDate().isBefore(LocalDateTime.now().minusDays(1)))
+            return false;
+
+        return isAvailable(user);
     }
 
     @Override
