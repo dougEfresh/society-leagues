@@ -8,6 +8,7 @@ import com.society.leagues.client.views.PlayerResultSummary;
 import com.society.leagues.converters.DateTimeDeSerializer;
 import com.society.leagues.converters.DateTimeSerializer;
 import com.society.leagues.client.views.PlayerResultView;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import sun.security.action.GetPropertyAction;
 
@@ -312,6 +313,9 @@ public class User extends LeagueObject {
         }
         return getUserProfile().getImageUrl();
     }
+
+
+    public static Comparator<User> sort = (o1, o2) -> o1.getFirstName().compareTo(o2.getFirstName());
 
     @Override
     public String toString() {

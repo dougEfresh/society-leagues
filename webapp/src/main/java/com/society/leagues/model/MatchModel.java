@@ -61,6 +61,10 @@ public class MatchModel extends TeamMatch {
         return awayAvailable().contains(user) || homeAvailable().contains(user);
     }
 
+    public boolean isPlayedOrAvailable(User user) {
+        return getPlayerResults().stream().filter(pr->pr.hasUser(user)).count() > 0 || isAvailable(user);
+    }
+
     @Override
     public Integer getWinnerRacks() {
         return racks(getWinner());

@@ -5,6 +5,7 @@ import com.society.leagues.model.MatchModel;
 import com.society.leagues.client.api.domain.Season;
 import com.society.leagues.client.api.domain.Team;
 import com.society.leagues.client.api.domain.TeamMatch;
+import com.society.leagues.model.PlayerCountModel;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -85,10 +86,15 @@ public class ScheduleResource extends BaseController {
         getSchedule(season.getId(),model);
         model.addAttribute("team", team);
         List<MatchModel> teamMatches = MatchModel.fromTeam(teamMatchApi.getTeamMatchByTeam(teamId));
+        List<PlayerCountModel> playerCountModelList = PlayerCountModel.create(teamApi.members(team.getId()));
+
         teamMatches.stream().forEach(t->t.getHome().setMembers(teamApi.members(t.getHome().getId())));
         teamMatches.stream().forEach(t->t.getAway().setMembers(teamApi.members(t.getAway().getId())));
         teamMatches.sort((o1, o2) -> o1.getMatchDate().compareTo(o2.getMatchDate()));
         teamMatches.stream().forEach(teamMatch->teamMatch.setPlayerResults(playerResultApi.getPlayerResultsSummary(teamMatch.getId())));
+        for (MatchModel teamMatch : teamMatches) {
+            playerCountModelList.stream().filter(teamMatch::isPlayedOrAvailable).forEach(PlayerCountModel::add);
+        }
         model.addAttribute("teamMatches", teamMatches);
         return "schedule/scheduleTeam";
     }
@@ -96,7 +102,8 @@ public class ScheduleResource extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/schedule/team/available/{teamId}")
     public String getTeamAvailableSchedule(@PathVariable String teamId, Model model) {
         getTeamSchedule(teamId,model);
-         List<MatchModel> teamMatches = (List<MatchModel>) model.asMap().get("teamMatches");
+        List<MatchModel> teamMatches = (List<MatchModel>) model.asMap().get("teamMatches");
+
         LocalDateTime now = LocalDateTime.now().minusDays(1);
         model.addAttribute("teamMatches", teamMatches.stream().filter(t->t.getMatchDate().isAfter(now)).collect(Collectors.toList()));
         return "schedule/scheduleTeamAvailable";
