@@ -3,13 +3,17 @@
     <div id="stats-app"  layout:fragment="content">
         <script th:inline="javascript">
             function onSeasonChange() {
-                window.location = window.location.pathname + '?seasonId=' + $('#season-select').val() + '&chartType=' +  $('#chart-select').val();
+                window.location = window.location.pathname + '?seasonId=' + $('#season-select').val() ;
             }
             function onNineHandicapChange(){
-                window.location = window.location.pathname + '?seasonId=' + $('#season-select').val() + '&chartType=' +  $('#chart-select').val() + '&nineId=' + $('#season-nine-handicap-select').val();
+                window.location = window.location.pathname + '?seasonId=' + $('#season-select').val() + '&nineId=' + $('#season-nine-handicap-select').val();
 
             }
 
+            function onEightHandicapChange(){
+                window.location = window.location.pathname + '?seasonId=' + $('#season-select').val() + '&eightId=' + $('#season-eight-handicap-select').val();
+
+            }
         </script>
         <div class="society-well society-well-stats society-well-user-stats">
         <div class="well-title">
@@ -91,6 +95,43 @@
                          console.log(json);
                          Morris.Bar({
                              element: 'stats-nine-handicap-lifetime',
+                             data: json,
+                             smooth: true,
+                             xkey: 'handicap',
+                             ykeys: ['win','lost'],
+                             labels: ['Win','Lost']
+                         });
+                     });
+                    /*]]>*/
+            </script>
+        </div>
+
+        <div class="society-well society-well-stats society-well-user-stats">
+            <div class="well-title">
+                <h3>Handicap - 8 Ball</h3>
+            </div>
+            <!--th:selected="${s.id == season.id}"-->
+            <select th:onchange="'onEightHandicapChange()'" th:if="${eightSeasons ne null}" id="season-eight-handicap-select">
+                <option value="-1">All Seasons</option>
+                <option
+                        th:each="s : ${eightSeasons}"
+                        th:value="${s.id}"
+                        th:selected="${s.id == eightSeason.getId()}"
+                        th:text="${s.getFormattedName()}">
+                </option>
+            </select>
+
+            <div id="stats-eight-handicap-lifetime">
+            </div>
+
+            <script th:inline="javascript">
+                    /*<![CDATA[*/
+                    var id = [[${statUser.getId()}]];
+                    var seasonId = [[${eightSeason.getId()}]];
+                    $.getJSON("/app/stats/lifetime/handicap/eight/" + id + '?seasonId=' +  seasonId, function (json) {
+                         console.log(json);
+                         Morris.Bar({
+                             element: 'stats-eight-handicap-lifetime',
                              data: json,
                              smooth: true,
                              xkey: 'handicap',

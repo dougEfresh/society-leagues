@@ -75,6 +75,7 @@ public class TestSeason extends BaseTest {
     }
 
     //@Test
+    //TODO Figure out why failed
     public void testSchedule() {
         Season season = seasonApi.active().stream().filter(s->!s.isChallenge()).findAny().get();
         List<Team> teams = teamApi.seasonTeams(season.getId());

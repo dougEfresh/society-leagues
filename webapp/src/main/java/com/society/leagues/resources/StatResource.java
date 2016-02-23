@@ -20,11 +20,10 @@ public class StatResource  extends BaseController {
                         @RequestParam(required = false , defaultValue = "-1") String seasonId,
                         @RequestParam(required = false , defaultValue = "-1") String nineId,
                         @RequestParam(required = false , defaultValue = "-1") String eightId,
-                        @RequestParam(required = false , defaultValue = "bar") String chartType,
                         @RequestParam(required = false , defaultValue = "all") String scrambleType,
                         Model model) {
 
-        model.addAttribute("chartType",chartType);
+        model.addAttribute("chartType","bar");
         model.addAttribute("statUser",userApi.get(userId));
         model.addAttribute("nineSeason",userApi.get(userId).getSeasons().stream().filter(s->s.getId().equals(nineId)).findAny().orElse(Season.getDefault()));
         model.addAttribute("eightSeason",userApi.get(userId).getSeasons().stream().filter(s->s.getId().equals(eightId)).findAny().orElse(Season.getDefault()));
@@ -35,7 +34,7 @@ public class StatResource  extends BaseController {
         model.addAttribute("scrambleStats",userStats.stream().filter(s->s.getType().isScramble()).collect(Collectors.toList()));
         model.addAttribute("season",seasonId.equals("-1") ? Season.getDefault() : seasonApi.get(seasonId));
         model.addAttribute("nineSeasons",userApi.get(userId).getSeasons().stream().filter(s->s.isNine()).collect(Collectors.toList()));
-        model.addAttribute("eightSeasons",userApi.get(userId).getSeasons().stream().filter(s->!s.isNine()).filter(s->!s.isScramble()).collect(Collectors.toList()));
+        model.addAttribute("eightSeasons",userApi.get(userId).getSeasons().stream().filter(s->!s.isNine()).collect(Collectors.toList()));
         return "stats/userStats";
     }
 

@@ -61,8 +61,9 @@ public class TeamResource extends BaseController {
 
     @RequestMapping(value = {"/team/delete/{id}"}, method = RequestMethod.GET)
     public String delete(@PathVariable String id , Model model) {
-          teamApi.delete(id);
-          return "redirect:/app/team";
+        Team t = teamApi.get(id);
+        teamApi.delete(id);
+        return "redirect:/app/team/season/" + t.getSeason().getId();
     }
 
     @RequestMapping(value = {"/team/{id}"}, method = RequestMethod.POST)
