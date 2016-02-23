@@ -171,6 +171,8 @@ public class TestTeamMatch extends BaseTest {
             assertFalse(newTeamMatch.awayAvailable().contains(new User(s)));
             assertTrue(newTeamMatch.awayNotAvailable().contains(new User(s)));
         }
+
+        seasonApi.deleteSchedule(season.getId());
     }
 
 }

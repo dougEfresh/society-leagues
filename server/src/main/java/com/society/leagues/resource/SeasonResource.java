@@ -81,9 +81,13 @@ public class SeasonResource {
         return matches;
     }
 
-    @RequestMapping(value = "/create/schedule/{seasonId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/delete/schedule/{seasonId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Collection<TeamMatch> schedule(Principal principal, @PathVariable String seasonId) {
+    public Season deleteSchedule(Principal principal, @PathVariable String seasonId) {
+        return deleteSchedule(seasonId);
+    }
+
+    private Season  deleteSchedule(String seasonId) {
         Season season = leagueService.findOne(new Season(seasonId));
         List<Team> teams = leagueService.findAll(Team.class).stream()
                 .filter(t -> t.getSeason().equals(season))
@@ -100,6 +104,18 @@ public class SeasonResource {
                 }
                 teamMatchRepository.delete(existing.getId());
             }
+        return season;
+    }
+
+    @RequestMapping(value = "/create/schedule/{seasonId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Collection<TeamMatch> schedule(Principal principal, @PathVariable String seasonId) {
+        Season season = leagueService.findOne(new Season(seasonId));
+        deleteSchedule(seasonId);
+        List<Team> teams = leagueService.findAll(Team.class).stream()
+                .filter(t -> t.getSeason().equals(season))
+                .filter(t -> !t.isDisabled())
+                .collect(Collectors.toList());
 
         Collection<TeamMatch> allCombos = scheduleSeason(teams.toArray(new Team[]{}),teams.toArray(new Team[]{}),season);
         Random  random = new Random();
