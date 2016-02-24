@@ -1,6 +1,5 @@
 package com.society.leagues.resources;
 
-import com.society.leagues.exception.UnauthorizedException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
@@ -64,9 +63,6 @@ public class ErrorResource  {
 
     @ExceptionHandler(value = {Exception.class, RuntimeException.class})
     public String handleError(Model model, HttpServletRequest req, HttpServletResponse response, Exception exception) throws IOException {
-        if (exception.getCause() instanceof  UnauthorizedException || exception instanceof UnauthorizedException) {
-            return "redirect:/app/login";
-        }
         ModelAndView mav = new ModelAndView();
         if (model != null) {
             model.addAttribute("exception", exception);

@@ -15,6 +15,7 @@ public interface UserApi {
 
     @RequestLine("GET /api/user")
     @Headers("X-Cache: false")
+    @Deprecated
     User get();
 
     @RequestLine("GET /api/user/active")
@@ -22,6 +23,9 @@ public interface UserApi {
 
     @RequestLine("GET /api/user/{id}")
     User get(@Param("id") String id);
+
+    @RequestLine("GET /api/user/login/{login}")
+    User getByLogin(@Param("login") String login);
 
     @RequestLine("POST /api/user/admin/modify")
     User modify(User user);

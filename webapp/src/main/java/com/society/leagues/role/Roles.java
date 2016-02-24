@@ -1,4 +1,4 @@
-package com.society.role;
+package com.society.leagues.role;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;

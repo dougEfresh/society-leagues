@@ -2,6 +2,8 @@ package com.society.leagues.resources;
 
 import com.society.leagues.client.api.*;
 import com.society.leagues.client.api.domain.*;
+import com.stormpath.sdk.account.Account;
+import com.stormpath.sdk.servlet.account.AccountResolver;
 import org.apache.catalina.connector.RequestFacade;
 import org.apache.catalina.connector.ResponseFacade;
 import org.slf4j.Logger;
@@ -40,15 +42,20 @@ public class BaseController {
             dev = false;
     }
 
+
+    public User getUser(Model model) {
+        return model.asMap().containsKey("user") ? (User) model.asMap().get("user") : User.defaultUser();
+    }
+
     @ModelAttribute
     public void setModels(Model model, HttpServletRequest request, ResponseFacade response) {
         model.addAttribute("tracking",dev);
-        User user = userApi.get();
-
+        Account account = AccountResolver.INSTANCE.getAccount(request);
+        User user = userApi.getByLogin(account.getEmail());
+        model.addAttribute("user",user);
         List<Season> seasons = seasonApi.get();
-        RequestFacade requestFacade = (RequestFacade) request;
         adminSeason = seasons.stream().sorted(Season.sortOrder).findFirst().get();
-        for (Cookie cookie : requestFacade.getCookies()) {
+        for (Cookie cookie : request.getCookies()) {
             if (cookie.getName().equals("admin-season")) {
                 adminSeason = seasons.stream().filter(s->s.equals(new Season(cookie.getValue()))).findFirst().orElse(adminSeason);
             }
@@ -57,7 +64,6 @@ public class BaseController {
         model.addAttribute("allSeasons",seasons);
         model.addAttribute("challengeSeason",seasons.stream().filter(Season::isChallenge).findFirst().orElse(null));
         model.addAttribute("user", user);
-        model.addAttribute("userTeams", teamApi.userTeams(user.getId()));
         model.addAttribute("userStats", statApi.getUserStatsSummary(user.getId()));
         model.addAttribute("allUsers", userApi.all().parallelStream().filter(User::isReal).collect(Collectors.toList()));
         model.addAttribute("activeUsers", userApi.all().parallelStream().filter(User::isReal).filter(u->u.getSeasons().stream().filter(Season::isActive).count() > 0).collect(Collectors.toList()));

@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,30 +32,17 @@ public class UserResource {
     }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<User> all(Principal principal) {
-        User u = get(principal.getName());
-        if (u.isAdmin()) {
-            return leagueService.findAll(User.class).stream()
-                    .sorted((user, t1) -> user.getName().compareTo(t1.getName())).collect(Collectors.toList());
-        }
-
-        return listByUser(u.getId());
+    public List<User> all() {
+        return leagueService.findAll(User.class).stream().sorted(User.sort).collect(Collectors.toList());
     }
 
-    @RequestMapping(value = "/active", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<User> active(Principal principal) {
-        User u = get(principal.getName());
-        if (u.isAdmin()) {
-            return leagueService.findAll(User.class).stream().filter(User::isActive)
-                    .sorted((user, t1) -> user.getName().compareTo(t1.getName())).collect(Collectors.toList());
-        }
-
-        return listByUser(u.getId());
-    }
-
-    @RequestMapping(value = "/login/{login}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/login/{login:.+}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public User get(@PathVariable String login) {
-        return leagueService.findByLogin(login);
+        User u  = leagueService.findByLogin(login);
+        if (u == null)
+            throw new InvalidRequestException("Unknown user " + login);
+
+        return u;
     }
 
     @RequestMapping(value = "/admin/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)

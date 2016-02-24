@@ -22,10 +22,10 @@ public class HomeResource extends BaseController {
     @Autowired ChallengeApi challengeApi;
     @Autowired ChallengeResource challengeResource;
 
-    @RequestMapping(value = {"/home", "","/"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/app/home","/home"}, method = RequestMethod.GET)
     public String home(Model model, HttpServletResponse response) throws IOException {
         Map<Season,List<Stat>> topPlayers = new TreeMap<>(Season.sortOrder);
-        User user = userApi.get();
+        User user = getUser(model);
         user.getSeasons().stream()
                 .filter(Season::isActive)
                 .collect(Collectors.toList())

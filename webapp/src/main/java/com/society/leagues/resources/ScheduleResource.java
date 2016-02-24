@@ -26,9 +26,9 @@ public class ScheduleResource extends BaseController {
         Season season = seasonApi.get(seasonId);
         model.addAttribute("season", season);
         LocalDate yest = LocalDateTime.now().minusDays(1).toLocalDate();
-        User user = userApi.get();
+        User user = getUser(model);
         model.addAttribute("userTeam",
-                teamApi.userTeams(userApi.get().getId()).stream()
+                teamApi.userTeams(getUser(model).getId()).stream()
                         .filter(t->t.getSeason().getId().equals(seasonId))
                         .filter(t->t.hasUser(user)).findFirst().orElse(new Team("-1"))
         );

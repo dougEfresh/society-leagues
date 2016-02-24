@@ -3,7 +3,6 @@ package com.society.leagues;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.society.leagues.security.CookieContext;
 import feign.Client;
 import feign.Request;
 import feign.Request.Options;
@@ -94,16 +93,6 @@ public class LeagueHttpClient extends Client.Default {
 
         HttpURLConnection connection = convertAndSend(request, options);
         Response response = convertResponse(connection, request);
-        if (response.headers().containsKey("Set-Cookie")) {
-            SecurityContext context = SecurityContextHolder.getContext();
-            if (context instanceof CookieContext) {
-                CookieContext cookieContext = (CookieContext) context;
-                if (!cookieContext.isCookieChange()) {
-                    cookieContext.setCookieChange(true);
-                    cookieContext.setNewCookies(response.headers().get("Set-Cookie"));
-                }
-            }
-        }
         if (response.status() != 200) {
             cachedResponse.invalidateAll();
         }

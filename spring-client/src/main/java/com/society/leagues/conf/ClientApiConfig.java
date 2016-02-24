@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.society.leagues.LeagueHttpClient;
 import com.society.leagues.exception.ApiException;
 import com.society.leagues.exception.UnauthorizedException;
-import com.society.leagues.security.CookieContext;
 import com.society.leagues.client.api.*;
 import feign.*;
 import feign.codec.ErrorDecoder;
@@ -16,8 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.annotation.PostConstruct;
 
@@ -38,10 +35,6 @@ public class ClientApiConfig {
     static class HeadersInterceptor implements RequestInterceptor {
         @Override
         public void apply(RequestTemplate template) {
-            SecurityContext context = SecurityContextHolder.getContext();
-            if (context instanceof CookieContext && context.getAuthentication().getCredentials() != null)
-                template.header("Cookie", context.getAuthentication().getCredentials().toString());
-
             // "Accept: application/json, */* ","Content-Type: application/json", "Accept-Encoding: gzip, deflate, sdch"}
             template.header("Accept", MediaType.APPLICATION_JSON_VALUE, MediaType.ALL_VALUE);
             template.header("Content-Type", MediaType.APPLICATION_JSON_VALUE);

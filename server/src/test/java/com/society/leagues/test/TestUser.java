@@ -18,7 +18,7 @@ public class TestUser extends BaseTest {
 
     @Test
     public void testUser() {
-        User me =userApi.get();
+        User me = userApi.get();
         assertTrue(userApi.active().stream().filter(u->!u.isActive()).count()  == 0);
         assertFalse(userApi.all().isEmpty());
         assertEquals("admin",me.getFirstName());
