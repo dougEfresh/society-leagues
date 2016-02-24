@@ -24,7 +24,7 @@ jar {
 }
 
 bootRun {
-    jvmArgs = [ '-Dapp.url=http://leaguesdev.societybilliards.com:8080', '-Dserver.port=8081', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005' ]
+    jvmArgs = [ '-Dapp.url=http://leaguesdev.societybilliards.com:8080', '-Dserver.port=8080', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005' ]
 }
 
 dependencies {
@@ -32,44 +32,25 @@ dependencies {
     testCompile project(':spring-client')
     compile project(':dao')
     compile 'org.slf4j:slf4j-api:1.7.7'
-    compile 'com.stormpath.spring:stormpath-default-spring-boot-starter:1.0.RC8.3'
-    //DB
-    compile 'mysql:mysql-connector-java:5.1.32'
-    compile "com.h2database:h2:1.4.185"
-    compile 'org.apache.tomcat:tomcat-dbcp:8.0.15'
+    compile 'com.google.guava:guava:19.0'
 
     compile 'org.springframework.boot:spring-boot-actuator'
-    compile 'org.springframework.boot:spring-boot-starter-jdbc'
     compile 'org.springframework.boot:spring-boot-autoconfigure'
     compile 'org.springframework.boot:spring-boot-starter-web'
-    compile 'org.springframework.boot:spring-boot-starter-security'
     compile 'org.springframework.boot:spring-boot-starter-tomcat'
     compile 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    compile 'org.thymeleaf.extras:thymeleaf-extras-java8time:2.1.0.RELEASE'
+    compile 'net.sourceforge.nekohtml:nekohtml:1.9.21'
 
-    compile 'org.springframework.social:spring-social-core:1.1.2.RELEASE'
-    compile "org.springframework.social:spring-social-web:1.1.2.RELEASE"
-    compile "org.springframework.social:spring-social-security:1.1.2.RELEASE"
-
-    compile("org.springframework.social:spring-social-facebook:2.0.2.RELEASE")
-    compile("org.springframework.social:spring-social-facebook-web:2.0.1.RELEASE")
-
-    compile 'com.allanditzel:spring-security-csrf-token-filter:1.1'
     compile 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 
-    compile 'org.codehaus.groovy:groovy-all:2.3.8'
-
-    compile  'com.netflix.feign:feign-core:8.1.0'
-    compile  'com.netflix.feign:feign-jackson:8.1.0'
-
+    compile  'com.netflix.feign:feign-core:8.14.3'
+    compile  'com.netflix.feign:feign-jackson:8.14.3'
+    compile  'com.netflix.feign:feign-slf4j:8.14.3'
 
     //Test
-    compile 'io.codearte.jfairy:jfairy:0.5.1'
+    testCompile 'io.codearte.jfairy:jfairy:0.5.1'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
     testCompile 'org.apache.httpcomponents:httpclient:4.4'
     testCompile 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:1.50.0'
 }
-
-task integrationTest(type: Test) {
-        jvmArgs = ['-Dembedded=false']
-}
-

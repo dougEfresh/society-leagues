@@ -6,18 +6,15 @@ import com.society.leagues.client.api.domain.User;
 import com.society.leagues.client.api.domain.UserProfile;
 import com.society.leagues.listener.DaoListener;
 import com.society.leagues.mongo.UserRepository;
-import org.codehaus.groovy.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
@@ -31,7 +28,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class UserService {
-    @Autowired JdbcTemplate jdbcTemplate;
     @Autowired EmailService emailService;
     @Autowired LeagueService leagueService;
     @Autowired UserRepository repository;
@@ -151,42 +147,7 @@ public class UserService {
     }
 
     public void populateProfile() {
-        leagueService.findAll(User.class).stream().filter(user->user.getUserProfile() == null).forEach(user->{user.setUserProfile(new UserProfile()); leagueService.save(user);});
-        List < Map < String, Object >> results = jdbcTemplate.queryForList("select * from UserConnection where userId is not null");
-        logger.info("Got back " + results.size());
-        for (Map<String, Object> result : results) {
-            UserProfile profile = new UserProfile();
-            profile.setProfileUrl(result.get("profileUrl").toString());
-            profile.setImageUrl(result.get("imageUrl").toString());
-            User u = leagueService.findByLogin(result.get("userId").toString());
-            if (u == null)
-                continue;
-            logger.info("Updating user profile " + u.getName() + "  " + profile);
-            if (!profile.getProfileUrl().equals(u.getUserProfile().getProfileUrl())
-                    || !profile.getImageUrl().equals(u.getUserProfile().getImageUrl())) {
-                u.setUserProfile(profile);
-                leagueService.save(u);
-            }
-        }
+
     }
 
-     public void populateProfile(User user) {
-         if (user == null) {
-             return;
-         }
-        List < Map < String, Object >> results =
-                jdbcTemplate.queryForList("select * from UserConnection where userId is not null and userId = '" + user.getEmail() + "'");
-        logger.info("Got back " + results.size());
-        for (Map<String, Object> result : results) {
-            UserProfile profile = new UserProfile();
-            profile.setProfileUrl(result.get("profileUrl").toString());
-            profile.setImageUrl(result.get("imageUrl").toString());
-            User u = leagueService.findByLogin(result.get("userId").toString());
-            if (u == null)
-                continue;
-            logger.info("Updating user profile " + u.getName()  + "  " + profile);
-            u.setUserProfile(profile);
-            leagueService.save(u);
-        }
-    }
 }

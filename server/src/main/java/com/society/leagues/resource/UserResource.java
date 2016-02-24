@@ -2,26 +2,19 @@ package com.society.leagues.resource;
 
 import com.society.leagues.client.api.domain.Handicap;
 import com.society.leagues.client.api.domain.HandicapSeason;
+import com.society.leagues.client.api.domain.User;
 import com.society.leagues.exception.InvalidRequestException;
-import com.society.leagues.exception.UnauthorizedException;
 import com.society.leagues.service.ChallengeService;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.UserService;
-import com.society.leagues.client.api.domain.TokenReset;
-import com.society.leagues.client.api.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.social.connect.ConnectionRepository;
-import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -33,19 +26,8 @@ public class UserResource {
     @Autowired UserService userService;
     @Autowired LeagueService leagueService;
     @Autowired ChallengeService challengeService;
-    @Autowired UsersConnectionRepository usersConnectionRepository;
-    @Autowired ConnectionRepository connectionRepository;
-
-    @RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public User get(Principal principal, HttpServletRequest request) {
-        if (principal == null) {
-            throw new UnauthorizedException("Unknown user");
-        }
-        return  get(principal.getName());
-    }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_USER')")
     public User getById(@PathVariable String id) {
         return leagueService.findOne(new User(id));
     }
@@ -61,7 +43,6 @@ public class UserResource {
         return listByUser(u.getId());
     }
 
-
     @RequestMapping(value = "/active", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<User> active(Principal principal) {
         User u = get(principal.getName());
@@ -74,13 +55,11 @@ public class UserResource {
     }
 
     @RequestMapping(value = "/login/{login}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_USER')")
     public User get(@PathVariable String login) {
         return leagueService.findByLogin(login);
     }
 
     @RequestMapping(value = "/admin/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public User create(@RequestBody User user) {
         User oldUser = leagueService.findByLogin(user.getLogin());
         if (oldUser != null) {
@@ -97,7 +76,6 @@ public class UserResource {
     }
 
     @RequestMapping(value = "/admin/create/challenge", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public User createChallenge(@RequestBody final User user) {
         User oldUser = leagueService.findByLogin(user.getLogin());
         if (oldUser != null) {
@@ -149,63 +127,19 @@ public class UserResource {
         return existingUser;
     }
 
-    static final Comparator<User> sortUsers = new Comparator<User>() {
-            @Override
-            public int compare(User o1, User o2) {
-                return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
-            }
-        };
+
 
     @RequestMapping(value = "/season/user/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<User> listByUser(@PathVariable String id) {
         User u = leagueService.findOne(new User(id));
         if (u.isAdmin())
-            return leagueService.findAll(User.class).stream().sorted(sortUsers).collect(Collectors.toList());
+            return leagueService.findAll(User.class).stream().sorted(User.sort).collect(Collectors.toList());
 
         return leagueService.findAll(User.class).stream()
                 .filter(user -> user.hasSameSeason(u)).
-                filter(user->!user.isFake()).filter(user->user.isActive()).
-                sorted(sortUsers)
+                filter(user->!user.isFake()).filter(User::isActive).
+                sorted(User.sort)
                 .collect(Collectors.toList());
-    }
-
-    @RequestMapping(value = "/reset/request", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public TokenReset reset(Principal principal, @RequestBody User user) {
-         User u = leagueService.findAll(User.class).parallelStream()
-                .filter(us-> us.getLogin() != null)
-                .filter(us -> us.getLogin().toLowerCase().trim().equals(user.getLogin().trim())
-                ).findFirst().orElse(null);
-        if (u == null) {
-            logger.error("Could not find user " + user.getLogin());
-            return new TokenReset("");
-        }
-        TokenReset reset = userService.resetRequest(u);
-        return u.isAdmin() ? reset : new TokenReset("");
-    }
-
-    @RequestMapping(value = "/reset/password/{token}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public User reset(@PathVariable String token, @RequestBody Map<String,String> user) {
-         User existingUser = leagueService.findAll(User.class).parallelStream()
-                .filter(us-> us.getLogin() != null)
-                .filter(us -> us.getLogin().toLowerCase().equals(user.get("login"))
-                ).findFirst().orElse(null);
-        if (existingUser == null) {
-            logger.error("No User Found");
-            return User.defaultUser();
-        }
-        logger.info("Got reset password request for " + token + " " + existingUser.getEmail());
-        if (existingUser.getTokens() == null)  {
-            logger.error("No tokens with user " + existingUser.getEmail());
-            return User.defaultUser();
-        }
-        for (TokenReset reset : existingUser.getTokens()) {
-             if (token.equals(reset.getToken())) {
-                 existingUser.getTokens().clear();
-                 existingUser.setPassword(new BCryptPasswordEncoder().encode(user.get("password")));
-                 return leagueService.save(existingUser);
-             }
-        }
-        return User.defaultUser();
     }
 
     @RequestMapping(value = "/modify/profile", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -231,6 +165,4 @@ public class UserResource {
 
         return leagueService.save(u);
     }
-
-
 }

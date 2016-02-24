@@ -5,11 +5,12 @@ import com.society.leagues.client.api.domain.*;
 import com.society.leagues.service.LeagueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @RestController
@@ -20,14 +21,12 @@ public class TeamResource {
     @Autowired LeagueService leagueService;
 
     @RequestMapping(value = "/admin/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Team create(@RequestBody Team team) {
         return leagueService.save(team);
     }
 
 
     @RequestMapping(value = "/admin/delete/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Team delete(@PathVariable String id) {
         Team t = leagueService.findOne(new Team(id));
         leagueService.findAll(PlayerResult.class).parallelStream().filter(pr->pr.hasTeam(t)).forEach(pr->leagueService.purge(pr));
@@ -48,7 +47,6 @@ public class TeamResource {
     }
 
     @RequestMapping(value = "/admin/modify/members/{teamId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public TeamMembers modifyMembers(@PathVariable String teamId, @RequestBody TeamMembers teamMembers) {
         TeamMembers existingMembers = leagueService.findOne(teamMembers);
         Team existingTeam = leagueService.findOne(new Team(teamId));

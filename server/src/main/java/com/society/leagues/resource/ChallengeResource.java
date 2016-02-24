@@ -1,10 +1,12 @@
 package com.society.leagues.resource;
 
+import com.society.leagues.client.api.domain.*;
 import com.society.leagues.exception.ChallengeException;
 import com.society.leagues.service.ChallengeService;
-import com.society.leagues.service.LeagueService;
-import com.society.leagues.client.api.domain.*;
 import com.society.leagues.service.EmailService;
+import com.society.leagues.service.LeagueService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -16,8 +18,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping(value = "/api/challenge")

@@ -19,7 +19,8 @@ public class ChallengeService  {
     @Autowired LeagueService leagueService;
     @Autowired ResultService resultService;
     @Autowired TeamService teamService;
-    @Autowired EmailService emailService;
+    @Autowired
+    EmailService emailService;
 
     @PostConstruct
     public void init() {

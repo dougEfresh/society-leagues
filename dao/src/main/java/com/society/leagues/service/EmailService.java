@@ -11,7 +11,7 @@ import javax.annotation.PostConstruct;
 
 @Component
 public class EmailService {
-    private static org.slf4j.Logger logger = LoggerFactory.getLogger(com.society.leagues.service.EmailService.class);
+    private static org.slf4j.Logger logger = LoggerFactory.getLogger(EmailService.class);
 
     @Value("${email-host:localhost}")
     String emailHost = "localhost";

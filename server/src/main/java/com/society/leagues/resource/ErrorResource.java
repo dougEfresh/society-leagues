@@ -1,21 +1,9 @@
 package com.society.leagues.resource;
 
+import com.google.common.collect.ImmutableMap;
 import com.society.leagues.exception.ChallengeException;
 import com.society.leagues.exception.InvalidRequestException;
 import com.society.leagues.exception.UnauthorizedException;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import com.google.common.collect.ImmutableMap;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
@@ -23,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -35,6 +24,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
+
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 @Controller
 @ControllerAdvice
 public class ErrorResource {
@@ -78,7 +72,7 @@ public class ErrorResource {
 
     private Map<String, Object> buildErrorResponse(HttpStatus httpStatus, HttpServletRequest request, Exception e) {
         Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("timestamp", DateTime.now().toString());
+        errorResponse.put("timestamp", LocalDateTime.now().toString());
         errorResponse.put("status", httpStatus.value());
         errorResponse.put("error", httpStatus.getReasonPhrase());
         errorResponse.put("exception", e.getClass().getCanonicalName());

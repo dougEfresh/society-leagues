@@ -1,11 +1,14 @@
 package com.society.leagues.resource;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.society.leagues.client.api.domain.Season;
+import com.society.leagues.client.api.domain.Stat;
+import com.society.leagues.client.api.domain.Team;
+import com.society.leagues.client.api.domain.User;
 import com.society.leagues.client.views.PlayerResultSummary;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.ResultService;
 import com.society.leagues.service.StatService;
-import com.society.leagues.client.api.domain.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController

@@ -1,18 +1,15 @@
 package com.society.leagues.resource;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.views.PlayerResultSummary;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.ResultService;
-import com.society.leagues.client.api.domain.*;
-import com.society.leagues.client.views.PlayerResultView;
 import com.society.leagues.service.StatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -29,13 +26,11 @@ public class PlayerResultResource {
     @Autowired ObjectMapper objectMapper;
 
     @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<PlayerResult> modify(@RequestBody List<PlayerResult> playerResult) {
         return resultService.createOrModify(playerResult);
     }
 
     @RequestMapping(value = "/admin/delete/{id}", method = {RequestMethod.GET, RequestMethod.DELETE }, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Boolean delete(@PathVariable String id) {
         leagueService.purge(new PlayerResult(id));
         return true;
@@ -113,7 +108,6 @@ public class PlayerResultResource {
     }
 
     @RequestMapping(value = "/{matchId}/add", method = {RequestMethod.GET, RequestMethod.PUT}, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<PlayerResult> addMatch(Principal principal, @PathVariable String matchId) {
         TeamMatch teamMatch = leagueService.findOne(new TeamMatch(matchId));
         List<PlayerResult> results = leagueService.findCurrent(PlayerResult.class)

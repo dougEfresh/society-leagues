@@ -9,14 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @RestController
@@ -37,7 +34,6 @@ public class SeasonResource {
     }
 
     @RequestMapping(value = "/{seasonId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Season delete(Principal principal, @PathVariable String seasonId) {
         Season season = leagueService.findOne(new Season(seasonId));
         for (TeamMatch teamMatch : leagueService.findAll(TeamMatch.class)
@@ -82,7 +78,6 @@ public class SeasonResource {
     }
 
     @RequestMapping(value = "/delete/schedule/{seasonId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Season deleteSchedule(Principal principal, @PathVariable String seasonId) {
         return deleteSchedule(seasonId);
     }
@@ -108,7 +103,6 @@ public class SeasonResource {
     }
 
     @RequestMapping(value = "/create/schedule/{seasonId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Collection<TeamMatch> schedule(Principal principal, @PathVariable String seasonId) {
         Season season = leagueService.findOne(new Season(seasonId));
         deleteSchedule(seasonId);
@@ -164,7 +158,6 @@ public class SeasonResource {
     }
 
     @RequestMapping(value = "/admin/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Season create(Principal principal, @RequestBody Season season) {
         Season previous = leagueService.findAll(Season.class).stream()
                 .filter(Season::isActive)
@@ -195,7 +188,6 @@ public class SeasonResource {
     }
 
     @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Season modify(Principal principal, @RequestBody Season season) {
         return leagueService.save(season);
     }

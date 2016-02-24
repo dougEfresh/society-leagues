@@ -3,7 +3,6 @@ package com.society.leagues.resource;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.views.PlayerResultSummary;
-import com.society.leagues.exception.ChallengeException;
 import com.society.leagues.exception.InvalidRequestException;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.ResultService;
@@ -12,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -32,13 +30,11 @@ public class TeamMatchResource {
     @Autowired StatService statService;
 
     @RequestMapping(value = "/admin/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public TeamMatch create(@RequestBody TeamMatch teamMatch) {
         return leagueService.save(teamMatch);
     }
 
     @RequestMapping(value = "/admin/delete/{teamMatchId}", method = {RequestMethod.GET , RequestMethod.DELETE}, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Map<String,List<TeamMatch>> delete(Principal principal, @PathVariable String teamMatchId) {
         TeamMatch tm = leagueService.findOne(new TeamMatch(teamMatchId));
         if (tm == null) {
@@ -49,7 +45,6 @@ public class TeamMatchResource {
     }
 
     @RequestMapping(value = "/admin/create/{seasonId}/{date}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Map<String,List<TeamMatch>> createTemplate(Principal principal, @PathVariable String seasonId, @PathVariable String date ) {
         Season s = new Season(seasonId);
         LocalDateTime dt = LocalDate.parse(date).atStartOfDay();
@@ -70,7 +65,6 @@ public class TeamMatchResource {
     }
 
     @RequestMapping(value = "/admin/modify/list", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<TeamMatch> modify(@RequestBody List<TeamMatch> teamMatch) {
         List<TeamMatch> processed = new ArrayList<>(teamMatch.size());
         processed.addAll(teamMatch.stream().map(this::modify).collect(Collectors.toList()));
@@ -86,7 +80,6 @@ public class TeamMatchResource {
     }
 
     @RequestMapping(value = "/admin/delete/playerMatches/{teamMatchId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public TeamMatch deletePlayerMatches(@PathVariable String teamMatchId) {
         TeamMatch teamMatch = leagueService.findOne(new TeamMatch(teamMatchId));
         if (teamMatch == null)
@@ -101,7 +94,6 @@ public class TeamMatchResource {
 
 
     @RequestMapping(value = "/admin/modify", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public TeamMatch modify(@RequestBody TeamMatch teamMatch) {
         TeamMatch t = modifyNoSave(teamMatch);
         return leagueService.save(t);
@@ -160,13 +152,11 @@ public class TeamMatchResource {
     }
 
     @RequestMapping(value = "/admin/add/{seasonId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public TeamMatch add(Principal principal, @PathVariable String seasonId) {
         return add(principal,seasonId,LocalDate.now().toString());
     }
 
     @RequestMapping(value = "/admin/add/{seasonId}/{date}", method = {RequestMethod.GET, RequestMethod.PUT}, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public TeamMatch add(Principal principal, @PathVariable String seasonId, @PathVariable String date) {
         TeamMatch tm = new TeamMatch();
         tm.setMatchDate(LocalDate.parse(date).atTime(11,0));

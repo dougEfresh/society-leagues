@@ -10,7 +10,7 @@ import com.society.leagues.mongo.UserRepository;
 import com.society.leagues.security.CookieContext;
 import com.society.leagues.service.ChallengeService;
 import com.society.leagues.service.LeagueService;
-import com.society.leagues.service.UserService;
+import com.society.leagues.UserService;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
@@ -28,8 +28,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {Main.class})
