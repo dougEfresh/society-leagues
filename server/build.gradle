@@ -24,7 +24,7 @@ jar {
 }
 
 bootRun {
-    jvmArgs = [ '-Dapp.url=http://leaguesdev.societybilliards.com:8080', '-Dserver.port=8080', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005' ]
+    jvmArgs = [ '-Dapp.url=http://leaguesdev.societybilliards.com:8080', '-Dserver.port=8081', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005' ]
 }
 
 dependencies {
