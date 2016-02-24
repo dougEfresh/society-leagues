@@ -66,7 +66,7 @@ public class ResultService {
                     .sorted((playerResult, t1) -> t1.getTeamMatch().getMatchDate().compareTo(playerResult.getTeamMatch().getMatchDate())).limit(7)
                     .collect(Collectors.toList());
 
-            calcPoints(challengeUser, results);
+            calcPoints(challengeUser, results,challengeUser.getSeasons().stream().filter(Season::isChallenge).findAny().get());
         }
 
         Season nineSeason = leagueService.findAll(Season.class).stream().filter(Season::isActive).filter(s->s.getDivision() == Division.NINE_BALL_TUESDAYS).findAny().orElse(null);
@@ -82,11 +82,11 @@ public class ResultService {
                     .filter(pr -> pr.getSeason().equals(nineSeason))
                     .sorted((playerResult, t1) -> t1.getTeamMatch().getMatchDate().compareTo(playerResult.getTeamMatch().getMatchDate()))
                     .collect(Collectors.toList());
-            calcPoints(user, results);
+            calcPoints(user, results, nineSeason);
         }
     }
 
-    private void calcPoints(User user, List<PlayerResult> results) {
+    private void calcPoints(User user, List<PlayerResult> results, Season season) {
         double matchNum = 0;
         for (PlayerResult challengeResult : results) {
             MatchPoints mp = new MatchPoints();
@@ -116,11 +116,13 @@ public class ResultService {
             }
 
             mp.setPoints(points);
-            mp.setWeightedAvg((double) points / (period / (period - matchNum)));
             mp.setMatchNum(new Double(matchNum).intValue());
             mp.setPlayerResult(challengeResult);
             mp.setUser(user);
-            mp.setCalculation(String.format("(%s * (10-%s))/10", points, new Double(matchNum).intValue()));
+            if (season.isChallenge()) {
+                mp.setWeightedAvg((double) points / (period / (period - matchNum)));
+                mp.setCalculation(String.format("(%s * (10-%s))/10", points, new Double(matchNum).intValue()));
+            }
             matchNum++;
             matchPointsCache.add(mp);
         }

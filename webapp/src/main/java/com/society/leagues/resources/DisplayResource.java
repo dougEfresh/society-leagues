@@ -37,7 +37,9 @@ public class DisplayResource extends BaseController {
 
     @RequestMapping(value = {"/display/{seasonId}/user/{userId}"}, method = RequestMethod.GET)
     public String displaySeasonUserStandings(@PathVariable String seasonId, @PathVariable String userId, Model model, HttpServletResponse response) throws IOException {
-        return processDisplay(seasonId, model, null, userId);
+        return processDisplay(seasonId, model,
+                teamApi.userTeams(userId).stream().filter(t->t.getSeason().getId().equals(seasonId)).findFirst().get().getId()
+                , userId);
     }
 
     @ModelAttribute

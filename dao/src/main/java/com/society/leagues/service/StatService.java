@@ -152,7 +152,6 @@ public class StatService {
     }
 
     private void refreshMatchPoints(User user, Stat stat, Season season) {
-
         List<MatchPoints> points = resultService.matchPoints();
         double totalPoints = 0d;
         List<MatchPoints> pointsList = points.stream().parallel()
@@ -162,7 +161,10 @@ public class StatService {
                 .filter(p-> p.getPlayerResult().getSeason().equals(season))
                 .collect(Collectors.toList());
         for (MatchPoints matchPoints : pointsList) {
-            totalPoints += matchPoints.getWeightedAvg();
+            if (season.isChallenge())
+                totalPoints += matchPoints.getWeightedAvg();
+            else
+                totalPoints += matchPoints.getPoints();
         }
         stat.setPoints(totalPoints);
     }
