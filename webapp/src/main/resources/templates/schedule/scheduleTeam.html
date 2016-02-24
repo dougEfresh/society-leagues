@@ -2,15 +2,22 @@
 <div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
      layout:decorator="layout">
     <div id="schedule-app" layout:fragment="content">
+        <!--/*@thymesVar id="match" type="com.society.leagues.model.MatchModel"*/-->
+        <!--/*@thymesVar id="u" type="com.society.admin.model.ChallengeUserModel"*/-->
+        <!--/*@thymesVar id="user" type="com.society.leagues.client.api.domain.User"*/-->
+        <!--/*@thymesVar id="t" type="com.society.leagues.client.api.domain.Team"*/-->
+        <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
         <div class="society-well">
             <h4>
                 <div class="padding-bottom-10">
                     <a th:href="@{/app/schedule/{seasonId} (seasonId=${season.getId()})} ">
-                        <span class="label label-primary">See Full Schedule</span></a></div>
+                        <span class="label label-primary">See Full Schedule</span></a>
+                    <a  th:if="${team.hasUser(user)}" th:href="${'#available'} ">
+                        <span class="label label-primary">Availability</span></a>
+                </div>
             </h4>
             <select th:if="${!season.isChallenge()}" id="teams-select" th:onChange="'selectTeam()'" class="form-control">
-                    <!--/*@thymesVar id="u" type="com.society.admin.model.ChallengeUserModel"*/-->
-                    <!--/*@thymesVar id="t" type="com.society.leagues.client.api.domain.Team"*/-->
+
                     <option th:each="t : ${teams}"
                             th:value="${t.getId()}"
                             th:text="${t.getName() + ' (' + t.getStats().getWins() + '-'  + t.getStats().getLoses() + ')'}"
@@ -18,13 +25,14 @@
                     >
                     </option>
             </select>
-            <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+
             <div style="padding-bottom: 15px"></div>
             <div class="table-responsive">
                 <table id="table-team-schedule" class="table table-schedule">
                     <thead>
                     <tr>
                         <th>Date</th>
+                        <th>Available</th>
                         <th>Opponent</th>
                         <th th:if="${!season.isNine()}">H / A</th>
                         <th>W / L</th>
@@ -35,14 +43,17 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.TeamMatch"*/-->
-                    <tr th:class="${match.isHasResults() ? 'results' : 'no-results'}" th:each="match: ${teamMatches}">
-                        <td class="short-date">
+
+                    <tr th:class="${match.getAvailable(team).size() < 4 ? 'warning-available' : 'ok'}" th:each="match: ${teamMatches}">
+                        <td th:class="${match.isPlayedOrAvailable(user) ? 'active' : 'not-available'}" >
                             <a th:if="${user.isAdmin()}" th:text="${#temporals.format(match.getMatchDate(),'MM/dd')}"
                                th:href="@{/app/scores/{id}/{matchId} (id=${season.id},matchId=${match.id})}">
                             </a>
-                            <span th:if="${!user.isAdmin()}" th:text="${match.getOpponent(team).getName()}">
+                            <span th:if="${not user.isAdmin()}" th:text="${#temporals.format(match.getMatchDate(),'MM/dd')}">
                             </span>
+                        </td>
+                        <td >
+                            <span th:text="${match.getAvailable(team).size()}"></span>
                         </td>
                         <td>
                             <a th:href="@{/app/results/{matchId} (matchId=${match.getId()})}"
@@ -63,6 +74,8 @@
                 </table>
             </div>
         </div>
+        <div  th:if="${team.hasUser(user)}" th:include="schedule/available"></div>
+        <div  th:if="${team.hasUser(user)}" th:include="schedule/scheduleTeamAvailable"></div>
     </div>
 </div>
 

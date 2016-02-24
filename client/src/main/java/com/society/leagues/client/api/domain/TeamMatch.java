@@ -15,8 +15,8 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class TeamMatch extends LeagueObject {
@@ -27,7 +27,7 @@ public class TeamMatch extends LeagueObject {
     @JsonDeserialize(using = DateTimeDeSerializer.class)
     @JsonView(PlayerResultSummary.class) @NotNull LocalDateTime matchDate;
 
-    @JsonView(PlayerResultSummary.class) Division division = null;
+    @JsonView(PlayerResultSummary.class)  Division division = null;
     @JsonView(PlayerResultSummary.class)  Integer homeRacks = 0;
     @JsonView(PlayerResultSummary.class)  Integer awayRacks = 0;
     @JsonView(PlayerResultSummary.class)  Integer setHomeWins = 0;
@@ -41,6 +41,11 @@ public class TeamMatch extends LeagueObject {
     @JsonView(PlayerResultSummary.class)  Integer awayForfeits = 0;
     Integer handicapRacks = 0;
 
+    @JsonView(PlayerResultSummary.class)
+    Set<String> homeNotAvailable = new HashSet<>();
+    @JsonView(PlayerResultSummary.class)
+    Set<String> awayNotAvailable = new HashSet<>();
+
     @JsonIgnore @Transient String date;
     @JsonIgnore @Transient String time;
     @Transient String race = "";
@@ -52,6 +57,66 @@ public class TeamMatch extends LeagueObject {
     }
 
     public TeamMatch() {
+    }
+
+    public void addHomeNotAvailable(String id) {
+        homeNotAvailable.add(id);
+    }
+    public void removeHomeNotAvailable(String id) {
+        homeNotAvailable.remove(id);
+    }
+    public void addAwayNotAvailable(String id) {
+        awayNotAvailable.add(id);
+    }
+    public void removeAwayNotAvailable(String id) {
+        awayNotAvailable.remove(id);
+    }
+    public Set<String> getHomeNotAvailable() {
+        return homeNotAvailable;
+    }
+
+    @JsonIgnore
+    public List<User> homeAvailable() {
+        return getHome().getMembers().getMembers().stream()
+                .filter(h->!homeNotAvailable
+                .contains(h.getId()))
+                .collect(Collectors.toList());
+    }
+
+    @JsonIgnore
+    public List<User> awayAvailable() {
+        return getAway().getMembers().getMembers().stream()
+                .filter(h->!awayNotAvailable
+                .contains(h.getId()))
+                .collect(Collectors.toList());
+    }
+
+    @JsonIgnore
+    public List<User> homeNotAvailable() {
+        return getHome().getMembers().getMembers().stream()
+                .filter(h->homeNotAvailable
+                .contains(h.getId()))
+                .collect(Collectors.toList());
+    }
+
+    @JsonIgnore
+    public List<User> awayNotAvailable() {
+        return getAway().getMembers().getMembers().stream()
+                .filter(h->awayNotAvailable
+                .contains(h.getId()))
+                .collect(Collectors.toList());
+    }
+
+    public void setHomeNotAvailable(Set<String> homeNotAvailable) {
+        this.homeNotAvailable = homeNotAvailable;
+    }
+
+    public Set<String> getAwayNotAvailable() {
+        return awayNotAvailable;
+    }
+
+    public void setAwayNotAvailable(Set<String> awayNotAvailable) {
+        this.awayNotAvailable = awayNotAvailable;
     }
 
     public Status getStatus() {

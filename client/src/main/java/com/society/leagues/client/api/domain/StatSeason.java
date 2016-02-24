@@ -13,7 +13,7 @@ public class StatSeason {
     }
 
     public String getName() {
-        return year + " " + type.getSeasonQuater();
+        return "'" + (year-2000) + " " + type.getSeasonProperName();
     }
 
     public Integer getYear() {

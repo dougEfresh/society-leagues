@@ -89,7 +89,10 @@ public class StatService {
                     .filter(s->s.getSeason().equals(season))
                     .filter(s->user.equals(s.getUser())
             ).collect(Collectors.toList()));
-            stats.addAll(this.handicapStats.get().stream().filter(st->st.getUser().equals(user)).collect(Collectors.toList()));
+            stats.addAll(this.handicapStats.get().stream()
+                    .filter(st->st.getUser().equals(user))
+                    .filter(st->st.getSeason().equals(season))
+                    .collect(Collectors.toList()));
             return stats;
         }
         List<PlayerResult> results = leagueService.findAll(PlayerResult.class).stream().parallel()
@@ -114,7 +117,10 @@ public class StatService {
         if (season.isChallenge()) {
             refreshMatchPoints(user,stats.stream().filter(s->s.getType() == StatType.USER_SEASON).findAny().get());
         }
-        stats.addAll(this.handicapStats.get().stream().filter(st->st.getUser().equals(user)).collect(Collectors.toList()));
+        stats.addAll(this.handicapStats.get().stream()
+                .filter(st->st.getUser().equals(user))
+                .filter(st->st.getSeason().equals(season))
+                .collect(Collectors.toList()));
         return stats;
     }
 

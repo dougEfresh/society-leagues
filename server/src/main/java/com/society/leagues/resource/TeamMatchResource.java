@@ -258,31 +258,29 @@ public class TeamMatchResource {
     public List<TeamMatch> getTeamMatchesSummary(Principal principal, @PathVariable String id) throws Exception {
         Season season = leagueService.findOne(new Season(id));
         if (season == null) {
-            throw new Exception("Could not find season for " + id);
+            throw new InvalidRequestException("Could not find season for " + id);
         }
-        return leagueService.findAll(TeamMatch.class).parallelStream().filter(t->t.getSeason().equals(season)).collect(Collectors.toList());
+        return leagueService.findAll(TeamMatch.class)
+                .parallelStream()
+                .filter(t->t.getHome().getSeason().equals(season))
+                .filter(t->t.getAway().getSeason().equals(season))
+                .collect(Collectors.toList());
     }
 
   @RequestMapping(value = {"/team/{teamId}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
   public List<TeamMatch> getMatchesByTeam(Principal principal, @PathVariable String teamId) {
       List<TeamMatch> results;
       Team team = leagueService.findOne(new Team(teamId));
+      Season season = team.getSeason();
       LocalDateTime  now  = LocalDateTime.now().minusDays(1);
-      results = leagueService.findCurrent(TeamMatch.class).stream().parallel()
-                .filter(tm -> tm.hasTeam(team))
-                .sorted(new Comparator<TeamMatch>() {
-                    @Override
-                    public int compare(TeamMatch teamMatch, TeamMatch t1) {
-                        if (t1.getMatchDate() == null || teamMatch.getMatchDate() == null)
-                            return -1;
-                        return t1.getMatchDate().compareTo(teamMatch.getMatchDate());
-                    }
+      return leagueService.findCurrent(TeamMatch.class).stream().parallel()
+              .filter(tm -> tm.hasTeam(team))
+              .filter(tm->tm.getHome().getSeason().equals(season) && tm.getAway().getSeason().equals(season) )
+                .sorted((teamMatch, t1) -> {
+                    if (t1.getMatchDate() == null || teamMatch.getMatchDate() == null)
+                        return -1;
+                    return t1.getMatchDate().compareTo(teamMatch.getMatchDate());
                 }).collect(Collectors.toList());
-        for (TeamMatch result : results) {
-            boolean hasPlayerResults = leagueService.findCurrent(PlayerResult.class).parallelStream().filter(r->r.getTeamMatch().equals(result)).count() > 0;
-            result.setHasPlayerResults(hasPlayerResults);
-        }
-        return results;
     }
 
     @RequestMapping(value = "/user/{id}/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
@@ -300,4 +298,20 @@ public class TeamMatchResource {
         copy.parallelStream().forEach(c->c.setReferenceUser(u));
         return copy;
     }
+
+    @RequestMapping(value = "/modify/available", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public TeamMatch modifyAvailable(@RequestBody TeamMatch teamMatch) {
+        TeamMatch existing = leagueService.findOne(teamMatch);
+        if (existing == null) {
+            throw new InvalidRequestException("Unknown teamMatch id " + teamMatch.getId());
+        }
+        existing.getHomeNotAvailable().clear();
+        existing.getAwayNotAvailable().clear();
+
+        teamMatch.getHomeNotAvailable().forEach(existing::addHomeNotAvailable);
+        teamMatch.getAwayNotAvailable().forEach(existing::addAwayNotAvailable);
+
+        return leagueService.save(existing);
+    }
+
 }

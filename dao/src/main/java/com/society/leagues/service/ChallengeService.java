@@ -99,6 +99,6 @@ public class ChallengeService  {
                 .filter(ch -> ch.getTeamMatch() == null)
                 .collect(Collectors.toList());
 
-        accepted.forEach(this::accept);
+        //accepted.forEach(this::accept);
     }
 }

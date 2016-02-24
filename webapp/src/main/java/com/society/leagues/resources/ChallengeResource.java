@@ -29,7 +29,7 @@ public class ChallengeResource extends BaseController {
 
     @RequestMapping(value = {"/challenge"}, method = RequestMethod.GET)
     public String challenge(@RequestParam(required = false) String userId, @RequestParam(required = false) String date, Model  model, HttpServletResponse response) throws IOException {
-        return challenge(user,userId,date,model,response);
+        return challenge(userApi.get(),userId,date,model,response);
     }
 
     public String challenge(User user , String userId, String date, Model  model, HttpServletResponse response) throws IOException {
@@ -65,7 +65,7 @@ public class ChallengeResource extends BaseController {
     public String accept(@RequestParam String id, @RequestParam String slotId) {
         Challenge ch = challengeApi.challenges().stream().filter(c->c.getId().equals(id)).findAny().get();
         ch.setAcceptedSlot(new Slot(slotId));
-        ch.setOpponent(userTeams.stream().filter(Team::isChallenge).findAny().get());
+        ch.setOpponent(teamApi.userTeams(userApi.get().getId()).stream().filter(Team::isChallenge).findAny().get());
         challengeApi.accept(ch);
         return "redirect:/app/challenge";
     }
@@ -138,6 +138,7 @@ public class ChallengeResource extends BaseController {
         List<Team> challengeUsers = new ArrayList<>();
         LocalDate localDate = LocalDate.parse(date);
         Season challengeSeason = seasonApi.active().stream().filter(Season::isChallenge).findAny().get();
+        User user = userApi.get();
         challengeUsers.addAll(
                 populateTeam(teamApi.seasonTeams(challengeSeason.getId()).parallelStream()
                         .filter(t->!t.isDisabled()).collect(Collectors.toList())

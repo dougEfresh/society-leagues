@@ -31,4 +31,6 @@ public interface SeasonApi {
     @RequestLine("PUT /api/season/create/schedule/{seasonId}")
     List<TeamMatch> schedule(@Param("seasonId") String seasonId);
 
+    @RequestLine("DELETE /api/season/delete/schedule/{seasonId}")
+    Season deleteSchedule(@Param("seasonId") String seasonId);
 }

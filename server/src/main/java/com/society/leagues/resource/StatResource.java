@@ -29,14 +29,6 @@ public class StatResource {
 
     final static Logger logger = Logger.getLogger(StatResource.class);
 
-    @RequestMapping(value = "/team/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.ALL_VALUE)
-    public Stat getTeamStat(@PathVariable String id) {
-        Team team = new Team(id);
-        return leagueService.findOne(team).getStats();
-    }
 
     @RequestMapping(value = "/team/{id}/members",
             method = RequestMethod.GET,
@@ -54,48 +46,6 @@ public class StatResource {
         return stats;
     }
 
-    @RequestMapping(value = "/season/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.ALL_VALUE)
-    public List<Team> getSeasonStats(@PathVariable String id) {
-        Season season = leagueService.findOne(new Season(id));
-        List<Team> teams = leagueService.findAll(Team.class).parallelStream().filter(t->t.getSeason().equals(season)).sorted(new Comparator<Team>() {
-            @Override
-            public int compare(Team o1, Team o2) {
-                return  o1.getRank().compareTo(o2.getRank());
-            }
-        }).collect(Collectors.toList());
-
-        List<MatchPoints> points = resultService.matchPoints();
-        if (!season.isChallenge())
-            return teams;
-
-        //TODO move to stat service
-        for (Team team: teams) {
-            double totalPoints = 0d;
-            User u =  team.getChallengeUser();
-            List<MatchPoints> pointsList = points.stream().parallel().filter(p->p.getUser().equals(u)).collect(Collectors.toList());
-            for (MatchPoints matchPoints : pointsList) {
-                totalPoints += matchPoints.getWeightedAvg();
-            }
-            team.getStats().setPoints(totalPoints);
-        }
-        return teams;
-    }
-
-    @RequestMapping(value = "/matchpoints", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.ALL_VALUE)
-    public Map<String,MatchPoints> matchPoints() {
-        LocalDateTime tenWeeksAgo = LocalDateTime.now().minusWeeks(10);
-        HashMap<String,MatchPoints> hashMap = new HashMap<>(50);
-        for(MatchPoints points: resultService.matchPoints()) {
-            hashMap.put(points.getPlayerResult().getId(), points);
-        }
-        return hashMap;
-    }
-
-
-
     @JsonView(PlayerResultSummary.class)
     @RequestMapping(value = "/season/users/{id}/summary",
             method = RequestMethod.GET,
@@ -109,59 +59,12 @@ public class StatResource {
         //statService.refresh();
   }
 
-     @RequestMapping(value = "/season/players/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.ALL_VALUE)
-    public List<Stat> getSeasonPlayerStats(@PathVariable String id) {
-         final Season season = leagueService.findOne(new Season(id));
-         if (season == null)
-             return Collections.emptyList();
-
-         List<Stat> playerStats = statService.getUserSeasonStats().get(season);
-         if (playerStats == null)
-             playerStats = Collections.emptyList();
-         if (!season.isChallenge())
-             return playerStats;
-
-         List<MatchPoints> points = resultService.matchPoints();
-         if (points == null) {
-             return playerStats;
-         }
-
-         for (Stat stat : playerStats) {
-            double totalPoints = 0d;
-            User u = stat.getUser();
-            List<MatchPoints> pointsList = points.stream().parallel().filter(p-> p.getUser() != null && p.getUser().equals(u)).collect(Collectors.toList());
-            for (MatchPoints matchPoints : pointsList) {
-                totalPoints += matchPoints.getWeightedAvg();
-            }
-            stat.setPoints(totalPoints);
-         }
-         playerStats.sort(new Comparator<Stat>() {
-             @Override
-             public int compare(Stat o1, Stat o2) {
-                 return o2.getPoints().compareTo(o1.getPoints());
-             }
-         });
-         return playerStats;
-    }
-
-
     @JsonView(PlayerResultSummary.class)
     @RequestMapping(value = "/user/{id}/summary",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.ALL_VALUE)
     public List<Stat> getActiveUserStatsSummary(@PathVariable String id) {
-          return getActiveUserStats(id);
-      }
-
-    @RequestMapping(value = "/user/{id}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.ALL_VALUE)
-    public List<Stat> getActiveUserStats(@PathVariable String id) {
         User u = leagueService.findOne(new User(id));
         final List<Stat> userStats = new ArrayList<>();
         for (Season season : u.getSeasons()) {
@@ -169,7 +72,7 @@ public class StatResource {
         }
         userStats.add(Stat.buildLifeTimeStats(u, userStats));
         return userStats;
-    }
+      }
 
     @JsonView(PlayerResultSummary.class)
     @RequestMapping(value = "/user/{id}/{seasonId}/summary",
@@ -181,42 +84,6 @@ public class StatResource {
         final User u = leagueService.findOne(new User(id));
         return statService.getUserStats(u,s);
      }
-
-    @RequestMapping(value = "/user/{id}/all",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.ALL_VALUE)
-    public List<Stat> getAllUserStats(@PathVariable String id) {
-        User u = leagueService.findOne(new User(id));
-        final List<Stat> userStats = new ArrayList<>();
-        for (Season season : u.getSeasons()) {
-            List<Stat> stats = statService.getUserSeasonStats().get(season).stream().filter(st->st.getUser().equals(u)).collect(Collectors.toList());
-            if (stats.isEmpty()) {
-                Stat s = new Stat();
-                s.setUser(u);
-                s.setSeason(season);
-                userStats.add(s);
-            } else {
-                userStats.addAll(stats);
-            }
-        }
-        Stat tg = userStats.stream()
-                .filter(s->s.getSeason() != null && s.getSeason().isActive())
-                .filter(s->s.getSeason().isChallenge()).findFirst().orElse(null);
-        if (tg != null) {
-            resultService.refresh();
-            List<MatchPoints> points = resultService.matchPoints();
-            double totalPoints = 0d;
-            List<MatchPoints> pointsList = points.stream().parallel().filter(p-> p.getUser() != null && p.getUser().equals(u)).collect(Collectors.toList());
-            for (MatchPoints matchPoints : pointsList) {
-                totalPoints += matchPoints.getWeightedAvg();
-            }
-            tg.setPoints(totalPoints);
-        }
-        userStats.add(Stat.buildLifeTimeStats(u, userStats));
-        userStats.addAll(statService.getLifetimeDivisionStats().stream().filter(s->s.getUser().equals(u)).collect(Collectors.toList()));
-        return userStats;
-    }
 
     //@JsonView()
     @RequestMapping(value = "/team/{seasonId}/summary",
@@ -232,27 +99,4 @@ public class StatResource {
         return teams;
     }
 
-    @RequestMapping(value = "/user/{id}/{seasonId}",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE,
-            consumes = MediaType.ALL_VALUE)
-    public Stat getUserStatsSeason(@PathVariable String id, @PathVariable String seasonId) {
-        User u = leagueService.findOne(new User(id));
-        Season s = leagueService.findOne(new Season(seasonId));
-        List<Stat> stats = statService.getUserSeasonStats().get(s);
-        if (stats == null) {
-             Stat stat =  new Stat();
-            stat.setUser(u);
-            stat.setSeason(s);
-            return stat;
-        }
-        for (Stat stat : stats) {
-            if (stat != null && stat.getUser() != null && stat.getSeason() != null && stat.getUser().equals(u) && stat.getSeason().equals(s))
-                return stat;
-        }
-        Stat stat =  new Stat();
-        stat.setUser(u);
-        stat.setSeason(s);
-        return stat;
-    }
 }

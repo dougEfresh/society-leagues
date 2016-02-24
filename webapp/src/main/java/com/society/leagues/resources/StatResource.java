@@ -18,17 +18,23 @@ public class StatResource  extends BaseController {
     @RequestMapping(value = {"/stats/{userId}"}, method = RequestMethod.GET)
     public String stats(@PathVariable String userId,
                         @RequestParam(required = false , defaultValue = "-1") String seasonId,
-                        @RequestParam(required = false , defaultValue = "bar") String chartType,
+                        @RequestParam(required = false , defaultValue = "-1") String nineId,
+                        @RequestParam(required = false , defaultValue = "-1") String eightId,
                         @RequestParam(required = false , defaultValue = "all") String scrambleType,
                         Model model) {
 
-        model.addAttribute("chartType",chartType);
+        model.addAttribute("chartType","bar");
         model.addAttribute("statUser",userApi.get(userId));
-        model.addAttribute("statSeasons",seasonApi.active().stream().filter(s->!s.isChallenge()).filter(s->!s.isScramble()).collect(Collectors.toList()));
+        model.addAttribute("nineSeason",userApi.get(userId).getSeasons().stream().filter(s->s.getId().equals(nineId)).findAny().orElse(Season.getDefault()));
+        model.addAttribute("eightSeason",userApi.get(userId).getSeasons().stream().filter(s->s.getId().equals(eightId)).findAny().orElse(Season.getDefault()));
+
+        model.addAttribute("statSeasons",seasonApi.active().stream().collect(Collectors.toList()));
         List<Stat> userStats = statApi.getUserStatsSummary(userId);
         model.addAttribute("stats", userStats.stream().filter(s->s.getType() == StatType.USER_SEASON).sorted(Stat.sortSeasonStats()).collect(Collectors.toList()));
         model.addAttribute("scrambleStats",userStats.stream().filter(s->s.getType().isScramble()).collect(Collectors.toList()));
         model.addAttribute("season",seasonId.equals("-1") ? Season.getDefault() : seasonApi.get(seasonId));
+        model.addAttribute("nineSeasons",userApi.get(userId).getSeasons().stream().filter(s->s.isNine()).collect(Collectors.toList()));
+        model.addAttribute("eightSeasons",userApi.get(userId).getSeasons().stream().filter(s->!s.isNine()).collect(Collectors.toList()));
         return "stats/userStats";
     }
 
@@ -39,12 +45,89 @@ public class StatResource  extends BaseController {
         return get(statApi.getUserStatsSummary(userId).stream().filter(s->s.getType().isScramble()).collect(Collectors.toList()));
     }
 
-    @RequestMapping(value = {"/stats/lifetime/handicap/{userId}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public List<StatLifeTime> handicapLifetime(@PathVariable String userId, @RequestParam(required = false, defaultValue = "-1") String seasonId) {
-        Season season = seasonId.equals("-1") ?  Season.getDefault() : seasonApi.get(seasonId);
-        return get(statApi.getUserStatsSummary(userId).stream().filter(s->s.getType().isScramble()).collect(Collectors.toList()));
+    static class StatHandicap {
+        Handicap handicap;
+        int win;
+        int lost;
+
+        public StatHandicap() {
+        }
+
+        public StatHandicap(Handicap handicap) {
+            this.handicap = handicap;
+        }
+
+        public void addWin(int wins) {
+            this.win += wins;
+        }
+
+        public void addLost(int lost) {
+            this.lost += lost;
+        }
+
+        public String getHandicap() {
+            return handicap.getDisplayName();
+        }
+
+        public void setHandicap(Handicap handicap) {
+            this.handicap = handicap;
+        }
+
+        public int getWin() {
+            return win;
+        }
+
+        public void setWins(int wins) {
+            this.win = wins;
+        }
+
+        public int getLost() {
+            return lost;
+        }
+
+        public void setLost(int lost) {
+            this.lost = lost;
+        }
     }
+
+    @RequestMapping(value = {"/stats/lifetime/handicap/nine/{userId}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public List<StatHandicap> handicapLifetimeNine(@PathVariable String userId, @RequestParam(required = false, defaultValue = "-1") String seasonId) {
+        Season season = seasonId.equals("-1") ?  Season.getDefault() : seasonApi.get(seasonId);
+        return getHandicapStats(season,userId,Arrays.asList(Division.NINE_BALL_CHALLENGE, Division.NINE_BALL_TUESDAYS));
+    }
+
+    @RequestMapping(value = {"/stats/lifetime/handicap/eight/{userId}"}, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public List<StatHandicap> handicapLifetimeEight(@PathVariable String userId, @RequestParam(required = false, defaultValue = "-1") String seasonId) {
+        Season season = seasonId.equals("-1") ?  Season.getDefault() : seasonApi.get(seasonId);
+        return getHandicapStats(season,userId,Arrays.asList(Division.EIGHT_BALL_THURSDAYS, Division.EIGHT_BALL_WEDNESDAYS, Division.MIXED_MONDAYS_MIXED));
+     }
+
+    private List<StatHandicap> getHandicapStats(Season season, String userId, List<Division> divisions) {
+        List<Stat> stats = statApi.getUserStatsSummary(userId).stream().filter(s->s.getType() == StatType.HANDICAP)
+                .filter(s-> divisions.contains(s.getSeason().getDivision()))
+                .filter(s->s.getHandicap() != Handicap.UNKNOWN)
+                .filter(s->s.getHandicap() != Handicap.NA)
+                .collect(Collectors.toList());
+        if (!season.equals(Season.getDefault())) {
+            stats = stats.stream().filter(s->s.getSeason().equals(season)).collect(Collectors.toList());
+        }
+        List<StatHandicap> statHandicaps = new ArrayList<>();
+        Map<Handicap,List<Stat>> statSeasons = stats.stream().collect(Collectors.groupingBy(Stat::getHandicap));
+        for (Handicap hc: statSeasons.keySet()) {
+            StatHandicap statHandicap = new StatHandicap(hc);
+            for (Stat stat : statSeasons.get(hc)) {
+                statHandicap.addWin(stat.getWins());
+                statHandicap.addLost(stat.getLoses());
+            }
+            statHandicaps.add(statHandicap);
+        }
+        statHandicaps.sort(sortHandicap);
+        return statHandicaps;
+    }
+
+    final static Comparator<StatHandicap> sortHandicap = (o1, o2) -> new Integer(o2.handicap.ordinal()).compareTo(o1.handicap.ordinal());
 
     private List<StatLifeTime> get(List<Stat> stats) {
         List<StatLifeTime> lifeTimes = Lists.newArrayListWithCapacity(stats.size());
@@ -78,7 +161,7 @@ public class StatResource  extends BaseController {
                     .filter(s -> !s.getSeason().isChallenge())
                     .filter(s -> s.getSeason().getsDate() != null)
                     .filter(s -> s.getSeason().getsDate().isBefore(now))
-                    .filter(s -> !s.getSeason().isActive())
+                    //.filter(s -> !s.getSeason().isActive())
                     .sorted((o1, o2) -> o1.getSeason().getsDate().compareTo(o2.getSeason().getsDate()))
                    .collect(Collectors.groupingBy(Stat::getStatSeason));
             for (StatSeason ss : userStats.keySet()) {
@@ -100,14 +183,14 @@ public class StatResource  extends BaseController {
                     .filter(s -> s.getSeason().getsDate() != null)
                     .filter(s -> s.getSeason().getsDate().isBefore(now))
                     .filter(s-> s.getSeason().getDay().equals(season.getDay()))
-                    .filter(s -> !s.getSeason().isActive())
+                    //.filter(s -> !s.getSeason().isActive())
                     .sorted((o1, o2) -> o1.getSeason().getsDate().compareTo(o2.getSeason().getsDate()))
                     .collect(Collectors.toList()));
     }
 
     @RequestMapping(value = {"/stats"}, method = RequestMethod.GET)
     public String home(Model model) {
-        return "redirect:/app/stats/" + user.getId();
+        return "redirect:/app/stats/" + userApi.get().getId();
     }
 
     public static class StatLifeTime {

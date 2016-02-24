@@ -21,7 +21,7 @@
                 <td th:text="${stat.getRank()}"></td>
                 <td>
                     <img class="avatar img-responsive"  th:src="${stat.getUser().getAvatarUrl()}"/>
-                    <a th:id="'team-standing-link-' + ${stat.getTeam().getId()}"
+                    <a th:id="'team-standing-link-' + ${stat.getUser().getId()}"
                        th:href="@{/app/display/{id}/user/{userId} (id=${stat.getSeason().getId()},userId=${stat.getUser().getId()})}">
                         <span th:text="${stat.getUser().getName()}"></span>
                     </a>

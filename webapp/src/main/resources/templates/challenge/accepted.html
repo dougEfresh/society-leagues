@@ -25,7 +25,7 @@
                     </td>
                     <td  th:if="${challenge.getUserChallenger().equals(user)}" class="challenge-name">
                         <img  th:fragments="avatarUser" class="avatar img-responsive"  th:src="${challenge.getUserOpponent().getAvatarUrl()}"/>
-                        <a th:href="@{/app/display/{seasonId}/user/{id} (id=${challenge.getUserOpponent.getId()},seasonId=${season.getId()})}">
+                        <a th:href="@{/app/display/{seasonId}/user/{id} (id=${challenge.getUserOpponent().getId()},seasonId=${season.getId()})}">
                         <span th:text="${challenge.getUserOpponent().getName()}"></span>
                     </td>
                     <td class="challenge-race">

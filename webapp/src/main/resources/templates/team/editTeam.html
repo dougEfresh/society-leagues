@@ -63,6 +63,11 @@
             <br/>
             <input id="submit" type="submit" class="btn btn-sm btn-primary btn-responsive"/>
         </div>
+
+        <div class="col-sm-offset-2 col-sm-10">
+            <br/>
+            <a th:href="@{/app/team/delete/{id}(id=${team.id})}"><span class="btn btn-sm btn-responsive btn-danger">Delete</span></a>
+        </div>
     </form>
     </div>
 </div>

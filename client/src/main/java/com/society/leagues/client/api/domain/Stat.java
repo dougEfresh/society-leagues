@@ -286,6 +286,20 @@ public class Stat {
             }
         };
     }
+     public static Comparator<Stat> sortUserStats() {
+        return new Comparator<Stat>() {
+            @Override
+            public int compare(Stat o1, Stat o2) {
+                if (o1.getSeason().isChallenge())
+                    return  o2.getPoints().compareTo(o1.getPoints());
+
+                if (o1.getSeason().isNine())
+                    return o2.getRackPct().compareTo(o1.getRackPct());
+
+                return o2.getWinPct().compareTo(o1.getWinPct());
+            }
+        };
+    }
 
     public static List<Team> sortTeamStats(List<Team> stats) {
         stats.sort(new Comparator<Team>() {

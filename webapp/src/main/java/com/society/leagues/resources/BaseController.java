@@ -30,11 +30,7 @@ public class BaseController {
     @Autowired UserApi userApi;
     @Autowired StatApi statApi;
 
-    User user;
     Season adminSeason;
-    List<Team> userTeams;
-    Set<TeamMatch> userMatches =  new TreeSet<>(TeamMatch.sortAcc());
-    List<Stat> userStats;
     @Autowired Environment environment;
     boolean dev = true;
 
@@ -47,13 +43,8 @@ public class BaseController {
     @ModelAttribute
     public void setModels(Model model, HttpServletRequest request, ResponseFacade response) {
         model.addAttribute("tracking",dev);
-        user = userApi.get();
-        userTeams = teamApi.userTeams(user.getId());
-        userTeams.parallelStream().forEach(tm->userMatches.addAll(teamMatchApi.getTeamMatchByTeam(tm.getId())));
-        userStats = statApi.getUserStatsSummary(user.getId());
-        for (Stat userStat : userStats.stream().filter(u->u.getSeason() != null).collect(Collectors.toList())) {
-            userStat.setSeason(user.getSeasons().parallelStream().filter(s->s.equals(userStat.getSeason())).findFirst().get());
-        }
+        User user = userApi.get();
+
         List<Season> seasons = seasonApi.get();
         RequestFacade requestFacade = (RequestFacade) request;
         adminSeason = seasons.stream().sorted(Season.sortOrder).findFirst().get();
@@ -66,17 +57,10 @@ public class BaseController {
         model.addAttribute("allSeasons",seasons);
         model.addAttribute("challengeSeason",seasons.stream().filter(Season::isChallenge).findFirst().orElse(null));
         model.addAttribute("user", user);
-        model.addAttribute("userTeams", userTeams);
-        model.addAttribute("userStats", userStats);
+        model.addAttribute("userTeams", teamApi.userTeams(user.getId()));
+        model.addAttribute("userStats", statApi.getUserStatsSummary(user.getId()));
         model.addAttribute("allUsers", userApi.all().parallelStream().filter(User::isReal).collect(Collectors.toList()));
         model.addAttribute("activeUsers", userApi.all().parallelStream().filter(User::isReal).filter(u->u.getSeasons().stream().filter(Season::isActive).count() > 0).collect(Collectors.toList()));
         model.addAttribute("adminSeason",adminSeason);
-        /**
-         * Cache the users schedule and season stats
-         */
-        for (Season season : user.getSeasons().stream().filter(Season::isActive).collect(Collectors.toList())) {
-            teamMatchApi.matchesBySeasonList(season.getId());
-            statApi.teamSeasonStats(season.getId());
-        }
     }
 }

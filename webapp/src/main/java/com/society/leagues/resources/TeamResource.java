@@ -59,6 +59,13 @@ public class TeamResource extends BaseController {
         return "team/editTeam";
     }
 
+    @RequestMapping(value = {"/team/delete/{id}"}, method = RequestMethod.GET)
+    public String delete(@PathVariable String id , Model model) {
+        Team t = teamApi.get(id);
+        teamApi.delete(id);
+        return "redirect:/app/team/season/" + t.getSeason().getId();
+    }
+
     @RequestMapping(value = {"/team/{id}"}, method = RequestMethod.POST)
     public String save(@PathVariable String id, @ModelAttribute("team") TeamModel teamModel, Model model, HttpServletResponse response) {
         if (id.equals("new"))

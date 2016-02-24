@@ -57,7 +57,6 @@ public enum Handicap {
     public static boolean isNine(Handicap hc) {
         return hc.ordinal() >= 10;
     }
-
     public static Handicap get(String hc) {
         if (hc == null) {
             return Handicap.UNKNOWN;

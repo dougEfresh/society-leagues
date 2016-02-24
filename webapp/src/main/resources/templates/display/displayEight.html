@@ -23,7 +23,7 @@
             <td th:text="${t.getStats().getRank()}"></td>
             <td class="schedule-link">
                 <a th:id="'team-schedule-link-' + ${t.getId()}"
-                       th:href="@{/app/schedule/{id} (id=${t.getSeason().getId()},teamId=${t.getId()})}">
+                       th:href="@{/app/schedule/team/{id} (id=${t.getId()})}">
                    <i class="fa fa-calendar fa-fw"></i>
                 </a>
             </td>

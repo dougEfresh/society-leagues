@@ -131,27 +131,28 @@ public class LoginResource  {
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         HttpEntity<?> httpEntity = new HttpEntity<Object>(body, headers);
 
-        ResponseEntity<User> responseEntity = restTemplate.exchange(restUrl + "/api/authenticate", HttpMethod.POST, httpEntity, User.class);
-        User u = responseEntity.getBody();
-        headers.clear();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        String cookie = "";
-        for (String s : responseEntity.getHeaders().get("Set-Cookie")) {
-            logger.info("Adding cookie: " + s);
-            cookie += s.split(";")[0] +  " ; ";
-            headers.set("Cookie",s);
-            response.addHeader("Set-Cookie",s);
-            logger.info("Setting cookie: " + s);
-        }
-        logger.info("Got back "  + u.getName());
-        Thread.sleep(100);
-        headers.set("Cookie",cookie.substring(0,cookie.length()-1));
-        httpEntity = new HttpEntity<>(headers);
         try {
+            ResponseEntity<User> responseEntity = restTemplate.exchange(restUrl + "/api/authenticate", HttpMethod.POST, httpEntity, User.class);
+            User u = responseEntity.getBody();
+            headers.clear();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            String cookie = "";
+            for (String s : responseEntity.getHeaders().get("Set-Cookie")) {
+                logger.info("Adding cookie: " + s);
+                cookie += s.split(";")[0] + " ; ";
+                headers.set("Cookie", s);
+                response.addHeader("Set-Cookie", s);
+                logger.info("Setting cookie: " + s);
+            }
+            logger.info("Got back " + u.getName());
+            Thread.sleep(100);
+            headers.set("Cookie", cookie.substring(0, cookie.length() - 1));
+            httpEntity = new HttpEntity<>(headers);
             responseEntity = restTemplate.exchange(restUrl + "/api/user", HttpMethod.GET, httpEntity, User.class);
-        } catch (Exception e){
-            return "redirect:/app/login?error=failed";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error logging in. Please try again");
+            return "login";
         }
         //for (String s : responseEntity.getHeaders().get("Set-Cookie")) {
           //  logger.info("cookie: " + s);

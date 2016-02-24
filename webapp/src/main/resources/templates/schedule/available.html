@@ -1,0 +1,33 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org">
+
+        <div class="society-well">
+            <div class="table-responsive">
+                <table class="table table-stats">
+                    <thead>
+                    <tr>
+                        <th>Player</th>
+                        <th>Count</th>
+                        <th>Dates</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="u : ${playerCount}">
+                        <td class="name" style="max-width: 80px">
+                            <span th:text="${u.getFirstName()}"></span>
+                        </td>
+                        <td>
+                            <span  style="max-width: 40px; width: 40px;" th:text="${u.getCount()}"></span>
+                        </td>
+                        <td>
+                            <a th:each="dt: ${u.getMatchDates()}" th:href="${'#' + dt.toString()}">
+                            <span  th:class="${u.isPlaying(dt) ? 'label label-success' : 'label label-default'}" style="font-size: 14px; margin: 6px"  th:text="${#temporals.format(dt,'MM/dd')}">
+                            </span>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>

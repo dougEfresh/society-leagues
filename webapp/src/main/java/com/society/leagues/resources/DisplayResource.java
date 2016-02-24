@@ -58,13 +58,8 @@ public class DisplayResource extends BaseController {
         int totalWins = 0;
         int totalLost = 0;
         if (teamId != null) {
-            List<Stat> stats = statApi.getTeamMemberStats(teamId);
-            stats.sort(new Comparator<Stat>() {
-                @Override
-                public int compare(Stat o1, Stat o2) {
-                    return o1.getRank().compareTo(o2.getRank());
-                }
-            });
+            List<Stat> stats = statApi.getTeamMemberStats(teamId).stream().filter(st->st.getType() == StatType.USER_SEASON).collect(Collectors.toList());
+            stats.sort(Stat.sortUserStats());
             model.addAttribute("displayMemberStats", stats);
             //List<Stat> stats = statApi.getTeamMemberStats(teamId).stream().filter(st->st.getUser().isReal()).collect(Collectors.toList());
             if (s.isScramble()) {
@@ -137,7 +132,7 @@ public class DisplayResource extends BaseController {
                     .filter(st -> st.getType() == StatType.USER_SEASON)
                     .findFirst().orElse(new Stat()));
         } else {
-            model.addAttribute("displayUser",user);
+            model.addAttribute("displayUser",userApi.get());
         }
 
         return "display/display";

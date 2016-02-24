@@ -6,9 +6,7 @@ import org.junit.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -137,6 +135,44 @@ public class TestTeamMatch extends BaseTest {
     public void testChallenge() {
         Season season = seasonApi.active().stream().filter(Season::isChallenge).findAny().get();
         TeamMatch tm = validate(season);
+    }
+
+    @Test
+    public void testTeamMatchAvailable() {
+        Season season = seasonApi.active().stream().filter(s->!s.isChallenge()).findAny().get();
+        TeamMatch tm = seasonApi.schedule(season.getId()).get(0);
+        tm.getHome().setMembers(teamApi.members(tm.getHome().getId()));
+        tm.getAway().setMembers(teamApi.members(tm.getAway().getId()));
+        Iterator<User> iterator = tm.getHome().getMembers().getMembers().iterator();
+
+        tm.addHomeNotAvailable(iterator.next().getId());
+        tm.addHomeNotAvailable(iterator.next().getId());
+        Set<String> notAvailable = tm.getHomeNotAvailable();
+
+        TeamMatch newTeamMatch = teamMatchApi.modifyAvailable(tm);
+        assertTrue(notAvailable.containsAll(newTeamMatch.getHomeNotAvailable()));
+        assertTrue(newTeamMatch.getAwayNotAvailable().isEmpty());
+        for (String s : notAvailable) {
+            assertFalse(newTeamMatch.homeAvailable().contains(new User(s)));
+            assertTrue(newTeamMatch.homeNotAvailable().contains(new User(s)));
+        }
+
+        tm = newTeamMatch;
+
+        iterator = tm.getAway().getMembers().getMembers().iterator();
+        tm.addAwayNotAvailable(iterator.next().getId());
+        tm.addAwayNotAvailable(iterator.next().getId());
+        notAvailable = tm.getAwayNotAvailable();
+
+        newTeamMatch = teamMatchApi.modifyAvailable(tm);
+        assertTrue(notAvailable.containsAll(newTeamMatch.getAwayNotAvailable()));
+
+        for (String s : notAvailable) {
+            assertFalse(newTeamMatch.awayAvailable().contains(new User(s)));
+            assertTrue(newTeamMatch.awayNotAvailable().contains(new User(s)));
+        }
+
+        seasonApi.deleteSchedule(season.getId());
     }
 
 }

@@ -5,9 +5,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ReflectionUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class MatchModel extends TeamMatch {
     static Logger logger = LoggerFactory.getLogger(MatchModel.class);
     List<PlayerResult> playerResults = new ArrayList<>();
@@ -32,6 +37,43 @@ public class MatchModel extends TeamMatch {
         return getHome().equals(t) ? getAwayCumulativeHC() : getHomeCumulativeHC();
     }
 
+    public List<User> getAvailable(Team team) {
+        if (getHome().equals(team)) {
+            return homeAvailable();
+        }
+        return awayAvailable();
+    }
+
+    public List<User> getNotAvailable(Team team) {
+        if (getHome().equals(team)) {
+            return homeNotAvailable();
+        }
+        return awayNotAvailable();
+    }
+
+    final static Comparator<User> sort = (o1, o2) -> o1.getFirstName().compareTo(o2.getFirstName());
+
+    public List<User> getMembers(Team team) {
+        return getHome().equals(team) ? getHome().getMembers().getMembers().stream().sorted(sort).collect(Collectors.toList())
+                : getAway().getMembers().getMembers().stream().sorted(sort).collect(Collectors.toList());
+    }
+
+    public boolean isAvailable(User user) {
+        if (getPlayerResults().isEmpty())
+            return awayAvailable().contains(user) || homeAvailable().contains(user);
+
+        return getPlayerResults().stream().filter(p->p.hasUser(user)).count() > 0;
+    }
+
+    public boolean isPlayedOrAvailable(User user) {
+        if (getPlayerResults().stream().filter(pr->pr.hasUser(user)).count() > 0)
+            return true;
+
+        if (getMatchDate().isBefore(LocalDateTime.now().minusDays(1)))
+            return false;
+
+        return isAvailable(user);
+    }
 
     @Override
     public Integer getWinnerRacks() {
@@ -66,27 +108,6 @@ public class MatchModel extends TeamMatch {
             return 0;
 
         return 0;
-        /*
-        HashSet<Player> handicaps = new HashSet<>();
-        playerResults.stream().forEach(p->handicaps.add(new Player(p.getPlayerHome().getId(),p.getPlayerHomeHandicap())));
-        List<Player> players = new ArrayList<>();
-        handicaps.stream().sorted(new Comparator<Player>() {
-            @Override
-            public int compare(Player o1, Player o2) {
-                return new Integer(o2.handicap.ordinal()).compareTo(new Integer(o1.handicap.ordinal()));
-            }
-        }).limit(4).forEach(players::add);
-
-        if (players.size() < 4) {
-            logger.error(String.format("Found less than 4 players %s %s",getSeason().getId(), getId()));
-        }
-        int hc = 0;
-        for (Player player : players) {
-            hc += new Integer(player.handicap.getDisplayName());
-        }
-
-        return hc;
-        */
     }
 
     public int getAwayCumulativeHC() {
@@ -94,28 +115,7 @@ public class MatchModel extends TeamMatch {
             return 0;
 
         return 0;
-        /*
 
-        HashSet<Player> handicaps = new HashSet<>();
-
-        playerResults.stream().forEach(p->handicaps.add(new Player(p.getPlayerAway().getId(),p.getPlayerAwayHandicap())));
-        List<Player> players = new ArrayList<>();
-        handicaps.stream().sorted(new Comparator<Player>() {
-            @Override
-            public int compare(Player o1, Player o2) {
-                return new Integer(o2.handicap.ordinal()).compareTo(new Integer(o1.handicap.ordinal()));
-            }
-        }).limit(4).forEach(players::add);
-
-        if (players.size() < 4) {
-            logger.error(String.format("Found less than 4 players %s %s",getSeason().getId(), getId()));
-        }
-        int hc = 0;
-        for (Player player : players) {
-            hc += new Integer(player.handicap.getDisplayName());
-        }
-        return hc;
-        */
     }
 
     public boolean isWin(Team team) {
@@ -123,7 +123,7 @@ public class MatchModel extends TeamMatch {
     }
 
     public boolean hasPlayerResults() {
-        return playerResults.stream().filter(p->p.hasResults()).count() > 0;
+        return playerResults.stream().filter(PlayerResult::hasResults).count() > 0;
     }
 
     static class Player {

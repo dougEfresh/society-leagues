@@ -86,7 +86,7 @@ function changeChallengeUser(e) {
 
 function selectTeam(e) {
     var id = $('#teams-select').val();
-    window.location = window.location.pathname + '?teamId=' + id;
+    window.location = '/app/schedule/team/' + id;
 }
 
 function searchUserStats(e) {
@@ -100,13 +100,12 @@ function lifeTimeStats(v) {
 
  $(document).ready(function() {
 
-
      $('#team-members').selectize({
          persist: false,
          plugins: ['remove_button'],
          maxItems: 8
 });
-       $('#challenge-slots').selectize({
+     $('#challenge-slots').selectize({
          persist: false,
            plugins: ['remove_button'],
          maxItems: 8
@@ -124,6 +123,93 @@ function lifeTimeStats(v) {
          maxItems: 8
        });
 
+
+
+     var available = $('.users-available');
+     var availableSelectize = [];
+     var notAvailableSelectize = [];
+     for (var i = 0; i< available.length ; i++ ) {
+         var id = available[i].id;
+         if (!id) {
+             continue
+         }
+
+         var a = $('#' + id ).selectize({
+             persist: false,
+             plugins: ['remove_button'],
+             maxItems: 12,
+             index: i,
+             id: id,
+             onChange: function(v) {
+                 var notIdSelect= '#'+ this.settings.id.replace('users-available','users-not-available-select');
+                 var notId = '#'+ this.settings.id.replace('users-available','users-not-available');
+                 this.items.forEach(function(item){
+                     $(notIdSelect+ '  option[value="' + item + '"]').prop('selected',false);
+                 }.bind(this));
+
+                 var options = $(notIdSelect+ ' option');
+                 var txt = "";
+                 for (var j = 0; j < options.length; j++ ) {
+                     var o = options[j];
+                     var available = false;
+                     this.items.forEach(function(item){
+                         if (item == o.value) {
+                             available = true;
+                         }
+                     }.bind(this));
+                     if (!available) {
+                         txt += '<div data-value="' + o.value + '" style="cursor: none" class="item no-cursor" >' +  o.innerHTML + '</div>';
+                     }
+                 }
+                 $(notId).html(txt);
+
+                 //console.log($('#'+ this.settings.id.replace('users-available','users-not-available') + '  option[value="' + v + '"]')
+                 //console.log(notAvailableSelectize[this.settings.index].getOption(v));
+                 //console.log(notAvailableSelectize[this.settings.index].getOption(v));
+                 //notAvailableSelectize[this.settings.index].addItem(v,true);
+                 //console.log(notAvailableSelectize[this.settings.index]);
+             }
+         });
+
+         availableSelectize.push(a[0].selectize);
+         /*
+         notAvailableSelectize.push($('#' + id.replace('users-available','users-not-available')).selectize({
+             persist: false,
+             plugins: ['remove_button'],
+             maxItems: 12,
+             index: i,
+             onChange: function(v) {
+                 console.log(availableSelectize[this.settings.index].getOption(v));
+
+             }
+         })[0].selectize);
+         */
+
+     }
+     notAvailableSelectize.forEach(function(a){
+//         a.disable();
+     });
+     /*
+     $('.users-available').selectize({
+         persist: false,
+         plugins: ['remove_button'],
+         maxItems: 12,
+         other: {id: "asdas"},
+         onChange: function(v) {
+             console.log(this);
+         }
+     });
+     $('.users-not-available').selectize({
+         persist: false,
+         plugins: ['remove_button'],
+         maxItems: 12,
+         onChange: function(v) {
+             console.log(this.id);
+         }
+//         sortField: 'text'
+     });
+      */
+
      $('#users-search').selectize({
          persist: false,
          maxItems: 1,
@@ -140,6 +226,7 @@ function lifeTimeStats(v) {
      $('#users-stats-search').selectize({
          persist: false,
          maxItems: 1,
+         plugins: ['remove_button'],
          onChange: function(v) {  if (v != null && v != undefined && v.length > 0 ) window.location = '/app/stats/' + v;}
         });
 
@@ -217,7 +304,10 @@ function lifeTimeStats(v) {
               perPageDefault: 10
          }
      });
+
+     /*
      $('#table-team-schedule').dynatable( {
+
      dataset: {
                perPageDefault: 20,
                perPageOptions: [10,20,50,100]
@@ -230,7 +320,7 @@ function lifeTimeStats(v) {
            }
 
            });
-
+      */
   $('#table-season').dynatable( {
      dataset: {
                perPageDefault: 5,

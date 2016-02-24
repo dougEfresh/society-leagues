@@ -25,6 +25,7 @@ public class HomeResource extends BaseController {
     @RequestMapping(value = {"/home", "","/"}, method = RequestMethod.GET)
     public String home(Model model, HttpServletResponse response) throws IOException {
         Map<Season,List<Stat>> topPlayers = new TreeMap<>(Season.sortOrder);
+        User user = userApi.get();
         user.getSeasons().stream()
                 .filter(Season::isActive)
                 .collect(Collectors.toList())
@@ -38,17 +39,23 @@ public class HomeResource extends BaseController {
         );
         model.addAttribute("topPlayers",topPlayers);
         LocalDateTime yesterday  = LocalDate.now().minusDays(1).atStartOfDay();
-        List<MatchModel> modelList = MatchModel.fromTeam(
-                userMatches.stream()
-                        .filter(t->t.getMatchDate().isAfter(yesterday))
-                        .sorted(TeamMatch.sortAcc())
-                        .limit(3).collect(Collectors.toList()));
+        List<Team> userTeams = teamApi.userTeams(user.getId());
+
+        List<MatchModel> modelList = new ArrayList<>();
+        for (Team userTeam : userTeams) {
+            modelList.addAll(MatchModel.fromTeam(
+                    teamMatchApi.getTeamMatchByTeam(userTeam.getId()).stream()
+                    .filter(t->t.getMatchDate().isAfter(yesterday))
+                    .sorted(TeamMatch.sortAcc())
+                    .limit(3).collect(Collectors.toList())));
+
+        }
         for (MatchModel matchModel : modelList) {
             matchModel.getHome().setMembers(teamApi.members(matchModel.getHome().getId()));
             matchModel.getAway().setMembers(teamApi.members(matchModel.getAway().getId()));
         }
         model.addAttribute("upcomingMatches", modelList);
-        model.addAttribute("userStats",userStats.stream()
+        model.addAttribute("userStats",statApi.getUserStatsSummary(user.getId()).stream()
                 .filter(s->s.getType() == StatType.USER_SEASON)
                 .filter(s->s.getSeason().isActive())
                 .collect(Collectors.toList()));
