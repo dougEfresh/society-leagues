@@ -46,8 +46,32 @@ public class TestPlayerResult  extends BaseTest {
                     validatePlayer(playerResult.getPlayerAwayHandicapPartner());
                 }
             }
+            seasonApi.deleteSchedule(season.getId());
+        }
+
+    }
+
+    @Test
+    public void testMatchPoints() {
+        List<Season> seasons = seasonApi.active().stream().filter(Season::isNine).collect(Collectors.toList());
+        for (Season season : seasons) {
+            seasonApi.schedule(season.getId());
+            TeamMatch tm = teamMatchApi.matchesBySeasonSummary(season.getId()).values().iterator().next().stream().findAny().get();
+            List<PlayerResult> playerResults = playerResultApi.add(tm.getId());
+            for (PlayerResult playerResult : playerResults) {
+                playerResult.setHomeRacks(5);
+                playerResult.setAwayRacks(7);
+            }
+            playerResults = playerResultApi.save(playerResults);
+            for (PlayerResult playerResult : playerResults) {
+                Stat stats = statApi.getUserSeasonStats(playerResult.getPlayerHome().getId(),season.getId()).stream().filter(s->s.getType() == StatType.USER_SEASON).findFirst().get();
+                assertTrue(stats.getPoints() > 0);
+            }
+
+            seasonApi.deleteSchedule(season.getId());
         }
     }
+
 
     private void validatePlayer(Handicap handicap){
         assertNotNull(handicap);

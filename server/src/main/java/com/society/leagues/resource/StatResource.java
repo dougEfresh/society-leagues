@@ -93,6 +93,7 @@ public class StatResource {
     public List<Team> getTeamStatsSeason(@PathVariable String seasonId) {
         Season s = leagueService.findOne(new Season(seasonId));
         List<Team> teams = leagueService.findAll(Team.class).parallelStream().filter(t->t.getSeason().equals(s)).collect(Collectors.toList());
+        resultService.refresh();
         for (Team team : teams) {
             statService.refreshTeamStats(team);
         }
