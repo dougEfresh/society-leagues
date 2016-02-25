@@ -1,3 +1,194 @@
+th a, th a:visited , th a:active, th a:hover {
+    color: #fff;
+}
+
+.racks, .racks > input {
+    width: 65px;
+    min-width: 65px;
+}
+.date, .date > input {
+    width: 85px;
+    min-width: 65px;
+}
+
+.name > select {
+    width: 180px;
+    min-width: 180px;
+}
+
+.delete, .delete > a {
+    width: 55px;
+    min-width: 55px;
+}
+
+.results, .results > a {
+    width: 85px;
+    min-width: 85px;
+}
+
+
+.odd {
+    border-color: black;
+    background-color: #6B6565;
+}
+
+
+.table-stats {
+    margin-bottom: 15px;
+}
+
+#team-app {
+    max-width: 600px;
+    margin-top: 10px;
+}
+
+#user-app {
+    max-width: 700px;
+    margin-top: 10px;
+}
+
+#table-users-teams {
+    max-width: 450px;
+}
+
+.ck-button {
+    margin:4px;
+    background-color:#EFEFEF;
+    border-radius:4px;
+    border:1px solid #D0D0D0;
+    overflow:auto;
+    float:left;
+    color: black;
+}
+
+.ck-button:hover {
+    background: rgb(51, 122, 183);
+    color: #ffffff;
+}
+
+.ck-button label {
+    float:left;
+    width:4.0em;
+}
+
+.ck-button label span {
+    text-align:center;
+    padding:3px 0px;
+    display:block;
+}
+
+.ck-button label input {
+    position:absolute;
+    top:-20px;
+}
+
+.ck-button input:checked + span {
+    background-color: green;
+    color:#fff;
+}
+
+#admin-app {
+    /*max-width: 500px;*/
+}
+
+.form-season {
+    max-width: 550px;
+     border: 1px solid black;
+    padding: 8px;
+    margin: 10px;
+}
+
+.onoffswitch {
+    position: relative; width: 67px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.onoffswitch-checkbox {
+    display: none;
+}
+.onoffswitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 2px solid #999999; border-radius: 20px;
+}
+.onoffswitch-inner {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+    display: block; float: left; width: 50%; height: 27px; padding: 0; line-height: 27px;
+    font-size: 12px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+.onoffswitch-inner:before {
+    content: "ON";
+    padding-left: 9px;
+    background-color: #34A7C1; color: #FFFFFF;
+}
+.onoffswitch-inner:after {
+    content: "OFF";
+    padding-right: 9px;
+    background-color: #EEEEEE; color: #999999;
+    text-align: right;
+}
+.onoffswitch-switch {
+    display: block; width: 14px; margin: 6.5px;
+    background: #FFFFFF;
+    position: absolute; top: 0; bottom: 0;
+    right: 36px;
+    border: 2px solid #999999; border-radius: 20px;
+    transition: all 0.3s ease-in 0s;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0px;
+}
+
+
+
+#team-match-results > tbody >tr > td.date > input,
+#team-match-results > tbody >tr > td.match-date > input,
+#team-match-results > tbody >tr > td.match-time > input,
+#team-match-results > tbody >tr > td.name > select,
+#team-match-results > tbody >tr > td.racks > input,
+#table-player-results-admin > tbody >tr > td.date > input,
+#table-player-results-admin > tbody >tr > td.name > select,
+#table-player-results-admin > tbody >tr > td.match-number > input,
+#table-player-results-admin > tbody >tr > td.racks > input
+{
+    background-color: black;
+    color: white;
+}
+
+#team-match-results {
+
+}
+
+#table-player-results-admin  > tbody >tr > td.match-number,
+#team-match-results > tbody >tr > td.match-date ,
+#team-match-results > tbody >tr > td.match-time
+{
+    max-width: 110px;
+    width: 110px;
+}
+#table-player-results-admin  > tbody >tr > td.match-number > input,
+#team-match-results > tbody >tr > td.match-date > input,
+#team-match-results > tbody >tr > td.match-time > input
+{
+    max-width: 100px;
+    width: 100px;
+}
+
+#team-match-results > tbody >tr > td.name,  #table-player-results-admin > tbody >tr > td.name {
+    max-width: 220px;
+    width: 220px;
+}
+
+.table>tbody>tr>td.active {
+    background-color: #6B6565;
+}
+
+
 #page-wrapper {
        background: url('/app/img/break2.jpg') no-repeat center center fixed;
        -webkit-background-size: cover;
@@ -95,6 +286,11 @@ body.login {
 }
 
 .society-well-leaders {
+    max-width: 650px;
+}
+
+
+.society-well-team-schedule {
     max-width: 650px;
 }
 
@@ -440,5 +636,9 @@ tr.warning-available {
 }
 
 span.not-available {
+    background-color: black;
+}
+
+td.match-time select {
     background-color: black;
 }

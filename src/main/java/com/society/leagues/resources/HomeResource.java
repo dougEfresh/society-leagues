@@ -26,17 +26,31 @@ public class HomeResource extends BaseController {
     public String home(Model model, HttpServletResponse response) throws IOException {
         Map<Season,List<Stat>> topPlayers = new TreeMap<>(Season.sortOrder);
         User user = getUser(model);
-        user.getSeasons().stream()
-                .filter(Season::isActive)
-                .collect(Collectors.toList())
-                .forEach(s-> topPlayers.put(s,
-                        statApi.getUserSeasonStats(s.getId())
-                                .stream()
-                                .filter(st->st.getType() == StatType.USER_SEASON)
-                                .sorted(Stat.sortSeasonStats())
-                                .limit(5)
-                                .collect(Collectors.toList()))
-        );
+        if (user.isAdmin()) {
+            seasonApi.active().stream()
+                    .filter(Season::isActive)
+                    .collect(Collectors.toList())
+                    .forEach(s -> topPlayers.put(s,
+                            statApi.getUserSeasonStats(s.getId())
+                                    .stream()
+                                    .filter(st -> st.getType() == StatType.USER_SEASON)
+                                    .sorted(Stat.sortSeasonStats())
+                                    .limit(5)
+                                    .collect(Collectors.toList()))
+                    );
+        } else {
+               user.getSeasons().stream()
+                    .filter(Season::isActive)
+                    .collect(Collectors.toList())
+                    .forEach(s -> topPlayers.put(s,
+                            statApi.getUserSeasonStats(s.getId())
+                                    .stream()
+                                    .filter(st -> st.getType() == StatType.USER_SEASON)
+                                    .sorted(Stat.sortSeasonStats())
+                                    .limit(5)
+                                    .collect(Collectors.toList()))
+                    );
+        }
         model.addAttribute("topPlayers",topPlayers);
         LocalDateTime yesterday  = LocalDate.now().minusDays(1).atStartOfDay();
         List<Team> userTeams = teamApi.userTeams(user.getId());

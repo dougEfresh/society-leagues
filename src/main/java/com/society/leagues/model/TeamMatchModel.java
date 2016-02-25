@@ -29,7 +29,6 @@ public class TeamMatchModel {
     }
 
     public List<TeamMatch> getMatches() {
-
         return matches;
     }
 

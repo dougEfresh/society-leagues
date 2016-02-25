@@ -11,7 +11,7 @@
       <div id="upcoming-matches" th:if="${upcomingMatches ne null}" class="society-well">
           <div class="well-title">
               <h4>
-                  <i class="fa fa-bell fa-fw"></i> <span>sssssUpcoming Matches</span>
+                  <i class="fa fa-bell fa-fw"></i> <span>Upcoming Matches</span>
               </h4>
           </div>
            <div class="table-responsive">
@@ -31,8 +31,7 @@
                    <td class="short-date">
                        <a th:href="@{/schedule/{seasonId} (seasonId=${match.getSeason().getId()})}">
                            <!--<span th:text="${#temporals.format(match.getMatchDate(), 'MMM dd H:mm')}" class="badge badge-date"></span>-->
-                           <span th:if="${match.getSeason().isChallenge()}" th:text="${#temporals.format(match.getMatchDate(), 'MMM dd h:mm')}" ></span>
-                           <span th:if="${!match.getSeason().isChallenge()}" th:text="${#temporals.format(match.getMatchDate(), 'MMM dd')}" ></span>
+                           <span th:text="${#temporals.format(match.getDefaultMatchDate(), 'MMM dd h:mm')}" ></span>
                        </a>
                    </td>
                </tr>
@@ -74,7 +73,7 @@
                    <td class="handicap">
                        <span th:text="${stat.getHandicap().getDisplayName()}"  href="#"></span>
                    </td>
-                   <td th:if="${season.isChallenge()}"   th:text="${#numbers.formatDecimal(stat.getPoints(),1,3)}"></td>
+                   <td th:if="${season.isChallenge()}"  th:text="${#numbers.formatDecimal(stat.getPoints(),1,3)}"></td>
                    <td th:if="${!season.isChallenge()}" th:text="${stat.getPoints().intValue()}"></td>
                    <td class="wins">
                        <span  th:text="${stat.getWins()}" href="#"></span>
@@ -83,7 +82,8 @@
                        <span  th:text="${stat.getLoses()}" href="#"></span>
                    </td>
                    <td class="pct">
-                       <span th:text="${'% ' +  #numbers.formatDecimal(stat.getWinPct()*100,0,2)}"></span>
+                       <span th:if="${season.isNine()}" th:text="${'% ' +  #numbers.formatDecimal(stat.getRackPct()*100,0,2)}"></span>
+                       <span th:if="${!season.isNine()}" th:text="${'% ' +  #numbers.formatDecimal(stat.getWinPct()*100,0,2)}"></span>
                    </td>
                </tr>
                </tbody>

@@ -76,6 +76,5 @@ public class ErrorResource  {
         }
         logger.error(exception.getMessage(),exception);
         return "error";
-
     }
 }

@@ -6,6 +6,7 @@
         <thead>
         <tr>
             <th>Player</th>
+            <th></th>
             <th>HC</th>
             <th>8 W</th>
             <th>8 L</th>
@@ -22,6 +23,11 @@
                 <img  th:fragments="avatarUser" class="avatar img-responsive" th:if="${stat ne null}" th:src="${stat.getUser().getAvatarUrl()}"/>
                 <a th:href="@{/display/{id}/{teamId}/{userId} (id=${season.getId()},teamId=${team.getId()},userId=${stat.getUser().getId()})}">
                     <span th:text="${stat.getUser().getName()}"></span>
+                </a>
+            </td>
+            <td >
+                <a th:href="@{/stats/{id} (id=${stat.getUser().getId()})}">
+                    <i  class="fa fa-bar-chart"></i>
                 </a>
             </td>
             <td th:text="${stat.getHandicapDisplay()}"></td>

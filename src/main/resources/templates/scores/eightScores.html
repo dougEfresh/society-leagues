@@ -10,6 +10,7 @@
             <th></th>
             <th></th>
             <th>Date</th>
+            <th>Time</th>
             <th class="name">Home</th>
             <th class="racks">Racks</th>
             <th class="racks">Forfeits</th>
@@ -22,6 +23,7 @@
             <tbody>
 
             <!--/*@thymesVar id="matches" type="List<com.society.leagues.client.api.domain.TeamMatch>"*/-->
+            <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.TeamMatch"*/-->
             <tr th:id="${match.id}" th:each="match, rowStat: *{matches}">
                 <td class="delete">
                     <a th:id="${'delete-' + match.getId()}" th:href="@{/scores/{id}/{matchId}/delete/{date} (id=${season.id},date=${date},matchId=${match.id})}">
@@ -33,14 +35,23 @@
                         <h4><span class="label label-primary">Results</span></h4>
                     </a>
                 </td>
-                <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.TeamMatch"*/-->
                 <input th:field="*{matches[__${rowStat.index}__].id}" type="hidden" th:value="${match.id}"/>
                 <td class="date" >
                     <input class="date" th:id="${'date-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].date}"
                            type="text" name="date"
                            th:value="${match.getDate()}"/>
                 </td>
-                <input th:field="*{matches[__${rowStat.index}__].time}" type="hidden" th:value="${match.getTime()}"/>
+                 <td class="match-time" >
+                     <select  th:id="${'time-' +match.getId()}" th:field="*{matches[__${rowStat.index}__].time}" >
+                         <option th:selected="${match.getTime().equals('19:00')}" value="19:00" >7:00</option>
+                         <option th:selected="${match.getTime().equals('18:00')}" value="18:00">6:00</option>
+                         <option th:selected="${match.getTime().equals('19:30')}" value="18:30">6:30</option>
+                         <option th:selected="${match.getTime().equals('20:30')}" value="19:30">7:30</option>
+                         <option th:selected="${match.getTime().equals('20:00')}" value="20:00" >8:00</option>
+                         <option th:selected="${match.getTime().equals('21:30')}" value="20:30">8:30</option>
+                         <option th:selected="${match.getTime().equals('21:00')}" value="21:00" >9:00</option>
+                     </select>
+                </td>
                 <td class="name">
                     <select th:id="${'home-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].home.id}" class="form-control">
                         <option th:each="team: ${teams}"

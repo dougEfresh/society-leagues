@@ -24,8 +24,7 @@ public class ScoreResource extends BaseController {
     @Autowired DisplayResource displayResource;
 
     @RequestMapping(value = {"/scores"}, method = RequestMethod.GET)
-    public String edit(Model model) {
-
+    public String edit() {
         return "scores/index";
     }
 
@@ -60,30 +59,30 @@ public class ScoreResource extends BaseController {
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{matchId}/delete/{date}"}, method = RequestMethod.GET)
-    public void deleteTeamMatch(@PathVariable String seasonId,
+    public String deleteTeamMatch(@PathVariable String seasonId,
                                 @PathVariable String date,
-                                @PathVariable String matchId, Model model, HttpServletResponse response) throws IOException {
+                                @PathVariable String matchId) {
         teamMatchApi.delete(matchId);
-        response.sendRedirect("/app/scores/" + seasonId + "/" + matchId + "?date=" + date);
+        return  "redirect:/scores/" + seasonId + "/" + matchId + "?date=" + date;
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{matchId}/add/{date}"}, method = RequestMethod.GET)
-     public void addPlayerMatch(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId, Model model, HttpServletResponse response) throws IOException {
-         playerResultApi.add(matchId);
-        response.sendRedirect("/app/scores/" + seasonId + "/" + matchId + "?date=" + date);
+     public String addPlayerMatch(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId)  {
+        playerResultApi.add(matchId);
+        return "redirect:/scores/" + seasonId + "/" + matchId + "?date=" + date;
     }
     @RequestMapping(value = {"/scores/{seasonId}/{matchId}/add/{date}/four"}, method = RequestMethod.GET)
-     public void addFourPlayerMatches(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId, Model model, HttpServletResponse response) throws IOException {
+     public String addFourPlayerMatches(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId) {
          for(int i =1 ; i <= 4; i++ ) {
              playerResultApi.add(matchId);
          }
-        response.sendRedirect("/app/scores/" + seasonId + "/" + matchId + "?date=" + date);
+        return "redirect:/scores/" + seasonId + "/" + matchId + "?date=" + date;
     }
      @RequestMapping(value = {"/scores/{seasonId}/{matchId}/{resultId}/delete/{date}"}, method = RequestMethod.GET)
-     public void deletePlayerMatch(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId,
-                                   @PathVariable String resultId, Model model, HttpServletResponse response) throws IOException {
+     public String deletePlayerMatch(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId,
+                                   @PathVariable String resultId)  {
          playerResultApi.delete(resultId);
-         response.sendRedirect("/app/scores/" +seasonId + "/" + matchId + "?date=" + date);
+         return "redirect:/scores/" +seasonId + "/" + matchId + "?date=" + date;
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{matchId}"}, method = RequestMethod.GET)
@@ -95,29 +94,25 @@ public class ScoreResource extends BaseController {
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{date}"}, method = RequestMethod.POST)
-    public void save(@PathVariable String seasonId,
+    public String save(@PathVariable String seasonId,
                      @PathVariable String date,
-                     @ModelAttribute TeamMatchModel teamMatchModel, Model model,
-                     HttpServletResponse response) throws IOException {
-        response.sendRedirect("/app/scores/" +seasonId +  "?date=" + date);
+                     @ModelAttribute TeamMatchModel teamMatchModel, Model model) {
         save(seasonId,date,null,teamMatchModel,null,model);
+        return "redirect:/scores/"  +seasonId +  "?date=" + date;
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{matchId}/{date}"}, method = RequestMethod.POST)
-    public void saveResults(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId,
+    public String saveResults(@PathVariable String seasonId, @PathVariable String date, @PathVariable String matchId,
                               @ModelAttribute TeamMatchModel teamMatchModel,@ModelAttribute PlayerResultModel playerResultModel,
-                              Model model,
-                              HttpServletResponse response) throws IOException {
-        response.sendRedirect("/app/scores/" +seasonId + "/" + matchId + "?date=" + date);
+                              Model model) {
         save(seasonId,date,matchId,teamMatchModel,playerResultModel,model);
+        return "redirect:/scores/"  +seasonId +  "?date=" + date;
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{matchId}/delete"}, method = RequestMethod.GET)
-    public void deleteAll(@PathVariable String seasonId, @PathVariable String matchId,
-                          Model model,
-                          HttpServletResponse response) throws IOException {
-        response.sendRedirect("/app/scores/" +seasonId + "/" + matchId);
+    public String deleteAll(@PathVariable String seasonId, @PathVariable String matchId)  {
         playerResultApi.getPlayerResultsSummary(matchId).forEach(p->playerResultApi.delete(p.getId()));
+        return "/scores/" +seasonId + "/" + matchId;
     }
 
     private String save(String seasonId, String date, String matchId, TeamMatchModel teamMatchModel, PlayerResultModel playerResultModel, Model model) {
@@ -185,12 +180,7 @@ public class ScoreResource extends BaseController {
         }
         //List<PlayerResult> realResults =  playerResultApi.getPlayerResultByTeamMatch(matchId);
         List<PlayerResult> realResults =  playerResultApi.getPlayerResultsSummary(matchId);
-        realResults.sort(new Comparator<PlayerResult>() {
-            @Override
-            public int compare(PlayerResult o1, PlayerResult o2) {
-                return o1.getMatchNumber().compareTo(o2.getMatchNumber());
-            }
-        });
+        realResults.sort((o1, o2) -> o1.getMatchNumber().compareTo(o2.getMatchNumber()));
         HashSet<PlayerResult> resultsWithForfeits = new HashSet<>();
         int matchNum = 0;
         Iterator<PlayerResult> iterator = realResults.iterator();
@@ -206,12 +196,7 @@ public class ScoreResource extends BaseController {
             resultsWithForfeits.add(playerResult);
         }
 
-        List<PlayerResult> sortedList =Arrays.asList(resultsWithForfeits.toArray(new PlayerResult[]{})).stream().sorted(new Comparator<PlayerResult>() {
-            @Override
-            public int compare(PlayerResult o1, PlayerResult o2) {
-                return o1.getMatchNumber().compareTo(o2.getMatchNumber());
-            }
-        }).collect(Collectors.toList());
+        List<PlayerResult> sortedList =Arrays.asList(resultsWithForfeits.toArray(new PlayerResult[]{})).stream().sorted((o1, o2) -> o1.getMatchNumber().compareTo(o2.getMatchNumber())).collect(Collectors.toList());
         PlayerResultModel results = new PlayerResultModel(sortedList,matchId);
         if (s.isNine()) {
             results = new PlayerResultModel(realResults,matchId);
