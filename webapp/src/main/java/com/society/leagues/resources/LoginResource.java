@@ -59,7 +59,7 @@ public class LoginResource  {
             userApi.logout();
         } catch (Exception ignore ){}
 
-        return "redirect:/app/login";
+        return "redirect:/login";
     }
 
     @RequestMapping(value = {"/login"}, method = RequestMethod.GET)
@@ -160,7 +160,7 @@ public class LoginResource  {
             //response.addHeader("Set-Cookie",s);
         //}
         //logger.info("Got back "  + u.getName());
-        return "redirect:/app/home";
+        return "redirect:/home";
     }
 
 }

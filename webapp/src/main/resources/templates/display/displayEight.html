@@ -23,13 +23,13 @@
             <td th:text="${t.getStats().getRank()}"></td>
             <td class="schedule-link">
                 <a th:id="'team-schedule-link-' + ${t.getId()}"
-                       th:href="@{/app/schedule/team/{id} (id=${t.getId()})}">
+                       th:href="@{/schedule/team/{id} (id=${t.getId()})}">
                    <i class="fa fa-calendar fa-fw"></i>
                 </a>
             </td>
             <td th:class="${t.equals(team) ? 'active' : 'not-active' }">
                 <a th:id="'team-standing-link-' + ${t.getId()}"
-                       th:href="@{/app/display/{id}/{teamId}(id=${t.getSeason().getId()},teamId=${t.getId()})}"
+                       th:href="@{/display/{id}/{teamId}(id=${t.getSeason().getId()},teamId=${t.getId()})}"
                        th:text="${t.getName()}"></a>
             </td>
             <td th:text="${t.getStats().getWins()}"></td>

@@ -26,29 +26,29 @@
              <td class="winner" th:text="${result.isWin() ? 'W' : 'L'}"></td>
              <td class="partner" >
                  <a th:if="${result.getPartner() != null}"
-                    th:href="@{/app/stats/{id}/{sId} (id=${result.getPartner().getId()},sId=${season.id})}"
+                    th:href="@{/stats/{id}/{sId} (id=${result.getPartner().getId()},sId=${season.id})}"
                     th:text="${result.getPartner().getShortName()}">
                  </a>
              </td>
              <td class="opponent" >
-                 <a th:if="${display ne null}" th:href="@{/app/display/{sId}/{tId}/{uId}
+                 <a th:if="${display ne null}" th:href="@{/display/{sId}/{tId}/{uId}
                  (sId=${season.getId()},tId=${result.getOpponentTeam().getId()},uId=${result.getOpponent().getId()})}"
                     th:text="${result.getOpponent().getName()}"></a>
                  <a th:if="${display eq null}"
-                    th:href="@{/app/stats/{id}/{sId} (id=${result.getOpponent().getId()},sId=${season.id})}"
+                    th:href="@{/stats/{id}/{sId} (id=${result.getOpponent().getId()},sId=${season.id})}"
                     th:text="${result.getOpponent().getName()}">
                  </a>
              </td>
              <td class="op-hc" th:text="${result.getOpponentHandicap()}"></td>
              <td class="op-partner">
                   <a th:if="${result.getOpponentPartner() != null}"
-                    th:href="@{/app/stats/{id}/{sId} (id=${result.getOpponentPartner().getId()},sId=${season.id})}"
+                    th:href="@{/stats/{id}/{sId} (id=${result.getOpponentPartner().getId()},sId=${season.id})}"
                     th:text="${result.getOpponentPartner().getShortName()}">
                  </a>
              </td>
              <td class="op-partner-handicap" th:text="${result.getOpponentPartner() != null ? result.getOpponentPartnerHandicap().getDisplayName() : ''}"></td>
              <td class="op-team" th:text="${result.getOpponentTeam().getName()}">
-                 <a th:href="@{/app/display/{sId}/{tId}
+                 <a th:href="@{/display/{sId}/{tId}
                  (sId=${season.getId()},tId=${result.getOpponentTeam().getId()})}"
                     th:text="${result.getOpponentTeam().getName()}"></a>
              </td>

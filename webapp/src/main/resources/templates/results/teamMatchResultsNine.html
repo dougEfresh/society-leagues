@@ -16,7 +16,7 @@
                 <td th:text="${result.getMatchNumber()}">
                 </td>
                 <td>
-                    <a  th:href="@{/app/display/{sId}/{tId}/{uId}
+                    <a  th:href="@{/display/{sId}/{tId}/{uId}
                  (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getHome().getId()},uId=${result.getPlayerHome().getId()})}"
                         th:text="${result.getPlayerHome().getName()}">
                     </a>
@@ -26,7 +26,7 @@
                 <td th:text="${result.getHomePoints()}">
                 </td>
                 <td>
-                    <a  th:href="@{/app/display/{sId}/{tId}/{uId}
+                    <a  th:href="@{/display/{sId}/{tId}/{uId}
                  (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getAway().getId()},uId=${result.getPlayerAway().getId()})}"
                         th:text="${result.getPlayerAway().getName()}">
                     </a>

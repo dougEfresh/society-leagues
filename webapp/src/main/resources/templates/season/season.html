@@ -10,14 +10,14 @@
                         <button class="btn btn-primary"><b>Add New Season</b></button>
                     </a>
                     <a style="padding-left: 20px" th:if="${season ne null  && !season.getId().equals('-1')}"
-                       th:href="@{/app/season/create/{seasonId} (seasonId=${season.id})}">
+                       th:href="@{/season/create/{seasonId} (seasonId=${season.id})}">
                         <button class="btn btn-warning"><b>Create Schedule</b></button>
                     </a>
                 </div>
             <form class="form-horizontal form-season"
                   id="season-form"
                   th:if="${season ne null}"
-                  th:action="@{/app/season}"
+                  th:action="@{/season}"
                   th:object="${season}" th:method="post">
 
                 <input type="hidden" th:field="*{id}" th:value="${season.getId()}">
@@ -104,24 +104,24 @@
                     <!--/*@thymesVar id="seasons" type="com.society.leagues.client.api.domain.Season"*/-->
                     <!--/*@thymesVar id="s" type="com.society.leagues.client.api.domain.Season"*/-->
                     <tr th:each="s : ${seasons}">
-                        <td><a th:href="@{/app/season (seasonId=${s.id})}">
+                        <td><a th:href="@{/season (seasonId=${s.id})}">
                             <span th:text="${s.getSeasonStatus()}"></span>
                         </a>
                         </td>
                         <td>
-                            <a th:id="'schedule-link-' + ${s.getId()}" th:href="@{/app/schedule/{id} (id=${s.getId()})}">
+                            <a th:id="'schedule-link-' + ${s.getId()}" th:href="@{/schedule/{id} (id=${s.getId()})}">
                    <i class="fa fa-calendar fa-fw"></i>
                 </a>
 
                         </td>
                         <td>
-                            <a th:href="@{/app/season (seasonId=${s.id})}">
+                            <a th:href="@{/season (seasonId=${s.id})}">
                                 <span th:text="${#temporals.format(s.getsDate(),'yyyy-MM-dd')}"></span>
                             </a>
                         </td>
                         <td><span th:text="${s.getDivision().getDisplayName()}"></span></td>
                         <td><span th:text="${s.getSeasonType()}"></span></td>
-                        <td><a th:href="@{/app/team/season/{seasonId} (seasonId=${s.id})}">Manage Teams</a></td>
+                        <td><a th:href="@{/team/season/{seasonId} (seasonId=${s.id})}">Manage Teams</a></td>
                     </tr>
                     </tbody>
                 </table>

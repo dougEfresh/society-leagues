@@ -19,7 +19,7 @@
             <div class="well-title">
                 <h4><span th:text="${editUser.getName()}"></span></h4>
             </div>
-            <form  class="edit-user" id="user-form" action="#" th:action="@{/app/user/{id}(id=${editUser.id})}" th:object="${editUser}"
+            <form  class="edit-user" id="user-form" action="#" th:action="@{/user/{id}(id=${editUser.id})}" th:object="${editUser}"
                    method="post">
             <div style="padding: 10px;" class="form-group">
                 <input type="hidden" th:value="${editUser.id}" th:field="*{id}"/>
@@ -85,7 +85,7 @@
             </div>
             <label style="padding: 10px" class="col-sm-3 control-label">Fb Profile</label>
              <div style="padding: 10px" class="col-sm-8">
-                <a th:href="@{/app/user/delete/fb/profile/{id} (id=${editUser.id})}" >
+                <a th:href="@{/user/delete/fb/profile/{id} (id=${editUser.id})}" >
                     <span style="max-width: 145px;"   class="btn btn-danger">Delete FB Profile</span> </a>
             </div>
             </div>
@@ -95,15 +95,15 @@
             <div class="well-title">
                 <h4>Challenge Profile</h4>
             </div>
-            <form  class="edit-user" id="challenge-slot" action="#" th:action="@{/app/user/modify/challenge/profile/{id}(id=${editUser.getId()})}"
+            <form  class="edit-user" id="challenge-slot" action="#" th:action="@{/user/modify/challenge/profile/{id}(id=${editUser.getId()})}"
                    method="post">
                 <label th:if="${challengeDisabled}"  style="padding-top: 10px" class="col-sm-4 control-label">Enable</label>
                 <label th:if="${not challengeDisabled}" style="padding-top: 10px" class="col-sm-4 control-label">Disable</label>
                 <div style="padding: 10px" class="col-sm-7">
-                    <a th:if="${challengeDisabled}" th:href="@{/app/user/disable/challenges/{id} (id=${editUser.id})}" >
+                    <a th:if="${challengeDisabled}" th:href="@{/user/disable/challenges/{id} (id=${editUser.id})}" >
                         <span style="max-width: 145px;"   class="btn btn-primary">Enable Challenges</span> </a>
 
-                    <a th:if="${not challengeDisabled}" th:href="@{/app/user/disable/challenges/{id} (id=${editUser.id})}" >
+                    <a th:if="${not challengeDisabled}" th:href="@{/user/disable/challenges/{id} (id=${editUser.id})}" >
                         <span style="max-width: 145px;" class="btn btn-danger">Disable Challenges</span> </a>
                 </div>
                 <label class="col-sm-4 control-label">Disable Times</label>
@@ -162,7 +162,7 @@
             <!--/*@thymesVar id="team" type="com.society.leagues.client.api.domain.Team"*/-->
             <tr th:each="team : ${editUserTeams}">
                 <td>
-                    <a th:text="${team.getName()}" th:href="@{/app/team/{id}(id=${team.id})}">
+                    <a th:text="${team.getName()}" th:href="@{/team/{id}(id=${team.id})}">
                     </a>
                 </td>
                 <td>

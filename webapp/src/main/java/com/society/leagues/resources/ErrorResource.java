@@ -65,7 +65,7 @@ public class ErrorResource  {
     @ExceptionHandler(value = {Exception.class, RuntimeException.class})
     public String handleError(Model model, HttpServletRequest req, HttpServletResponse response, Exception exception) throws IOException {
         if (exception.getCause() instanceof  UnauthorizedException || exception instanceof UnauthorizedException) {
-            return "redirect:/app/login";
+            return "redirect:/login";
         }
         ModelAndView mav = new ModelAndView();
         if (model != null) {

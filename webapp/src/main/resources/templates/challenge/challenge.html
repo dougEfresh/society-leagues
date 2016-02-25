@@ -2,7 +2,7 @@
 <div xmlns:th="http://www.thymeleaf.org"
      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
      layout:decorator="layout">
-        <!--       th:action="@{/app/challenge} (userId=${opponent.getId()},date=${date})}" -->
+        <!--       th:action="@{/challenge} (userId=${opponent.getId()},date=${date})}" -->
         <!--/*@thymesVar id="u" type="com.society.admin.model.ChallengeUserModel"*/-->
   <div id="challenge-app" layout:fragment="content">
         <div class="society-well society-well-challenge">
@@ -40,7 +40,7 @@
         <div class="society-well society-well-slots">
             <div class="well-title"><h4>Slots</h4></div>
             <form th:if="${opponent ne null}" id="form-select-challenger"
-                  th:action="@{/app/challenge (userId=${opponent.getId()},date=${date})}"
+                  th:action="@{/challenge (userId=${opponent.getId()},date=${date})}"
                   method="post">
                 <input th:if="${challenger ne null}" type="hidden" th:value="${challenger.getId()}" name="id">
                 <!--

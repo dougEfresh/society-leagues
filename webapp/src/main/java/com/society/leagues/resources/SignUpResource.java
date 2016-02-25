@@ -27,7 +27,7 @@ public class SignUpResource {
         u.setEmail(email);
         u.setLogin(email);
         userApi.signupFacebook(u);
-        return "redirect:/app/home";
+        return "redirect:/home";
     }
 
 }

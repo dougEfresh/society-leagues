@@ -59,7 +59,7 @@
             <div class="row">
                 <label class="col-xs-2 col-md-2">Team</label>
                 <div class="col-xs-10 col-md-10">
-                    <a th:href="@{/app/display/{seasonId}/{teamId} (seasonId=${season.getId()},teamId=${match.getId()})}"
+                    <a th:href="@{/display/{seasonId}/{teamId} (seasonId=${season.getId()},teamId=${match.getId()})}"
                           th:text="${match.getOpponent(team).getName()}">
                     </a>
                 </div>

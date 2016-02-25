@@ -17,13 +17,13 @@
                 <td th:text="${result.getMatchNumber()}">
                 </td>
                 <td>
-                    <a  th:href="@{/app/display/{sId}/{tId}/{uId}
+                    <a  th:href="@{/display/{sId}/{tId}/{uId}
                  (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getHome().getId()},uId=${result.getPlayerHome().getId()})}"
                         th:text="${result.getPlayerHome().getName()}">
                     </a>
                 </td>
                  <td>
-                    <a th:if="${result.getPlayerHomePartner() ne null}"  th:href="@{/app/display/{sId}/{tId}/{uId}
+                    <a th:if="${result.getPlayerHomePartner() ne null}"  th:href="@{/display/{sId}/{tId}/{uId}
                  (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getWinner().getId()},uId=${result.getPlayerHomePartner().getId()})}"
                         th:text="${result.getPlayerHomePartner().getName()}">
                     </a>
@@ -33,13 +33,13 @@
                 <td th:text="${result.getHomeRacks() > result.getAwayRacks() ? 'W' : 'L'}">
                 </td>
                 <td>
-                    <a  th:href="@{/app/display/{sId}/{tId}/{uId}
+                    <a  th:href="@{/display/{sId}/{tId}/{uId}
                  (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getAway().getId()},uId=${result.getPlayerAway().getId()})}"
                         th:text="${result.getPlayerAway().getName()}">
                     </a>
                 </td>
                  <td>
-                    <a th:if="${result.getPlayerAwayPartner() ne null}"  th:href="@{/app/display/{sId}/{tId}/{uId}
+                    <a th:if="${result.getPlayerAwayPartner() ne null}"  th:href="@{/display/{sId}/{tId}/{uId}
                  (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getAway().getId()},uId=${result.getPlayerAwayPartner().getId()})}"
                         th:text="${result.getPlayerAwayPartner().getName()}">
                     </a>

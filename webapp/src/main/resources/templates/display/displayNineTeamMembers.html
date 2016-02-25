@@ -22,7 +22,7 @@
                 <td th:class="${stat.getUser().equals(displayUser) ? ' active schedule-link name' : 'schedule-link name'}">
                     <img  th:fragments="avatarUser" class="avatar img-responsive" th:if="${stat ne null}" th:src="${stat.getUser().getAvatarUrl()}"/>
                     <a href="#"
-                       th:href="@{/app/display/{id}/{teamId}/{userId} (id=${season.getId()},teamId=${team.getId()},userId=${stat.getUser().getId()})}">
+                       th:href="@{/display/{id}/{teamId}/{userId} (id=${season.getId()},teamId=${team.getId()},userId=${stat.getUser().getId()})}">
                        <span th:text="${stat.getUser().getName()}"></span>
                     </a>
                 </td>
