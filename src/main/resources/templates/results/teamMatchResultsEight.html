@@ -1,0 +1,40 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org">
+        <table id="table-player-results-admin" class="table table-stats">
+            <thead>
+            <th>#</th>
+            <th th:text="${teamMatch.getHome().getName()}">Home</th>
+            <th>HC</th>
+            <th>MP</th>
+            <th>W/L</th>
+            <th th:text="${teamMatch.getAway().getName()}"></th>
+            <th>HC</th>
+            <th>MP</th>
+            </thead>
+            <tbody>
+            <!--/*@thymesVar id="result" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
+            <tr th:class="${results.getRowClass(rowStat.index)}" th:id="${result.getId()}" th:each="result, rowStat: *{results.getPlayerResults()}">
+                <td th:text="${result.getMatchNumber()}">
+                </td>
+                <td>
+                    <a  th:href="@{/display/{sId}/{tId}/{uId}
+                 (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getHome().getId()},uId=${result.getPlayerHome().getId()})}"
+                        th:text="${result.getPlayerHome().getName()}">
+                    </a>
+                </td>
+                <td th:text="${result.getPlayerHomeHandicap()}"></td>
+                <td th:text="${result.getHomePoints()}"></td>
+                <td th:text="${result.getHomeRacks() > result.getAwayRacks() ? 'W' : 'L'}">
+                </td>
+                <td>
+                    <a  th:href="@{/display/{sId}/{tId}/{uId}
+                 (sId=${result.getSeason().getId()},tId=${result.getTeamMatch().getAway().getId()},uId=${result.getPlayerAway().getId()})}"
+                        th:text="${result.getPlayerAway().getName()}">
+                    </a>
+                </td>
+                <td th:text="${result.getPlayerAwayHandicap()}"></td>
+                <td th:text="${result.getAwayPoints()}"></td>
+            </tr>
+            </tbody>
+        </table>
+</div>

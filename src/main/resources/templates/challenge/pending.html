@@ -1,0 +1,57 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org">
+    <div th:if="${not #lists.isEmpty(pending)}" class="society-well society-well-pending">
+        <div class="well-title">
+            <h4>Pending</h4>
+        </div>
+        <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+        <!--/*@thymesVar id="user" type="com.society.leagues.client.api.domain.User"*/-->
+        <!--/*@thymesVar id="challenge" type="com.society.leagues.client.api.domain.Challenge"*/-->
+        <!--/*@thymesVar id="slot" type="com.society.leagues.client.api.domain.Slot"*/-->
+        <div class="table-responsive">
+            <table class="table">
+                <thead></thead>
+                <tbody>
+                <tr th:each="challenge : ${pending}">
+                     <form th:method="GET" action="/app/challenge/accept" >
+                        <input th:type="hidden" name="id" th:value="${challenge.getId()}">
+                    <td class="challenge-date">
+                                <span th:text="${#temporals.format(challenge.getLocalDate(), 'MM/dd')}">
+                                </span>
+                    </td>
+                    <td class="challenge-name">
+                        <img class="avatar img-responsive" th:src="${challenge.getUserChallenger().getAvatarUrl()}"/>
+                        <a th:href="@{/display/{seasonId}/user/{id} (id=${challenge.getUserChallenger().getId()},seasonId=${season.getId()})}">
+                        <span th:text="${challenge.getChallenger().getName()}"></span>
+                        </a>
+                    </td>
+                    <td class="challenge-race">
+                        <span th:text="${challenge.getRace()}"></span>
+                    </td>
+                         <td class="challenge-slots">
+                        <select id="challenge-slot" class="form-control" name="slotId">
+                            <!--/*@thymesVar id="s" type="com.society.leagues.client.api.domain.Slot"*/-->
+                            <option th:each="s : ${challenge.getSlots()}"
+                                    th:text="${#temporals.format(s.getLocalDateTime(), 'h:mm')}"
+                                    th:value="${s.getId()}"
+                                    th:name="slotId">
+                            </option>
+                        </select>
+                    </td>
+                    <td class="challenge-actions">
+                            <span class="btn btn-sm btn-danger btn-responsive challenge-upcoming-decline-button">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </span>
+                        <button type="submit" class="btn btn-sm btn-success btn-responsive challenge-upcoming-decline-button">
+                            <span class="glyphicon glyphicon-ok-sign"></span>
+                        </button>
+                     </td>
+                     </form>
+                </tr>
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

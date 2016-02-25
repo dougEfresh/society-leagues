@@ -1,0 +1,39 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"  >
+    <div class="table-responsive">
+        <table th:id="${'table-player-results-' + resultUser.getId()}" class="table table-stats table-top-gun-results">
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>W/L</th>
+                <th>Points</th>
+                <th>Formula</th>
+                <th>Score</th>
+                <th>Race</th>
+                <th>Opponent</th>
+                <th>Op. HC</th>
+                <th>HC</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!--/*@thymesVar id="result" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
+            <tr th:class="${result.isWin() ? 'win' : 'lost'}" th:id="'result-' + ${result.getId()}" th:each="result : ${results}">
+                <td class="date" th:text="${#temporals.format(result.getMatchDate(), 'MM/dd')}"></td>
+                <td class="wl" th:text="${result.isWin() ? 'W' : 'L'}"></td>
+                <td class="points" th:text="${#numbers.formatDecimal(result.getMatchPoints().getWeightedAvg(),1,3)}"></td>
+                <td class="points" th:text="${result.getMatchPoints().getCalculation()}"></td>
+                <td class="score" th:text="${result.getScore()}"></td>
+                <td class="race" th:text="${result.getRace()}"></td>
+                <td class="opponent" >
+                    <a th:if="${display}" th:href="@{/display/{sId}/{tId}/{uId}
+                 (sId=${season.getId()},tId=${result.getOpponentTeam().getId()},uId=${result.getOpponent().getId()})}"
+                       th:text="${result.getOpponent().getName()}"></a>
+                    <a th:if="${not display}" th:href="@{/stats/{id}/{sId} (id=${result.getOpponent().getId()},sId=${season.id})}" th:text="${result.getOpponent().getName()}"></a>
+                </td>
+                <td class="op-hc" th:text="${result.getOpponentHandicap()}"></td>
+                <td class="hc" th:text="${result.getTeamMemberHandicap()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

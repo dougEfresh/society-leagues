@@ -1,0 +1,43 @@
+<div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <div th:if="${user ne null && user.isAdmin()}" id="admin-app" class="society-well">
+        <div style="padding-bottom: 10px">
+            <span>Admin Menu</span>
+                <select style="float: right; background-color: black" id="admin-seasons" onchange="changeAdminSeason()">
+                    <option
+                            th:each="s : ${allSeasons}"
+                            th:value="${s.id}"
+                            th:text="${s.formattedName}"
+                            th:selected="${adminSeason.id eq s.id}">
+                    </option>
+                </select>
+            </h4>
+        </div>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td><a id="admin-scores" th:href="@{/scores/{id} (id=${adminSeason.getId()})}">
+                            Scores </a>
+                        </td>
+
+                        <td><a id="admin-schedules" th:href="@{/schedule/{id} (id=${adminSeason.getId()})}">
+                            Schedule </a>
+                        </td>
+                        <td><a id="admin-standings" th:href="@{/display/{id} (id=${adminSeason.getId()})}">
+                            Standings </a>
+                        </td>
+                        <td><a id="admin-leaders" th:href="@{/leaders/{id} (id=${adminSeason.getId()})}">
+                            Leaders </a>
+                        </td>
+                        <td><a id="admin-users" href="/app/user">Users</a></td>
+                        <td><a id="admin-teams" href="/app/team">Teams</a></td>
+                        <td><a id="admin-season" href="/app/season">Season</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

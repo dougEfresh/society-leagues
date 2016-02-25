@@ -1,0 +1,18 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org">
+    <div th:fragments="footer">
+        <div class="footer-submit">
+                    <input id="player-results-submit" class="btn btn-lg btn-success" type="submit" value="Submit"/>
+
+                <a th:href="@{/scores/{id}/{matchId}/add/{date} (id=${season.id},date=${date},matchId=${results.matchId})}">
+                    <h4 class="add-one"><span class="label label-primary">Add One</span></h4>
+                </a>
+                <a th:href="@{/scores/{id}/{matchId}/add/{date}/four (id=${season.id},date=${date},matchId=${results.matchId})}">
+                    <h4 class="add-four"><span class="label label-primary">Add Four</span></h4>
+                </a>
+                <a th:href="@{/scores/{id}/{matchId}/delete (id=${season.id},matchId=${results.matchId})}">
+                    <h4 class="delete-all"><span class="label label-danger">Delete All</span></h4>
+                </a>
+                </div>
+        </div>
+    </div>

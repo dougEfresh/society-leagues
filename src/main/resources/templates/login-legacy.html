@@ -1,0 +1,37 @@
+<!DOCTYPE html  "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorator="layout">
+    <div id="login-legacy-app" layout:fragment="content">
+        <!--<div id="login-app" class="container fluid container-fluid wrap">-->
+        <div class="login-container well col-md-5 col-sm-5" >
+            <form th:id="login" name="login" action="/app/login" method="POST">
+                <h2 class="form-signin-heading" >Please Log In</h2>
+                <div class="form-field form-group">
+                    <div class="form-group" >
+                        <input type="hidden" name="scope" value="public_profile,email,user_friends" >
+                        <input type="hidden" value="true" name="springRememberMe" >
+                        <input id="username"  autocorrect="off" autocapitalize="off" type="input" name="username" placeholder="enter email" class="form-control">
+                    </div>
+                    <div class="form-group" >
+                        <input id="password" type="password" name="password" placeholder="enter password" class="form-control">
+                    </div>
+                    <div class="row">
+                        <div class="btn-group col-lg-6 col-md-7 col-xs-5 login-options" data-reactid=".0.0.0.2.0">
+                            <button id="submit" type="submit" class="btn btn-sm btn-primary btn-responsive">
+                                <b data-reactid=".0.0.0.2.0.0.0">Login</b></button></div>
+                        <div class="col-lg-6 col-md-5 col-xs-5" data-reactid=".0.0.0.2.1">
+                            <a class="" href="/app/login/reset" data-reactid=".0.0.0.2.1.0">
+                                <button type="button" class="btn btn-sm btn-default btn-responsive pull-right">
+                                    <b data-reactid=".0.0.0.2.1.0.0.0">Reset Password?</b></button></a>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top:10px;">
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,25 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org"  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout"  >
+    <div layout:fragment="content">
+    <div id="team-match-results"  th:if="${not #lists.isEmpty(results)}" class="society-well society-well-team-results">
+            <div class="well-title">
+                <div class="row">
+                    <!--/*@thymesVar id="teamMatch" type="com.society.leagues.client.api.domain.TeamMatch"*/-->
+                    <div class="results-season-name col-xs-12 col-md-3 col-lg-4"  >
+                        <span th:text="${#temporals.format(teamMatch.getMatchDate(),'MM/dd')}"></span>
+                        <span class="badge badge-black" th:text="${teamMatch.getHome().getName()}"></span>
+                        <span > Vs. </span>
+                        <span class="badge badge-black" th:text="${teamMatch.getAway().getName()}"></span>
+                        <a th:id="${'player-results-' + teamMatch.getId()}"
+                           th:href="@{/scores/{id}/{matchId} (id=${season.id},matchId=${teamMatch.getId()})}"
+                           th:if="${user.isAdmin()}"><button type="button" class="btn btn-primary"> Edit</button> </a>
+                    </div>
+                </div>
+            </div>
+                <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+                <div class="table-responsive" th:if="${season.isScramble()}" th:include="results/teamMatchResultsScramble"> </div>
+                <div class="table-responsive" th:if="${season.isTuesdayNine()}" th:include="results/teamMatchResultsNine"> </div>
+                <div class="table-responsive" th:if="${season.isEight()}" th:include="results/teamMatchResultsEight"> </div>
+    </div>
+    </div>
+</div>

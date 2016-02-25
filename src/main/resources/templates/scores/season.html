@@ -1,0 +1,56 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org">
+<div id="season-matches-app" >
+    <div id="matches" th:if="${model ne null}" >
+        <div class="society-well society-well-admin ">
+            <div class="well-title">
+                    <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+                    <h4 style="display: inline-block" th:text="${season.shortName}"></h4>
+                    <a th:href="@{/scores/{id}/add/{date} (id=${season.id},date=${date})}">
+                      <h3 style="display: inline-block">  <span style="display: inline-block" class="label label-primary">Add New</span></h3>
+                    </a>
+                    <a th:href="@{/sheets/{id}/{date} (id=${season.id},date=${date})}">
+                        <h3 style="display: inline-block"><span  class="label label-primary" >Sheets</span></h3>
+                    </a>
+
+                    <form id="form-select-date">
+                    <select name="select-date" id="select-date" th:onChange="'selectDate()'" class="form-control" >
+                        <option th:each="d: ${dates}"
+                                th:text="${d}"
+                                th:value="${d}"
+                                th:selected="${d == date}">
+                        </option>
+                    </select>
+                    </form>
+            </div>
+        </div>
+        <div class="society-well society-well-admin society-well-scores">
+            <form id="team-match-form" th:object="${model}" th:method="post" method="post"
+                  th:action="@{/scores/{id}/{date} (id=${season.id},date=${date})}">
+            <div class="panel-body">
+                <div th:if="${season.isEight()}">
+                    <div th:replace="scores/eightScores"></div>
+                </div>
+                <div th:if="${season.isTuesdayNine()}">
+                    <div th:replace="scores/nineScores"></div>
+                </div>
+                <div th:if="${season.isScramble()}">
+                    <div th:replace="scores/eightScores"></div>
+                </div>
+                <div th:if="${season.isChallenge()}">
+                    <div th:replace="scores/challengeScores"></div>
+                </div>
+
+            </div>
+            <div class="" style="padding-left: 20px">
+                <input id="submit-team-match-scores" class="btn btn-lg btn-success" type="submit" value="Submit" /></div>
+            </form>
+        </div>
+    </div>
+
+    <div th:replace="scores/playerResults"></div>
+
+    </div>
+</div>
+
+

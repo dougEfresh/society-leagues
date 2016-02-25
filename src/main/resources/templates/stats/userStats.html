@@ -1,0 +1,240 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+    <div id="stats-app"  layout:fragment="content">
+        <script th:inline="javascript">
+            function onSeasonChange() {
+                window.location = window.location.pathname + '?seasonId=' + $('#season-select').val() ;
+            }
+            function onNineHandicapChange(){
+                window.location = window.location.pathname + '?seasonId=' + $('#season-select').val() + '&nineId=' + $('#season-nine-handicap-select').val();
+
+            }
+
+            function onEightHandicapChange(){
+                window.location = window.location.pathname + '?seasonId=' + $('#season-select').val() + '&eightId=' + $('#season-eight-handicap-select').val();
+
+            }
+        </script>
+        <div class="society-well society-well-stats society-well-user-stats">
+        <div class="well-title">
+            <h3>Stats</h3>
+        </div>
+            <select th:if="${statUser ne null}" id="users-stats-search">
+                <option th:each="u : ${allUsers}"
+                        th:selected="${u.getId().equals(statUser.getId())}"
+                        th:value="${u.id}" th:text="${u.name}">
+                </option>
+            </select>
+        </div>
+        <div class="society-well society-well-stats society-well-user-stats">
+            <div class="well-title">
+                <h3>Lifetime</h3>
+            </div>
+            <!--th:selected="${s.id == season.id}"-->
+            <select th:onchange="'onSeasonChange()'" th:if="${statSeasons ne null}" id="season-select">
+                <option value="-1">All</option>
+                <option
+                        th:each="s : ${statSeasons}"
+                        th:value="${s.id}"
+                        th:selected="${s.id == season.getId()}"
+                        th:text="${s.getDayName()}">
+                </option>
+            </select>
+            <!--
+             <select th:onchange="'onSeasonChange()'" th:if="${activeSeasons ne null}" id="chart-select">
+                 <option value="bar" th:selected="${chartType.equals('bar')}">Bar</option>
+                 <option value="line" th:selected="${chartType.equals('line')}">Line</option>
+            </select>
+-->
+            <div id="stats-line-lifetime">
+            </div>
+
+            <script th:inline="javascript">
+                    /*<![CDATA[*/
+                    var id = [[${statUser.getId()}]];
+                    var seasonId = [[${season.getId()}]];
+                     $.getJSON("/app/stats/lifetime/" + id + '?seasonId=' +  seasonId, function (json) {
+                         console.log(json);
+                         Morris.Bar({
+                             element: 'stats-line-lifetime',
+                             data: json,
+                             smooth: true,
+                             xkey: 'season',
+                             ykeys: ['win','lost'],
+                             labels: ['Win','Lost']
+                         });
+                     });
+                    /*]]>*/
+            </script>
+
+        </div>
+
+        <div class="society-well society-well-stats society-well-user-stats">
+            <div class="well-title">
+                <h3>Handicap - 9 Ball</h3>
+            </div>
+            <!--th:selected="${s.id == season.id}"-->
+            <select th:onchange="'onNineHandicapChange()'" th:if="${nineSeasons ne null}" id="season-nine-handicap-select">
+                <option value="-1">All Seasons</option>
+                <option
+                        th:each="s : ${nineSeasons}"
+                        th:value="${s.id}"
+                        th:selected="${s.id == nineSeason.getId()}"
+                        th:text="${s.getFormattedName()}">
+                </option>
+            </select>
+
+            <div id="stats-nine-handicap-lifetime">
+            </div>
+
+            <script th:inline="javascript">
+                    /*<![CDATA[*/
+                    var id = [[${statUser.getId()}]];
+                    var seasonId = [[${nineSeason.getId()}]];
+                    $.getJSON("/app/stats/lifetime/handicap/nine/" + id + '?seasonId=' +  seasonId, function (json) {
+                         console.log(json);
+                         Morris.Bar({
+                             element: 'stats-nine-handicap-lifetime',
+                             data: json,
+                             smooth: true,
+                             xkey: 'handicap',
+                             ykeys: ['win','lost'],
+                             labels: ['Win','Lost']
+                         });
+                     });
+                    /*]]>*/
+            </script>
+        </div>
+
+        <div class="society-well society-well-stats society-well-user-stats">
+            <div class="well-title">
+                <h3>Handicap - 8 Ball</h3>
+            </div>
+            <!--th:selected="${s.id == season.id}"-->
+            <select th:onchange="'onEightHandicapChange()'" th:if="${eightSeasons ne null}" id="season-eight-handicap-select">
+                <option value="-1">All Seasons</option>
+                <option
+                        th:each="s : ${eightSeasons}"
+                        th:value="${s.id}"
+                        th:selected="${s.id == eightSeason.getId()}"
+                        th:text="${s.getFormattedName()}">
+                </option>
+            </select>
+
+            <div id="stats-eight-handicap-lifetime">
+            </div>
+
+            <script th:inline="javascript">
+                    /*<![CDATA[*/
+                    var id = [[${statUser.getId()}]];
+                    var seasonId = [[${eightSeason.getId()}]];
+                    $.getJSON("/app/stats/lifetime/handicap/eight/" + id + '?seasonId=' +  seasonId, function (json) {
+                         console.log(json);
+                         Morris.Bar({
+                             element: 'stats-eight-handicap-lifetime',
+                             data: json,
+                             smooth: true,
+                             xkey: 'handicap',
+                             ykeys: ['win','lost'],
+                             labels: ['Win','Lost']
+                         });
+                     });
+                    /*]]>*/
+            </script>
+        </div>
+
+        <!--
+        <div th:if="${not #lists.isEmpty(scrambleStats)}" class="society-well society-well-stats society-well-user-stats">
+            <div class="well-title">
+                <h3>Scramble</h3>
+            </div>
+            <select th:onchange="'onSeasonChange()'" id="scramble-type">
+                <option value="all">All</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="scotch">Scotch</option>
+            </select>
+            <select th:onchange="'onSeasonChange()'" th:if="${activeSeasons ne null}" id="chart-select">
+                <option value="bar" th:selected="${chartType.equals('bar')}">Bar</option>
+                <option value="line" th:selected="${chartType.equals('line')}">Line</option>
+            </select>
+
+            <div id="stats-scramble-lifetime">
+            </div>
+            <script th:if="${chartType.equals('bar')}" th:inline="javascript">
+                /*<![CDATA[*/
+                var id = [[${statUser.getId()}]];
+                $.getJSON("/app/stats/lifetime/scramble/" + id, function (json) {
+                    console.log(json);
+                    Morris.Bar({
+                        element: 'stats-scramble-lifetime',
+                        data: json,
+                        smooth: true,
+                        xkey: 'season',
+                        ykeys: ['win','lost'],
+                        labels: ['Win','Lost']
+                    });
+                });
+                /*]]>*/
+            </script>
+            <script th:if="${chartType.equals('line')}" th:inline="javascript">
+                /*<![CDATA[*/
+                var id = [[${statUser.getId()}]];
+                $.getJSON("/app/stats/lifetime/scramble/" + id , function (json) {
+                    console.log(json);
+                    Morris.Line({
+                        element: 'stats-scramble-lifetime',
+                        data: json,
+                        smooth: true,
+                        xkey: 'season',
+                        ykeys: ['win','lost'],
+                        labels: ['Win','Lost']
+                    });
+                });
+                /*]]>*/
+            </script>
+        </div>
+-->
+
+        <div class="society-well society-well-stats society-well-user-stats">
+            <div class="well-title">
+                <h3>Data</h3>
+            </div>
+             <div th:if="${not #lists.isEmpty(stats)}" class="table-responsive">
+                  <table class="table table-stats">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>HC</th>
+                        <th>W</th>
+                        <th>L</th>
+                        <th>RW</th>
+                        <th>RL</th>
+                        <th>PCT</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="stat : ${stats}">
+                        <td >
+                            <span th:text="${stat.getSeason().getFormattedName()}" ></span>
+                        </td>
+                        <td th:text="${stat.getHandicapDisplay()}"> </td>
+                        <td th:text="${stat.getWins()}"> </td>
+                        <td th:text="${stat.getLoses()}"> </td>
+                        <td >
+                            <span th:if="${stat.getSeason().isNine()}" th:text="${stat.getRacksWon()}"></span>
+                            <span th:if="${not stat.getSeason().isNine()}" ></span>
+                        </td>
+                        <td>
+                            <span th:if="${stat.getSeason().isNine()}" th:text="${stat.getRacksLost()}"></span>
+                            <span th:if="${not stat.getSeason().isNine()}" ></span>
+                        </td>
+                        <td th:text="${#numbers.formatDecimal(stat.getRackPct(),1,3)}"> </td>
+                    </tr>
+                    </tbody>
+                </table>
+              </div>
+        </div>
+
+    </div>
+</div>

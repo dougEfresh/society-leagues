@@ -1,0 +1,444 @@
+#page-wrapper {
+       background: url('/app/img/break2.jpg') no-repeat center center fixed;
+       -webkit-background-size: cover;
+       -moz-background-size: cover;
+       -o-background-size: cover;
+       background-size: cover;
+       min-height: 1200px!important;
+    padding: 10px;
+}
+.welcome h3 {
+       color:#fff;
+       text-transform: uppercase;
+}
+.welcome-name {
+       color: #fff;
+       margin: 20px 0px;
+}
+.panel {
+       border-radius:0px;
+       border-bottom: none;
+}
+.panel-heading {
+    border-radius: 10px;
+    background-color: rgb(0,0,0);
+    font-size:20px;
+}
+.panel-upcoming>.panel-heading,
+.panel-leaders>.panel-heading, 
+.panel-results-players > .panel-heading { 
+        background-color: rgb(0,0,0);
+}
+
+.panel-heading a span.top-players-header:hover,
+.panel-heading a span.league-home-header:hover {
+       color: #9c302d;
+}
+.panel-heading a {
+text-decoration: none!important;
+}
+
+body.login {
+    margin-top: 0px;
+}
+
+#login-app {
+    width: 100%;
+    height: 100%;
+    min-height: 1000px
+}
+#login-app > .well {
+    max-width: 600px;
+}
+
+.well {
+	float: none;
+	margin: 140px auto 0px auto;
+	color: #fff;
+	background-image: -webkit-linear-gradient(top, rgba(70,0,0, .9) 0%, rgba(0,0,0, .9) 100%);
+	background-image: -o-linear-gradient(top, rgba(70,0,0, .9) 0%, rgba(0,0,0, .9) 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(70,0,0, .9)), to(rgba(0,0,0, .9)));
+	background-image: linear-gradient(to bottom, rgba(70,0,0, .9) 0%, rgba(0,0,0, .9) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#460000', endColorstr='#6666666', GradientType=0);
+	background-repeat: repeat-x;
+	background-color: transparent;
+	border: 3px solid #240000;
+	border-radius: 8px;
+	-webkit-box-shadow: 0px 10px 35px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 10px 35px 0px rgba(0,0,0,0.75);
+	box-shadow: 0px 10px 35px 0px rgba(0,0,0,0.75);
+}
+.society-well {
+	float: none;
+    margin-top: 7px;
+    /*margin-right: auto;*/
+    margin-bottom: 0px;
+    /*margin-left: auto;*/
+    color: #fff;
+	background-image: -webkit-linear-gradient(top, rgba(70,0,0, .9) 0%, rgba(0,0,0, .9) 100%);
+	background-image: -o-linear-gradient(top, rgba(70,0,0, .9) 0%, rgba(0,0,0, .9) 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(70,0,0, .9)), to(rgba(0,0,0, .9)));
+	background-image: linear-gradient(to bottom, rgba(70,0,0, .9) 0%, rgba(0,0,0, .9) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#460000', endColorstr='#6666666', GradientType=0);
+	background-repeat: repeat-x;
+	background-color: transparent;
+	border: 3px solid #240000;
+	border-radius: 8px;
+	-webkit-box-shadow: 0px 10px 35px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 10px 35px 0px rgba(0,0,0,0.75);
+	box-shadow: 0px 10px 35px 0px rgba(0,0,0,0.75);
+    max-width: 550px ;
+}
+
+.society-well > select {
+    color: black;
+}
+
+.society-well-leaders {
+    max-width: 650px;
+}
+
+.society-well-stats {
+    max-width: 650px;
+}
+
+.society-well > .table-responsive > table > tbody > tr > td > a {
+    color: #fff;
+}
+
+.society-well > .table-responsive > table > tbody > tr > td > a:hover {
+    color: #fff;
+}
+.society-well-slots {
+    /*height: 175px*/
+}
+
+.well-title {
+    vertical-align: bottom;
+    border-bottom: 2px solid #ddd;
+    text-align: center;
+}
+
+.well-scramble-user {
+    max-width: 866px;
+}
+.form-signin-heading {
+    text-align: center;
+}
+
+.btn-facebook {
+    width: 100%;
+}
+
+.btn-responsive {
+	white-space: normal;
+    width: 100%;
+	margin-top: 10px;
+}
+
+.error {
+    max-width: 600px;
+}
+
+/*
+td.name {
+    width: 125px;
+    text-overflow: ellipsis;
+}
+*/
+
+td.racks , td.wins , td.handicap, td.lost {
+    width: 30px;
+}
+
+td.short-date {
+    /*width: 33px;
+    max-width: 33px;
+    */
+}
+
+td.win-lost {
+    width: 55px;
+    max-width: 33px;
+}
+
+
+
+.badge-date , .label-date, .badge-stat , .badge-win {
+    background-color: black;
+    border-radius: 0 !important;
+}
+
+.badge-win {
+    background-color: #0b5e27;
+}
+.side-nav {
+    background-color: black !important;
+}
+
+td > a {
+    color: whitesmoke;
+}
+
+.table-stats > thead > tr {
+    background-color: black;
+}
+
+.display-team-header {
+    text-align: center;
+}
+
+.dynatable-page-link {
+    color: whitesmoke;
+}
+
+.table-stats >tbody>tr>td {
+    border-top: none;
+}
+
+.dynatable-active-page {
+    background-color: #0b5e27;
+}
+
+.label-black {
+    background-color: black;
+}
+
+.padding-bottom-10 {
+    padding-bottom: 10px;
+}
+
+.slot-container {
+    display: inline-block;
+    padding-right: 7px;
+}
+
+.center {
+    /*
+    margin: auto;
+    width: 60%;
+    padding: 1px;
+    */
+}
+
+.challenge-submit {
+    margin-left: 40%;
+}
+@media(max-width:768px) {
+    .challenge-name , .name {
+        max-width: 110px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.table-responsive {
+
+}
+.dynatable-search, .dynatable-per-page {
+
+}
+.dynatable-search > input {
+    color:black;
+}
+
+.dynatable-per-page {
+
+}
+
+.user-results , .leaders{
+    padding-top: 10px;
+}
+/*
+ vertical-align: bottom;
+    border-bottom: 2px solid #ddd;
+    text-align: center;
+    */
+
+#table-leaders, #table-player-results {
+    border-top: 2px solid #ddd;
+}
+
+.society-well-admin {
+    padding-bottom: 15px
+}
+.society-well-scores , .society-well-player-scores {
+    max-width: 100%;
+}
+.society-well-users {
+    max-width: 696px;
+    width: 696px;
+}
+
+.society-well-broadcast {
+    max-width: 555px;
+}
+
+.society-well-team-results {
+    max-width: 100%;
+}
+
+
+.society-well-user {
+    /*max-width: 500px;*/
+}
+
+.society-well-team {
+    max-width: 800px;
+}
+
+.society-well-schedule , .society-well-season {
+    max-width: 700px;
+}
+
+input.match-number {
+    max-width: 68px;
+    width: 68px;
+}
+
+.footer-submit > input , .footer-submit > a > h4 {
+    display: inline-block;
+}
+.footer-submit > a > h4.add-one {
+    padding-left : 20px;
+}
+.footer-submit > a > h4.delete-all {
+    padding-left : 25px;
+}
+
+select.team-members-select, .select2-selection__choice {
+    background-color: black;
+    color: white;
+}
+
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: black;
+    color: white;
+}
+
+#team-seasons {
+    background-color: black;
+    color: white;
+}
+
+form.edit-user {
+    display: inline-block;
+}
+
+.form-user {
+    max-width: 121px;
+}
+
+.form-user-email {
+    max-width: 270px;
+}
+.form-user-handicap , .form-user-role, .form-user-status {
+    max-width: 99px;
+}
+
+.form-season {
+    display: inline-block;
+}
+
+input.game-type {
+     background-color: black;
+    color: white;
+}
+
+h4 > a , h4 > a:hover{
+    color: whitesmoke;
+}
+
+.challenge-times , .challenge-slots {
+    max-width: 30%
+}
+
+.challenge-slots {
+    min-width: 100px;
+}
+
+.navbar-toggle {
+    float: none;
+}
+@media (min-width: 768px) {
+    .navbar-right {
+        float: none !important;
+    }
+}
+
+.badge-black {
+background-color: black;
+font-size: 16px;
+}
+
+.avatar {
+     width: 29px;
+     height: 29px;
+    display: inline-block;
+ }
+
+.avatar-menu {
+    width: 40px;
+    height: 40px;
+    padding-top: 5px;
+}
+@media (min-width: 768px) {
+    .navbar-right {
+        float: none !important;
+    }
+}
+
+
+.item {
+    color: black;
+    font-size: 18px;
+    background-color: whitesmoke;
+}
+
+.society-well-stats {
+    max-width: 700px;
+}
+ .society-well-team-available {
+     max-width: 850px;
+ }
+
+ .no-cursor {
+     cursor: none;
+ }
+
+
+ .fa-spin-custom, .glyphicon-spin {
+    -webkit-animation: spin 1000ms infinite linear;
+    animation: spin 1000ms infinite linear;
+}
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
+@keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
+
+
+tr.warning-available {
+    background-color: black;
+}
+
+span.not-available {
+    background-color: black;
+}

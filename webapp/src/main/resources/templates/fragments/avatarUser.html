@@ -1,6 +1,0 @@
-<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
-<img  th:fragments="avatarUser" class="avatar img-responsive" th:if="${stat ne null}" th:src="${stat.getUser().getAvatarUrl()}"/>
-<img  th:fragments="avatarUser" class="avatar img-responsive" th:if="${s ne null}" th:src="${s.getUser().getAvatarUrl()}"/>
-<img  th:fragments="avatarUser" class="avatar img-responsive" th:if="${u ne null}" th:src="${u.getAvatarUrl()}"/>
-<img  th:fragments="avatarUser" class="avatar img-responsive" th:if="${challenger ne null}" th:src="${challenge.getUserOpponent().getAvatarUrl()}"/>
-

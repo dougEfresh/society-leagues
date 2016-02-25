@@ -1,0 +1,40 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org">
+    <div class="table-responsive">
+        <table id="table-team-standings" class="table table-stats table-top-gun-standings">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Player</th>
+                <th>HC</th>
+                <th>P</th>
+                <th>W</th>
+                <th>L</th>
+                <th>RW</th>
+                <th>RL</th>
+                <th>PCT</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="stat : ${displayTeams}">
+                <!--/*@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"*/-->
+                <td th:text="${stat.getRank()}"></td>
+                <td>
+                    <img class="avatar img-responsive"  th:src="${stat.getUser().getAvatarUrl()}"/>
+                    <a th:id="'team-standing-link-' + ${stat.getUser().getId()}"
+                       th:href="@{/display/{id}/user/{userId} (id=${stat.getSeason().getId()},userId=${stat.getUser().getId()})}">
+                        <span th:text="${stat.getUser().getName()}"></span>
+                    </a>
+                </td>
+                <td th:text="${stat.getHandicapDisplay()}"></td>
+                <td th:text="${#numbers.formatDecimal(stat.getPoints(),1,3)}"></td>
+                <td th:text="${stat.getWins()}"></td>
+                <td th:text="${stat.getLoses()}"></td>
+                <td th:text="${stat.getRacksWon()}"></td>
+                <td th:text="${stat.getRacksLost()}"></td>
+                <td th:text="${#numbers.formatDecimal(stat.getRackPct(),0,3)}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

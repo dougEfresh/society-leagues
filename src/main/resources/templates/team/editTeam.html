@@ -1,0 +1,76 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout">
+<div id="team-edit" layout:fragment="content">
+    <div th:if="${save eq 'success'}">
+             <div class="alert alert-success alert-dismissible" role="alert">
+                 <strong>Success!</strong> Updated Successfully.
+             </div>
+         </div>
+     <div th:if="${save eq 'error'}">
+         <div class="alert alert-danger alert-dismissible" role="alert">
+             <strong>Error!</strong> <pre th:text="${error}"></pre>
+         </div>
+     </div>
+    <div class="society-well society-well-team" >
+    <form style="display: inline-block;" class="team-edit" id="team-form" action="#" th:action="@{/team/{id}(id=${team.id})}" th:object="${team}" method="post">
+        <div class="form-group">
+            <input type="hidden" th:value="${team.id}" th:field="*{id}"/>
+            <input type="hidden" th:value="${team.membersId}" th:field="*{membersId}"/>
+            <input type="hidden" th:value="${team.season.division}" th:field="*{season.division}" />
+            <input type="hidden" th:value="${team.season.seasonStatus}" th:field="*{season.seasonStatus}"  />
+            <label class="col-sm-2 control-label">Name</label>
+            <div class="col-sm-10">
+                <input th:value="*{name}"
+                       th:field="*{name}"
+                       id="name"
+                       type="input" name="name"
+                       class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label">Disabled</label>
+            <div class="col-sm-10">
+                <input th:value="*{disabled}"
+                       th:field="*{disabled}"
+                       th:type="checkbox"
+                       th:checked="${team.isDisabled()}"
+                       id="disabled"
+                       name="disabled"
+                       class="form-control" >
+            </div>
+            <label class="col-sm-2 control-label">Members</label>
+            <div class="col-sm-10">
+                <select th:field="*{users}" id="team-members" class="team-members team-members-select" multiple="multiple">
+                    <option th:field="*{users}"
+                            th:each="u : ${allUsers}"
+                            th:value="${u.id}"
+                            th:text="${u.name}"
+                            th:selected="${team.hasUser('__${u.id}__')}">
+                    </option>
+                </select>
+            </div>
+            <label class="col-sm-2 control-label">Season</label>
+            <div class="col-sm-10">
+                <select th:field="*{season.id}" id="team-seasons" >
+                    <option th:field="*{season.id}"
+                            th:each="s : ${allSeasons}"
+                            th:value="${s.id}"
+                            th:text="${s.formattedName}"
+                            th:selected="${team.season.id eq s.id}">
+                    </option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-offset-2 col-sm-10">
+            <br/>
+            <input id="submit" type="submit" class="btn btn-sm btn-primary btn-responsive"/>
+        </div>
+
+        <div class="col-sm-offset-2 col-sm-10">
+            <br/>
+            <a th:href="@{/team/delete/{id}(id=${team.id})}"><span class="btn btn-sm btn-responsive btn-danger">Delete</span></a>
+        </div>
+    </form>
+    </div>
+</div>
+</div>
+
+

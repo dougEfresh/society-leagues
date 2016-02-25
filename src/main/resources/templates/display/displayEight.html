@@ -1,0 +1,45 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org">
+    <div class="table-responsive">
+    <table id="table-team-standings" class="table table-stats">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>S</th>
+            <th>Team</th>
+            <th>W</th>
+            <th>L</th>
+            <th>RW</th>
+            <th>RL</th>
+            <th>PCT</th>
+            <!--<th th:if="${user.isAdmin()}" >F</th>-->
+        </tr>
+        </thead>
+        <tfoot>
+        <tr></tr>
+        </tfoot>
+        <tbody>
+        <tr  th:each="t : ${displayTeams}">
+            <td th:text="${t.getStats().getRank()}"></td>
+            <td class="schedule-link">
+                <a th:id="'team-schedule-link-' + ${t.getId()}"
+                       th:href="@{/schedule/team/{id} (id=${t.getId()})}">
+                   <i class="fa fa-calendar fa-fw"></i>
+                </a>
+            </td>
+            <td th:class="${t.equals(team) ? 'active' : 'not-active' }">
+                <a th:id="'team-standing-link-' + ${t.getId()}"
+                       th:href="@{/display/{id}/{teamId}(id=${t.getSeason().getId()},teamId=${t.getId()})}"
+                       th:text="${t.getName()}"></a>
+            </td>
+            <td th:text="${t.getStats().getWins()}"></td>
+            <td th:text="${t.getStats().getLoses()}"></td>
+            <td th:text="${t.getStats().getRacksWon()}"></td>
+            <td th:text="${t.getStats().getRacksLost()}"></td>
+            <td th:text="${'% ' + #numbers.formatDecimal(t.getStats().getRackPct()*100,0,2)}"></td>
+            <!--<td th:if="${user.isAdmin()}" th:text="${t.getStats().getForfeits()}"></td>-->
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</div>
