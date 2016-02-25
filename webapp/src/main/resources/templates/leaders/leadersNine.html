@@ -4,10 +4,10 @@
         <table id="table-leaders" class="table table-stats">
             <thead>
             <tr>
-                <th>#</th>
-                <th></th>
+                <th>Name</th>
                 <th>Team</th>
                 <th>HC</th>
+                <th>P</th>
                 <th>W</th>
                 <th>L</th>
                 <th>RW</th>
@@ -18,7 +18,6 @@
             <tbody>
             <tr th:each="stat : ${stats}">
                 <!--/*@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"*/-->
-                <td th:text="${stat.getRank()}"></td>
                 <td>
                     <img class="avatar img-responsive"  th:src="${stat.getUser().getAvatarUrl()}"/>
                     <a th:id="${'leader-user-link-' + stat.getUser().getId()}"
@@ -32,6 +31,7 @@
                        th:text="${stat.getTeam().getName()}"></a>
                 </td>
                 <td th:text="${stat.getHandicapDisplay()}"></td>
+                <td th:text="${stat.getPoints().intValue()}"></td>
                 <td th:text="${stat.getWins()}"></td>
                 <td th:text="${stat.getLoses()}"></td>
                 <td th:text="${stat.getRacksWon()}"></td>

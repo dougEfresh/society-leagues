@@ -20,11 +20,12 @@ import java.util.stream.Collectors;
 public class LeaderResource extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/leaders/{seasonId}")
-    public String getSchedule(@PathVariable String seasonId, Model model) {
+    public String getLeaders(@PathVariable String seasonId, Model model) {
         List<Stat> stats = statApi.getUserSeasonStats(seasonId)
                 .parallelStream()
                 .filter(s->s.getUser().isReal())
                 .filter(s->s.getTeam() != null)
+                .sorted(Stat.sortUserStats())
                 .collect(Collectors.toList()
                 );
 

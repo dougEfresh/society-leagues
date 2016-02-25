@@ -97,15 +97,7 @@ public class DisplayResource extends BaseController {
 
         if (s.isChallenge()) {
             List<Stat> stats = statApi.getUserSeasonStats(s.getId());
-            stats.sort(new Comparator<Stat>() {
-                           @Override
-                           public int compare(Stat o1, Stat o2) {
-                               if (o2.getPoints().equals(o1.getPoints())) {
-                                   return o2.getRackPct().compareTo(o1.getRackPct());
-                               }
-                               return o2.getPoints().compareTo(o1.getPoints());
-                           }
-                       });
+            stats.sort(Stat.sortUserStats());
             int rank = 0;
             for (Stat stat : stats) {
                 stat.setRank(++rank);
