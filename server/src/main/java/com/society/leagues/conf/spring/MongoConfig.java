@@ -1,4 +1,4 @@
-package com.society.leagues.conf;
+package com.society.leagues.conf.spring;
 
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
@@ -6,7 +6,6 @@ import com.society.leagues.cache.CacheUtil;
 import com.society.leagues.mongo.CustomMappingMongoConverter;
 import com.society.leagues.mongo.CustomRefResolver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +14,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.convert.DbRefResolver;
-import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 
 @Configuration

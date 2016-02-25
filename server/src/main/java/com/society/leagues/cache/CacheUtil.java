@@ -1,10 +1,6 @@
 package com.society.leagues.cache;
 
 import com.society.leagues.client.api.domain.LeagueObject;
-import com.society.leagues.listener.DaoListener;
-import com.society.leagues.service.LeagueService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

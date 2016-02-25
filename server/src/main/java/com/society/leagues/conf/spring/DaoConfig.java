@@ -1,4 +1,4 @@
-package com.society.leagues.conf;
+package com.society.leagues.conf.spring;
 
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.slf4j.Logger;

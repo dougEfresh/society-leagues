@@ -3,7 +3,6 @@ package com.society.leagues.resource;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.society.leagues.client.api.domain.*;
 import com.society.leagues.client.views.PlayerResultSummary;
-import com.society.leagues.exception.ChallengeException;
 import com.society.leagues.exception.InvalidRequestException;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.ResultService;

@@ -1,14 +1,12 @@
 package com.society.leagues.resource;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.society.leagues.client.views.PlayerResultSummary;
 import com.society.leagues.service.LeagueService;
 import com.society.leagues.service.ResultService;
 import com.society.leagues.client.api.domain.*;
-import com.society.leagues.client.views.PlayerResultView;
 import com.society.leagues.service.StatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
