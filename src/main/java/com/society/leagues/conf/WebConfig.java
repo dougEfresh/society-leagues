@@ -39,7 +39,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         if (environment.acceptsProfiles("dev")) {
             String cwd = System.getProperty("user.dir");
             registry.addResourceHandler("/**")
-                        .addResourceLocations("file://" + cwd + "/src/main/resources/public/")
+                        .addResourceLocations("file://" + cwd + "/src/main/resources/static/")
                         .setCachePeriod(0);
         }
     }

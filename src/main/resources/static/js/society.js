@@ -99,7 +99,6 @@ function lifeTimeStats(v) {
 }
 
  $(document).ready(function() {
-
      $('#team-members').selectize({
          persist: false,
          plugins: ['remove_button'],
