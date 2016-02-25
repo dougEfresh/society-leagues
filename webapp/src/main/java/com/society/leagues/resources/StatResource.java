@@ -33,8 +33,8 @@ public class StatResource  extends BaseController {
         model.addAttribute("stats", userStats.stream().filter(s->s.getType() == StatType.USER_SEASON).sorted(Stat.sortSeasonStats()).collect(Collectors.toList()));
         model.addAttribute("scrambleStats",userStats.stream().filter(s->s.getType().isScramble()).collect(Collectors.toList()));
         model.addAttribute("season",seasonId.equals("-1") ? Season.getDefault() : seasonApi.get(seasonId));
-        model.addAttribute("nineSeasons",userApi.get(userId).getSeasons().stream().filter(s->s.isNine()).collect(Collectors.toList()));
-        model.addAttribute("eightSeasons",userApi.get(userId).getSeasons().stream().filter(s->!s.isNine()).collect(Collectors.toList()));
+        model.addAttribute("nineSeasons",userApi.get(userId).getSeasons().stream().filter(s->s.isNine()).sorted(Season.sort).collect(Collectors.toList()));
+        model.addAttribute("eightSeasons",userApi.get(userId).getSeasons().stream().filter(s->!s.isNine()).sorted(Season.sort).collect(Collectors.toList()));
         return "stats/userStats";
     }
 
