@@ -438,6 +438,9 @@ public class TeamMatch extends LeagueObject {
 
     @JsonIgnore
     public String getTime() {
+        if (getMatchDate().getHour() == 0) {
+            return "19:00";
+        }
         return getMatchDate().toLocalTime().toString();
     }
 

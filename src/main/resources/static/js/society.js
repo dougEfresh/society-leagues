@@ -264,6 +264,7 @@ function lifeTimeStats(v) {
          formatDate: 'Y-m-d',
          timepicker: false
     });
+     /*
      $('.match-time').datetimepicker({
          datepicker: false,
          format:'H:i',
@@ -284,6 +285,7 @@ function lifeTimeStats(v) {
          ]
      }
      );
+     */
 
      //$("#team-members").select2({ width: 600 });
      /*$("#users-search").select2();*/
