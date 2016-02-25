@@ -26,9 +26,8 @@ public class ThymeLeafConfiguration {
         return new Java8TimeDialect();
     }
 
-    /*
     @Bean
-    static TemplateResolver defaultTemplateResolver() {
+    public TemplateResolver defaultTemplateResolver() {
         return iTemplateResolver(environment.acceptsProfiles("dev"));
     }
 
@@ -63,5 +62,4 @@ public class ThymeLeafConfiguration {
         }
         return resolver;
     }
-    */
 }

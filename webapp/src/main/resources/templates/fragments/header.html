@@ -71,13 +71,13 @@
                 </a>
                 <ul id="topgun-dropdown" class="">
                     <li>
-                        <a id="challenge" href="/app/challenge"> Challenge</a>
+                        <a id="challenge" th:href="@{/challenge}"> Challenge</a>
                     </li>
                     <li>
-                        <a id="challenge-standings" th:href="@{/app/display/{id} (id=${challengeSeason.getId()})}">Standings</a>
+                        <a id="challenge-standings" th:href="@{/display/{id} (id=${challengeSeason.getId()})}">Standings</a>
                     </li>
                     <li>
-                        <a  id="challenge-schedule" th:href="@{/app/schedule/{id} (id=${challengeSeason.getId()})}">Schedule</a>
+                        <a  id="challenge-schedule" th:href="@{/schedule/{id} (id=${challengeSeason.getId()})}">Schedule</a>
                     </li>
                 </ul>
             </li>
