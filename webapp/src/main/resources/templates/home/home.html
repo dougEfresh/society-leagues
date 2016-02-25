@@ -75,7 +75,7 @@
                        <span th:text="${stat.getHandicap().getDisplayName()}"  href="#"></span>
                    </td>
                    <td th:if="${season.isChallenge()}"   th:text="${#numbers.formatDecimal(stat.getPoints(),1,3)}"></td>
-                   <td th:if="${season.isTuesdayNine()}" th:text="${stat.getPoints().intValue()}"></td>
+                   <td th:if="${!season.isChallenge()}" th:text="${stat.getPoints().intValue()}"></td>
                    <td class="wins">
                        <span  th:text="${stat.getWins()}" href="#"></span>
                    </td>
