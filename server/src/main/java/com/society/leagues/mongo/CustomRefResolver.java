@@ -1,6 +1,5 @@
 package com.society.leagues.mongo;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.DBRef;
 import com.society.leagues.cache.CacheUtil;
@@ -10,9 +9,6 @@ import org.springframework.data.mongodb.core.convert.DbRefProxyHandler;
 import org.springframework.data.mongodb.core.convert.DbRefResolverCallback;
 import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentProperty;
-import org.springframework.util.ReflectionUtils;
-
-import java.lang.reflect.Field;
 
 
 public class CustomRefResolver extends DefaultDbRefResolver {

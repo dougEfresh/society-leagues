@@ -2,8 +2,6 @@ package com.society.leagues.mongo;
 
 import com.mongodb.DBObject;
 import com.society.leagues.cache.CacheUtil;
-import com.society.leagues.cache.CachedCollection;
-import com.society.leagues.client.api.domain.LeagueObject;
 import org.springframework.data.mapping.context.MappingContext;
 import org.springframework.data.mongodb.core.convert.DbRefResolver;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;

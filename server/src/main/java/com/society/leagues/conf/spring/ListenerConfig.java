@@ -1,13 +1,10 @@
-package com.society.leagues.conf;
+package com.society.leagues.conf.spring;
 
 import com.society.leagues.client.api.domain.LeagueObject;
-import com.society.leagues.client.api.domain.User;
 import com.society.leagues.listener.DaoListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.ThreadPoolExecutor;
 
 @Component
 @SuppressWarnings("unused")

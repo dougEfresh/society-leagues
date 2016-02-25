@@ -1,4 +1,4 @@
-package com.society.leagues;
+package com.society.leagues.exception;
 
 public class InvalidLeagueObject extends RuntimeException {
 

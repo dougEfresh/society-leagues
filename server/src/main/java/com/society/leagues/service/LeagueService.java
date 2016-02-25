@@ -1,6 +1,6 @@
 package com.society.leagues.service;
 
-import com.society.leagues.InvalidLeagueObject;
+import com.society.leagues.exception.InvalidLeagueObject;
 import com.society.leagues.cache.CachedCollection;
 import com.society.leagues.cache.CacheUtil;
 import com.society.leagues.client.api.domain.*;
