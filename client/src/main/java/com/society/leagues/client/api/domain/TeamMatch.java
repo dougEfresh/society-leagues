@@ -15,8 +15,13 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
 
 @SuppressWarnings("unused")
 public class TeamMatch extends LeagueObject {
@@ -172,6 +177,7 @@ public class TeamMatch extends LeagueObject {
         this.away = away;
     }
 
+    @JsonIgnore
     public LocalDateTime getMatchDate() {
         if (matchDate != null)
             return matchDate;
@@ -184,6 +190,14 @@ public class TeamMatch extends LeagueObject {
             }
         }
         return null;
+    }
+
+    @JsonIgnore
+    public LocalDateTime getDefaultMatchDate() {
+        if (getMatchDate() == null)
+            return LocalDateTime.now().withHour(7);
+
+        return getMatchDate().getHour()  == 0 ?  getMatchDate().withHour(7) : getMatchDate();
     }
 
     public void setMatchDate(LocalDateTime matchDate) {

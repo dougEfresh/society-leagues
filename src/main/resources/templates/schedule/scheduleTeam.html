@@ -7,7 +7,7 @@
         <!--/*@thymesVar id="user" type="com.society.leagues.client.api.domain.User"*/-->
         <!--/*@thymesVar id="t" type="com.society.leagues.client.api.domain.Team"*/-->
         <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
-        <div class="society-well">
+        <div class="society-well society-well-team-schedule" >
             <h4>
                 <div class="padding-bottom-10">
                     <a th:href="@{/schedule/{seasonId} (seasonId=${season.getId()})} ">
@@ -46,10 +46,10 @@
 
                     <tr th:class="${match.getAvailable(team).size() < 4 ? 'warning-available' : 'ok'}" th:each="match: ${teamMatches}">
                         <td th:class="${match.isPlayedOrAvailable(user) ? 'active' : 'not-available'}" >
-                            <a th:if="${user.isAdmin()}" th:text="${#temporals.format(match.getMatchDate(),'MM/dd')}"
+                            <a th:if="${user.isAdmin()}" th:text="${#temporals.format(match.getDefaultMatchDate(),'MM/dd h:mm')}"
                                th:href="@{/scores/{id}/{matchId} (id=${season.id},matchId=${match.id})}">
                             </a>
-                            <span th:if="${not user.isAdmin()}" th:text="${#temporals.format(match.getMatchDate(),'MM/dd')}">
+                            <span th:if="${not user.isAdmin()}" th:text="${#temporals.format(match.getDefaultMatchDate(),'MM/dd h:mm')}">
                             </span>
                         </td>
                         <td >

@@ -10,12 +10,13 @@
                     </a>
                    </tr>
                   <tr>
-                       <th colspan="4"><div style="text-align: center"><span class="" th:text="${date}"></span></div></th>
+                       <th colspan="5"><div style="text-align: center"><span class="" th:text="${date}"></span></div></th>
                    </tr>
                    </thead>
                    <tbody>
                    <tr th:class="${match.isHasResults() ? 'results' : 'no-results'}" th:each="match: ${teamMatches.get(date)}">
                        <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.TeamMatch"*/-->
+                       <td th:text="${#temporals.format(match.getDefaultMatchDate(), 'h:mm')}"  class="match-date"></td>
                        <td th:class="${team.getId().equals(match.getWinner().getId()) ? 'active team-name' : 'not-active team-name'}" >
                            <a th:href="@{/results/{matchId} (matchId=${match.getId()})}" th:text="${match.getWinner().getName()}"></a>
                        </td>
