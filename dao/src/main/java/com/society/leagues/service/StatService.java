@@ -1,7 +1,6 @@
 package com.society.leagues.service;
 
 import com.society.leagues.client.api.domain.*;
-import com.society.leagues.listener.DaoListener;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -69,6 +68,7 @@ public class StatService {
     }
 
     public List<Stat> getSeasonStats(final Season season, boolean cache) {
+        resultService.refresh();
         List<User> users = leagueService.findAll(User.class).stream().filter(User::isReal).filter(u->u.hasSeason(season)).collect(Collectors.toList());
         List<Stat> stats = new ArrayList<>(100);
         for (User user : users) {
@@ -114,8 +114,10 @@ public class StatService {
         } else {
             stats.add(buildSeasonStats(user,teams,season,results,null));
         }
-        if (season.isChallenge()) {
-            refreshMatchPoints(user,stats.stream().filter(s->s.getType() == StatType.USER_SEASON).findAny().get());
+
+        if (season.isChallenge() || season.isNine()) {
+            resultService.refresh();
+            refreshMatchPoints(user,stats.stream().filter(s->s.getType() == StatType.USER_SEASON).filter(s->s.getSeason().equals(season)).findAny().get(),season);
         }
         stats.addAll(this.handicapStats.get().stream()
                 .filter(st->st.getUser().equals(user))
@@ -149,15 +151,20 @@ public class StatService {
         return s;
     }
 
-    private void refreshMatchPoints(User user, Stat stat) {
-        resultService.refresh();
+    private void refreshMatchPoints(User user, Stat stat, Season season) {
         List<MatchPoints> points = resultService.matchPoints();
         double totalPoints = 0d;
         List<MatchPoints> pointsList = points.stream().parallel()
                 .filter(p-> p.getUser() != null && p.getUser().equals(user))
+                .filter(p-> p.getPlayerResult() != null)
+                .filter(p-> p.getPlayerResult().getSeason() != null)
+                .filter(p-> p.getPlayerResult().getSeason().equals(season))
                 .collect(Collectors.toList());
         for (MatchPoints matchPoints : pointsList) {
-            totalPoints += matchPoints.getWeightedAvg();
+            if (season.isChallenge())
+                totalPoints += matchPoints.getWeightedAvg();
+            else
+                totalPoints += matchPoints.getPoints();
         }
         stat.setPoints(totalPoints);
     }
@@ -173,7 +180,7 @@ public class StatService {
                         .collect(Collectors.toList())
         );
         if (team.isChallenge()) {
-          refreshMatchPoints(team.getChallengeUser(),stat);
+            refreshMatchPoints(team.getChallengeUser(),stat,team.getSeason());
         }
         team.setStats(stat);
     }

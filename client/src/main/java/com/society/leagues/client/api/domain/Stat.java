@@ -279,18 +279,13 @@ public class Stat {
     }
 
     public static Comparator<Stat> sortSeasonStats() {
-        return new Comparator<Stat>() {
-            @Override
-            public int compare(Stat o1, Stat o2) {
-                return  o2.getPoints().compareTo(o1.getPoints());
-            }
-        };
+        return (o1, o2) -> o2.getPoints().compareTo(o1.getPoints());
     }
      public static Comparator<Stat> sortUserStats() {
         return new Comparator<Stat>() {
             @Override
             public int compare(Stat o1, Stat o2) {
-                if (o1.getSeason().isChallenge())
+                if (!o1.getPoints().equals(o2.getPoints()))
                     return  o2.getPoints().compareTo(o1.getPoints());
 
                 if (o1.getSeason().isNine())

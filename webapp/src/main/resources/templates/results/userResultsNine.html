@@ -6,6 +6,7 @@
             <tr>
                 <th>Date</th>
                 <th>W/L</th>
+                <th>P</th>
                 <th>Score</th>
                 <th>Race</th>
                 <th>Opponent</th>
@@ -24,6 +25,7 @@
                     </span>
                     <span th:if="${!result.isWin()}" >L</span>
                 </td>
+                <td class="points" th:text="${result.getMatchPoints().getPoints()}"></td>
                 <td class="score" th:text="${result.getScore()}"></td>
                 <td class="race" th:text="${result.getRace()}"></td>
                 <td class="opponent" >

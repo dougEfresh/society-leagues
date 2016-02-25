@@ -135,16 +135,10 @@ public class PlayerResultResource {
                 .filter(PlayerResult::hasResults)
                 .collect(Collectors.toList());
 
-        List<PlayerResult> copyResults = new ArrayList<>(results.size());
-        results.stream().forEach(r -> copyResults.add(PlayerResult.copy(r)));
-        copyResults.parallelStream().forEach(pr -> pr.setReferenceUser(u));
-        copyResults.sort(
-                (playerResult, t1) -> t1.getMatchDate().compareTo(playerResult.getMatchDate())
-        );
-
-        if (s.isChallenge()) {
+        results.sort((playerResult, t1) -> t1.getMatchDate().compareTo(playerResult.getMatchDate()));
+        if (s.isChallenge() || s.isNine()) {
             List<MatchPoints> matchPointsList = resultService.matchPoints();
-            for (PlayerResult challengeResult : copyResults) {
+            for (PlayerResult challengeResult : results) {
                 challengeResult.setMatchPoints(
                         matchPointsList.parallelStream()
                                 .filter(
@@ -154,7 +148,7 @@ public class PlayerResultResource {
                                 .findFirst().orElse(null));
             }
         }
-        return copyResults;
+        return results;
     }
 
     @JsonView(PlayerResultSummary.class)

@@ -2,6 +2,7 @@ package com.society.leagues.service;
 
 import com.society.leagues.client.api.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -18,6 +19,7 @@ public class ResultService {
     List<MatchPoints> matchPointsCache = new ArrayList<>();
 
     @PostConstruct
+    @Scheduled(fixedRate = 1000*60*10, initialDelay = 1000*60*3)
     public void init() {
         refresh();
     }
@@ -64,65 +66,66 @@ public class ResultService {
                     .sorted((playerResult, t1) -> t1.getTeamMatch().getMatchDate().compareTo(playerResult.getTeamMatch().getMatchDate())).limit(7)
                     .collect(Collectors.toList());
 
-            calcPoints(challengeUser, results);
+            calcPoints(challengeUser, results,challengeUser.getSeasons().stream().filter(Season::isChallenge).findAny().get());
         }
-        /*
+
         Season nineSeason = leagueService.findAll(Season.class).stream().filter(Season::isActive).filter(s->s.getDivision() == Division.NINE_BALL_TUESDAYS).findAny().orElse(null);
-        if (nineSeason != null) {
-            for (User user : leagueService.findAll(User.class).stream()
-                    .filter(u -> u.getSeasons().contains(nineSeason))
-                    .collect(Collectors.toList())
-                    ) {
-                List<PlayerResult> results = allResults.stream().parallel()
-                        .filter(pr -> pr.hasUser(user))
-                        .filter(pr -> pr.getSeason().equals(nineSeason))
-                        .sorted((playerResult, t1) -> t1.getTeamMatch().getMatchDate().compareTo(playerResult.getTeamMatch().getMatchDate()))
-                        .collect(Collectors.toList());
-                calcPoints(user, results);
-            }
+        if (nineSeason == null)
+            return;
+
+        for (User user : leagueService.findAll(User.class).stream()
+                .filter(u -> u.hasSeason(nineSeason))
+                .collect(Collectors.toList())
+                ) {
+            List<PlayerResult> results = allResults.stream().parallel()
+                    .filter(pr -> pr.hasUser(user))
+                    .filter(pr -> pr.getSeason().equals(nineSeason))
+                    .sorted((playerResult, t1) -> t1.getTeamMatch().getMatchDate().compareTo(playerResult.getTeamMatch().getMatchDate()))
+                    .collect(Collectors.toList());
+            calcPoints(user, results, nineSeason);
         }
-        */
     }
 
-    private void calcPoints(User user, List<PlayerResult> results) {
-          double matchNum = 0;
-            for (PlayerResult challengeResult : results) {
-                MatchPoints mp = new MatchPoints();
-                int points = 1;
-                String[] r = challengeResult.getRace().split("/");
-                int handciapGames = 0;
-                if (r.length == 0) {
-                    handciapGames = 0;
-                } else {
-                    try {
-                        handciapGames = Integer.parseInt(r[0]);
-                    } catch (NumberFormatException e) {
-                    }
+    private void calcPoints(User user, List<PlayerResult> results, Season season) {
+        double matchNum = 0;
+        for (PlayerResult challengeResult : results) {
+            MatchPoints mp = new MatchPoints();
+            int points = 1;
+            String[] r = challengeResult.getRace().split("/");
+            int handciapGames = 0;
+            if (r.length == 0) {
+                handciapGames = 0;
+            } else {
+                try {
+                    handciapGames = Integer.parseInt(r[0]);
+                } catch (NumberFormatException e) {
                 }
-                if (challengeResult.isWinner(user)) {
-                    if (challengeResult.getLoserRacks() == 0) {
-                        points += 1;
-                    } else {
-                        if (challengeResult.getLoserHandicap().ordinal() < challengeResult.getWinnerHandicap().ordinal()) {
-                            if (challengeResult.getLoserRacks() - handciapGames <= 0)
-                                points += 1;
-                        }
-                    }
-                    points += 2;
-                } else {
-                    points += challengeResult.getWinnerRacks()-challengeResult.getLoserRacks() == 1 ? 1 : 0;
-                }
-
-                mp.setPoints(points);
-                mp.setWeightedAvg((double) points / (period / (period - matchNum)));
-                mp.setMatchNum(new Double(matchNum).intValue());
-                mp.setPlayerResult(challengeResult);
-                mp.setUser(user);
-                mp.setCalculation(String.format("(%s * (10-%s))/10", points, new Double(matchNum).intValue()));
-                matchNum++;
-                matchPointsCache.add(mp);
-
             }
+            if (challengeResult.isWinner(user)) {
+                if (challengeResult.getLoserRacks() == 0) {
+                    points += 1;
+                } else {
+                    if (challengeResult.getLoserHandicap().ordinal() < challengeResult.getWinnerHandicap().ordinal()) {
+                        if (challengeResult.getLoserRacks() - handciapGames <= 0)
+                            points += 1;
+                    }
+                }
+                points += 2;
+            } else {
+                points += challengeResult.getWinnerRacks()-challengeResult.getLoserRacks() == 1 ? 1 : 0;
+            }
+
+            mp.setPoints(points);
+            mp.setMatchNum(new Double(matchNum).intValue());
+            mp.setPlayerResult(challengeResult);
+            mp.setUser(user);
+            if (season.isChallenge()) {
+                mp.setWeightedAvg((double) points / (period / (period - matchNum)));
+                mp.setCalculation(String.format("(%s * (10-%s))/10", points, new Double(matchNum).intValue()));
+            }
+            matchNum++;
+            matchPointsCache.add(mp);
+        }
     }
 
     public List<MatchPoints> matchPoints() {
