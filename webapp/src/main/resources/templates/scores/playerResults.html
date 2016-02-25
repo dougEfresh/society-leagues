@@ -16,7 +16,7 @@
     </script>
 
     <form id="result-form" th:object="${results}" th:method="post" method="post"
-          th:action="@{/app/scores/{id}/{matchId}/{date} (id=${season.id},date=${date},matchId=${results.matchId})}" >
+          th:action="@{/scores/{id}/{matchId}/{date} (id=${season.id},date=${date},matchId=${results.matchId})}" >
                 <div class="well-title">
                     <h4><span th:text="${results.getName()}"></span></h4>
                 </div>

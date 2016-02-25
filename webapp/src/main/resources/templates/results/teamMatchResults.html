@@ -11,7 +11,7 @@
                         <span > Vs. </span>
                         <span class="badge badge-black" th:text="${teamMatch.getAway().getName()}"></span>
                         <a th:id="${'player-results-' + teamMatch.getId()}"
-                           th:href="@{/app/scores/{id}/{matchId} (id=${season.id},matchId=${teamMatch.getId()})}"
+                           th:href="@{/scores/{id}/{matchId} (id=${season.id},matchId=${teamMatch.getId()})}"
                            th:if="${user.isAdmin()}"><button type="button" class="btn btn-primary"> Edit</button> </a>
                     </div>
                 </div>

@@ -29,7 +29,7 @@
                   <!--/*@thymesVar id="team" type="com.society.leagues.client.api.domain.Team"*/-->
                   <tr th:id="'team-' + ${team.id}" th:each="team : ${teams}">
                       <td>
-                          <a th:text="${team.name}" th:href="@{/app/team/{id}(id=${team.id})}"></a>
+                          <a th:text="${team.name}" th:href="@{/team/{id}(id=${team.id})}"></a>
                       </td>
                       <td>
                           <span th:if="${team.isDisabled()}" class="badge badge-black">Disabled</span>

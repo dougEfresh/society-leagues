@@ -25,7 +25,7 @@
                 <td class="time" th:text="${#temporals.format(match.getMatchDate(),'H:mm')}"></td>
                 <td th:class="${user.equals(match.getWinner().getChallengeUser()) ? 'active team-name' : 'not-active team-name'}">
                     <a th:text="${match.getWinner().getChallengeUser().getName()}"
-                       th:href="@{/app/display/{seasonId}/topgun/{userId} (seasonId=${season.getId()},userId=${match.getWinner().getChallengeUser().getId()})}"
+                       th:href="@{/display/{seasonId}/topgun/{userId} (seasonId=${season.getId()},userId=${match.getWinner().getChallengeUser().getId()})}"
                     >
 
                     </a>
@@ -33,7 +33,7 @@
                 <td th:text="${match.getWinner().getChallengeUser().getHandicap(season).getDisplayName()}"></td>
                 <td th:class="${user.equals(match.getLoser().getChallengeUser()) ? 'active team-name' : 'not-active team-name'}">
                     <a th:text="${match.getLoser().getChallengeUser().getName()}"
-                       th:href="@{/app/display/{seasonId}/topgun/{userId} (seasonId=${season.getId()},userId=${match.getLoser().getChallengeUser().getId()})}">
+                       th:href="@{/display/{seasonId}/topgun/{userId} (seasonId=${season.getId()},userId=${match.getLoser().getChallengeUser().getId()})}">
                     </a>
                 </td>
                 <td th:text="${match.getLoser().getChallengeUser().getHandicap(season).getDisplayName()}"></td>

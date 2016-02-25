@@ -20,12 +20,12 @@
                     </td>
                     <td th:if="${challenge.getUserOpponent().equals(user)}" class="challenge-name">
                         <img  th:fragments="avatarUser" class="avatar img-responsive" th:src="${challenge.getUserChallenger().getAvatarUrl()}"/>
-                        <a th:href="@{/app/display/{seasonId}/user/{id} (id=${challenge.getUserChallenger().getId()},seasonId=${season.getId()})}">
+                        <a th:href="@{/display/{seasonId}/user/{id} (id=${challenge.getUserChallenger().getId()},seasonId=${season.getId()})}">
                         <span th:text="${challenge.getUserChallenger().getName()}"></span>
                     </td>
                     <td  th:if="${challenge.getUserChallenger().equals(user)}" class="challenge-name">
                         <img  th:fragments="avatarUser" class="avatar img-responsive"  th:src="${challenge.getUserOpponent().getAvatarUrl()}"/>
-                        <a th:href="@{/app/display/{seasonId}/user/{id} (id=${challenge.getUserOpponent().getId()},seasonId=${season.getId()})}">
+                        <a th:href="@{/display/{seasonId}/user/{id} (id=${challenge.getUserOpponent().getId()},seasonId=${season.getId()})}">
                         <span th:text="${challenge.getUserOpponent().getName()}"></span>
                     </td>
                     <td class="challenge-race">
@@ -33,7 +33,7 @@
                     </td>
 
                     <td class="challenge-actions">
-                        <a th:href="@{/app/challenge/cancel/{id} (id=${challenge.getId()})}">
+                        <a th:href="@{/challenge/cancel/{id} (id=${challenge.getId()})}">
                             <button class="btn btn-sm btn-danger btn-responsive challenge-upcoming-decline-button">
                                 <span class="glyphicon glyphicon-remove"></span>
                             </button>

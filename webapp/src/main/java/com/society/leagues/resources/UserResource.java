@@ -107,7 +107,7 @@ public class UserResource extends BaseController {
             t.setDisabled(!t.isDisabled());
             teamApi.save(t);
         }
-        return "redirect:/app/user/" + id;
+        return "redirect:/user/" + id;
     }
 
 
@@ -135,7 +135,7 @@ public class UserResource extends BaseController {
          u.getUserProfile().setReceiveBroadcasts(receiveBroadcasts);
          u.getUserProfile().setBlockedDates(blockedDates);
          userApi.modifyProfile(u);
-         return "redirect:/app/user/" + id;
+         return "redirect:/user/" + id;
      }
 
     @RequestMapping(value = {"/user/{id}"}, method = RequestMethod.POST)
@@ -147,7 +147,7 @@ public class UserResource extends BaseController {
             User u = userApi.modify(user);
             model.addAttribute("save","success");
             processEditUser(u,model);
-            return "redirect:/app/user/" + u.getId();
+            return "redirect:/user/" + u.getId();
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
             model.addAttribute("save","error");

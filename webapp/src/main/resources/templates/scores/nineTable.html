@@ -15,7 +15,7 @@
                         <tr th:id="${result.getId()}" th:each="result, rowStat: *{playerResults}">
                             <!--/*@thymesVar id="match" type="com.society.leagues.client.api.domain.PlayerResult"*/-->
                             <td class="delete" th:id="'delete-player-result-' + ${result.getId()}">
-                                <a th:href="@{/app/scores/{id}/{matchId}/{resultId}/delete/{date}
+                                <a th:href="@{/scores/{id}/{matchId}/{resultId}/delete/{date}
                                     (id=${season.id},date=${date},matchId=${results.matchId},resultId=${result.id})}">
                                     <h4><span class="label label-danger"><span class="glyphicon glyphicon-remove"></span></span></h4>
                                 </a>

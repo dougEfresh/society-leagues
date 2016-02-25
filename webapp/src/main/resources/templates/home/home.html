@@ -22,14 +22,14 @@
                <tr th:each="match : ${upcomingMatches}" >
                    <td class="name">
                        <a th:if="${match.getSeason().isChallenge()}" th:text="${match.getOpponent(user).getName()}"
-                          th:href="@{/app/display/{seasonId}/user/{userId} (seasonId=${match.getSeason().getId()},userId=${match.getChallenger().getId()})}">
+                          th:href="@{/display/{seasonId}/user/{userId} (seasonId=${match.getSeason().getId()},userId=${match.getChallenger().getId()})}">
                        </a>
                        <a th:if="${!match.getSeason().isChallenge()}" th:text="${match.getOpponent(user).getName()}"
-                          th:href="@{/app/display/{seasonId}/{teamId} (seasonId=${match.getSeason().getId()},teamId=${match.getOpponent(user).getId()})}">
+                          th:href="@{/display/{seasonId}/{teamId} (seasonId=${match.getSeason().getId()},teamId=${match.getOpponent(user).getId()})}">
                        </a>
                    </td>
                    <td class="short-date">
-                       <a th:href="@{/app/schedule/{seasonId} (seasonId=${match.getSeason().getId()})}">
+                       <a th:href="@{/schedule/{seasonId} (seasonId=${match.getSeason().getId()})}">
                            <!--<span th:text="${#temporals.format(match.getMatchDate(), 'MMM dd H:mm')}" class="badge badge-date"></span>-->
                            <span th:if="${match.getSeason().isChallenge()}" th:text="${#temporals.format(match.getMatchDate(), 'MMM dd h:mm')}" ></span>
                            <span th:if="${!match.getSeason().isChallenge()}" th:text="${#temporals.format(match.getMatchDate(), 'MMM dd')}" ></span>
@@ -44,7 +44,7 @@
       <div th:if="${topPlayers ne null}" th:each="season : ${topPlayers.keySet()}" class="society-well">
           <div class="well-title">
               <h4>
-                  <a th:href="@{/app/display/{id} (id=${season.getId()})}" >
+                  <a th:href="@{/display/{id} (id=${season.getId()})}" >
                       <i class="fa fa-trophy"></i>
                       <span id="top-players">Top Players - </span>
                       <span th:text="${season.getDayName()}"></span>
@@ -67,7 +67,7 @@
                <tr th:each="stat : ${topPlayers.get(season)}" >
                    <td class="name" >
                        <img   class="avatar img-responsive" th:if="${stat ne null}" th:src="${stat.getUser().getAvatarUrl()}"/>
-                       <a th:href="@{/app/display/{seasonId}/user/{userId} (seasonId=${stat.getSeason().getId()},userId=${stat.getUser().getId()})}">
+                       <a th:href="@{/display/{seasonId}/user/{userId} (seasonId=${stat.getSeason().getId()},userId=${stat.getUser().getId()})}">
                            <span th:text="${stat.getUser().getName()}"></span>
                        </a>
                    </td>
@@ -112,7 +112,7 @@
                <tr th:each="stat : ${userStats}" >
                    <td class="name" >
                        <a th:id="'stats-' + ${stat.getSeason().getId()}" th:text="${stat.getSeason().getDayName()}"
-                          th:href="@{/app/stats/{id} (id=${user.getId()})}" ></a>
+                          th:href="@{/stats/{id} (id=${user.getId()})}" ></a>
                    </td>
                    <td class="handicap">
                        <span th:text="${stat.getHandicap().getDisplayName()}"  href="#"></span>

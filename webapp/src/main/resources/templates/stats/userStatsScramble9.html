@@ -28,7 +28,7 @@
                     <tr th:each="stat : ${scrambleNineStats}">
                         <!--@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"-->
                         <td >
-                            <a th:text="${stat.getSeason().getFormattedName()}" th:href="@{/app/stats/{id}/{sId} (id=${statUser.id},sId=${stat.getSeason().id})}"></a>
+                            <a th:text="${stat.getSeason().getFormattedName()}" th:href="@{/stats/{id}/{sId} (id=${statUser.id},sId=${stat.getSeason().id})}"></a>
                         </td>
                         <td th:text="${stat.getHandicapDisplay()}"> </td>
                         <td th:text="${stat.getTeam().getName()}"> </td>

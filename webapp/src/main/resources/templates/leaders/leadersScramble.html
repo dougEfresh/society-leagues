@@ -23,12 +23,12 @@
                 <td>
                     <img class="avatar img-responsive"  th:src="${stat.getUser().getAvatarUrl()}"/>
                     <a th:id="${'leader-user-link-' + stat.getUser().getId()}"
-                       th:href="@{/app/display/{id}/{teamId}/{userId} (id=${stat.getSeason().getId()}, teamId=${stat.getTeam().getId()}, userId=${stat.getUser().getId()})}"
+                       th:href="@{/display/{id}/{teamId}/{userId} (id=${stat.getSeason().getId()}, teamId=${stat.getTeam().getId()}, userId=${stat.getUser().getId()})}"
                        th:text="${stat.getUser().getName()}"></a>
                 </td>
                 <td>
                     <a href="#"
-                       th:href="@{/app/display/{id}/{teamId} (id=${stat.getSeason().getId()}, teamId=${stat.getTeam().getId()})}"
+                       th:href="@{/display/{id}/{teamId} (id=${stat.getSeason().getId()}, teamId=${stat.getTeam().getId()})}"
                        th:text="${stat.getTeam().getName()}"></a>
                 </td>
                 <td th:text="${stat.getHandicapDisplay()}"></td>

@@ -8,7 +8,7 @@
             <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="/app/home">Society</a>
-        <a th:if="${user ne null}"  th:href="@{/app/user/{id} (id=${user.getId()})}" >
+        <a th:if="${user ne null}"  th:href="@{/user/{id} (id=${user.getId()})}" >
             <img th:if="${user ne null}" class="avatar avatar-menu img-responsive" th:src="${user.getAvatarUrl()}"></a>
     </div>
     <!-- /.navbar-header -->
@@ -96,21 +96,21 @@
                         <ul th:id="${'team-menu-' + team.getId()}" class="">
                             <li style="list-style: none">
                                 <a th:id="'team-display-link-' + ${team.getId()}"
-                                   th:href="@{/app/display/{id}/{teamId} (id=${team.getSeason().getId()},teamId=${team.getId()})}"
+                                   th:href="@{/display/{id}/{teamId} (id=${team.getSeason().getId()},teamId=${team.getId()})}"
                                 >Standings</a>
                             </li>
                             <li style="list-style: none">
-                                <a th:href="@{/app/schedule/team/{id} (id=${team.getId()})}">Schedule</a>
+                                <a th:href="@{/schedule/team/{id} (id=${team.getId()})}">Schedule</a>
                             </li>
                             <li style="list-style: none">
-                                <a th:href="@{/app/leaders/{id} (id=${team.getSeason().getId()})}">Leaders</a>
+                                <a th:href="@{/leaders/{id} (id=${team.getSeason().getId()})}">Leaders</a>
                             </li>
                         </ul>
                     </li>
                 </ul>
             </li>
             <li >
-                <a id="my-stats" th:if="${user ne null}" th:href="@{/app/stats/{id} (id=${user.getId()})}">
+                <a id="my-stats" th:if="${user ne null}" th:href="@{/stats/{id} (id=${user.getId()})}">
                     <i  th:if="${user ne null}" class="fa fa-bar-chart"></i> My Stats
                 </a>
                 <a  th:if="${user eq null}" href="#">
@@ -119,7 +119,7 @@
             </li>
 
              <li >
-                <a id="my-profile" th:if="${user ne null}" th:href="@{/app/user/{id} (id=${user.getId()})}">
+                <a id="my-profile" th:if="${user ne null}" th:href="@{/user/{id} (id=${user.getId()})}">
                     <i  th:if="${user ne null}" class="fa fa-server"></i> My Pofile
                 </a>
                 <a  th:if="${user eq null}" href="#">

@@ -18,7 +18,7 @@
                     <tr th:each="stat : ${topgunStats}">
                         <!--@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"-->
                         <td th:if="${!stat.isLifeTime()}" >
-                            <a th:href="@{/app/stats/{id}/{sId} (id=${statUser.id},sId=${stat.getSeason().id})}">
+                            <a th:href="@{/stats/{id}/{sId} (id=${statUser.id},sId=${stat.getSeason().id})}">
                                 Top Gun
                             </a>
                         </td>

@@ -10,7 +10,7 @@
         <div class="society-well">
             <h4>
                 <div class="padding-bottom-10">
-                    <a th:href="@{/app/schedule/{seasonId} (seasonId=${season.getId()})} ">
+                    <a th:href="@{/schedule/{seasonId} (seasonId=${season.getId()})} ">
                         <span class="label label-primary">See Full Schedule</span></a>
                     <a  th:if="${team.hasUser(user)}" th:href="${'#available'} ">
                         <span class="label label-primary">Availability</span></a>
@@ -47,7 +47,7 @@
                     <tr th:class="${match.getAvailable(team).size() < 4 ? 'warning-available' : 'ok'}" th:each="match: ${teamMatches}">
                         <td th:class="${match.isPlayedOrAvailable(user) ? 'active' : 'not-available'}" >
                             <a th:if="${user.isAdmin()}" th:text="${#temporals.format(match.getMatchDate(),'MM/dd')}"
-                               th:href="@{/app/scores/{id}/{matchId} (id=${season.id},matchId=${match.id})}">
+                               th:href="@{/scores/{id}/{matchId} (id=${season.id},matchId=${match.id})}">
                             </a>
                             <span th:if="${not user.isAdmin()}" th:text="${#temporals.format(match.getMatchDate(),'MM/dd')}">
                             </span>
@@ -56,7 +56,7 @@
                             <span th:text="${match.getAvailable(team).size()}"></span>
                         </td>
                         <td>
-                            <a th:href="@{/app/results/{matchId} (matchId=${match.getId()})}"
+                            <a th:href="@{/results/{matchId} (matchId=${match.getId()})}"
                                th:text="${match.getOpponent(team).getName()}"></a>
                         </td>
                         <td th:if="${!season.isNine()}" th:text="${match.homeOrAway(team)}"></td>
