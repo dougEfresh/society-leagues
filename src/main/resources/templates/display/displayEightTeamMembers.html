@@ -5,6 +5,7 @@
             <thead>
             <tr>
                 <th>Player</th>
+                <th></th>
                 <th>HC</th>
                 <th>W</th>
                 <th>L</th>
@@ -16,12 +17,17 @@
             <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
             <!--/*@thymesVar id="team" type="com.society.leagues.client.api.domain.Team"*/-->
             <tr th:id="'team-member-' + ${stat.getUser().getId()}" th:each="stat : ${displayMemberStats}">
+
+
                 <td th:class="${stat.getUser().equals(displayUser) ? ' active schedule-link name' : 'schedule-link name'}">
                     <img  th:fragments="avatarUser" class="avatar img-responsive" th:if="${stat ne null}" th:src="${stat.getUser().getAvatarUrl()}"/>
                     <a th:href="@{/display/{id}/{teamId}/{userId} (id=${season.getId()},teamId=${team.getId()},userId=${stat.getUser().getId()})}">
                        <span th:text="${stat.getUser().getName()}"></span>
                     </a>
                 </td>
+                <td><a th:href="@{/stats/{id} (id=${stat.getUser().getId()})}">
+                <i  class="fa fa-bar-chart"></i>
+                </a>
                 <td th:text="${stat.getHandicapDisplay()}"></td>
                 <td th:text="${stat.getWins()}"></td>
                 <td th:text="${stat.getLoses()}"></td>
