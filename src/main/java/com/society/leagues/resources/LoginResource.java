@@ -2,12 +2,19 @@ package com.society.leagues.resources;
 
 import com.society.leagues.client.api.UserApi;
 import com.society.leagues.client.api.domain.User;
-import org.apache.catalina.connector.RequestFacade;
+import com.society.leagues.domain.FacebookResponse;
+import com.stormpath.sdk.account.Account;
+import com.stormpath.sdk.provider.FacebookProviderData;
+import com.stormpath.sdk.provider.ProviderAccountRequest;
+import com.stormpath.sdk.provider.ProviderAccountResult;
+import com.stormpath.sdk.provider.Providers;
+import com.stormpath.sdk.servlet.application.ApplicationResolver;
 import org.apache.catalina.connector.ResponseFacade;
 import org.slf4j.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,11 +27,8 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.websocket.server.PathParam;
-import java.util.HashMap;
-import java.util.Map;
 
-//@Controller
+@Controller
 public class LoginResource  {
 
     @Value("${client.api.endpoint}")
@@ -32,10 +36,23 @@ public class LoginResource  {
     static Logger logger = org.slf4j.LoggerFactory.getLogger(LoginResource.class);
     RestTemplate restTemplate = new RestTemplate();
     @Autowired UserApi userApi;
-
+    @Autowired ServerProperties serverProperties;
     @PostConstruct
     public void init() {
 
+    }
+
+    @RequestMapping(value = {"/fb"}, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public FacebookResponse fbLoginPage(@RequestBody FacebookResponse fbResponse, HttpServletRequest request) {
+        ProviderAccountRequest fbAcount = Providers.FACEBOOK.account()
+                .setAccessToken(fbResponse.getAuthResponse().getAccessToken())
+                .build();
+
+        ProviderAccountResult result = ApplicationResolver.INSTANCE.getApplication(request).getAccount(fbAcount);
+        Account account = result.getAccount();
+        FacebookProviderData providerData = (FacebookProviderData) account.getProviderData();
+        return fbResponse;
     }
 
     @RequestMapping(value = {"/help"}, method = RequestMethod.GET)

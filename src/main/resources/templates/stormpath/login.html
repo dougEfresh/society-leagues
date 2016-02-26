@@ -28,6 +28,21 @@
     FB.login(function(response) {
       if (response.status === 'connected') {
         console.log('The user has logged in!');
+          response['_csrf'] = $( "input[name*='_csrf']" ).val();
+          $.ajax({
+                    processData: false,
+              headers: { 'X-CSRF-TOKEN':  $( "input[name*='_csrf']" ).val()},
+              contentType: 'application/json',
+                    method: 'post',
+                    url: '/app/fb',
+                    data: JSON.stringify(response),
+                    success: function (d) {
+                        console.log(JSON.stringify(d));
+                        window.location = d.redirect;
+                    },
+                    dataType: 'json'
+                });
+
         FB.api('/me', function(response) {
           console.log('Good to see you, ' + response.name + '.');
         });
