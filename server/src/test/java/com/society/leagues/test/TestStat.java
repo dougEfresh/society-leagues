@@ -33,9 +33,6 @@ public class TestStat  extends BaseTest {
             List<Stat> stats = statApi.getUserStatsSummary(user.getId());
             assertTrue(stats.stream().filter(s->s.getUser() == null).count() == 0);
             assertTrue(stats.stream().filter(s->!s.getUser().equals(user)).count() == 0);
-            for (Stat stat : stats) {
-                assertTrue(stat.getMatches() == 0);
-            }
         }
     }
 
