@@ -34,7 +34,7 @@ import java.util.List;
 @SpringApplicationConfiguration(classes = {Main.class})
 @WebIntegrationTest(randomPort = true,value = {"use.local=true"})
 @ActiveProfiles(profiles = "test")
-public class BaseTest {
+public abstract class BaseTest {
 
     public static Logger logger = Logger.getLogger(TestUser.class);
     @Value("${local.server.port}")
@@ -69,20 +69,11 @@ public class BaseTest {
 
     @After
     public void purgeMatches() {
-        /*
+        login("admin.admin@example.com","abc123");
         List<Season> seasons = seasonApi.get();
         for (Season season : seasons) {
-            List<TeamMatch> matches = teamMatchApi.matchesBySeasonList(season.getId());
-            for (TeamMatch teamMatch : matches) {
-                teamMatchApi.delete(teamMatch.getId());
-            }
+            seasonApi.deleteSchedule(season.getId());
         }
-        */
-    }
-
-    @Test
-    public void dummyTest() {
-
     }
 
     public void login(String user, String pass) {
