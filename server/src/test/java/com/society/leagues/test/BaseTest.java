@@ -14,6 +14,7 @@ import com.society.leagues.service.UserService;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +34,7 @@ import java.util.List;
 @SpringApplicationConfiguration(classes = {Main.class})
 @WebIntegrationTest(randomPort = true,value = {"use.local=true"})
 @ActiveProfiles(profiles = "test")
-public abstract class BaseTest {
+public class BaseTest {
 
     public static Logger logger = Logger.getLogger(TestUser.class);
     @Value("${local.server.port}")
@@ -68,6 +69,7 @@ public abstract class BaseTest {
 
     @After
     public void purgeMatches() {
+        /*
         List<Season> seasons = seasonApi.get();
         for (Season season : seasons) {
             List<TeamMatch> matches = teamMatchApi.matchesBySeasonList(season.getId());
@@ -75,6 +77,12 @@ public abstract class BaseTest {
                 teamMatchApi.delete(teamMatch.getId());
             }
         }
+        */
+    }
+
+    @Test
+    public void dummyTest() {
+
     }
 
     public void login(String user, String pass) {
