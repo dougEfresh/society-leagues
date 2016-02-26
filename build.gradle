@@ -47,6 +47,8 @@ dependencies {
 
     //Test
     testCompile 'org.springframework.boot:spring-boot-starter-test'
+
+    compile 'com.stormpath.spring:stormpath-default-spring-boot-starter:1.0.RC8.4'
 }
 
 task wrapper(type: Wrapper) {

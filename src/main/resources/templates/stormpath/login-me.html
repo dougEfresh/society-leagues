@@ -1,0 +1,34 @@
+<!DOCTYPE html  "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorator="layout">
+    <!--/*@thymesVar id="user" type="com.society.leagues.client.api.domain.User"*/-->
+    <div id="login-app" layout:fragment="content">
+        <!--<div class="container fluid container-fluid wrap">-->
+        <div class="login-container well col-md-5 col-sm-5">
+            <div th:if="${error ne null}" class="alert alert-danger alert-dismissible" role="alert" >
+                <strong>Error!</strong> <pre th:text="${error}"></pre>
+            </div>
+               <form method="post" th:action="@{${form.action}}" role="form" class="login-form form-horizontal">
+                   <input name="next" type="hidden" th:value="${form.next}" th:if="${not #strings.isEmpty(form.next)}"/>
+
+                   <input th:each="field : ${form.hiddenFields}" th:name="${field.name}" th:type="${field.type}" th:value="${field.value}"/>
+
+                   <div th:each="field : ${form.visibleFields}" form-group="true" th:class="'form-group group-' + ${field.name}">
+                       <label th:class="${social ? 'col-sm-12' : 'col-sm-4'}" th:text="#{${field.label}}">|Field label|</label>
+
+                       <div class="col-sm-8">
+                           <input th:name="${field.name}" th:value="${field.value}" th:type="${field.type}"
+                                  th:placeholder="#{${field.placeholder}}"
+                                  th:autofocus="${field.autofocus}"
+                                  th:required="${field.required}" class="form-control"/>
+                       </div>
+                   </div>
+
+                   <div>
+                       <button type="submit" class="login btn btn-login btn-sp-green"
+                               th:text="#{stormpath.web.login.form.button.value}">|Login|</button>
+                   </div>
+               </form>
+        </div>
+    </div>
+</div>
