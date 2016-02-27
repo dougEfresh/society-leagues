@@ -53,9 +53,9 @@ public class ScoreResource extends BaseController {
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/add/{date}"}, method = RequestMethod.GET)
-    public void addTeamMatch(@PathVariable String seasonId, @PathVariable String date, Model model, HttpServletResponse response) throws IOException {
+    public String addTeamMatch(@PathVariable String seasonId, @PathVariable String date) throws IOException {
         teamMatchApi.add(seasonId,date);
-        response.sendRedirect("/app/scores/" + seasonId + "?date="+ date);
+        return "redirect:/scores/" + seasonId + "?date=" + date;
     }
 
     @RequestMapping(value = {"/scores/{seasonId}/{matchId}/delete/{date}"}, method = RequestMethod.GET)
