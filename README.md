@@ -8,3 +8,4 @@ Build status: [![Build Status](https://travis-ci.org/dougEfresh/society-leagues.
 
 ## Building and Running
 
+# society-leagues-client
