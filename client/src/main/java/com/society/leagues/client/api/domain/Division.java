@@ -52,4 +52,8 @@ public enum Division {
     public String getDay() {
         return day;
     }
+
+    public boolean isEight() {
+        return this == MIXED_MONDAYS_MIXED || this == EIGHT_BALL_THURSDAYS || this == EIGHT_BALL_WEDNESDAYS;
+    }
 }

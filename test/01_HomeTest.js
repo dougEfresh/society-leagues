@@ -15,10 +15,6 @@ casper.test.begin('Test Home Page', function suite(test) {
     testlib.login(test,u.login);
 
     casper.then(function() {
-        test.assertExists('#name',"Pass Name");
-    });
-
-    casper.then(function() {
         test.assertExists('#home-link', "Home Link");
     });
 

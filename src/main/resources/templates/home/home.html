@@ -64,9 +64,10 @@
                </thead>
                <tbody>
                <tr th:each="stat : ${topPlayers.get(season)}" >
-                   <td class="name" >
+                   <td >
+
                        <img   class="avatar img-responsive" th:if="${stat ne null}" th:src="${stat.getUser().getAvatarUrl()}"/>
-                       <a th:href="@{/display/{seasonId}/user/{userId} (seasonId=${stat.getSeason().getId()},userId=${stat.getUser().getId()})}">
+                       <a  class="name" th:href="@{/display/{seasonId}/user/{userId} (seasonId=${stat.getSeason().getId()},userId=${stat.getUser().getId()})}">
                            <span th:text="${stat.getUser().getName()}"></span>
                        </a>
                    </td>

@@ -281,10 +281,11 @@ public class Stat {
     public static Comparator<Stat> sortSeasonStats() {
         return (o1, o2) -> o2.getPoints().compareTo(o1.getPoints());
     }
-     public static Comparator<Stat> sortUserStats() {
-        return new Comparator<Stat>() {
+
+    public static <T extends Stat> Comparator<T> sortUserStats() {
+        return new Comparator<T>() {
             @Override
-            public int compare(Stat o1, Stat o2) {
+            public int compare(T o1, T o2) {
                 if (!o1.getPoints().equals(o2.getPoints()))
                     return  o2.getPoints().compareTo(o1.getPoints());
 

@@ -57,8 +57,6 @@ public class BaseController {
         model.addAttribute("allSeasons",seasons);
         model.addAttribute("challengeSeason",seasons.stream().filter(Season::isChallenge).findFirst().orElse(null));
         model.addAttribute("user", user);
-        model.addAttribute("userTeams", teamApi.userTeams(user.getId()));
-        model.addAttribute("userStats", statApi.getUserStatsSummary(user.getId()));
         model.addAttribute("allUsers", userApi.all().parallelStream().filter(User::isReal).collect(Collectors.toList()));
         model.addAttribute("activeUsers", userApi.all().parallelStream().filter(User::isReal).filter(u->u.getSeasons().stream().filter(Season::isActive).count() > 0).collect(Collectors.toList()));
         model.addAttribute("adminSeason",adminSeason);

@@ -4,7 +4,6 @@
         <table id="table-leaders" class="table table-stats">
             <thead>
             <tr>
-                <th>#</th>
                 <th>Player</th>
                 <th>S</th>
                 <th>Team</th>
@@ -17,7 +16,6 @@
             <tbody>
             <tr th:each="stat : ${stats}">
                 <!--/*@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"*/-->
-                <td th:text="${stat.getRank()}"></td>
                 <td>
                     <img class="avatar img-responsive"  th:src="${stat.getUser().getAvatarUrl()}"/>
                     <a th:id="${'leader-user-link-' + stat.getUser().getId()}"

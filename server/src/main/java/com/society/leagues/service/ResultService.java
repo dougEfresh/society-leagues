@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Component
@@ -53,36 +55,40 @@ public class ResultService {
                         .filter(pr -> pr.getMatchDate() != null)
                         .filter(PlayerResult::hasResults)
                         .collect(Collectors.toList());
+        Season nineSeason = leagueService.findAll(Season.class).stream().filter(Season::isActive).filter(s->s.getDivision() == Division.NINE_BALL_TUESDAYS).findAny().orElse(null);
+        Stream<User> users = leagueService.findAll(User.class).stream();
+        Stream<User> challengeUsers = users.filter(User::isChallenge);
+        Stream<User> nineUsers = users.filter(u->u.hasSeason(nineSeason));
+        Stream<User> eightUsers =users.filter(u->u.getSeasons().stream().filter(s->s.getDivision().isEight()).count() > 0);
 
-        for(User challengeUser: leagueService.findAll(User.class).stream()
-                .filter(User::isChallenge)
-                .collect(Collectors.toList())
-                ) {
+        challengeUsers.forEach(user -> {
             List<PlayerResult> results = allResults.stream().parallel()
                     .filter(r -> r.getSeason().isChallenge())
-                    .filter(pr -> pr.hasUser(challengeUser)).filter(PlayerResult::hasResults)
+                    .filter(pr -> pr.hasUser(user)).filter(PlayerResult::hasResults)
                     .filter(pr -> pr.getMatchDate().isAfter(tenWeeks))
                     .sorted((playerResult, t1) -> t1.getTeamMatch().getMatchDate().compareTo(playerResult.getTeamMatch().getMatchDate())).limit(7)
                     .collect(Collectors.toList());
+            calcPoints(user, results,user.getSeasons().stream().filter(Season::isChallenge).findAny().get());
+        });
 
-            calcPoints(challengeUser, results,challengeUser.getSeasons().stream().filter(Season::isChallenge).findAny().get());
-        }
-
-        Season nineSeason = leagueService.findAll(Season.class).stream().filter(Season::isActive).filter(s->s.getDivision() == Division.NINE_BALL_TUESDAYS).findAny().orElse(null);
-        if (nineSeason == null)
-            return;
-
-        for (User user : leagueService.findAll(User.class).stream()
-                .filter(u -> u.hasSeason(nineSeason))
-                .collect(Collectors.toList())
-                ) {
+        nineUsers.forEach(user-> {
             List<PlayerResult> results = allResults.stream().parallel()
                     .filter(pr -> pr.hasUser(user))
                     .filter(pr -> pr.getSeason().equals(nineSeason))
                     .sorted((playerResult, t1) -> t1.getTeamMatch().getMatchDate().compareTo(playerResult.getTeamMatch().getMatchDate()))
                     .collect(Collectors.toList());
             calcPoints(user, results, nineSeason);
-        }
+        });
+        /*
+        eightUsers.forEach(user-> {
+            List<PlayerResult> results = allResults.stream().parallel()
+                    .filter(pr -> pr.hasUser(user))
+                    .filter(pr -> pr.getSeason().equals(nineSeason))
+                    .sorted((playerResult, t1) -> t1.getTeamMatch().getMatchDate().compareTo(playerResult.getTeamMatch().getMatchDate()))
+                    .collect(Collectors.toList());
+            calcPoints(user, results, nineSeason);
+        });
+        */
     }
 
     private void calcPoints(User user, List<PlayerResult> results, Season season) {
@@ -170,18 +176,6 @@ public class ResultService {
 
         leagueService.save(returned);
         return returned;
-    }
-
-    public PlayerResult createOrModify(PlayerResult playerResult) {
-        if (playerResult.getSeason().isChallenge()) {
-            TeamMatch tm = playerResult.getTeamMatch();
-            tm.setAwayRacks(playerResult.getAwayRacks());
-            tm.setHomeRacks(playerResult.getHomeRacks());
-            tm.setSetAwayWins(playerResult.getAwayRacks());
-            tm.setSetHomeWins(playerResult.getHomeRacks());
-            leagueService.save(tm);
-        }
-        return leagueService.save(playerResult);
     }
 
     public PlayerResult add(TeamMatch teamMatch) {

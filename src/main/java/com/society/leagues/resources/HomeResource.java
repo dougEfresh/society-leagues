@@ -78,6 +78,7 @@ public class HomeResource extends BaseController {
         if (user.isChallenge()) {
             challengeResource.challenge(user,ChallengeResource.broadcast.getId(),LocalDate.now().toString(),model,response);
         }
+        model.addAttribute("userTeams", teamApi.userTeams(user.getId()));
         return "home/home";
     }
 }

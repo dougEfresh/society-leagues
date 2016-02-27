@@ -4,6 +4,7 @@
         <table id="table-leaders" class="table table-stats">
             <thead>
             <tr>
+                <th>#</th>
                 <th>Name</th>
                 <th>S</th>
                 <th>Team</th>
@@ -19,9 +20,10 @@
             <tbody>
             <tr th:each="stat : ${stats}">
                 <!--/*@thymesVar id="stat" type="com.society.leagues.client.api.domain.Stat"*/-->
-                <td>
+                <td th:text="${stat.getRank()}"></td>
+                <td class="name">
                     <img class="avatar img-responsive"  th:src="${stat.getUser().getAvatarUrl()}"/>
-                    <a th:id="${'leader-user-link-' + stat.getUser().getId()}"
+                    <a class="name" th:id="${'leader-user-link-' + stat.getUser().getId()}"
                        th:href="@{/display/{id}/{teamId}/{userId} (id=${stat.getSeason().getId()}, teamId=${stat.getTeam().getId()}, userId=${stat.getUser().getId()})}"
                        th:text="${stat.getUser().getName()}"></a>
                 </td>
@@ -30,7 +32,7 @@
                     <i  class="fa fa-bar-chart"></i>
                 </a>
             </td>
-                <td>
+                <td class="name">
                     <a href="#"
                        th:href="@{/display/{id}/{teamId} (id=${stat.getSeason().getId()}, teamId=${stat.getTeam().getId()})}"
                        th:text="${stat.getTeam().getName()}"></a>
