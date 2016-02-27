@@ -242,63 +242,6 @@ var playerResultTest = function(test,season) {
     })
 };
 
-var scoreSeasonTest = function(test) {
-    casper.then(function () {
-        test.assertExists("#matches");
-    });
-
-
-    casper.then(function () {
-        test.assertNotExists("#table-player-results-admin");
-    });
-
-    casper.then(function () {
-        test.assertExists("#team-match-results");
-    });
-
-    casper.then(function () {
-        test.assertEval(function() {
-            return __utils__.findAll("#team-match-results > tbody > tr").length > 0;
-        }, "found team match results");
-    });
-
-    casper.then(function () {
-        teamMatchCount = this.evaluate(function() {
-            return __utils__.findAll("#team-match-results > tbody > tr").length
-        });
-    });
-
-    casper.then(function () {
-        this.clickLabel('Add New');
-    });
-
-    casper.then(function () {
-        var newCnt  = this.evaluate(function() {
-            return __utils__.findAll("#team-match-results > tbody > tr").length
-        });
-        test.assert(newCnt - teamMatchCount == 1, 'Added a team match');
-        teamMatchCount = newCnt;
-    });
-
-    casper.then(function () {
-        var rows  = this.evaluate(function() {
-            return __utils__.findAll("#team-match-results > tbody > tr")
-        });
-        teamMatchId = rows[0].id;
-    });
-
-    casper.then(function () {
-        test.assertExists('#delete-' + teamMatchId);
-    });
-
-    casper.then(function () {
-        this.click('#delete-' + teamMatchId);
-    });
-
-    casper.then(function () {
-        test.assertNotExists('#delete-' + teamMatchId);
-    });
-};
 
 var scoreSubmitTest = function(test,season) {
     casper.then(function () {

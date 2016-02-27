@@ -7,6 +7,7 @@ var homeRacks = 0;
 var awayRacks = 0;
 var homeForfeits = 0;
 var awayForfeits = 0;
+var seasons = require('./seasons.json');
 
 function getStats() {
     var rows = document.querySelectorAll('#table-team-standings > tbody > tr');
@@ -30,6 +31,63 @@ function getStats() {
     }
     return stats;
 }
+var scoreSeasonTest = function(test) {
+    casper.then(function () {
+        test.assertExists("#matches");
+    });
+
+
+    casper.then(function () {
+        test.assertNotExists("#table-player-results-admin");
+    });
+
+    casper.then(function () {
+        test.assertExists("#team-match-results");
+    });
+
+    casper.then(function () {
+        test.assertEval(function() {
+            return __utils__.findAll("#team-match-results > tbody > tr").length > 0;
+        }, "found team match results");
+    });
+
+    casper.then(function () {
+        teamMatchCount = this.evaluate(function() {
+            return __utils__.findAll("#team-match-results > tbody > tr").length
+        });
+    });
+
+    casper.then(function () {
+        this.clickLabel('Add New');
+    });
+
+    casper.then(function () {
+        var newCnt  = this.evaluate(function() {
+            return __utils__.findAll("#team-match-results > tbody > tr").length
+        });
+        test.assert(newCnt - teamMatchCount == 1, 'Added a team match');
+        teamMatchCount = newCnt;
+    });
+
+    casper.then(function () {
+        var rows  = this.evaluate(function() {
+            return __utils__.findAll("#team-match-results > tbody > tr")
+        });
+        teamMatchId = rows[0].id;
+    });
+
+    casper.then(function () {
+        test.assertExists('#delete-' + teamMatchId);
+    });
+
+    casper.then(function () {
+        this.click('#delete-' + teamMatchId);
+    });
+
+    casper.then(function () {
+        test.assertNotExists('#delete-' + teamMatchId);
+    });
+};
 
 casper.test.begin('Test Scores Page', function suite(test) {
     casper.start();
@@ -42,92 +100,14 @@ casper.test.begin('Test Scores Page', function suite(test) {
          test.assertExists("#home-app")
     });
 
-    casper.then(function () {
-         test.assertExists("#TopGun-scores")
+
+    seasons.forEach(function(s) {
+        casper.thenOpen(testlib.server + '/app/scores/' + s.id, function(){
+        });
+
+          scoreSeasonTest(test);
     });
 
-    casper.then(function () {
-        test.assertExists("#Thurs8Ball-scores")
-    });
-    casper.then(function () {
-        test.assertExists("#Weds8Ball-scores")
-    });
-
-    casper.then(function () {
-        test.assertExists("#Tues9Ball-scores")
-    });
-
-    casper.then(function () {
-        test.assertExists("#Scramble-scores")
-    });
-
-    casper.then(function () {
-        this.click("#TopGun-scores")
-    });
-    casper.then(function () {
-        test.assertExists("#score-app")
-    });
-
-    testlib.scoreSeasonTest(test);
-
-    casper.then(function () {
-        this.click("#Thurs8Ball-scores")
-    });
-
-    testlib.scoreSeasonTest(test);
-
-    casper.then(function () {
-        this.click("#Weds8Ball-scores")
-    });
-
-    testlib.scoreSeasonTest(test);
-
-    casper.then(function () {
-        this.click("#Tues9Ball-scores")
-    });
-
-    testlib.scoreSeasonTest(test);
-
-    casper.then(function () {
-        this.click("#Weds8Ball-scores")
-    });
-
-    testlib.scoreSeasonTest(test);
-
-    casper.then(function () {
-        this.echo('Submit test Weds');
-        this.click("#Weds8Ball-scores")
-    });
-
-    testlib.scoreSubmitTest(test);
-
-    casper.then(function () {
-        this.echo('Submit test Thurs');
-        this.click("#Thurs8Ball-scores")
-    });
-
-    testlib.scoreSubmitTest(test);
-
-    casper.then(function () {
-        this.echo('Submit test Tues');
-        this.click("#Tues9Ball-scores")
-    });
-
-    testlib.scoreSubmitTest(test);
-
-    casper.then(function () {
-        this.echo('Submit test Top Gun');
-        this.click("#TopGun-scores")
-    });
-
-    testlib.scoreSubmitTest(test);
-
-    casper.then(function () {
-        this.echo('Submit test scramble');
-        this.click("#Scramble-scores")
-    });
-
-    testlib.scoreSubmitTest(test);
 
     casper.run(function(){
         test.done();

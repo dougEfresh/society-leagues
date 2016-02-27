@@ -473,8 +473,7 @@ public class TeamMatch extends LeagueObject {
 
     @Override
     public String toString() {
-        return "{" +
-                "id=" + getId() + "}";
+        return "{" + "id=" + getId() + "}";
     }
 
     public void setRace(String race) {
