@@ -28,7 +28,6 @@ bootRun {
 }
 dependencies {
     compile project(':client')
-    compile project(':spring-client')
     compile 'org.slf4j:slf4j-api:1.7.7'
 
     compile 'org.springframework.boot:spring-boot-actuator'
