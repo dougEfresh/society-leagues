@@ -422,7 +422,6 @@ module.exports = {
     height: height,
     timeout: timeout,
     login: login,
-    scoreSeasonTest: scoreSeasonTest,
     scoreSubmitTest: scoreSubmitTest,
     playerResultTest: playerResultTest,
     authUser: authUser
