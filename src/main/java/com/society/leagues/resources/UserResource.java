@@ -31,11 +31,7 @@ public class UserResource extends BaseController {
     @RequestMapping(value = {"/user"}, method = RequestMethod.GET)
     public String list(@RequestParam(defaultValue = "", required = false) String search , Model model) {
         model.addAttribute("search", search);
-        if (search.length() > 1)
-            model.addAttribute("users", userApi.active().stream().filter(u->u.getName().toLowerCase().contains(search.toLowerCase())).collect(Collectors.toList()));
-        else
-            model.addAttribute("users", userApi.active());
-
+        model.addAttribute("users", userApi.all());
         return "user/user";
     }
 

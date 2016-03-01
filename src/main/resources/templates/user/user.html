@@ -5,7 +5,7 @@
       <div id="users" class="society-well society-well-users" >
           <select id="users-search-admin" placeholder="Search...">
               <option value="" >Search...</option>
-              <option th:each="u : ${allUsers}" th:value="${u.getId()}" th:text="${u.getName()}"></option>
+              <option th:each="u : ${users}" th:value="${u.getId()}" th:text="${u.getName()}"></option>
           </select>
           <div class="table-responsive">
               <table id="table-users" class="table">
