@@ -21,6 +21,10 @@ public class ScrambleStatModel {
         this.seasonStats = seasonStats;
     }
 
+    public Double getPoints() {
+        return seasonStats.getPoints();
+    }
+
     public Stat getMixedEight() {
         return mixedEight;
     }

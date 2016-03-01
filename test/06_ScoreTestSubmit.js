@@ -203,10 +203,10 @@ var scoreSubmitTest = function(test,season) {
          });
          newStats.forEach(function(s) {
                   if (s.teamId  == homeTeam) {
-                      newHomeStat =s;
+                      newHomeStat = s;
                   }
          });
-
+      
          test.assert(homeStat  != null, 'HomeStat  != null');
          test.assert(newHomeStat  != null, 'awayStat  != null');
          this.echo(JSON.stringify(homeStat));

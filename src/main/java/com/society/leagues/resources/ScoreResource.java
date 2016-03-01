@@ -168,7 +168,8 @@ public class ScoreResource extends BaseController {
         model.addAttribute("teams", teamApi.seasonTeams(seasonId));
         Season s = seasonApi.get(seasonId);
         model.addAttribute("season", s);
-
+        model.addAttribute("eightDivision", Division.MIXED_EIGHT);
+        model.addAttribute("nineDivision", Division.MIXED_NINE);
         displayResource.processDisplay(seasonId,model,null,null);
 
         if (matchId == null) {

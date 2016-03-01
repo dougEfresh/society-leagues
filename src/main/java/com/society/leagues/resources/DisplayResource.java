@@ -96,12 +96,8 @@ public class DisplayResource extends BaseController {
         }
 
         if (s.isChallenge()) {
-            List<Stat> stats = statApi.getUserSeasonStats(s.getId());
-            stats.sort(Stat.sortUserStats());
-            int rank = 0;
-            for (Stat stat : stats) {
-                stat.setRank(++rank);
-            }
+            List<Stat> stats = statApi.getUserSeasonStats(s.getId()).stream().filter(st->st.getType() == StatType.USER_SEASON).collect(Collectors.toList());
+            Stat.getRanks(stats);
             model.addAttribute("displayTeams",stats);
         }
 

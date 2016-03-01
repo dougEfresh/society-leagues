@@ -38,7 +38,7 @@ function verifyStat(stat,rank,test) {
     });
 
     casper.then(function() {
-        test.assertExists('#user-results-' + stat.userId);
+        test.assertExists('#user-results');
     });
 
     casper.then(function() {
@@ -61,6 +61,7 @@ function processSeason(season,test) {
 
 
     casper.then(function() {
+        this.echo("Processing " + season.formattedName);
         test.assertExists('#leaders-' + season.id);
         //this.click('#' + season + '-leaders-all');
     });

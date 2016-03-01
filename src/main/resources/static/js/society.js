@@ -294,11 +294,13 @@ function lifeTimeStats(v) {
               perPageDefault: 10
          }
      });
+     /*
      $('.table-top-gun-standings').dynatable( {
       dataset : {
               perPageDefault: 10
          }
      });
+     */
 
       $('.table-top-gun-results').dynatable( {
       dataset : {

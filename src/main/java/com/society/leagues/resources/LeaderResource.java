@@ -46,11 +46,16 @@ public class LeaderResource extends BaseController {
             scrambleStatModelList.sort(new Comparator<ScrambleStatModel>() {
                 @Override
                 public int compare(ScrambleStatModel o1, ScrambleStatModel o2) {
-                    return new Integer(o1.getRank()).compareTo(new Integer(o2.getRank()));
+                    return o2.getPoints().compareTo(o1.getPoints());
                 }
             });
+            int rank = 0;
+            for (ScrambleStatModel scrambleStatModel : scrambleStatModelList) {
+                scrambleStatModel.getSeasonStats().setRank(++rank);
+            }
             model.addAttribute("stats", scrambleStatModelList);
         } else {
+            Stat.getRanks(stats);
             model.addAttribute("stats",stats);
         }
         model.addAttribute("season", season);

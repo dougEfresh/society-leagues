@@ -87,9 +87,10 @@
                            th:value="${match.awayForfeits}"/>
                 </td>
                 <td th:class="${season.isScramble()}? 'show name' : 'hide'">
-                      <input class="game-type" th:id="${'game-' + match.getId()}"
-                             th:field="*{matches[__${rowStat.index}__].division}" type="text"
-                             th:value="${match.division}"/>
+                      <select class="game-type" th:id="${'game-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].division}">
+                          <option th:value="${eightDivision}" th:selected="${match.getDivision() == eightDivision}">8</option>
+                          <option th:value="${nineDivision}" th:selected="${match.getDivision() == nineDivision}">9</option>
+                      </select>
                 </td>
                 <td class="sheet-link">
                     <a th:id="${'sheet-' + match.getId()}" th:href="@{/sheets/{matchId} (matchId=${match.id})}">

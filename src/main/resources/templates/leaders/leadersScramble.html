@@ -6,6 +6,7 @@
             <tr>
                 <th>#</th>
                 <th>Player</th>
+                <th>P</th>
                 <th>S</th>
                 <th>Team</th>
                 <th>HC</th>
@@ -27,7 +28,9 @@
                        th:href="@{/display/{id}/{teamId}/{userId} (id=${stat.getSeason().getId()}, teamId=${stat.getTeam().getId()}, userId=${stat.getUser().getId()})}"
                        th:text="${stat.getUser().getName()}"></a>
                 </td>
+                <td th:text="${stat.getPoints().intValue()}"></td>
                 <td >
+
                 <a th:href="@{/stats/{id} (id=${stat.getUser().getId()})}">
                     <i  class="fa fa-bar-chart"></i>
                 </a>
