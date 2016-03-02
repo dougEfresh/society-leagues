@@ -56,7 +56,7 @@
                             <span th:text="${match.getAvailable(team).size()}"></span>
                         </td>
                         <td>
-                            <a th:href="@{/results/{matchId} (matchId=${match.getId()})}"
+                            <a th:href="@{/display/{seasonId}/{teamId} (seasonId=${season.getId()},teamId=${match.getOpponent(team).getId()})}"
                                th:text="${match.getOpponent(team).getName()}"></a>
                         </td>
                         <td th:if="${!season.isNine()}" th:text="${match.homeOrAway(team)}"></td>
