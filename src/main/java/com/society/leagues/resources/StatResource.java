@@ -190,7 +190,7 @@ public class StatResource  extends BaseController {
 
     @RequestMapping(value = {"/stats"}, method = RequestMethod.GET)
     public String home(Model model) {
-        return "redirect:/stats/" + userApi.get().getId();
+        return "redirect:/stats/" + getUser(model).getId();
     }
 
     public static class StatLifeTime {

@@ -29,7 +29,7 @@ public class ChallengeResource extends BaseController {
 
     @RequestMapping(value = {"/challenge"}, method = RequestMethod.GET)
     public String challenge(@RequestParam(required = false) String userId, @RequestParam(required = false) String date, Model  model, HttpServletResponse response) throws IOException {
-        return challenge(userApi.get(),userId,date,model,response);
+        return challenge(getUser(model),userId,date,model,response);
     }
 
     public String challenge(User user , String userId, String date, Model  model, HttpServletResponse response) throws IOException {
@@ -62,10 +62,10 @@ public class ChallengeResource extends BaseController {
     }
 
     @RequestMapping(value = {"/challenge/accept"}, method = RequestMethod.GET)
-    public String accept(@RequestParam String id, @RequestParam String slotId) {
+    public String accept(@RequestParam String id, @RequestParam String slotId, Model model) {
         Challenge ch = challengeApi.challenges().stream().filter(c->c.getId().equals(id)).findAny().get();
         ch.setAcceptedSlot(new Slot(slotId));
-        ch.setOpponent(teamApi.userTeams(userApi.get().getId()).stream().filter(Team::isChallenge).findAny().get());
+        ch.setOpponent(teamApi.userTeams(getUser(model).getId()).stream().filter(Team::isChallenge).findAny().get());
         challengeApi.accept(ch);
         return "redirect:/challenge";
     }
@@ -138,7 +138,7 @@ public class ChallengeResource extends BaseController {
         List<Team> challengeUsers = new ArrayList<>();
         LocalDate localDate = LocalDate.parse(date);
         Season challengeSeason = seasonApi.active().stream().filter(Season::isChallenge).findAny().get();
-        User user = userApi.get();
+        User user = getUser(model);
         challengeUsers.addAll(
                 populateTeam(teamApi.seasonTeams(challengeSeason.getId()).parallelStream()
                         .filter(t->!t.isDisabled()).collect(Collectors.toList())
@@ -166,5 +166,26 @@ public class ChallengeResource extends BaseController {
         model.addAttribute("opponent", opponent);
         model.addAttribute("challengers",  ChallengeUserModel.fromTeams(challengeUsers));
         model.addAttribute("challenge", challenge);
+        LocalDate now = LocalDate.now().minusDays(1);
+        List<Challenge> sent = challengeApi.challenges().stream()
+                .filter(c->c.getStatus() == Status.SENT)
+                .filter(c->c.getStatus() != Status.BROADCAST)
+                .filter(c-> c.getLocalDate().isAfter(now))
+                .collect(Collectors.toList());
+        sent.parallelStream().forEach(c->{
+            c.getOpponent().setMembers(teamApi.members(c.getOpponent().getId()));
+            c.getChallenger().setMembers(teamApi.members(c.getChallenger().getId()));
+        } );
+
+        sent.sort(new Comparator<Challenge>() {
+            @Override
+            public int compare(Challenge o1, Challenge o2) {
+                if (o1.getUserChallenger().equals(o2.getUserChallenger())) {
+                    return o1.getUserOpponent().getName().compareTo(o2.getUserChallenger().getName());
+                }
+                return o1.getUserChallenger().getName().compareTo(o2.getUserChallenger().getName());
+            }
+        });
+        model.addAttribute("all",sent);
     }
 }

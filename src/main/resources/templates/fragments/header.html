@@ -69,7 +69,7 @@
 
                     <i class="fa fa-trophy fa-fw"></i> Top Gun <i class="fa fa-fw fa-arrow"></i>
                 </a>
-                <ul id="topgun-dropdown" class="">
+                <ul id="topgun-dropdown" class="collapse">
                     <li>
                         <a id="challenge" th:href="@{/challenge}"> Challenge</a>
                     </li>
@@ -93,7 +93,7 @@
                             <span th:text="${team.getName()}"></span>
                             <span class="fa arrow"></span>
                         </a>
-                        <ul th:id="${'team-menu-' + team.getId()}" class="">
+                        <ul th:id="${'team-menu-' + team.getId()}" class="collapse">
                             <li style="list-style: none">
                                 <a th:id="'team-display-link-' + ${team.getId()}"
                                    th:href="@{/display/{id}/{teamId} (id=${team.getSeason().getId()},teamId=${team.getId()})}"

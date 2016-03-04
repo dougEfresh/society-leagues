@@ -65,10 +65,11 @@
             </form>
         </div>
         <div class="challenges">
-            <div th:include="challenge/pending"></div>
-            <div th:include="challenge/sent"></div>
-            <div th:include="challenge/broadcast"></div>
-            <div th:include="challenge/accepted"></div>
+            <div th:replace="challenge/pending"></div>
+            <div th:replace="challenge/sent"></div>
+            <div th:replace="challenge/broadcast"></div>
+            <div th:replace="challenge/accepted"></div>
+            <div th:replace="challenge/all"></div>
         </div>
   </div>
 </div>

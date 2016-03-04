@@ -288,7 +288,9 @@ body.login {
 .society-well-leaders {
     max-width: 650px;
 }
-
+.society-well-all {
+    max-width: 650px;
+}
 
 .society-well-team-schedule {
     max-width: 650px;

@@ -1,0 +1,59 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org">
+    <div th:if="${not #lists.isEmpty(all)}" class="society-well society-well-all">
+        <div class="well-title">
+            <h4>All</h4>
+        </div>
+        <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+        <!--/*@thymesVar id="user" type="com.society.leagues.client.api.domain.User"*/-->
+        <!--/*@thymesVar id="challenge" type="com.society.leagues.client.api.domain.Challenge"*/-->
+        <!--/*@thymesVar id="slot" type="com.society.leagues.client.api.domain.Slot"*/-->
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Challenger</th>
+                    <th>Opponent</th>
+                    <th>Slots</th>
+                    <th>Race</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="challenge : ${all}">
+                    <td class="challenge-date" th:text="${#temporals.format(challenge.getLocalDate(), 'MM/dd')}">
+                    </td>
+
+                    <td class="challenger" >
+                         <img  th:fragments="avatarUser" class="avatar img-responsive" th:src="${challenge.getUserChallenger().getAvatarUrl()}"/>
+                        <a th:href="@{/display/{seasonId}/user/{id} (id=${challenge.getUserChallenger().getId()},seasonId=${season.getId()})}">
+                            <span th:text="${challenge.getUserChallenger().getName()}"></span>
+                        </a>
+                    </td>
+
+                    <td class="challenge-name">
+                        <img  th:fragments="avatarUser" class="avatar img-responsive"
+                              th:src="${challenge.getUserOpponent().getAvatarUrl()}"/>
+                        <a th:href="@{/display/{seasonId}/user/{id} (id=${challenge.getUserOpponent().getId()},seasonId=${season.getId()})}">
+                        <span th:text="${challenge.getUserOpponent().getName()}"></span>
+                        </a>
+                    </td>
+                    <td class="challenge-times" >
+                         <select id="challenge-slot-all" class="form-control" >
+                            <!--/*@thymesVar id="s" type="com.society.leagues.client.api.domain.Slot"*/-->
+                            <option th:each="s : ${challenge.getSlots()}"
+                                    th:text="${#temporals.format(s.getLocalDateTime(), 'h:mm')}"
+                                    th:value="${s.getId()}"
+                                    th:name="slotId">
+                            </option>
+                        </select>
+                    </td>
+                    <td class="challenge-race">
+                        <span th:text="${challenge.getRace()}"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

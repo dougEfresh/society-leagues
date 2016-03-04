@@ -40,26 +40,34 @@ public class BaseController {
             dev = false;
     }
 
+    public User getUser(Model model) {
+        return model.asMap().containsKey("user") ? (User) model.asMap().get("user") : User.defaultUser();
+    }
+
     @ModelAttribute
     public void setModels(Model model, HttpServletRequest request, ResponseFacade response) {
         model.addAttribute("tracking",dev);
         User user = userApi.get();
-
+        model.addAttribute("realUser",user);
         List<Season> seasons = seasonApi.get();
         RequestFacade requestFacade = (RequestFacade) request;
         adminSeason = seasons.stream().sorted(Season.sortOrder).findFirst().get();
+        model.addAttribute("user", user);
         for (Cookie cookie : requestFacade.getCookies()) {
             if (cookie.getName().equals("admin-season")) {
                 adminSeason = seasons.stream().filter(s->s.equals(new Season(cookie.getValue()))).findFirst().orElse(adminSeason);
+            }
+            if (cookie.getName().equals("mimic-user") && user.isAdmin()) {
+                model.addAttribute("user", userApi.get(cookie.getValue()));
             }
         }
         model.addAttribute("activeSeasons",seasons.stream().filter(Season::isActive).sorted(Season.sortOrder).collect(Collectors.toList()));
         model.addAttribute("allSeasons",seasons);
         model.addAttribute("challengeSeason",seasons.stream().filter(Season::isChallenge).findFirst().orElse(null));
-        model.addAttribute("user", user);
+
         model.addAttribute("allUsers", userApi.all().parallelStream().filter(User::isReal).collect(Collectors.toList()));
         model.addAttribute("activeUsers", userApi.all().parallelStream().filter(User::isReal).filter(u->u.getSeasons().stream().filter(Season::isActive).count() > 0).collect(Collectors.toList()));
         model.addAttribute("adminSeason",adminSeason);
-        model.addAttribute("userTeams", teamApi.userTeams(user.getId()));
+        model.addAttribute("userTeams", teamApi.userTeams(getUser(model).getId()));
     }
 }

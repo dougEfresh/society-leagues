@@ -25,7 +25,7 @@ public class HomeResource extends BaseController {
     @RequestMapping(value = {"/home", "","/"}, method = RequestMethod.GET)
     public String home(Model model, HttpServletResponse response) throws IOException {
         Map<Season,List<Stat>> topPlayers = new TreeMap<>(Season.sortOrder);
-        User user = userApi.get();
+        User user = getUser(model);
         if (user.isAdmin()) {
             seasonApi.active().stream()
                     .filter(Season::isActive)

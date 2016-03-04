@@ -222,6 +222,17 @@ function lifeTimeStats(v) {
          onChange: function(v) {  window.location = '/app/user/' + v;}
         });
 
+
+     $('#users-search-mimic').selectize({
+         persist: false,
+         maxItems: 1,
+         onChange: function(v) {
+              Cookies.set('mimic-user',v);
+             if (v != null && v != undefined && v.length > 5)
+                 window.location = '/app/home';
+         }
+        });
+
      $('#users-stats-search').selectize({
          persist: false,
          maxItems: 1,
