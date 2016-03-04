@@ -88,4 +88,5 @@ public class ScrambleStatModel {
     public Season getSeason() {
         return seasonStats.getSeason();
     }
+
 }
