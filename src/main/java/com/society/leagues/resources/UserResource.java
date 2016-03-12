@@ -94,7 +94,7 @@ public class UserResource extends BaseController {
     }
 
     @RequestMapping(value = {"/user/delete/fb/profile/{id}"}, method = RequestMethod.GET)
-    public String deleteFbPofile(@PathVariable String id , Model model) {
+    public String deleteFbProfile(@PathVariable String id , Model model) {
         return processEditUser(userApi.get(id),model);
     }
 

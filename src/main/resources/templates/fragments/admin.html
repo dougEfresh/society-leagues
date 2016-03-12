@@ -1,10 +1,12 @@
 <div xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
     <div th:if="${realUser ne null && realUser.isAdmin()}" id="admin-app" class="society-well">
+        <label class="col-sm-3 control-label">Mimic User</label>
+        <div class="col-sm-9">
           <select id="users-search-mimic" placeholder="Search...">
               <option value="" >Mimic User...</option>
               <option th:each="u : ${allUsers}" th:value="${u.getId()}" th:text="${u.getName()}" th:selected="${user.equals(u)}"></option>
           </select>
-
+        </div>
         <div style="padding-bottom: 10px">
             <span>Admin Menu</span>
                 <select style="float: right; background-color: black" id="admin-seasons" onchange="changeAdminSeason()">
