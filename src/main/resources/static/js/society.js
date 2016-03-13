@@ -226,10 +226,17 @@ function lifeTimeStats(v) {
      $('#users-search-mimic').selectize({
          persist: false,
          maxItems: 1,
+         plugins: ['remove_button'],
          onChange: function(v) {
-              Cookies.set('mimic-user',v);
-             if (v != null && v != undefined && v.length > 5)
+             if (v == null || v == undefined || v.length < 3) {
+                 Cookies.remove('mimic-user');
+
+             }
+             if (v != null && v != undefined && v.length > 5) {
+                 Cookies.set('mimic-user',v);
                  window.location = window.location.pathname;
+             }
+
          }
         });
 
