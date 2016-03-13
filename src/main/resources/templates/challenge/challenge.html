@@ -55,7 +55,7 @@
                 </div>
                 -->
                 <select id="challenge-slots" name="slotIds" multiple="multiple">
-                    <option  th:each="slot: ${challenge.getSlots()}" th:text="${#temporals.format(slot.getLocalDateTime(), 'h:mm')}" th:value="${slot.getId()}" >
+                    <option th:each="slot: ${challenge.getSlots()}" th:text="${#temporals.format(slot.getLocalDateTime(), 'h:mm')}" th:value="${slot.getId()}" >
 
                     </option>
                 </select>
@@ -65,6 +65,7 @@
             </form>
         </div>
         <div class="challenges">
+            <div th:replace="challenge/virtualPoints"></div>
             <div th:replace="challenge/pending"></div>
             <div th:replace="challenge/sent"></div>
             <div th:replace="challenge/broadcast"></div>

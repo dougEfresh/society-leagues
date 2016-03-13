@@ -39,17 +39,17 @@
                         </select>
                     </td>
                     <td class="challenge-actions">
+                        <a th:href="@{/challenge/cancel/{id} (id=${challenge.getId()})}">
                             <span class="btn btn-sm btn-danger btn-responsive challenge-upcoming-decline-button">
                                 <span class="glyphicon glyphicon-remove"></span>
                             </span>
+                            </a>
                         <button type="submit" class="btn btn-sm btn-success btn-responsive challenge-upcoming-decline-button">
                             <span class="glyphicon glyphicon-ok-sign"></span>
                         </button>
-                     </td>
+                    </td>
                      </form>
                 </tr>
-
-
                 </tbody>
             </table>
         </div>

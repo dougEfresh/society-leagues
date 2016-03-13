@@ -53,8 +53,7 @@ function verifyStat(stat,rank,test) {
 
 function processSeason(season,test) {
     if (season.challenge) {
-        return processTopgun(season,test);
-
+        return ;
     }
     casper.thenOpen(testlib.server + '/app/leaders/' + season.id, function () {
     });

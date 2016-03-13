@@ -1,17 +1,21 @@
 package com.society.leagues.resources;
 
 
+import com.society.leagues.CopyUtil;
+import com.society.leagues.MatchPointService;
 import com.society.leagues.model.ChallengeUserModel;
 import com.society.leagues.client.api.ChallengeApi;
 import com.society.leagues.client.api.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,6 +23,7 @@ import java.util.stream.Collectors;
 public class ChallengeResource extends BaseController {
 
     @Autowired ChallengeApi challengeApi;
+    @Autowired MatchPointService matchPointService;
 
     public final static Team broadcast = new Team("-1");
     static {
@@ -34,6 +39,7 @@ public class ChallengeResource extends BaseController {
 
     public String challenge(User user , String userId, String date, Model  model, HttpServletResponse response) throws IOException {
         Season s =  seasonApi.active().stream().filter(Season::isChallenge).findFirst().get();
+        User u = getUser(model);
         Team challenger = populateTeam( Arrays.asList(teamApi.userTeams(user.getId()).stream().filter(Team::isChallenge).findFirst().orElse(broadcast))).get(0);
         model.addAttribute("challenger",challenger);
         model.addAttribute("season", s);
@@ -45,12 +51,70 @@ public class ChallengeResource extends BaseController {
         model.addAttribute("sent",existingChallenges.parallelStream().filter(c-> c.getStatus() != null && c.getStatus(user) == Status.SENT).collect(Collectors.toList()));
         model.addAttribute("pending",existingChallenges.parallelStream().filter(c->c.getStatus() != null && c.getStatus(user) == Status.PENDING).collect(Collectors.toList()));
         model.addAttribute("accepted",existingChallenges.parallelStream().filter(c->c.getStatus() != null && c.getStatus(user) == Status.ACCEPTED).collect(Collectors.toList()));
+        Stat stat = statApi.getUserSeasonStats(u.getId(),s.getId()).stream().filter(st->st.getType() == StatType.USER_SEASON).findFirst().get();
+        model.addAttribute("currentPoints",stat.getPoints());
+        model.addAttribute("virtualWin",virtualWin(u,s,"win"));
+        model.addAttribute("virtualHill",virtualWin(u,s,"hill"));
+        model.addAttribute("virtualLost",virtualWin(u,s,"lost"));
+
+        List<PlayerResult> playerResults = matchPointService.calcPoints(u,playerResultApi.getResults(user.getId(), s.getId()));
+        playerResults.stream().filter(pr->pr.isWinner(u)).count();
+        model.addAttribute("win",playerResults.stream().filter(pr->pr.isWinner(u)).count());
+        model.addAttribute("lost",playerResults.stream().filter(pr->!pr.isWinner(u)).count());
+
         if (date != null)
             processUser(userId, date, challenger, model);
 
         return "challenge/challenge";
     }
 
+    private double virtualWin(User user, Season s, String type) {
+        List<PlayerResult> playerResults = playerResultApi.getResults(user.getId(), s.getId());
+        LocalDateTime tomorrow = LocalDateTime.now().plusDays(1);
+        PlayerResult win =  new PlayerResult();
+        TeamMatch tm =  new TeamMatch();
+        ReflectionUtils.shallowCopyFieldState(playerResults.get(0),win);
+        ReflectionUtils.shallowCopyFieldState(playerResults.get(0).getTeamMatch(),tm);
+        win.setTeamMatch(tm);
+
+        win.getTeamMatch().setMatchDate(tomorrow);
+        if (win.getPlayerHome().equals(user)) {
+            if (type.equals("win")) {
+                win.setHomeRacks(7);
+                win.setAwayRacks(5);
+            }
+            if (type.equals("hill")) {
+                win.setHomeRacks(6);
+                win.setAwayRacks(7);
+            }
+            if (type.equals("lost")) {
+                win.setHomeRacks(5);
+                win.setAwayRacks(7);
+            }
+
+        } else {
+            if (type.equals("win")) {
+                win.setAwayRacks(7);
+                win.setHomeRacks(5);
+            }
+            if (type.equals("hill")) {
+                win.setHomeRacks(7);
+                win.setAwayRacks(6);
+            }
+            if (type.equals("lost")) {
+                win.setHomeRacks(7);
+                win.setAwayRacks(5);
+            }
+        }
+        playerResults.add(win);
+
+        playerResults = matchPointService.calcPoints(user,playerResults);
+        double mp = 0;
+        for (PlayerResult playerResult : playerResults) {
+            mp += playerResult.getMatchPoints().getWeightedAvg();
+        }
+        return mp;
+    }
 
 
     private List<Challenge> populateChallenge(List<Challenge> challenges) {

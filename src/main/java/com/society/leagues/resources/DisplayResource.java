@@ -2,6 +2,8 @@ package com.society.leagues.resources;
 
 import com.society.leagues.model.ScrambleStatModel;
 import com.society.leagues.client.api.domain.*;
+import com.society.leagues.model.TeamStat;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -19,7 +21,6 @@ import java.util.stream.Collectors;
 
 @Controller
 public class DisplayResource extends BaseController {
-
     @RequestMapping(value = {"/display/{seasonId}"}, method = RequestMethod.GET)
     public String displaySeasonStandings(@PathVariable String seasonId, Model model, HttpServletResponse response) throws IOException {
         return processDisplay(seasonId, model, null,null);

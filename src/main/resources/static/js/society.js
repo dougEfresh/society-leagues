@@ -229,7 +229,7 @@ function lifeTimeStats(v) {
          onChange: function(v) {
               Cookies.set('mimic-user',v);
              if (v != null && v != undefined && v.length > 5)
-                 window.location = '/app/home';
+                 window.location = window.location.pathname;
          }
         });
 

@@ -1,0 +1,44 @@
+<!DOCTYPE html "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
+<div xmlns:th="http://www.thymeleaf.org">
+    <div class="society-well society-well-sent">
+        <div class="well-title">
+            <h4>Potential Points</h4>
+        </div>
+        <!--/*@thymesVar id="season" type="com.society.leagues.client.api.domain.Season"*/-->
+        <!--/*@thymesVar id="user" type="com.society.leagues.client.api.domain.User"*/-->
+        <!--/*@thymesVar id="challenge" type="com.society.leagues.client.api.domain.Challenge"*/-->
+        <!--/*@thymesVar id="slot" type="com.society.leagues.client.api.domain.Slot"*/-->
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Current</th>
+                    <th>Win</th>
+                    <th>Hill</th>
+                    <th>Lost</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td >
+                        <span th:text="${#numbers.formatDecimal(currentPoints,0,3)}"></span>
+                        <span> (</span>
+                        <span th:text="${win}"></span>
+                        <span>-</span>
+                        <span th:text="${lost}"></span>
+                        <span>)</span>
+                    </td>
+                    <td th:text="${#numbers.formatDecimal(virtualWin,0,3)}"></td>
+                    <td>
+                        <span th:text="${#numbers.formatDecimal(virtualHill,0,3)}">0</span>
+                    </td>
+
+                    <td>
+                        <span th:text="${#numbers.formatDecimal(virtualLost,0,3)}">0</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

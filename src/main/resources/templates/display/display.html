@@ -9,14 +9,14 @@
                     <div class="well-title">
                         <h4 th:text="${season.getFormattedName()}" ></h4>
                     </div>
-                        <div id="display-eight" th:if="${season.isEight()}" th:include="display/displayEight"></div>
-                        <div id="display-scramble" th:if="${season.isScramble()}" th:include="display/displayEight"></div>
-                        <div id="display-nine" th:if="${season.isTuesdayNine()}" th:include="display/displayNine"></div>
-                        <div id="display-topgun" th:if="${season.isChallenge()}" th:include="display/displayTopgun"></div>
+                        <div th:id="${'season-'+ season.getId()}" th:if="${season.isEight()}" th:include="display/displayEight"></div>
+                        <div th:id="${'season-'+ season.getId()}" th:if="${season.isScramble()}" th:include="display/displayEight"></div>
+                        <div th:id="${'season-'+ season.getId()}" th:if="${season.isTuesdayNine()}" th:include="display/displayNine"></div>
+                        <div th:id="${'season-'+ season.getId()}" th:if="${season.isChallenge()}" th:include="display/displayTopgun"></div>
                 </div>
             </div>
             <div th:if="${not #lists.isEmpty(displayMemberStats)}" class="col-xs-12 col-md-8 col-lg-5">
-                <div class="society-well society-well-stats">
+                <div th:if="${not season.isChallenge()}" class="society-well society-well-stats">
                     <div class="well-title">
                     <h4 >
                         <span th:text="${team.getName()}"></span>
