@@ -11,14 +11,16 @@ public class ScrambleStatModel {
     Stat mixedEight;
     Stat mixedNine;
     Stat seasonStats;
+    Stat scotchStats;
 
     public ScrambleStatModel() {
     }
 
-    public ScrambleStatModel(Stat mixedEight, Stat mixedNine, Stat seasonStats) {
+    public ScrambleStatModel(Stat mixedEight, Stat mixedNine, Stat seasonStats, Stat scotchStats) {
         this.mixedEight = mixedEight;
         this.mixedNine = mixedNine;
         this.seasonStats = seasonStats;
+        this.scotchStats = scotchStats;
     }
 
     public Double getPoints() {
@@ -87,6 +89,18 @@ public class ScrambleStatModel {
 
     public Season getSeason() {
         return seasonStats.getSeason();
+    }
+
+    public int getScotchWins() {
+        return scotchStats.getWins();
+    }
+
+    public int getScotchLoses() {
+        return scotchStats.getLoses();
+    }
+
+    public double getScotchWinsPct() {
+        return scotchStats.getWinPct();
     }
 
 }

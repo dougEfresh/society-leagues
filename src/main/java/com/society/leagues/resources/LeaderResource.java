@@ -39,7 +39,8 @@ public class LeaderResource extends BaseController {
                 scrambleStatModelList.add(new ScrambleStatModel(
                         stats.stream().filter(st -> st.getType() == StatType.MIXED_EIGHT).filter(s->s.getUser().equals(u)).findFirst().orElse(newStat),
                         stats.stream().filter(st -> st.getType() == StatType.MIXED_NINE).filter(s->s.getUser().equals(u)).findFirst().orElse(newStat),
-                        stats.stream().filter(st -> st.getType() == StatType.USER_SEASON).filter(s->s.getUser().equals(u)).findFirst().orElse(newStat)
+                        stats.stream().filter(st -> st.getType() == StatType.USER_SEASON).filter(s->s.getUser().equals(u)).findFirst().orElse(newStat),
+                        stats.stream().filter(st -> st.getType() == StatType.MIXED_SCOTCH).filter(s->s.getUser().equals(u)).findFirst().orElse(newStat)
                 ));
             }
 
