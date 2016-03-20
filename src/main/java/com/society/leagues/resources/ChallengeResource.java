@@ -73,6 +73,9 @@ public class ChallengeResource extends BaseController {
         LocalDateTime tomorrow = LocalDateTime.now().plusDays(1);
         PlayerResult win =  new PlayerResult();
         TeamMatch tm =  new TeamMatch();
+        if (playerResults.isEmpty()) {
+            return 0d;
+        }
         ReflectionUtils.shallowCopyFieldState(playerResults.get(0),win);
         ReflectionUtils.shallowCopyFieldState(playerResults.get(0).getTeamMatch(),tm);
         win.setTeamMatch(tm);
