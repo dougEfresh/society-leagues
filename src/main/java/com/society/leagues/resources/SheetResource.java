@@ -25,12 +25,7 @@ import static java.time.temporal.ChronoField.YEAR;
 
 @Controller
 public class SheetResource extends BaseController {
-    final static Comparator<User> sortUser = new Comparator<User>() {
-        @Override
-        public int compare(User o1, User o2) {
-            return o1.getName().compareTo(o2.getName());
-        }
-    };
+    final static Comparator<User> sortUser = (o1, o2) -> o1.getName().compareTo(o2.getName());
 
     @RequestMapping(method = RequestMethod.GET,value = "/sheets/{seasonId}/{date}")
     public String sheets(@PathVariable String seasonId, @PathVariable  String date, Model model) {
