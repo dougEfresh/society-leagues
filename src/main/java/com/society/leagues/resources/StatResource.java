@@ -78,7 +78,7 @@ public class StatResource  extends BaseController {
         writer.writeHeader(header);
         Map<String,Stat> dups = new HashMap<>();
         for (User user : userApi.all()) {
-            if (user.isReal()) {
+            if (!user.isReal()) {
                 continue;
             }
             for (Stat stat : statApi.getUserStatsSummary(user.getId())) {
