@@ -83,23 +83,23 @@ public class StatResource  extends BaseController {
             }
             for (Stat stat : statApi.getUserStatsSummary(user.getId())) {
                 if (stat.getSeason() != null) {
-                    if (!dups.containsKey(stat.getName() + stat.getType() + stat.getSeason().getsDate().getYear() +
+                    if (!dups.containsKey(stat.getUser().getName() + stat.getType() + stat.getSeason().getsDate().getYear() +
                             stat.getSeason().getDay() + stat.getSeason().getSeasonType().getSeasonProperName() +
                             stat.getHandicapDisplay() + stat.getWins() + stat.getLoses())) {
 
                         writer.write(
-                                stat.getName(), stat.getType(), stat.getSeason().getsDate().getYear(), stat.getSeason().getDay(),
+                                stat.getUser().getName(), stat.getType(), stat.getSeason().getsDate().getYear(), stat.getSeason().getDay(),
                                 stat.getSeason().getSeasonType().getSeasonProperName(), stat.getHandicapDisplay(), stat.getWins(), stat.getLoses()
                         );
                         dups.put(
-                                stat.getName() + stat.getType() + stat.getSeason().getsDate().getYear() + stat.getSeason().getDay() +
+                                stat.getUser().getName() + stat.getType() + stat.getSeason().getsDate().getYear() + stat.getSeason().getDay() +
                                         stat.getSeason().getSeasonType().getSeasonProperName() +
                                         stat.getHandicapDisplay() + stat.getWins() + stat.getLoses(),
                                 stat
                         );
                     }
                 } else {
-                    writer.write(stat.getName(), stat.getType(), "lifetime", "lifetime", "lifetime", "lifetime", stat.getWins(), stat.getLoses());
+                    writer.write(stat.getUser().getName(), stat.getType(), "lifetime", "lifetime", "lifetime", "lifetime", stat.getWins(), stat.getLoses());
                 }
             }
         }
