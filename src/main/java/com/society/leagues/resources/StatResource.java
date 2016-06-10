@@ -1,19 +1,32 @@
 package com.society.leagues.resources;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.google.common.collect.Lists;
 import com.society.leagues.client.api.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.CsvListWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.io.ICsvListWriter;
+import org.supercsv.prefs.CsvPreference;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
 public class StatResource  extends BaseController {
+    private final CsvMapper csvMapper = new CsvMapper();
+    private CsvSchema schema;
 
     @RequestMapping(value = {"/stats/{userId}"}, method = RequestMethod.GET)
     public String stats(@PathVariable String userId,
@@ -43,6 +56,55 @@ public class StatResource  extends BaseController {
     @ResponseBody
     public List<StatLifeTime> scrambleLifetime(@PathVariable String userId) {
         return get(statApi.getUserStatsSummary(userId).stream().filter(s->s.getType().isScramble()).collect(Collectors.toList()));
+    }
+
+    @RequestMapping(value = {"/stats/download"}, method = RequestMethod.GET, produces = "text/csv")
+    @ResponseBody
+    public void stats(HttpServletResponse response) throws IOException {
+        response.setContentType("text/csv");
+        String headerKey = "Content-Disposition";
+        String headerValue = String.format("attachment; filename=\"stats-%s.csv\"",
+                UUID.randomUUID().toString());
+        response.setHeader(headerKey, headerValue);
+        schema = csvMapper.schemaFor(Stat.class)
+                //.withColumnSeparator('')
+                .withoutQuoteChar()
+                .withoutEscapeChar()
+                .withHeader()
+                .withLineSeparator("\r\n");
+
+        String[] header = {"name","type","year","day", "season", "handicap","wins","lost"};
+        ICsvListWriter writer = new CsvListWriter(response.getWriter(), CsvPreference.EXCEL_PREFERENCE);
+        writer.writeHeader(header);
+        Map<String,Stat> dups = new HashMap<>();
+        for (User user : userApi.all()) {
+            if (!user.isReal()) {
+                continue;
+            }
+            for (Stat stat : statApi.getUserStatsSummary(user.getId())) {
+                if (stat.getSeason() != null) {
+                    if (!dups.containsKey(stat.getUser().getName() + stat.getType() + stat.getSeason().getsDate().getYear() +
+                            stat.getSeason().getDay() + stat.getSeason().getSeasonType().getSeasonProperName() +
+                            stat.getHandicapDisplay() + stat.getWins() + stat.getLoses())) {
+
+                        writer.write(
+                                stat.getUser().getName(), stat.getType(), stat.getSeason().getsDate().getYear(), stat.getSeason().getDay(),
+                                stat.getSeason().getSeasonType().getSeasonProperName(), stat.getHandicapDisplay(), stat.getWins(), stat.getLoses()
+                        );
+                        dups.put(
+                                stat.getUser().getName() + stat.getType() + stat.getSeason().getsDate().getYear() + stat.getSeason().getDay() +
+                                        stat.getSeason().getSeasonType().getSeasonProperName() +
+                                        stat.getHandicapDisplay() + stat.getWins() + stat.getLoses(),
+                                stat
+                        );
+                    }
+                } else {
+                    writer.write(stat.getUser().getName(), stat.getType(), "lifetime", "lifetime", "lifetime", "lifetime", stat.getWins(), stat.getLoses());
+                }
+            }
+        }
+        writer.close();
+        //return get(statApi.getUserStatsSummary(userId).stream().filter(s->s.getType().isScramble()).collect(Collectors.toList()));
     }
 
     static class StatHandicap {

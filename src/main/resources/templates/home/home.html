@@ -19,6 +19,7 @@
                <thead>
                </thead>
                <tbody>
+               <div style="display:none;"></div>
                <tr th:each="match : ${upcomingMatches}" >
                    <td class="name">
                        <a th:if="${match.getSeason().isChallenge()}" th:text="${match.getOpponent(user).getName()}"
