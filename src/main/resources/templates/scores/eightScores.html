@@ -44,6 +44,14 @@
                  <td class="match-time" >
                      <select  th:id="${'time-' +match.getId()}" th:field="*{matches[__${rowStat.index}__].time}" >
                          <option th:selected="${match.getTime().equals('19:00')}" value="19:00" >7:00</option>
+                         <option th:selected="${match.getTime().equals('11:00')}" value="11:00">11:00</option>
+                         <option th:selected="${match.getTime().equals('12:00')}" value="12:00">12:00</option>
+                         <option th:selected="${match.getTime().equals('13:00')}" value="14:00">1:00</option>
+                         <option th:selected="${match.getTime().equals('14:00')}" value="14:00">2:00</option>
+                         <option th:selected="${match.getTime().equals('15:00')}" value="15:00">3:00</option>
+                         <option th:selected="${match.getTime().equals('16:00')}" value="16:00">4:00</option>
+                         <option th:selected="${match.getTime().equals('17:00')}" value="17:00">5:00</option>
+
                          <option th:selected="${match.getTime().equals('18:00')}" value="18:00">6:00</option>
                          <option th:selected="${match.getTime().equals('19:30')}" value="18:30">6:30</option>
                          <option th:selected="${match.getTime().equals('20:30')}" value="19:30">7:30</option>

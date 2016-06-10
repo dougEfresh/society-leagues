@@ -9,6 +9,7 @@
             <th></th>
             <th></th>
             <th>Date</th>
+            <th>Time</th>
             <th>Home</th>
             <th>Racks</th>
             <th>SW</th>
@@ -38,7 +39,9 @@
                 <td class="date">
                     <input  th:id="${'date-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].date}" type="text" th:value="${match.getDate()}">
                 </td>
-                <input th:field="*{matches[__${rowStat.index}__].time}" type="hidden" th:value="${match.getTime()}">
+                 <td class="match-date" >
+                    <input class="match-time" th:id="${'time-' +match.getId()}" th:field="*{matches[__${rowStat.index}__].time}" type="text" th:value="${match.getTime()}">
+                </td>
                 <td class="name">
                     <select th:id="${'home-' + match.getId()}" th:field="*{matches[__${rowStat.index}__].home.id}" class="form-control">
                         <option th:each="team: ${teams}"
