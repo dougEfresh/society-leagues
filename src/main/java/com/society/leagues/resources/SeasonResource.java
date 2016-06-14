@@ -58,4 +58,10 @@ public class SeasonResource extends BaseController {
             response.sendRedirect("/app/season?seasonId=" + s.getId());
         }
      }
+
+    @RequestMapping(value = {"/season/delete/{seasonId}"}, method = RequestMethod.GET)
+    public void delete(@PathVariable String seasonId , HttpServletResponse response) throws IOException {
+        seasonApi.delete(seasonId);
+        response.sendRedirect("/app/season");
+    }
 }
