@@ -177,8 +177,7 @@ public class ChallengeResource extends BaseController {
         Team opponent = getOpponent(userId);
         List<LocalDate> dates = slots.stream()
                 .map(s->s.getLocalDateTime().toLocalDate())
-                .collect(Collectors.toCollection(TreeSet::new))
-                .stream().filter(d->!opponent.getChallengeUser().getUserProfile().hasBlockedDate(d.toString())).collect(Collectors.toList());
+                .collect(Collectors.toCollection(TreeSet::new)).stream().collect(Collectors.toList());
 
         Collections.sort(dates, LocalDate::compareTo);
         model.addAttribute("dates", dates);
