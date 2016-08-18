@@ -210,7 +210,6 @@ public class ChallengeResource extends BaseController {
                         .filter(t->!t.isDisabled()).collect(Collectors.toList())
                 ).parallelStream()
                         .filter(t->t.getChallengeUser() != null)
-                        .filter(t->!t.getChallengeUser().getUserProfile().hasBlockedDate(date))
                         .filter(t->!t.getChallengeUser().equals(user))
                         .sorted((o1, o2) -> o1.getName().compareTo(o2.getName()))
                         .collect(Collectors.toList())
@@ -223,7 +222,6 @@ public class ChallengeResource extends BaseController {
         List<Slot> slots =
                 challengeApi.challengeSlots().parallelStream()
                         .filter(s->s.getLocalDateTime().toLocalDate().equals(localDate))
-                        .filter(s->!opponent.getChallengeUser().getUserProfile().hasBlockedTime(s))
                         .sorted((o1, o2) -> o1.getLocalDateTime().compareTo(o2.getLocalDateTime()))
                         .collect(Collectors.toList());
 
