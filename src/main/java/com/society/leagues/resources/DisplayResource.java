@@ -98,7 +98,7 @@ public class DisplayResource extends BaseController {
         }
 
         if (s.isChallenge()) {
-            List<Stat> stats = statApi.getUserSeasonStats(s.getId()).stream().filter(st->st.getType() == StatType.USER_SEASON).collect(Collectors.toList());
+            List<Stat> stats = statApi.getUserSeasonStats(s.getId()).stream().filter(st->st.getType() == StatType.USER_SEASON).filter(st->st.getTeam() != null).collect(Collectors.toList());
             Stat.getRanks(stats);
             model.addAttribute("displayTeams",stats);
         }
@@ -122,6 +122,7 @@ public class DisplayResource extends BaseController {
             model.addAttribute("stats", statApi.getUserStatsSummary(userId).stream()
                     .filter(st -> s.equals(st.getSeason()))
                     .filter(st -> st.getType() == StatType.USER_SEASON)
+                    .filter(st -> st.getTeam() != null)
                     .findFirst().orElse(new Stat()));
         } else {
             model.addAttribute("displayUser",getUser(model));
