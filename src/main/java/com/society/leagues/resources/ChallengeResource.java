@@ -232,9 +232,10 @@ public class ChallengeResource extends BaseController {
         model.addAttribute("challenge", challenge);
         LocalDate now = LocalDate.now().minusDays(1);
         List<Challenge> sent = challengeApi.challenges().stream()
-                .filter(c->c.getStatus() == Status.SENT)
-                .filter(c->c.getStatus() != Status.BROADCAST)
-                .filter(c-> c.getLocalDate().isAfter(now))
+                                           .filter(c->c.getStatus() == Status.SENT)
+                                           .filter(c->c.getStatus() != Status.BROADCAST)
+                                           .filter(c-> c.getLocalDate() != null)
+                                           .filter(c-> c.getLocalDate().isAfter(now))
                 .collect(Collectors.toList());
         sent.parallelStream().forEach(c->{
             c.getOpponent().setMembers(teamApi.members(c.getOpponent().getId()));
