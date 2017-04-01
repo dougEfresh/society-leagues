@@ -13,9 +13,9 @@
                 <thead></thead>
                 <tbody>
                 <tr th:each="challenge : ${broadcast}">
-                    <form th:method="GET" action="/app/challenge/accept" >
+                    <form  th:if="${challenge != null && challenge.getUserChallenger() != null}" th:method="GET" action="/app/challenge/accept" >
                         <input th:type="hidden" name="id" th:value="${challenge.getId()}">
-                    <td class="challenge-name">
+                    <td th:if="${challenge.getUserChallenger() != null}" class="challenge-name">
                         <img class="avatar img-responsive" th:src="${challenge.getUserChallenger().getAvatarUrl()}"/>
                         <a th:href="@{/display/{seasonId}/user/{id} (id=${challenge.getUserChallenger().getId()},seasonId=${season.getId()})}">
                             <span th:text="${challenge.getUserChallenger().getName()}"></span>
@@ -28,7 +28,7 @@
                         <span th:text="${#temporals.format(challenge.getLocalDate(), 'MM/dd')}">
                         </span>
                     </td>
-                    <td class="challenge-actions">
+                    <td th:if="${challenge.getUserChallenger() != null}" class="challenge-actions">
                         <a th:if="${challenge.getUserChallenger().equals(user.getId())}"
                            th:href="@{/challenge/cancel/{id} (id=${challenge.getId()})}">
                             <button class="btn btn-sm btn-danger btn-responsive challenge-upcoming-decline-button">
